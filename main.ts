@@ -39,11 +39,27 @@ const exampleModalDefinition: ModalDefinition = {
 	],
 };
 
+// Define functions and properties you want to make available to other plugins, or templater temmplates, etc
+interface PublicAPI {
+	exampleForm(): Promise<{ [key: string]: string }>;
+}
 export default class ModalFormPlugin extends Plugin {
 	settings: ModalFormSettings | undefined;
+	public api!: PublicAPI; // This things will be setup in the onload function rather than constructor
 
 	async onload() {
 		this.settings = await this.getSettings();
+		this.api = {
+			exampleForm: async () => {
+				return new Promise((resolve) => {
+					new SampleModal(
+						this.app,
+						exampleModalDefinition,
+						resolve
+					).open();
+				});
+			},
+		};
 
 		// This creates an icon in the left ribbon.
 		const ribbonIconEl = this.addRibbonIcon(
