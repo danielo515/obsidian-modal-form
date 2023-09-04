@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "obsidian-modal-form",
+	"name": "Obsidian modal form",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
+	"description": "Define forms for filling data that you will be able to open from anywhere you can run JS",
+	"author": "Danielo Rodriguez",
+	"authorUrl": "https://danielo.es",
 	"fundingUrl": "https://obsidian.md/pricing",
 	"isDesktopOnly": false
 }
