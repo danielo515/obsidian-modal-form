@@ -1,6 +1,5 @@
 import {
 	App,
-	Editor,
 	MarkdownView,
 	Modal,
 	Notice,
@@ -19,11 +18,32 @@ const DEFAULT_SETTINGS: ModalFormSettings = {
 	mySetting: "default",
 };
 
+const exampleModalDefinition: ModalDefinition = {
+	title: "Example Modal",
+	fields: [
+		{
+			name: "Name",
+			description: "It is named how?",
+			type: "text",
+		},
+		{
+			name: "Age",
+			description: "How old",
+			type: "number",
+		},
+		{
+			name: "Date of Birth",
+			description: "When were you born?",
+			type: "date",
+		},
+	],
+};
+
 export default class ModalFormPlugin extends Plugin {
-	settings: ModalFormSettings;
+	settings: ModalFormSettings | undefined;
 
 	async onload() {
-		await this.loadSettings();
+		this.settings = await this.getSettings();
 
 		// This creates an icon in the left ribbon.
 		const ribbonIconEl = this.addRibbonIcon(
@@ -46,18 +66,11 @@ export default class ModalFormPlugin extends Plugin {
 			id: "open-sample-modal-simple",
 			name: "Open sample modal (simple)",
 			callback: () => {
-				new SampleModal(this.app, [
-					{ name: "Age", description: "How old", type: "text" },
-				]).open();
-			},
-		});
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: "sample-editor-command",
-			name: "Sample editor command",
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				console.log(editor.getSelection());
-				editor.replaceSelection("Sample Editor Command");
+				new SampleModal(
+					this.app,
+					exampleModalDefinition,
+					console.info
+				).open();
 			},
 		});
 		// This adds a complex command that can check whether the current state of the app allows execution of the command
@@ -74,14 +87,8 @@ export default class ModalFormPlugin extends Plugin {
 					if (!checking) {
 						new SampleModal(
 							this.app,
-
-							[
-								{
-									name: "Name",
-									description: "It is named how?",
-									type: "text",
-								},
-							]
+							exampleModalDefinition,
+							console.log
 						).open();
 					}
 
@@ -108,12 +115,8 @@ export default class ModalFormPlugin extends Plugin {
 
 	onunload() {}
 
-	async loadSettings() {
-		this.settings = Object.assign(
-			{},
-			DEFAULT_SETTINGS,
-			await this.loadData()
-		);
+	async getSettings() {
+		return Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 	}
 
 	async saveSettings() {
@@ -121,28 +124,69 @@ export default class ModalFormPlugin extends Plugin {
 	}
 }
 
-type ModalDefinition = { name: string; description: string; type: string }[];
+type FieldType = "text" | "number" | "date" | "time" | "datetime";
+type ModalDefinition = {
+	title: string;
+	fields: { name: string; description: string; type: FieldType }[];
+};
+type SubmitFn = (formResult: { [key: string]: string }) => void;
 
 class SampleModal extends Modal {
 	modalDefinition: ModalDefinition;
 	formResult: { [key: string]: string };
-	constructor(app: App, modalDefinition: ModalDefinition) {
+	onSubmit: SubmitFn;
+	constructor(
+		app: App,
+		modalDefinition: ModalDefinition,
+		onSubmit: SubmitFn
+	) {
 		super(app);
 		this.modalDefinition = modalDefinition;
+		this.onSubmit = onSubmit;
+		this.formResult = {};
 	}
 
 	onOpen() {
 		const { contentEl } = this;
-		this.modalDefinition.forEach((definition) => {
-			new Setting(contentEl)
+		contentEl.createEl("h1", { text: this.modalDefinition.title });
+		this.modalDefinition.fields.forEach((definition) => {
+			const fieldBase = new Setting(contentEl)
 				.setName(definition.name)
-				.setDesc(definition.description)
-				.addText((text) =>
-					text.onChange(async (value) => {
-						this.formResult[definition.name] = value;
-					})
-				);
+				.setDesc(definition.description);
+			switch (definition.type) {
+				case "text":
+					return fieldBase.addText((text) =>
+						text.onChange(async (value) => {
+							this.formResult[definition.name] = value;
+						})
+					);
+				case "number":
+					return fieldBase.addText((text) => {
+						text.inputEl.type = "number";
+						text.onChange(async (value) => {
+							if (value !== "") {
+								this.formResult[definition.name] =
+									Number(value) + "";
+							}
+						});
+					});
+				case "date":
+					return fieldBase.addMomentFormat((moment) =>
+						moment.onChange(async (value) => {
+							this.formResult[definition.name] = value;
+						})
+					);
+			}
 		});
+		new Setting(contentEl).addButton((btn) =>
+			btn
+				.setButtonText("Submit")
+				.setCta()
+				.onClick(() => {
+					this.onSubmit(this.formResult);
+					this.close();
+				})
+		);
 	}
 
 	onClose() {
@@ -171,9 +215,9 @@ class ModalFormSettingTab extends PluginSettingTab {
 			.addText((text) =>
 				text
 					.setPlaceholder("Enter your secret")
-					.setValue(this.plugin.settings.mySetting)
+					.setValue(this.plugin.settings?.mySetting || "")
 					.onChange(async (value) => {
-						this.plugin.settings.mySetting = value;
+						// this.plugin.settings.mySetting = value;
 						await this.plugin.saveSettings();
 					})
 			);
