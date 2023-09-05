@@ -1,10 +1,11 @@
 import { App, Modal, Setting } from "obsidian";
+import FormResult from "./FormResult";
 type FieldType = "text" | "number" | "date" | "time" | "datetime";
 export type FormDefinition = {
 	title: string;
 	fields: { name: string; description: string; type: FieldType }[];
 };
-export type SubmitFn = (formResult: { [key: string]: string }) => void;
+export type SubmitFn = (formResult: FormResult) => void;
 
 export class FormModal extends Modal {
 	modalDefinition: FormDefinition;
@@ -54,7 +55,7 @@ export class FormModal extends Modal {
 				.setButtonText("Submit")
 				.setCta()
 				.onClick(() => {
-					this.onSubmit(this.formResult);
+					this.onSubmit(new FormResult(this.formResult, "ok"));
 					this.close();
 				})
 		);
