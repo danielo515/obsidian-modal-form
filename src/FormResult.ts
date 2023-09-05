@@ -10,7 +10,16 @@ export default class FormResult {
 	asFrontmatterString() {
 		return stringifyYaml(this.data);
 	}
-	/*
+	/**
+	 * Return the current data as a block of dataview properties
+	 * @returns string
+	 */
+	asDataviewProperties(): string {
+		return Object.entries(this.data)
+			.map(([key, value]) => `${key}:: ${value}`)
+			.join("\n");
+	}
+	/**
 	Returns a copy of the data contained on this result.
 	*/
 	getData() {
