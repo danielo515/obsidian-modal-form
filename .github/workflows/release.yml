@@ -31,6 +31,9 @@ jobs:
                   package-name: obsidian-modal-form
                   extra-files: |
                       manifest.json
+            - name: Sync version with manifest and versions.json
+              run: node version-bump.mjs
+            - uses: stefanzweifel/git-auto-commit-action@v4
             - name: Upload Release Assets
               if: ${{ steps.release.outputs.release_created }}
               env:
