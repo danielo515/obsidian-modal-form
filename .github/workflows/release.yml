@@ -29,5 +29,12 @@ jobs:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   release-type: node
                   package-name: obsidian-modal-form
-                  extra-files:
-					  - manifest.json
+                  extra-files: |
+                      manifest.json
+            - name: Upload Release Assets
+              if: ${{ steps.release.outputs.release_created }}
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  TAG_NAME: ${{ steps.release.outputs.tag_name }}
+              run: |
+                  gh release upload $TAG_NAME main.js manifest.json styles.css
