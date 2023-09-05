@@ -1,7 +1,6 @@
 {
 	"id": "obsidianModalForm",
 	"name": "Obsidian modal form",
-	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Define forms for filling data that you will be able to open from anywhere you can run JS",
 	"author": "Danielo Rodriguez",
