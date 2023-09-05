@@ -1,4 +1,4 @@
-import { FormDefinition, FormModal } from "src/FormModal";
+import { FormModal } from "src/FormModal";
 import {
 	App,
 	MarkdownView,
@@ -8,6 +8,7 @@ import {
 	Setting,
 } from "obsidian";
 import FormResult from "src/FormResult";
+import { exampleModalDefinition } from "exampleModalDefinition";
 
 // Remember to rename these classes and interfaces!
 
@@ -19,49 +20,15 @@ const DEFAULT_SETTINGS: ModalFormSettings = {
 	mySetting: "default",
 };
 
-const exampleModalDefinition: FormDefinition = {
-	title: "Example Modal",
-	fields: [
-		// example of how name will be used as label if label is missing.
-		{
-			name: "Name",
-			description: "It is named how?",
-			type: "text",
-		},
-		{
-			name: "age",
-			label: "Age",
-			description: "How old",
-			type: "number",
-		},
-		{
-			name: "dateOfBirth",
-			label: "Date of Birth",
-			description: "When were you born?",
-			type: "date",
-		},
-		{
-			name: "timeOfDay",
-			label: "Time of day",
-			description: "The time you can do this",
-			type: "time",
-		},
-		{
-			name: "likes_sex",
-			label: "Likes sex",
-			description: "If likes to have sex",
-			type: "toggle",
-		},
-	],
-};
-
 // Define functions and properties you want to make available to other plugins, or templater temmplates, etc
 interface PublicAPI {
 	exampleForm(): Promise<FormResult>;
 }
+// This is the plugin entrypoint
 export default class ModalFormPlugin extends Plugin {
 	settings: ModalFormSettings | undefined;
-	public api!: PublicAPI; // This things will be setup in the onload function rather than constructor
+	// This things will be setup in the onload function rather than constructor
+	public api!: PublicAPI;
 
 	async onload() {
 		this.settings = await this.getSettings();
@@ -79,19 +46,14 @@ export default class ModalFormPlugin extends Plugin {
 
 		// This creates an icon in the left ribbon.
 		const ribbonIconEl = this.addRibbonIcon(
-			"dice",
-			"Sample Plugin",
+			"form",
+			"Edit forms",
 			(evt: MouseEvent) => {
-				// Called when the user clicks the icon.
 				new Notice("This is a notice!");
 			}
 		);
 		// Perform additional things with the ribbon
 		ribbonIconEl.addClass("my-plugin-ribbon-class");
-
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText("Status Bar Text");
 
 		// This adds a simple command that can be triggered anywhere
 		this.addCommand({
@@ -132,12 +94,6 @@ export default class ModalFormPlugin extends Plugin {
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new ModalFormSettingTab(this.app, this));
-
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, "click", (evt: MouseEvent) => {
-			console.log("click", evt);
-		});
 
 		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
 		this.registerInterval(

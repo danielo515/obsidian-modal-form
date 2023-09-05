@@ -2,7 +2,8 @@ import { readFileSync, writeFileSync } from "fs";
 
 /**
  * This file keeps the manifest.json and version.json in sync with package.json
- * It is ran when you run `npm version --patch` and in CI
+ * It is ran when you run `npm version patch|minor|major` and in CI
+ * In CI reads from the package.json, because there is nothing in the environment
  */
 
 let packageData = JSON.parse(readFileSync("package.json", "utf8"));

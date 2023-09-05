@@ -1,7 +1,15 @@
 import { App, Modal, Setting } from "obsidian";
 import FormResult, { ModalFormData } from "./FormResult";
 import { exhaustiveGuard } from "./safety";
-type FieldType = "text" | "number" | "date" | "time" | "datetime" | "toggle";
+import { ArraySuggest } from "./suggestArray";
+type FieldType =
+	| "text"
+	| "number"
+	| "date"
+	| "time"
+	| "datetime"
+	| "toggle"
+	| "note";
 /**
  * FormDefinition is a type that defines the structure of a form.
  * @param title - The title of the form which will appear as H1 heading in the form modal.
@@ -85,6 +93,17 @@ export class FormModal extends Modal {
 							this.formResult[definition.name] = value;
 						})
 					);
+				case "note":
+					return fieldBase.addText((element) => {
+						new ArraySuggest(
+							this.app,
+							element.inputEl,
+							new Set(["a", "b", "c"])
+						);
+						element.onChange(async (value) => {
+							this.formResult[definition.name] = value;
+						});
+					});
 				default:
 					exhaustiveGuard(definition.type);
 			}
