@@ -1,6 +1,12 @@
 import { readFileSync, writeFileSync } from "fs";
 
-const targetVersion = process.env.npm_package_version;
+/**
+ * This file keeps the manifest.json and version.json in sync with package.json
+ * It is ran when you run `npm version --patch` and in CI
+ */
+
+let packageData = JSON.parse(readFileSync("package.json", "utf8"));
+const targetVersion = process.env.npm_package_version || packageData.version;
 
 // read minAppVersion from manifest.json and bump version to target version
 let manifest = JSON.parse(readFileSync("manifest.json", "utf8"));
