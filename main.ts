@@ -1,7 +1,7 @@
+import { FormDefinition, FormModal } from "src/FormModal";
 import {
 	App,
 	MarkdownView,
-	Modal,
 	Notice,
 	Plugin,
 	PluginSettingTab,
@@ -18,7 +18,7 @@ const DEFAULT_SETTINGS: ModalFormSettings = {
 	mySetting: "default",
 };
 
-const exampleModalDefinition: ModalDefinition = {
+const exampleModalDefinition: FormDefinition = {
 	title: "Example Modal",
 	fields: [
 		{
@@ -52,7 +52,7 @@ export default class ModalFormPlugin extends Plugin {
 		this.api = {
 			exampleForm: async () => {
 				return new Promise((resolve) => {
-					new SampleModal(
+					new FormModal(
 						this.app,
 						exampleModalDefinition,
 						resolve
@@ -82,7 +82,7 @@ export default class ModalFormPlugin extends Plugin {
 			id: "open-sample-modal-simple",
 			name: "Open sample modal (simple)",
 			callback: () => {
-				new SampleModal(
+				new FormModal(
 					this.app,
 					exampleModalDefinition,
 					console.info
@@ -101,7 +101,7 @@ export default class ModalFormPlugin extends Plugin {
 					// If checking is true, we're simply "checking" if the command can be run.
 					// If checking is false, then we want to actually perform the operation.
 					if (!checking) {
-						new SampleModal(
+						new FormModal(
 							this.app,
 							exampleModalDefinition,
 							console.log
@@ -137,78 +137,6 @@ export default class ModalFormPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-	}
-}
-
-type FieldType = "text" | "number" | "date" | "time" | "datetime";
-type ModalDefinition = {
-	title: string;
-	fields: { name: string; description: string; type: FieldType }[];
-};
-type SubmitFn = (formResult: { [key: string]: string }) => void;
-
-class SampleModal extends Modal {
-	modalDefinition: ModalDefinition;
-	formResult: { [key: string]: string };
-	onSubmit: SubmitFn;
-	constructor(
-		app: App,
-		modalDefinition: ModalDefinition,
-		onSubmit: SubmitFn
-	) {
-		super(app);
-		this.modalDefinition = modalDefinition;
-		this.onSubmit = onSubmit;
-		this.formResult = {};
-	}
-
-	onOpen() {
-		const { contentEl } = this;
-		contentEl.createEl("h1", { text: this.modalDefinition.title });
-		this.modalDefinition.fields.forEach((definition) => {
-			const fieldBase = new Setting(contentEl)
-				.setName(definition.name)
-				.setDesc(definition.description);
-			switch (definition.type) {
-				case "text":
-					return fieldBase.addText((text) =>
-						text.onChange(async (value) => {
-							this.formResult[definition.name] = value;
-						})
-					);
-				case "number":
-					return fieldBase.addText((text) => {
-						text.inputEl.type = "number";
-						text.onChange(async (value) => {
-							if (value !== "") {
-								this.formResult[definition.name] =
-									Number(value) + "";
-							}
-						});
-					});
-				case "date":
-					return fieldBase.addMomentFormat((moment) =>
-						moment.onChange(async (value) => {
-							this.formResult[definition.name] = value;
-						})
-					);
-			}
-		});
-		new Setting(contentEl).addButton((btn) =>
-			btn
-				.setButtonText("Submit")
-				.setCta()
-				.onClick(() => {
-					this.onSubmit(this.formResult);
-					this.close();
-				})
-		);
-	}
-
-	onClose() {
-		const { contentEl } = this;
-		contentEl.empty();
-		this.formResult = {};
 	}
 }
 
