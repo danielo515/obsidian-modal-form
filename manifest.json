@@ -6,5 +6,6 @@
 	"author": "Danielo Rodriguez",
 	"authorUrl": "https://danielo.es",
 	"fundingUrl": "https://obsidian.md/pricing",
-	"isDesktopOnly": false
+	"isDesktopOnly": false,
+	"version": "1.0.0"
 }
