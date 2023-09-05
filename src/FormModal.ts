@@ -1,7 +1,7 @@
 import { App, Modal, Setting } from "obsidian";
 import FormResult, { ModalFormData } from "./FormResult";
 import { exhaustiveGuard } from "./safety";
-import { ArraySuggest } from "./suggestArray";
+import { FileSuggest } from "./suggestFile";
 type FieldType =
 	| "text"
 	| "number"
@@ -95,11 +95,7 @@ export class FormModal extends Modal {
 					);
 				case "note":
 					return fieldBase.addText((element) => {
-						new ArraySuggest(
-							this.app,
-							element.inputEl,
-							new Set(["a", "b", "c"])
-						);
+						new FileSuggest(this.app, element.inputEl);
 						element.onChange(async (value) => {
 							this.formResult[definition.name] = value;
 						});

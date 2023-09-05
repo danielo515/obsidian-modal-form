@@ -8,7 +8,7 @@ import {
 	Setting,
 } from "obsidian";
 import FormResult from "src/FormResult";
-import { exampleModalDefinition } from "exampleModalDefinition";
+import { exampleModalDefinition } from "src/exampleModalDefinition";
 
 // Remember to rename these classes and interfaces!
 
