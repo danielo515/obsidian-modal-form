@@ -7,6 +7,7 @@ import {
 	PluginSettingTab,
 	Setting,
 } from "obsidian";
+import FormResult from "src/FormResult";
 
 // Remember to rename these classes and interfaces!
 
@@ -21,27 +22,42 @@ const DEFAULT_SETTINGS: ModalFormSettings = {
 const exampleModalDefinition: FormDefinition = {
 	title: "Example Modal",
 	fields: [
+		// example of how name will be used as label if label is missing.
 		{
 			name: "Name",
 			description: "It is named how?",
 			type: "text",
 		},
 		{
-			name: "Age",
+			name: "age",
+			label: "Age",
 			description: "How old",
 			type: "number",
 		},
 		{
-			name: "Date of Birth",
+			name: "dateOfBirth",
+			label: "Date of Birth",
 			description: "When were you born?",
 			type: "date",
+		},
+		{
+			name: "timeOfDay",
+			label: "Time of day",
+			description: "The time you can do this",
+			type: "time",
+		},
+		{
+			name: "likes_sex",
+			label: "Likes sex",
+			description: "If likes to have sex",
+			type: "toggle",
 		},
 	],
 };
 
 // Define functions and properties you want to make available to other plugins, or templater temmplates, etc
 interface PublicAPI {
-	exampleForm(): Promise<{ [key: string]: string }>;
+	exampleForm(): Promise<FormResult>;
 }
 export default class ModalFormPlugin extends Plugin {
 	settings: ModalFormSettings | undefined;

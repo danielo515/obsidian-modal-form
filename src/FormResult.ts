@@ -2,11 +2,11 @@ import { stringifyYaml } from "obsidian";
 
 type ResultStatus = "ok" | "cancelled";
 
+// We don't use FormData because that is builtin browser API
+export type ModalFormData = { [key: string]: string | boolean };
+
 export default class FormResult {
-	constructor(
-		private data: { [key: string]: string },
-		public status: ResultStatus
-	) {}
+	constructor(private data: ModalFormData, public status: ResultStatus) {}
 	asFrontmatterString() {
 		return stringifyYaml(this.data);
 	}
