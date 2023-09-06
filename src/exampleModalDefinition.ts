@@ -33,9 +33,10 @@ export const exampleModalDefinition: FormDefinition = {
 			input: { type: "toggle" },
 		},
 		{
-			name: "reference",
-			description: "Reference notes",
-			input: { type: "note", folder: "People" },
+			name: "favorite_book",
+			label: "Favorite book",
+			description: "Pick one",
+			input: { type: "note", folder: "Books" },
 		},
 
 		{

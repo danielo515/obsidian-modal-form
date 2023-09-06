@@ -1,7 +1,23 @@
 # Obsidian Modal Form Plugin
 
-This plugin for Obsidian (https://obsidian.md) allows you to define forms for filling data that you can open from anywhere you can run JavaScript. It uses TypeScript for type checking and documentation, and depends on the latest Obsidian plugin API.
-Features
+This plugin for [Obsidian](https://obsidian.md) that allows to define forms for filling data that can opened from anywhere you can run JavaScript. 
+![demo](./media/frontmmatter-demo.mov)
+
+## Features
+
+- Forms open in a modal window and return you the values, so you can trigger it from:
+  - Templater templates
+  - QuickAdd captures
+  - DataviewJS queries
+  - Many other places...
+- Define forms using a simple JSON format
+- UI for defining forms
+- Many input types 
+  - number
+  - date
+  - free text
+  - text with autocompletion for note names
+  - select from a list (fixed values or other notes)
 
 ## Manually installing the plugin
 
