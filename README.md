@@ -1,7 +1,12 @@
 # Obsidian Modal Form Plugin
 
-This plugin for [Obsidian](https://obsidian.md) that allows to define forms for filling data that can opened from anywhere you can run JavaScript. 
-![demo](./media/frontmmatter-demo.mov)
+This plugin for [Obsidian](https://obsidian.md) that allows to define forms for filling data that can opened from anywhere you can run JavaScript.
+
+
+
+https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4733-89ea-9c20ea11bee9
+
+
 
 ## Features
 
