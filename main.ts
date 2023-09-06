@@ -1,12 +1,5 @@
 import { FormModal } from "src/FormModal";
-import {
-	App,
-	MarkdownView,
-	Notice,
-	Plugin,
-	PluginSettingTab,
-	Setting,
-} from "obsidian";
+import { MarkdownView, Notice, Plugin } from "obsidian";
 import FormResult from "src/FormResult";
 import { exampleModalDefinition } from "src/exampleModalDefinition";
 
@@ -93,12 +86,7 @@ export default class ModalFormPlugin extends Plugin {
 		});
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new ModalFormSettingTab(this.app, this));
-
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(
-			window.setInterval(() => console.log("setInterval"), 5 * 60 * 1000)
-		);
+		// this.addSettingTab(new ModalFormSettingTab(this.app, this));
 	}
 
 	onunload() {}
@@ -109,33 +97,5 @@ export default class ModalFormPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-	}
-}
-
-class ModalFormSettingTab extends PluginSettingTab {
-	plugin: ModalFormPlugin;
-
-	constructor(app: App, plugin: ModalFormPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
-
-	display(): void {
-		const { containerEl } = this;
-
-		containerEl.empty();
-
-		new Setting(containerEl)
-			.setName("Setting #1")
-			.setDesc("It's a secret")
-			.addText((text) =>
-				text
-					.setPlaceholder("Enter your secret")
-					.setValue(this.plugin.settings?.mySetting || "")
-					.onChange(async (value) => {
-						// this.plugin.settings.mySetting = value;
-						await this.plugin.saveSettings();
-					})
-			);
 	}
 }
