@@ -11,7 +11,7 @@ export class ModalFormError extends Error {
 export async function errorWrapper<T>(
 	fn: () => Promise<T>,
 	msg: string
-): Promise<T> {
+): Promise<T | null> {
 	try {
 		return await fn();
 	} catch (e: any) {
@@ -20,8 +20,8 @@ export async function errorWrapper<T>(
 		} else {
 			log_error(e);
 		}
-		return null as T;
-	}
+		return null;
+}
 }
 
 export function errorWrapperSync<T>(fn: () => T, msg: string): T | null {
