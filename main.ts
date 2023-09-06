@@ -1,16 +1,17 @@
-import { FormModal } from "src/FormModal";
+import { FormDefinition, FormModal } from "src/FormModal";
 import { MarkdownView, Notice, Plugin } from "obsidian";
 import FormResult from "src/FormResult";
 import { exampleModalDefinition } from "src/exampleModalDefinition";
+import { ModalFormSettingTab } from "ModalFormSettingTab";
 
 // Remember to rename these classes and interfaces!
 
 interface ModalFormSettings {
-	mySetting: string;
+	formDefinitions: FormDefinition[];
 }
 
 const DEFAULT_SETTINGS: ModalFormSettings = {
-	mySetting: "default",
+	formDefinitions: [],
 };
 
 // Define functions and properties you want to make available to other plugins, or templater temmplates, etc
@@ -86,12 +87,12 @@ export default class ModalFormPlugin extends Plugin {
 		});
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		// this.addSettingTab(new ModalFormSettingTab(this.app, this));
+		this.addSettingTab(new ModalFormSettingTab(this.app, this));
 	}
 
 	onunload() {}
 
-	async getSettings() {
+	async getSettings(): Promise<ModalFormSettings> {
 		return Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 	}
 

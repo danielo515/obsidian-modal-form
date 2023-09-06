@@ -9,22 +9,27 @@ export class ModalFormSettingTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
-	display(): void {
-		const { containerEl } = this;
+	async display() {
+		const { containerEl, plugin } = this;
+
+		const settings = await plugin.getSettings();
 
 		containerEl.empty();
+		containerEl.createEl("h1", { text: "Form definitions" });
 
-		new Setting(containerEl)
-			.setName("Setting #1")
-			.setDesc("It's a secret")
-			.addText((text) =>
-				text
-					.setPlaceholder("Enter your secret")
-					.setValue(this.plugin.settings?.mySetting || "")
-					.onChange(async (value) => {
-						// this.plugin.settings.mySetting = value;
+		settings.formDefinitions.forEach((formDefinition) => {
+			new Setting(containerEl)
+				.setName(formDefinition.title)
+				.addButton((button) =>
+					button.setButtonText("Delete").onClick(async () => {
+						const index =
+							settings.formDefinitions.indexOf(formDefinition);
+						if (index > -1) {
+							settings.formDefinitions.splice(index, 1);
+						}
 						await this.plugin.saveSettings();
 					})
-			);
+				);
+		});
 	}
 }

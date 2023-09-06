@@ -2,14 +2,24 @@ import { App, Modal, Setting } from "obsidian";
 import FormResult, { ModalFormData } from "./FormResult";
 import { exhaustiveGuard } from "./safety";
 import { FileSuggest } from "./suggestFile";
+import { get_tfiles_from_folder } from "./utils/files";
 type FieldType =
 	| "text"
 	| "number"
 	| "date"
 	| "time"
 	| "datetime"
-	| "toggle"
-	| "note";
+	| "toggle";
+
+type inputType =
+	| { type: FieldType }
+	| { type: "note"; folder: string }
+	| { type: "select"; source: "notes", folder: string }
+	| {
+		type: "select";
+		source: "fixed";
+		options: { value: string; label: string }[];
+	};
 /**
  * FormDefinition is a type that defines the structure of a form.
  * @param title - The title of the form which will appear as H1 heading in the form modal.
@@ -26,7 +36,7 @@ export type FormDefinition = {
 		name: string;
 		label?: string;
 		description: string;
-		type: FieldType;
+		input: inputType;
 	}[];
 };
 export type SubmitFn = (formResult: FormResult) => void;
@@ -49,7 +59,12 @@ export class FormModal extends Modal {
 			const fieldBase = new Setting(contentEl)
 				.setName(definition.label || definition.name)
 				.setDesc(definition.description);
-			switch (definition.type) {
+			// This intermediary constants are necessary so typescript can narrow down the proper types.
+			// without them, you will have to use the whole access path (definition.input.folder), 
+			// and it is no specific enough when you use it in a switch statement.
+			const fieldInput = definition.input;
+			const type = fieldInput.type;
+			switch (type) {
 				case "text":
 					return fieldBase.addText((text) =>
 						text.onChange(async (value) => {
@@ -95,13 +110,68 @@ export class FormModal extends Modal {
 					);
 				case "note":
 					return fieldBase.addText((element) => {
-						new FileSuggest(this.app, element.inputEl);
+						new FileSuggest(this.app, element.inputEl, {
+							renderSuggestion(file) {
+								return file.basename;
+							},
+							selectSuggestion(file) {
+								return file.basename;
+							},
+						}, fieldInput.folder);
 						element.onChange(async (value) => {
 							this.formResult[definition.name] = value;
 						});
 					});
+				case "select":
+					{
+						const source = fieldInput.source;
+						switch (source) {
+							case "fixed":
+								return fieldBase.addDropdown((element) => {
+									const options = fieldInput.options.reduce(
+										(
+											acc: Record<string, string>,
+											option
+										) => {
+											acc[option.value] = option.label;
+											return acc;
+										},
+										{}
+									);
+									element.addOptions(options);
+									element.onChange(async (value) => {
+										this.formResult[definition.name] =
+											value;
+									});
+								});
+
+							case "notes":
+								return fieldBase.addDropdown((element) => {
+									const files = get_tfiles_from_folder(fieldInput.folder);
+									const options = files.reduce(
+										(
+											acc: Record<string, string>,
+											option
+										) => {
+											acc[option.basename] =
+												option.basename;
+											return acc;
+										},
+										{}
+									);
+									element.addOptions(options);
+									element.onChange(async (value) => {
+										this.formResult[definition.name] =
+											value;
+									});
+								});
+							default:
+								exhaustiveGuard(source);
+						}
+					}
+					break;
 				default:
-					exhaustiveGuard(definition.type);
+					return exhaustiveGuard(type);
 			}
 		});
 		new Setting(contentEl).addButton((btn) =>

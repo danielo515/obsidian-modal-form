@@ -24,11 +24,11 @@ export async function errorWrapper<T>(
 	}
 }
 
-export function errorWrapperSync<T>(fn: () => T, msg: string): T {
+export function errorWrapperSync<T>(fn: () => T, msg: string): T | null {
 	try {
 		return fn();
 	} catch (e: any) {
 		log_error(new ModalFormError(msg, e.message));
-		return null as T;
+		return null;
 	}
 }
