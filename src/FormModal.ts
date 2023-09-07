@@ -3,7 +3,7 @@ import FormResult, { ModalFormData } from "./FormResult";
 import { exhaustiveGuard } from "./safety";
 import { FileSuggest } from "./suggestFile";
 import { get_tfiles_from_folder } from "./utils/files";
-type FieldType =
+export type FieldType =
 	| "text"
 	| "number"
 	| "date"
@@ -21,6 +21,8 @@ type inputType =
 		source: "fixed";
 		options: { value: string; label: string }[];
 	};
+
+export type AllFieldTypes = FieldType | "note" | "slider" | "select";
 /**
  * FormDefinition is a type that defines the structure of a form.
  * @param title - The title of the form which will appear as H1 heading in the form modal.

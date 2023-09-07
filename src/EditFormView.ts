@@ -1,10 +1,10 @@
 import ModalFormPlugin from "main";
 import { ItemView, Setting, ViewStateResult, WorkspaceLeaf } from "obsidian";
-import { FormDefinition } from "./FormModal";
+import { FieldType, FormDefinition, AllFieldTypes } from "./FormModal";
 import { ModalFormError } from "./utils/Error";
 
 export const EDIT_FORM_VIEW = "modal-form-edit-form-view";
-const FieldTypeReadable = {
+const FieldTypeReadable: Record<AllFieldTypes, string> = {
 	"text": "Text",
 	"number": "Number",
 	"date": "Date",
@@ -14,7 +14,7 @@ const FieldTypeReadable = {
 	"note": "Note",
 	"slider": "Slider",
 	"select": "Select"
-};
+} as const;
 
 
 /**
@@ -40,14 +40,14 @@ export class EditFormView extends ItemView {
 	async onOpen() {
 		const container = this.containerEl.children[1];
 		container.empty();
-		container.createEl("h4", { text: "Example view" });
+		container.createEl("h4", { text: "Edit form" });
 		const controls = container.createDiv();
 		const fieldsRoot = container.createDiv();
 		new Setting(controls).addButton(element => {
 			element.setButtonText('Add field').onClick(async () => {
 				this.formState.fields.push({ name: '', description: '', input: { type: 'text' } })
+				await this.app.workspace.requestSaveLayout();
 				this.renderFields(fieldsRoot)
-				this.app.workspace.requestSaveLayout();
 			})
 		})
 		this.renderFields(fieldsRoot);
@@ -55,11 +55,33 @@ export class EditFormView extends ItemView {
 
 	renderFields(root: HTMLElement) {
 		root.empty();
-		root.createEl("h4", { text: "Form title" });
+		root.createEl("h4", { text: "Fields" });
+		const rows = root.createDiv();
+		rows.setCssStyles({ display: 'flex', flexDirection: 'column', gap: '10px' });
 		this.formState.fields.forEach(field => {
-			new Setting(root).addDropdown(element => {
-				element.addOptions(FieldTypeReadable)
-			})
+			const row = rows.createDiv()
+			row.setCssStyles({ display: 'flex', flexDirection: 'row', gap: '8px' })
+			new Setting(row)
+				.addText(text => {
+					text.setPlaceholder('Field name').setValue(field.name).onChange(value => {
+						field.name = value;
+						this.app.workspace.requestSaveLayout();
+					})
+				})
+				.addText(element => {
+					element.setPlaceholder('Field description').setValue(field.description).onChange(value => {
+						field.description = value;
+						this.app.workspace.requestSaveLayout();
+					})
+				})
+				.addDropdown(element => {
+					element.addOptions(FieldTypeReadable)
+					element.setValue(field.input.type)
+					element.onChange((value) => {
+						field.input.type = value as AllFieldTypes;
+						this.app.workspace.requestSaveLayout();
+					})
+				})
 		})
 	}
 
