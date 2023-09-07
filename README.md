@@ -1,11 +1,8 @@
 # Obsidian Modal Form Plugin
 
-This plugin for [Obsidian](https://obsidian.md) that allows to define forms for filling data that can opened from anywhere you can run JavaScript.
-
-
+This plugin for [Obsidian](https://obsidian.md) allows to define forms that can be opened from anywhere you can run JavaScript, so you can combine it with other plugins like [Templater](https://github.com/SilentVoid13/Templater) or [QuickAdd](https://github.com/chhoumann/quickadd).
 
 https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4733-89ea-9c20ea11bee9
-
 
 
 ## Features
@@ -16,14 +13,31 @@ https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4
   - DataviewJS queries
   - Many other places...
 - Define forms using a simple JSON format
-- UI for defining forms
+- Collection of named forms
+- UI for new forms
 - Many input types 
   - number
   - date
   - free text
   - text with autocompletion for note names
-  - select from a list (fixed values or other notes)
+  - select from a list 
+    - list of fixed values 
+    - list of notes from a folder
 
+
+## Why this plugin?
+
+Obsidian is a great tool for taking notes, but it is also a nice for managing data.
+However, when it's time to capture structured data it doesn't offer many conveniences.
+Some plugins like [Templater](https://github.com/SilentVoid13/Templater) or [QuickAdd](https://github.com/chhoumann/quickadd) alleviate this problem with templates/automation that ease the creation of notes with a predefined structure, but then you have to fill the data manually. 
+This plugins have some little convenience inputs, but they are limited to a single value at a time, and they don't even have labels.
+All of the mentioned tools are great at their job and unleash super convenient workflows.
+For that reason, rather than offering an alternative, this plugin is designed as a complement to them, offering some basic building blocks that you can integrate with your existing templates and workflows.
+
+## Scope of this plugin
+
+This plugin is intentionally narrow in scope. As it's emntioned in the previous section, it is designed as a building block, so you can integrate it with other plugins and workflows.
+The only features that I will consider adding will be ones about improving the form itself.
 
 ## Usage
 
@@ -63,6 +77,19 @@ tR += result.asFrontmatterString();
 
 When you insert this template in a note, it will open the form, and once you submit it, it will insert the data in the note as a frontmatter block.
 
+#### Usage with QuickAdd
+
+In order to open a form from QuickAdd capture, you need to create a capture and activate the capture format, then in the format text-area you must create a code block with the language defined as `js quickadd` and copy the code below:
+```javascript
+	```js quickadd
+	const modalForm = app.plugins.plugins.obsidianModalForm.api;
+	const result = await modalForm.openForm('exampleForm');
+	return result.asDataviewProperties();
+	``` 
+````
+
+Here you have an example screenshot of how it should look like:
+![quick capture example](media/image.png)
 ### Define a form
 
 ## Manually installing the plugin
