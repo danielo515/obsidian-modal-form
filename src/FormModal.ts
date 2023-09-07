@@ -14,6 +14,7 @@ type FieldType =
 type inputType =
 	| { type: FieldType }
 	| { type: "note"; folder: string }
+	| { type: "slider"; min: number, max: number }
 	| { type: "select"; source: "notes", folder: string }
 	| {
 		type: "select";
@@ -104,10 +105,12 @@ export class FormModal extends Modal {
 						});
 					});
 				case "toggle":
-					return fieldBase.addToggle((toggle) =>
-						toggle.onChange(async (value) => {
+					return fieldBase.addToggle((toggle) => {
+						toggle.setValue(false);
+						return toggle.onChange(async (value) => {
 							this.formResult[definition.name] = value;
-						})
+						});
+					}
 					);
 				case "note":
 					return fieldBase.addText((element) => {
@@ -120,6 +123,15 @@ export class FormModal extends Modal {
 							},
 						}, fieldInput.folder);
 						element.onChange(async (value) => {
+							this.formResult[definition.name] = value;
+						});
+					});
+				case "slider":
+					return fieldBase.addSlider((slider) => {
+						slider.setLimits(fieldInput.min, fieldInput.max, 1);
+						slider.setDynamicTooltip();
+						slider.setValue(fieldInput.min);
+						slider.onChange(async (value) => {
 							this.formResult[definition.name] = value;
 						});
 					});

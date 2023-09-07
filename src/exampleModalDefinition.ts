@@ -51,6 +51,16 @@ export const exampleModalDefinition: FormDefinition = {
 			}
 		},
 		{
+			name: "friendship_level",
+			label: "Friendship level",
+			description: "How good friends are you?",
+			input: {
+				type: 'slider',
+				min: 0,
+				max: 10
+			}
+		},
+		{
 			name: "favorite_meal",
 			label: "Favorite meal",
 			description: "Pick one option",
