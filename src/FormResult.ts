@@ -25,4 +25,15 @@ export default class FormResult {
 	getData() {
 		return { ...this.data };
 	}
+	/**
+	 * Returns the data formatted as a string matching the provided
+	 * template.
+	 */
+	asString(template: string): string {
+		let result = template;
+		for (const [key, value] of Object.entries(this.data)) {
+			result = result.replace(new RegExp(`{{${key}}}`, 'g'), value + "");
+		}
+		return result;
+	}
 }
