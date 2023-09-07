@@ -13,8 +13,8 @@ https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4
   - DataviewJS queries
   - Many other places...
 - Define forms using a simple JSON format
-- Collection of named forms
-- UI for new forms
+- Create and manage a collection of forms, each identified by a unique name
+- User interface for creating new forms
 - Many input types 
   - number
   - date
@@ -90,6 +90,36 @@ In order to open a form from QuickAdd capture, you need to create a capture and 
 
 Here you have an example screenshot of how it should look like:
 ![quick capture example](media/image.png)
+
+### FormResult Methods
+
+The `FormResult` object returned by the `openForm` method has several methods that can be used to process the form data. Here is a brief description of each method:
+
+#### asFrontmatterString()
+
+This method returns the form data as a string that can be used in a frontmatter block. It formats the data in YAML syntax. Here is an example of how to use it:
+
+#### asDataviewProperties()
+
+This method returns the form data as a string of dataview properties. Each key-value pair in the form data is converted into a string in the format `key:: value`. Here is an example of how to use it:
+
+#### getData()
+
+This method returns a copy of the form data. It can be used when you need to manipulate the form data without affecting the original data. 
+
+#### asString(template: string)
+
+This method returns the form data formatted as a string matching the provided template. The template is a string that can contain placeholders in the format `{{key}}`, which will be replaced with the corresponding value from the form data. Here is an example of how to use it in a templater tempmlate:
+
+```
+<%* 
+const modalForm = app.plugins.plugins.obsidianModalForm.api;
+const result = await modalForm.openForm('example-form');
+tR += result.asString('{{Name}} is {{age}} years old and his/her favorite food is {{favorite_meal}}. Family status: {{is_family}}');
+-%>
+```
+
+
 ### Define a form
 
 ## Manually installing the plugin
