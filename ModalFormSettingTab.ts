@@ -28,6 +28,7 @@ export class ModalFormSettingTab extends PluginSettingTab {
 							settings.formDefinitions.splice(index, 1);
 						}
 						await this.plugin.saveSettings();
+						this.display()
 					})
 				);
 		});

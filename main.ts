@@ -1,9 +1,10 @@
-import { FormDefinition, FormModal } from "src/FormModal";
-import { MarkdownView, Notice, Plugin } from "obsidian";
+import { FormDefinition } from "src/FormModal";
+import { Notice, Plugin } from "obsidian";
 import FormResult from "src/FormResult";
 import { exampleModalDefinition } from "src/exampleModalDefinition";
 import { ModalFormSettingTab } from "ModalFormSettingTab";
 import { API } from "src/API";
+import { EDIT_FORM_VIEW, EditFormView } from "src/EditFormView";
 
 // Remember to rename these classes and interfaces!
 
@@ -32,6 +33,7 @@ export default class ModalFormPlugin extends Plugin {
 			this.settings.formDefinitions.push(exampleModalDefinition);
 		}
 		this.api = new API(this.app, this);
+		this.registerView(EDIT_FORM_VIEW, (leaf) => new EditFormView(leaf, this));
 
 		// This creates an icon in the left ribbon.
 		const ribbonIconEl = this.addRibbonIcon(
@@ -44,40 +46,13 @@ export default class ModalFormPlugin extends Plugin {
 		// Perform additional things with the ribbon
 		ribbonIconEl.addClass("my-plugin-ribbon-class");
 
-		// This adds a simple command that can be triggered anywhere
 		this.addCommand({
-			id: "open-sample-modal-simple",
-			name: "Open sample modal (simple)",
-			callback: () => {
-				new FormModal(
-					this.app,
-					exampleModalDefinition,
-					console.info
-				).open();
-			},
-		});
-		// This adds a complex command that can check whether the current state of the app allows execution of the command
-		this.addCommand({
-			id: "open-sample-modal-complex",
-			name: "Open sample modal (complex)",
-			checkCallback: (checking: boolean) => {
-				// Conditions to check
-				const markdownView =
-					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					// If checking is true, we're simply "checking" if the command can be run.
-					// If checking is false, then we want to actually perform the operation.
-					if (!checking) {
-						new FormModal(
-							this.app,
-							exampleModalDefinition,
-							console.log
-						).open();
-					}
+			id: "modal-form-new-form",
+			name: "New form",
+			callback: async () => {
+				const leaf = await this.activateView();
+				leaf.setViewState({ type: 'new-form', state: { title: '', name: '', fields: [] } })
 
-					// This command will only show up in Command Palette when the check function returns true
-					return true;
-				}
 			},
 		});
 
@@ -85,7 +60,32 @@ export default class ModalFormPlugin extends Plugin {
 		this.addSettingTab(new ModalFormSettingTab(this.app, this));
 	}
 
+	async editForm(formName: string) {
+		const formDefinition = this.settings?.formDefinitions.find(form => form.name === formName);
+		if (!formDefinition) {
+			throw new Error(`Form ${formName} not found`)
+		}
+		const leaf = await this.activateView();
+		leaf.setViewState({ type: 'edit-form', state: formDefinition });
+
+	}
+
 	onunload() { }
+
+	async activateView() {
+		this.app.workspace.detachLeavesOfType(EDIT_FORM_VIEW);
+
+		await this.app.workspace.getRightLeaf(false).setViewState({
+			type: EDIT_FORM_VIEW,
+			active: true,
+		});
+
+		const leave = this.app.workspace.getLeavesOfType(EDIT_FORM_VIEW)[0]
+		this.app.workspace.revealLeaf(
+			leave
+		);
+		return leave;
+	}
 
 	async getSettings(): Promise<ModalFormSettings> {
 		return Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
