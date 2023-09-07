@@ -1,7 +1,8 @@
 import { FormDefinition } from "src/FormModal";
 
 export const exampleModalDefinition: FormDefinition = {
-	title: "Example Modal",
+	title: "Example form",
+	name: "example-form",
 	fields: [
 		{
 			name: "Name",

@@ -3,6 +3,7 @@ import { MarkdownView, Notice, Plugin } from "obsidian";
 import FormResult from "src/FormResult";
 import { exampleModalDefinition } from "src/exampleModalDefinition";
 import { ModalFormSettingTab } from "ModalFormSettingTab";
+import { API } from "src/API";
 
 // Remember to rename these classes and interfaces!
 
@@ -17,6 +18,7 @@ const DEFAULT_SETTINGS: ModalFormSettings = {
 // Define functions and properties you want to make available to other plugins, or templater temmplates, etc
 interface PublicAPI {
 	exampleForm(): Promise<FormResult>;
+	openForm(name: string): Promise<FormResult>;
 }
 // This is the plugin entrypoint
 export default class ModalFormPlugin extends Plugin {
@@ -26,17 +28,10 @@ export default class ModalFormPlugin extends Plugin {
 
 	async onload() {
 		this.settings = await this.getSettings();
-		this.api = {
-			exampleForm: async () => {
-				return new Promise((resolve) => {
-					new FormModal(
-						this.app,
-						exampleModalDefinition,
-						resolve
-					).open();
-				});
-			},
-		};
+		if (this.settings.formDefinitions.length === 0) {
+			this.settings.formDefinitions.push(exampleModalDefinition);
+		}
+		this.api = new API(this.app, this);
 
 		// This creates an icon in the left ribbon.
 		const ribbonIconEl = this.addRibbonIcon(
@@ -90,7 +85,7 @@ export default class ModalFormPlugin extends Plugin {
 		this.addSettingTab(new ModalFormSettingTab(this.app, this));
 	}
 
-	onunload() {}
+	onunload() { }
 
 	async getSettings(): Promise<ModalFormSettings> {
 		return Object.assign({}, DEFAULT_SETTINGS, await this.loadData());

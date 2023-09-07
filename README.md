@@ -36,7 +36,7 @@ For that reason, rather than offering an alternative, this plugin is designed as
 
 ## Scope of this plugin
 
-This plugin is intentionally narrow in scope. As it's emntioned in the previous section, it is designed as a building block, so you can integrate it with other plugins and workflows.
+This plugin is intentionally narrow in scope. As it's mentioned in the previous section, it is designed as a building block, so you can integrate it with other plugins and workflows.
 The only features that I will consider adding will be ones about improving the form itself.
 
 ## Usage
@@ -51,11 +51,11 @@ The plugin exposes an API that can be accessed from any JavaScript code that has
 const modalForm = app.plugins.plugins.obsidianModalForm.api;
 ````
 
-From here you can call any of the mmain method of the API, `openForm` which allows you to open a form by name and get back the data. Let's see an example:
+From here you can call any of the main method of the API, `openForm` which allows you to open a form by name and get back the data. Let's see an example:
 
 ```javascript
 const modalForm = app.plugins.plugins.obsidianModalForm.api;
-const result = await formApi.openForm('exampleForm');
+const result = await modalForm.openForm('example-form');
 ```
 
 The result is a special type of object that contains the data of the form. 
@@ -69,7 +69,7 @@ One of them is `asFrontmatterString`, which returns the data as a string that ca
 ---
 <%* 
 const modalForm = app.plugins.plugins.obsidianModalForm.api;
-const result = await formApi.openForm('exampleForm');
+const result = await modalForm.openForm('example-form');
 tR += result.asFrontmatterString();
 -%>
 ---
@@ -83,7 +83,7 @@ In order to open a form from QuickAdd capture, you need to create a capture and 
 ```javascript
 	```js quickadd
 	const modalForm = app.plugins.plugins.obsidianModalForm.api;
-	const result = await modalForm.openForm('exampleForm');
+	const result = await modalForm.openForm('example-form');
 	return result.asDataviewProperties();
 	``` 
 ````

@@ -32,6 +32,7 @@ type inputType =
  */
 export type FormDefinition = {
 	title: string;
+	name: string;
 	fields: {
 		name: string;
 		label?: string;
