@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.0](https://github.com/danielo515/obsidian-modal-form/compare/v1.0.0...v1.1.0) (2023-09-07)
+
+
+### Features
+
+* asString using template ([5041673](https://github.com/danielo515/obsidian-modal-form/commit/504167364200554593722341d09ffd7ad97db552))
+* real API v1 ([1a8da2f](https://github.com/danielo515/obsidian-modal-form/commit/1a8da2f2aded99e80347609304a91a6d35a1ed11))
+* slider ([bb9c0b5](https://github.com/danielo515/obsidian-modal-form/commit/bb9c0b58d5d0afa54c92294b741dd06040aa4c09))
+
 ## 1.0.0 (2023-09-06)
 
 
