@@ -60,6 +60,7 @@ export class EditFormView extends ItemView {
 			target: this.contentEl,
 			props: {
 				fields: this.formState.fields,
+				app: this.app,
 				onChange: () => {
 					console.log(this.formState)
 					this.app.workspace.requestSaveLayout()

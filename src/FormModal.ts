@@ -11,16 +11,20 @@ export type FieldType =
 	| "datetime"
 	| "toggle";
 
+type selectFromNotes = { type: "select"; source: "notes", folder: string };
 type inputType =
 	| { type: FieldType }
 	| { type: "note"; folder: string }
 	| { type: "slider"; min: number, max: number }
-	| { type: "select"; source: "notes", folder: string }
+	| selectFromNotes
 	| {
 		type: "select";
 		source: "fixed";
 		options: { value: string; label: string }[];
 	};
+export function isSelectFromNotes(input: inputType): input is selectFromNotes {
+	return input.type === "select" && input.source === "notes";
+}
 
 export type AllFieldTypes = FieldType | "note" | "slider" | "select";
 /**

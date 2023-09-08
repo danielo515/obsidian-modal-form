@@ -1,12 +1,31 @@
 <script lang="ts">
 	import type { FormDefinition } from "src/FormModal";
+	import { FolderSuggest } from "src/suggestFolder";
+	import { isSelectFromNotes } from "src/FormModal";
 	import { FieldTypeReadable } from "src/EditFormView";
-	import { setIcon } from "obsidian";
+	import { setIcon, Setting, App } from "obsidian";
 	import FormRow from "./components/FormRow.svelte";
 
 	export let definition: FormDefinition = { title: "", name: "", fields: [] };
+	export let app: App;
 	export let onChange: () => void;
-	[];
+
+	function folderField(element: HTMLElement, index: number) {
+		const field = definition.fields[index];
+		const inputType = field.input;
+		if (!isSelectFromNotes(inputType)) return;
+
+		new Setting(element).addSearch((search) => {
+			search.setPlaceholder("Select a folder");
+			search.setValue(inputType.folder);
+			new FolderSuggest(search.inputEl, app);
+			search.onChange((value) => {
+				inputType.folder = value;
+				onChange();
+			});
+		});
+	}
+
 	const handleSubmit = () => {
 		console.log(definition);
 	};
@@ -157,7 +176,7 @@
 									>
 								</FormRow>
 								<div class="flex column gap1">
-									{#each field.input.options as option, idx}
+									{#each field.input.options || [] as option, idx}
 										{@const option_id = `${options_id}_${idx}`}
 										<label for={option_id}>Option</label>
 										<div class="flex row gap1">
@@ -186,6 +205,13 @@
 											/>
 										</div>
 									{/each}
+								</div>
+							{:else if field.input.source === "notes"}
+								<div
+									class="flex column gap1"
+									use:folderField={index}
+								>
+									<label for={source_id}>Notes</label>
 								</div>
 							{/if}
 						{:else if field.input.type === "slider"}
