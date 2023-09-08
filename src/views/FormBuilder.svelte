@@ -43,7 +43,7 @@
 						definition.fields = [
 							...definition.fields,
 							{
-								name: "text",
+								name: "",
 								label: "",
 								description: "",
 								input: { type: "text" },
@@ -64,7 +64,16 @@
 					{@const delete_id = `delete_${index}`}
 					<div class="flex column md-row gap2">
 						<div class="flex column gap1">
-							<label for={`label_${index}`}>Name</label>
+							<label for={`name_${index}`}>Name</label>
+							<input
+								type="text"
+								placeholder="Name"
+								bind:value={field.name}
+								id={`name_${index}`}
+							/>
+						</div>
+						<div class="flex column gap1">
+							<label for={`label_${index}`}>Label</label>
 							<input
 								type="text"
 								placeholder="Label"
@@ -72,15 +81,7 @@
 								id={`label_${index}`}
 							/>
 						</div>
-						<div class="flex column gap1">
-							<label for={desc_id}>Description</label>
-							<input
-								type="text"
-								placeholder="Description"
-								bind:value={field.description}
-								id={desc_id}
-							/>
-						</div>
+
 						<div class="flex column gap1">
 							<label
 								for={delete_id}
@@ -104,6 +105,15 @@
 					</div>
 
 					<div class="flex column md-row gap2">
+						<div class="flex column gap1">
+							<label for={desc_id}>Description</label>
+							<input
+								type="text"
+								placeholder="Description"
+								bind:value={field.description}
+								id={desc_id}
+							/>
+						</div>
 						<div class="flex column gap1">
 							<label for={`type_${index}`}>Type</label>
 							<select
@@ -144,7 +154,7 @@
 							<div class="flex column gap1">
 								<label for={max_id}>Max</label>
 								<input
-									aype="number"
+									type="number"
 									bind:value={field.input.max}
 									placeholder="10"
 									id={max_id}
