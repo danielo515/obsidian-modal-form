@@ -1,7 +1,6 @@
 import ModalFormPlugin from "main";
-import { ItemView, Setting, type ViewStateResult, WorkspaceLeaf } from "obsidian";
-import type { FormDefinition, AllFieldTypes } from "./FormModal";
-import FormEditor from './views/FormBuilder.svelte'
+import { ItemView, Setting, WorkspaceLeaf } from "obsidian";
+import type { FormDefinition } from "../FormModal";
 
 export const MANAGE_FORMS_VIEW = "modal-form-manage-forms-view";
 
@@ -10,7 +9,7 @@ export const MANAGE_FORMS_VIEW = "modal-form-manage-forms-view";
  * Manage existing forms and create new ones
  */
 export class ManageFormsView extends ItemView {
-	forms: FormDefinition[];
+	forms!: FormDefinition[];
 	constructor(readonly leaf: WorkspaceLeaf, readonly plugin: ModalFormPlugin) {
 		super(leaf);
 	}
@@ -54,9 +53,9 @@ export class ManageFormsView extends ItemView {
 				.addButton((button) =>
 					button.setButtonText("Delete").onClick(async () => {
 						const index =
-					this.forms.indexOf(form);
+							this.forms.indexOf(form);
 						if (index > -1) {
-							settings.formDefinitions.splice(index, 1);
+							this.forms.splice(index, 1);
 						}
 						await this.plugin.saveSettings();
 						this.renderForms(root)
