@@ -2,6 +2,7 @@
 	import type { FormDefinition } from "src/FormModal";
 	import { FieldTypeReadable } from "src/EditFormView";
 	import { setIcon } from "obsidian";
+	import FormRow from "./components/FormRow.svelte";
 
 	export let definition: FormDefinition = { title: "", name: "", fields: [] };
 	export let onChange: () => void;
@@ -139,6 +140,54 @@
 									<option value="notes">Notes</option>
 								</select>
 							</div>
+							{#if field.input.source === "fixed"}
+								{@const options_id = `options_btn_${index}`}
+								<FormRow label="Options" id={options_id}>
+									<button
+										type="button"
+										on:click={() => {
+											field.input.options =
+												field.input.options || [];
+											field.input.options = [
+												...field.input.options,
+												{ label: "", value: "" },
+											];
+											onChange();
+										}}>Add more options</button
+									>
+								</FormRow>
+								<div class="flex column gap1">
+									{#each field.input.options as option, idx}
+										{@const option_id = `${options_id}_${idx}`}
+										<label for={option_id}>Option</label>
+										<div class="flex row gap1">
+											<input
+												type="text"
+												placeholder="Label"
+												bind:value={option.label}
+												id={option_id}
+											/>
+											<input
+												type="text"
+												placeholder="Value"
+												bind:value={option.value}
+												id={option_id}
+											/>
+											<button
+												use:setIcon={"trash"}
+												type="button"
+												on:click={() => {
+													field.input.options =
+														field.input.options.filter(
+															(_, i) => i !== idx
+														);
+													onChange();
+												}}
+											/>
+										</div>
+									{/each}
+								</div>
+							{/if}
 						{:else if field.input.type === "slider"}
 							{@const min_id = `min_${index}`}
 							{@const max_id = `max_${index}`}
