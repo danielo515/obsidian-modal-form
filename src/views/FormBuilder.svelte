@@ -58,7 +58,7 @@
 			<fieldset class="flex column gap2">
 				{#each definition.fields as field, index}
 					{@const desc_id = `desc_${index}`}
-					<div class="flex row gap2">
+					<div class="flex column md-row gap2">
 						<div class="flex column gap1">
 							<label for={`label_${index}`}>Name</label>
 							<input
@@ -79,7 +79,7 @@
 						</div>
 
 						<div class="flex column gap1">
-							<label for={`type_${index}`}>Name</label>
+							<label for={`type_${index}`}>Type</label>
 							<select
 								bind:value={field.input.type}
 								id={`type_${index}`}
@@ -102,6 +102,27 @@
 									<option value="fixed">Static</option>
 									<option value="notes">Notes</option>
 								</select>
+							</div>
+						{:else if field.input.type === "slider"}
+							{@const min_id = `min_${index}`}
+							{@const max_id = `max_${index}`}
+							<div class="flex column gap1">
+								<label for={min_id}>Min</label>
+								<input
+									type="number"
+									bind:value={field.input.min}
+									placeholder="0"
+									id={min_id}
+								/>
+							</div>
+							<div class="flex column gap1">
+								<label for={max_id}>Max</label>
+								<input
+									type="number"
+									bind:value={field.input.max}
+									placeholder="10"
+									id={max_id}
+								/>
 							</div>
 						{/if}
 					</div>
@@ -133,5 +154,10 @@
 	}
 	.hint {
 		color: var(--color-base-70);
+	}
+	@media (min-width: 58rem) {
+		.md-row {
+			flex-direction: row;
+		}
 	}
 </style>
