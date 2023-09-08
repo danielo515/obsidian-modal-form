@@ -5,8 +5,12 @@ import { exampleModalDefinition } from "src/exampleModalDefinition";
 import { ModalFormSettingTab } from "ModalFormSettingTab";
 import { API } from "src/API";
 import { EDIT_FORM_VIEW, EditFormView } from "src/EditFormView";
+import { MANAGE_FORMS_VIEW, ManageFormsView } from "src/views/ManageFormsView";
+import { ModalFormError } from "src/utils/Error";
 
 // Remember to rename these classes and interfaces!
+
+type ViewType = typeof EDIT_FORM_VIEW | typeof MANAGE_FORMS_VIEW;
 
 interface ModalFormSettings {
   formDefinitions: FormDefinition[];
@@ -27,6 +31,24 @@ export default class ModalFormPlugin extends Plugin {
   // This things will be setup in the onload function rather than constructor
   public api!: PublicAPI;
 
+  manageForms() {
+    this.activateView(MANAGE_FORMS_VIEW);
+  }
+
+  createNewForm() {
+    this.activateView(EDIT_FORM_VIEW);
+  }
+
+  async editForm(formName: string) {
+    const formDefinition = this.settings?.formDefinitions.find(form => form.name === formName);
+    if (!formDefinition) {
+      throw new ModalFormError(`Form ${formName} not found`)
+    }
+    const leaf = await this.activateView(EDIT_FORM_VIEW);
+    leaf.setViewState({ type: EDIT_FORM_VIEW, state: formDefinition });
+
+  }
+
   async onload() {
     this.settings = await this.getSettings();
     if (this.settings.formDefinitions.length === 0) {
@@ -34,6 +56,7 @@ export default class ModalFormPlugin extends Plugin {
     }
     this.api = new API(this.app, this);
     this.registerView(EDIT_FORM_VIEW, (leaf) => new EditFormView(leaf, this));
+    this.registerView(MANAGE_FORMS_VIEW, (leaf) => new ManageFormsView(leaf, this));
 
     // This creates an icon in the left ribbon.
     const ribbonIconEl = this.addRibbonIcon(
@@ -49,9 +72,15 @@ export default class ModalFormPlugin extends Plugin {
     this.addCommand({
       id: "modal-form-new-form",
       name: "New form",
-      callback: async () => {
-        const leaf = await this.activateView();
-        // leaf.setViewState({ type: 'new-form', state: { title: '', name: '', fields: [] } })
+      callback: () => {
+        this.createNewForm();
+      },
+    });
+    this.addCommand({
+      id: "modal-form-manage-forms",
+      name: "Manage forms",
+      callback: () => {
+        this.manageForms();
       },
     });
 
@@ -59,34 +88,25 @@ export default class ModalFormPlugin extends Plugin {
     this.addSettingTab(new ModalFormSettingTab(this.app, this));
   }
 
-  async editForm(formName: string) {
-    const formDefinition = this.settings?.formDefinitions.find(form => form.name === formName);
-    if (!formDefinition) {
-      throw new Error(`Form ${formName} not found`)
-    }
-    const leaf = await this.activateView();
-    leaf.setViewState({ type: 'edit-form', state: formDefinition });
-
-  }
 
   onunload() { }
 
-  async activateView() {
-    this.app.workspace.detachLeavesOfType(EDIT_FORM_VIEW);
+  async activateView(viewType: ViewType) {
+    this.app.workspace.detachLeavesOfType(viewType);
 
     if (Platform.isMobile) {
       await this.app.workspace.getLeaf(false).setViewState({
-        type: EDIT_FORM_VIEW,
+        type: viewType,
         active: true,
       });
     } else {
       await this.app.workspace.getRightLeaf(false).setViewState({
-        type: EDIT_FORM_VIEW,
+        type: viewType,
         active: true,
       });
     }
 
-    const leave = this.app.workspace.getLeavesOfType(EDIT_FORM_VIEW)[0]
+    const leave = this.app.workspace.getLeavesOfType(viewType)[0]
     this.app.workspace.revealLeaf(
       leave
     );
