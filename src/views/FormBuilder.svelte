@@ -1,8 +1,10 @@
 <script lang="ts">
 	import type { FormDefinition } from "src/FormModal";
 	import { FieldTypeReadable } from "src/EditFormView";
+	import { setIcon } from "obsidian";
 
 	export let definition: FormDefinition = { title: "", name: "", fields: [] };
+	export let onChange: () => void;
 	[];
 	const handleSubmit = () => {
 		console.log(definition);
@@ -47,6 +49,7 @@
 								input: { type: "text" },
 							},
 						];
+						onChange();
 					}}>Add more fields</button
 				>
 				<button type="submit">Save</button>
@@ -55,9 +58,10 @@
 
 		<h3>Fields</h3>
 		{#if definition.fields.length > 0}
-			<fieldset class="flex column gap2">
+			<fieldset class="flex column gap2 p-2">
 				{#each definition.fields as field, index}
 					{@const desc_id = `desc_${index}`}
+					{@const delete_id = `delete_${index}`}
 					<div class="flex column md-row gap2">
 						<div class="flex column gap1">
 							<label for={`label_${index}`}>Name</label>
@@ -77,7 +81,29 @@
 								id={desc_id}
 							/>
 						</div>
+						<div class="flex column gap1">
+							<label
+								for={delete_id}
+								style:visibility={"hidden"}
+								style:overflow={"hidden"}
+								style:white-space={"nowrap"}
+								>delete {index}</label
+							>
+							<button
+								use:setIcon={"trash"}
+								type="button"
+								id={delete_id}
+								on:click={() => {
+									definition.fields =
+										definition.fields.filter(
+											(_, i) => i !== index
+										);
+								}}
+							/>
+						</div>
+					</div>
 
+					<div class="flex column md-row gap2">
 						<div class="flex column gap1">
 							<label for={`type_${index}`}>Type</label>
 							<select
@@ -118,7 +144,7 @@
 							<div class="flex column gap1">
 								<label for={max_id}>Max</label>
 								<input
-									type="number"
+									aype="number"
 									bind:value={field.input.max}
 									placeholder="10"
 									id={max_id}
@@ -151,6 +177,9 @@
 	fieldset {
 		border: none;
 		padding: 0;
+	}
+	.p-2 {
+		padding: 0.5rem;
 	}
 	.hint {
 		color: var(--color-base-70);
