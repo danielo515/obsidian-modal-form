@@ -1,7 +1,9 @@
 <script lang="ts">
-	import type { FormDefinition } from "src/FormModal";
+	import {
+		type FormDefinition,
+		isSelectFromNotes,
+	} from "src/core/formDefinition";
 	import { FolderSuggest } from "src/suggestFolder";
-	import { isSelectFromNotes } from "src/FormModal";
 	import { FieldTypeReadable } from "src/EditFormView";
 	import { setIcon, Setting, App } from "obsidian";
 	import FormRow from "./components/FormRow.svelte";

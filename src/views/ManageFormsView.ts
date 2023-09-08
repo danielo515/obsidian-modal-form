@@ -1,6 +1,6 @@
 import ModalFormPlugin from "main";
 import { ItemView, Setting, WorkspaceLeaf } from "obsidian";
-import type { FormDefinition } from "../FormModal";
+import { type FormDefinition } from "../core/formDefinition";
 
 export const MANAGE_FORMS_VIEW = "modal-form-manage-forms-view";
 
