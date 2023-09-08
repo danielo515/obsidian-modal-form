@@ -6,3 +6,15 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+
+/* Utilities to remove styles from native obsidian elements when wrapped like this
+<div class='utility'>
+	<div>...</div>
+</div>
+*/
+.remove-border div:first-of-type {
+	border: none;
+}
+.remove-padding div:first-of-type {
+	padding: 0;
+}
