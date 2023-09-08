@@ -21,6 +21,19 @@ export type EditFormViewState = {
 	state?: FormDefinition
 }
 
+function parseState(maybeState: unknown): maybeState is FormDefinition {
+	if (maybeState === null) {
+		return false
+	}
+	if (typeof maybeState !== 'object') {
+		return false
+	}
+	if ('title' in maybeState && 'name' in maybeState && 'fields' in maybeState) {
+		return true
+	}
+	return false;
+}
+
 /**
  * Edits the form definition.
  * To create a new form, you just edit an empty form definition.
@@ -55,52 +68,20 @@ export class EditFormView extends ItemView {
 		});
 	}
 
-	renderFields(root: HTMLElement) {
-		root.empty();
-		root.createEl("h4", { text: "Fields" });
-		const rows = root.createDiv();
-		rows.setCssStyles({ display: 'flex', flexDirection: 'column', gap: '10px' });
-		this.formState.fields.forEach(field => {
-			const row = rows.createDiv()
-			row.setCssStyles({ display: 'flex', flexDirection: 'row', gap: '8px' })
-			new Setting(row)
-				.addText(text => {
-					text.setPlaceholder('Field name').setValue(field.name).onChange(value => {
-						field.name = value;
-						this.app.workspace.requestSaveLayout();
-					})
-				})
-				.addText(element => {
-					element.setPlaceholder('Field description').setValue(field.description).onChange(value => {
-						field.description = value;
-						this.app.workspace.requestSaveLayout();
-					})
-				})
-				.addDropdown(element => {
-					element.addOptions(FieldTypeReadable)
-					element.setValue(field.input.type)
-					element.onChange((value) => {
-						field.input.type = value as AllFieldTypes;
-						this.app.workspace.requestSaveLayout();
-					})
-				})
-		})
-	}
-
 	async onClose() {
 		this.formEditor.$destroy();
 	}
 
-	async setState(state: { type: string, state?: FormDefinition }, result: ViewStateResult): Promise<void> {
-		if (state && state.state) {
-			this.formState = state.state;
-			this.editType = state.type as 'new-form' | 'edit-form';
-			this.formEditor.$set({ fields: this.formState.fields })
+	async setState(state: unknown, result: ViewStateResult): Promise<void> {
+		console.log('setState of edit form called', { state, result })
+		if (parseState(state)) {
+			this.formState = state;
+			this.formEditor.$set({ definition: this.formState })
 		}
 		return super.setState(state, result);
 	}
-	getState(): { type: string, state?: FormDefinition } {
-		return { type: this.editType, state: this.formState };
+	getState() {
+		return this.formState;
 	}
 }
 
