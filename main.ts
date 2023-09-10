@@ -49,6 +49,17 @@ export default class ModalFormPlugin extends Plugin {
 
 	}
 
+	async saveForm(formDefinition: FormDefinition) {
+		const index = this.settings?.formDefinitions.findIndex(form => form.name === formDefinition.name);
+		if (index === undefined || index === -1) {
+			this.settings?.formDefinitions.push(formDefinition);
+		} else {
+			this.settings?.formDefinitions.splice(index, 1, formDefinition);
+		}
+		console.log(this.settings, index)
+		await this.saveSettings();
+	}
+
 	async onload() {
 		this.settings = await this.getSettings();
 		if (this.settings.formDefinitions.length === 0) {
@@ -86,6 +97,10 @@ export default class ModalFormPlugin extends Plugin {
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new ModalFormSettingTab(this.app, this));
+	}
+
+	closeEditForm() {
+		this.app.workspace.detachLeavesOfType(EDIT_FORM_VIEW);
 	}
 
 

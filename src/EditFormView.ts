@@ -64,7 +64,8 @@ export class EditFormView extends ItemView {
 				onChange: () => {
 					console.log(this.formState)
 					this.app.workspace.requestSaveLayout()
-				}
+				},
+				onSubmit: (formDefinition: FormDefinition) => { console.log({ formDefinition }); this.plugin.saveForm(formDefinition); this.plugin.closeEditForm() },
 			}
 		});
 	}

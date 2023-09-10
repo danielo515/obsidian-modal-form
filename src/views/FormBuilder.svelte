@@ -3,6 +3,8 @@
 		isSelectFromNotes,
 		type EditableInput,
 		type EditableFormDefinition,
+		type FormDefinition,
+		isValidFormDefinition,
 	} from "src/core/formDefinition";
 	import { FolderSuggest } from "src/suggestFolder";
 	import { FieldTypeReadable } from "src/EditFormView";
@@ -16,6 +18,9 @@
 	};
 	export let app: App;
 	export let onChange: () => void;
+	export let onSubmit: (formDefinition: FormDefinition) => void;
+
+	$: isValid = isValidFormDefinition(definition);
 
 	function folderField(element: HTMLElement, index: number) {
 		const field = definition.fields[index];
@@ -34,7 +39,8 @@
 	}
 
 	const handleSubmit = () => {
-		console.log(definition);
+		if (!isValidFormDefinition(definition)) return;
+		onSubmit(definition);
 	};
 </script>
 
@@ -79,7 +85,7 @@
 						onChange();
 					}}>Add more fields</button
 				>
-				<button type="submit">Save</button>
+				<button type="submit" disabled={!isValid}>Save</button>
 			</div>
 		</fieldset>
 
