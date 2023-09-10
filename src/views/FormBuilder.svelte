@@ -5,6 +5,7 @@
 		type EditableFormDefinition,
 		type FormDefinition,
 		isValidFormDefinition,
+		isInputNoteFromFolder,
 	} from "src/core/formDefinition";
 	import { FolderSuggest } from "src/suggestFolder";
 	import { FieldTypeReadable } from "src/EditFormView";
@@ -25,11 +26,13 @@
 	function folderField(element: HTMLElement, index: number) {
 		const field = definition.fields[index];
 		const inputType = field.input;
-		if (!isSelectFromNotes(inputType)) return;
+		if (inputType.folder == null) {
+			inputType.folder = "";
+		}
 
 		new Setting(element).addSearch((search) => {
 			search.setPlaceholder("Select a folder");
-			search.setValue(inputType.folder);
+			search.setValue(inputType.folder || "");
 			new FolderSuggest(search.inputEl, app);
 			search.onChange((value) => {
 				inputType.folder = value;
@@ -45,7 +48,6 @@
 </script>
 
 <div class="flex column gap2">
-	{isValid}
 	<form on:submit|preventDefault={handleSubmit}>
 		<fieldset class="flex column gap2">
 			<label for="name">Form unique name</label>
@@ -223,7 +225,7 @@
 							{:else if field.input.source === "notes"}
 								<!-- The autocomplete input will be inside the first div, so we remove some styles with the utility classes -->
 								<div
-									class="flex column gap1 remove-padding remove-border"
+									class="flex column gap1 remove-padding remove-border fix-suggest"
 									use:folderField={index}
 								>
 									<label for={source_id}>Source Folder</label>
@@ -249,6 +251,14 @@
 									placeholder="10"
 									id={max_id}
 								/>
+							</div>
+						{:else if field.input.type === "note"}
+							<!-- The autocomplete input will be inside the first div, so we remove some styles with the utility classes -->
+							<div
+								class="flex column gap1 remove-padding remove-border fix-suggest"
+								use:folderField={index}
+							>
+								<label>Source Folder</label>
 							</div>
 						{/if}
 					</div>

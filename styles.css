@@ -18,3 +18,7 @@ If your plugin does not need CSS, delete this file.
 .remove-padding div:first-of-type {
 	padding: 0;
 }
+
+.fix-suggest .setting-item-info {
+	display: none;
+}
