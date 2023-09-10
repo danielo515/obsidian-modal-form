@@ -88,7 +88,8 @@
 						onChange();
 					}}>Add more fields</button
 				>
-				<button type="submit" disabled={!isValid}>Save</button>
+				<button type="submit" disabled={!isValid}>Save and close</button
+				>
 			</div>
 		</fieldset>
 
@@ -190,38 +191,55 @@
 											onChange();
 										}}>Add more options</button
 									>
-								</FormRow>
-								<div class="flex column gap1">
 									{#each field.input.options || [] as option, idx}
-										{@const option_id = `${options_id}_${idx}`}
-										<label for={option_id}>Option</label>
+										{@const value_id = `${options_id}_option_${idx}`}
+										{@const label_id = `${options_id}_label_${idx}`}
 										<div class="flex row gap1">
-											<input
-												type="text"
-												placeholder="Label"
-												bind:value={option.label}
-												id={option_id}
-											/>
-											<input
-												type="text"
-												placeholder="Value"
-												bind:value={option.value}
-												id={option_id}
-											/>
-											<button
-												use:setIcon={"trash"}
-												type="button"
-												on:click={() => {
-													field.input.options =
-														field.input.options?.filter(
-															(_, i) => i !== idx
-														);
-													onChange();
-												}}
-											/>
+											<FormRow
+												label="Label"
+												id={label_id}
+											>
+												<input
+													type="text"
+													placeholder="Label"
+													bind:value={option.label}
+													id={label_id}
+												/></FormRow
+											>
+											<FormRow
+												label="Value"
+												id={value_id}
+											>
+												<input
+													type="text"
+													placeholder="Value"
+													bind:value={option.value}
+													id={value_id}
+												/></FormRow
+											>
+
+											<FormRow
+												label="Delete"
+												id={"button" + value_id}
+												hideLabel={true}
+											>
+												<button
+													id={"button" + value_id}
+													use:setIcon={"trash"}
+													type="button"
+													on:click={() => {
+														field.input.options =
+															field.input.options?.filter(
+																(_, i) =>
+																	i !== idx
+															);
+														onChange();
+													}}
+												/></FormRow
+											>
 										</div>
 									{/each}
-								</div>
+								</FormRow>
 							{:else if field.input.source === "notes"}
 								<!-- The autocomplete input will be inside the first div, so we remove some styles with the utility classes -->
 								<div
