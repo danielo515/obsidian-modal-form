@@ -5,64 +5,70 @@
  */
 
 export type FieldType =
-	| "text"
-	| "number"
-	| "date"
-	| "time"
-	| "datetime"
-	| "toggle";
+    | "text"
+    | "number"
+    | "date"
+    | "time"
+    | "datetime"
+    | "toggle";
 
 type selectFromNotes = { type: "select"; source: "notes", folder: string };
 type inputSlider = { type: "slider"; min: number, max: number };
 type inputNoteFromFolder = { type: "note"; folder: string };
 type inputSelectFixed = {
-	type: "select";
-	source: "fixed";
-	options: { value: string; label: string }[];
+    type: "select";
+    source: "fixed";
+    options: { value: string; label: string }[];
 }
 type inputType =
-	| { type: FieldType }
-	| inputNoteFromFolder
-	| inputSlider
-	| selectFromNotes
-	| inputSelectFixed;
+    | { type: FieldType }
+    | inputNoteFromFolder
+    | inputSlider
+    | selectFromNotes
+    | inputSelectFixed;
 
 
 function isObject(input: unknown): input is Record<string, unknown> {
-	return typeof input === "object" && input !== null;
+    return typeof input === "object" && input !== null;
 }
 export function isInputSlider(input: unknown): input is inputSlider {
-	if (!isObject(input)) {
-		return false;
-	}
-	if ('min' in input && 'max' in input && typeof input.min === 'number' && typeof input.max === 'number' && input.type === 'slider') {
-		return true;
-	}
-	return false
+    if (!isObject(input)) {
+        return false;
+    }
+    if ('min' in input && 'max' in input && typeof input.min === 'number' && typeof input.max === 'number' && input.type === 'slider') {
+        return true;
+    }
+    return false
 }
 export function isSelectFromNotes(input: unknown): input is selectFromNotes {
-	if (!isObject(input)) {
-		return false;
-	}
-	return input.type === "select" && input.source === "notes" && typeof input.folder === "string";
+    if (!isObject(input)) {
+        return false;
+    }
+    return input.type === "select" && input.source === "notes" && typeof input.folder === "string";
 }
 
 export function isInputNoteFromFolder(input: unknown): input is inputNoteFromFolder {
-	if (!isObject(input)) {
-		return false;
-	}
-	return input.type === "note" && typeof input.folder === "string";
+    if (!isObject(input)) {
+        return false;
+    }
+    return input.type === "note" && typeof input.folder === "string";
 }
 export function isInputSelectFixed(input: unknown): input is inputSelectFixed {
-	if (!isObject(input)) {
-		return false;
-	}
-	return input.type === "select" && input.source === "fixed" && Array.isArray(input.options) && input.options.every((option: unknown) => {
-		return isObject(option) && typeof option.value === "string" && typeof option.label === "string";
-	})
+    if (!isObject(input)) {
+        return false;
+    }
+    return input.type === "select" && input.source === "fixed" && Array.isArray(input.options) && input.options.every((option: unknown) => {
+        return isObject(option) && typeof option.value === "string" && typeof option.label === "string";
+    })
 }
 
 export type AllFieldTypes = FieldType | "note" | "slider" | "select";
+export type FieldDefinition = {
+    name: string;
+    label?: string;
+    description: string;
+    input: inputType;
+}
 /**
  * FormDefinition is an already valid form, ready to be used in the form modal.
  * @param title - The title of the form which will appear as H1 heading in the form modal.
@@ -74,44 +80,96 @@ export type AllFieldTypes = FieldType | "note" | "slider" | "select";
  * @param type - The type of the field. Can be one of "text", "number", "date", "time", "datetime", "toggle".
  */
 export type FormDefinition = {
-	title: string;
-	name: string;
-	fields: {
-		name: string;
-		label?: string;
-		description: string;
-		input: inputType;
-	}[];
+    title: string;
+    name: string;
+    fields: FieldDefinition[];
 };
 
 // When an input is in edit state, it is represented by this type.
 // It has all the possible values, and then you need to narrow it down
 // to the actual type.
-type EditableInput = {
-	type: FieldType | "select" | "slider" | "note";
-	source?: "notes" | "fixed";
-	folder?: string;
-	min?: number;
-	max?: number;
-	options?: { value: string; label: string }[];
+export type EditableInput = {
+    type: FieldType | "select" | "slider" | "note";
+    source?: "notes" | "fixed";
+    folder?: string;
+    min?: number;
+    max?: number;
+    options?: { value: string; label: string }[];
+};
+
+export type EditableFormDefinition = {
+    title: string;
+    name: string;
+    fields: {
+        name: string;
+        label?: string;
+        description: string;
+        input: EditableInput;
+    }[];
 };
 
 export function isFieldType(input: unknown): input is FieldType {
-	return ["text", "number", "date", "time", "datetime", "toggle"].includes(input as string);
+    return ["text", "number", "date", "time", "datetime", "toggle"].includes(input as string);
 }
 
+export function isInputTypeValid(input: unknown): input is inputType {
+    if (isFieldType(input)) {
+        return true;
+    } else if (isInputNoteFromFolder(input)) {
+        return true;
+    } else if (isInputSlider(input)) {
+        return true;
+    } else if (isSelectFromNotes(input)) {
+        return true;
+    } else if (isInputSelectFixed(input)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 export function decodeInputType(input: EditableInput): inputType | null {
-	if (isInputSlider(input)) {
-		return { type: "slider", min: input.min, max: input.max };
-	} else if (isSelectFromNotes(input)) {
-		return { type: "select", source: "notes", folder: input.folder };
-	} else if (isInputNoteFromFolder(input)) {
-		return { type: "note", folder: input.folder! };
-	} else if (isInputSelectFixed(input)) {
-		return { type: "select", source: "fixed", options: input.options };
-	} else if (isFieldType(input.type)) {
-		return { type: input.type };
-	} else {
-		return null;
-	}
+    if (isInputSlider(input)) {
+        return { type: "slider", min: input.min, max: input.max };
+    } else if (isSelectFromNotes(input)) {
+        return { type: "select", source: "notes", folder: input.folder };
+    } else if (isInputNoteFromFolder(input)) {
+        return { type: "note", folder: input.folder! };
+    } else if (isInputSelectFixed(input)) {
+        return { type: "select", source: "fixed", options: input.options };
+    } else if (isFieldType(input.type)) {
+        return { type: input.type };
+    } else {
+        return null;
+    }
+}
+
+export function isFieldValid(input: unknown): input is FieldDefinition {
+    if (!isObject(input)) {
+        return false;
+    }
+    if (typeof input.name !== "string") {
+        return false;
+    }
+    if (typeof input.description !== "string") {
+        return false;
+    }
+    if (input.label !== undefined && typeof input.label !== "string") {
+        return false;
+    }
+    return isInputTypeValid(input.input);
+}
+
+export function isValidFormDefinition(input: unknown): input is FormDefinition {
+    if (!isObject(input)) {
+        return false;
+    }
+    if (typeof input.title !== "string") {
+        return false;
+    }
+    if (typeof input.name !== "string") {
+        return false;
+    }
+    return true;
 }

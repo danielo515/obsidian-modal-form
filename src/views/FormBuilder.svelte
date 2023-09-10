@@ -1,14 +1,19 @@
 <script lang="ts">
 	import {
-		type FormDefinition,
 		isSelectFromNotes,
+		type EditableInput,
+		type EditableFormDefinition,
 	} from "src/core/formDefinition";
 	import { FolderSuggest } from "src/suggestFolder";
 	import { FieldTypeReadable } from "src/EditFormView";
 	import { setIcon, Setting, App } from "obsidian";
 	import FormRow from "./components/FormRow.svelte";
 
-	export let definition: FormDefinition = { title: "", name: "", fields: [] };
+	export let definition: EditableFormDefinition = {
+		title: "",
+		name: "",
+		fields: [],
+	};
 	export let app: App;
 	export let onChange: () => void;
 
@@ -199,7 +204,7 @@
 												type="button"
 												on:click={() => {
 													field.input.options =
-														field.input.options.filter(
+														field.input.options?.filter(
 															(_, i) => i !== idx
 														);
 													onChange();
