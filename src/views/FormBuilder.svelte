@@ -45,6 +45,7 @@
 </script>
 
 <div class="flex column gap2">
+	{isValid}
 	<form on:submit|preventDefault={handleSubmit}>
 		<fieldset class="flex column gap2">
 			<label for="name">Form unique name</label>
@@ -282,6 +283,10 @@
 	}
 	.hint {
 		color: var(--color-base-70);
+	}
+	button:disabled {
+		opacity: 0.5;
+		cursor: forbidden;
 	}
 	@media (min-width: 58rem) {
 		.md-row {

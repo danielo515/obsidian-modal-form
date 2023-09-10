@@ -20,8 +20,9 @@ type inputSelectFixed = {
 	source: "fixed";
 	options: { value: string; label: string }[];
 }
+type basicInput = { type: FieldType };
 type inputType =
-	| { type: FieldType }
+	| basicInput
 	| inputNoteFromFolder
 	| inputSlider
 	| selectFromNotes
@@ -108,12 +109,15 @@ export type EditableFormDefinition = {
 	}[];
 };
 
-export function isFieldType(input: unknown): input is FieldType {
-	return ["text", "number", "date", "time", "datetime", "toggle"].includes(input as string);
+export function isValidBasicInput(input: unknown): input is basicInput {
+	if (!isObject(input)) {
+		return false;
+	}
+	return ["text", "number", "date", "time", "datetime", "toggle"].includes(input.type as string);
 }
 
 export function isInputTypeValid(input: unknown): input is inputType {
-	if (isFieldType(input)) {
+	if (isValidBasicInput(input)) {
 		return true;
 	} else if (isInputNoteFromFolder(input)) {
 		return true;
@@ -138,7 +142,7 @@ export function decodeInputType(input: EditableInput): inputType | null {
 		return { type: "note", folder: input.folder! };
 	} else if (isInputSelectFixed(input)) {
 		return { type: "select", source: "fixed", options: input.options };
-	} else if (isFieldType(input.type)) {
+	} else if (isValidBasicInput(input)) {
 		return { type: input.type };
 	} else {
 		return null;
@@ -158,6 +162,7 @@ export function isFieldValid(input: unknown): input is FieldDefinition {
 	if (input.label !== undefined && typeof input.label !== "string") {
 		return false;
 	}
+	console.log('basic input fields are valid')
 	return isInputTypeValid(input.input);
 }
 
@@ -171,5 +176,6 @@ export function isValidFormDefinition(input: unknown): input is FormDefinition {
 	if (typeof input.name !== "string") {
 		return false;
 	}
+	console.log('basic is valid');
 	return Array.isArray(input.fields) && input.fields.every(isFieldValid);
 }
