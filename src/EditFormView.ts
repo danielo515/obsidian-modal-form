@@ -59,7 +59,7 @@ export class EditFormView extends ItemView {
 		this.formEditor = new FormEditor({
 			target: this.contentEl,
 			props: {
-				fields: this.formState.fields,
+				definition: this.formState,
 				app: this.app,
 				onChange: () => {
 					console.log(this.formState)
