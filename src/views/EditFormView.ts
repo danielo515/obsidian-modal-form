@@ -1,7 +1,7 @@
 import ModalFormPlugin from "main";
-import { ItemView, Setting, type ViewStateResult, WorkspaceLeaf } from "obsidian";
-import type { FieldType, FormDefinition, AllFieldTypes } from "./core/formDefinition";
-import FormEditor from './views/FormBuilder.svelte'
+import { ItemView, type ViewStateResult, WorkspaceLeaf } from "obsidian";
+import type { FormDefinition, AllFieldTypes } from "../core/formDefinition";
+import FormEditor from './FormBuilder.svelte'
 
 export const EDIT_FORM_VIEW = "modal-form-edit-form-view";
 export const FieldTypeReadable: Record<AllFieldTypes, string> = {
@@ -15,11 +15,6 @@ export const FieldTypeReadable: Record<AllFieldTypes, string> = {
 	"slider": "Slider",
 	"select": "Select"
 } as const;
-
-export type EditFormViewState = {
-	type: 'new-form' | 'edit-form',
-	state?: FormDefinition
-}
 
 function parseState(maybeState: unknown): maybeState is FormDefinition {
 	if (maybeState === null) {
