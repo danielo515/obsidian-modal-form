@@ -1,3 +1,5 @@
+<a href="https://www.buymeacoffee.com/danielo515" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
 # Obsidian Modal Form Plugin
 
 This plugin for [Obsidian](https://obsidian.md) allows to define forms that can be opened from anywhere you can run JavaScript, so you can combine it with other plugins like [Templater](https://github.com/SilentVoid13/Templater) or [QuickAdd](https://github.com/chhoumann/quickadd).
@@ -18,8 +20,11 @@ https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4
 - Many input types 
   - number
   - date
+  - time
+  - slider
+  - toggle (true/false)
   - free text
-  - text with autocompletion for note names
+  - text with autocompletion for note names (from a folder or root)
   - select from a list 
     - list of fixed values 
     - list of notes from a folder
@@ -126,6 +131,57 @@ tR += result.asString('{{Name}} is {{age}} years old and his/her favorite food i
 
 
 ### Define a form
+
+#### Create a new form
+
+Creating a new form is easy, you just need to open the manage forms view, either by clicking in the ribbon icon or by using the command palette (`Obsidian modal form: New form`).
+Once there, click on the `+` button and you will be presented with a form to create a named form definition.
+The form is self-explanatory, but here is some key points you need to keep in mind:
+- The name must be unique, and it will be used to identify the form when you open it from JavaScript, case sensitive
+- The title is what you will see as header in the modal window when you open the form
+- You will not be able to save the form unless all the fields are valid (which means they have a name and a type)
+
+#### Inline forms
+
+The plugin also supports inline forms, which are forms that are defined when you call the openForm method. This is useful when you want to create a form that is only used in one place and it is simple enough. However, note the format is a bit verbose for typing it manually and it is error prone, so unless it is a very small form, you will most likely prefer to use a named form.
+
+Here is an example of how to use it:
+
+```javascript
+const modalForm = app.plugins.plugins.obsidianModalForm.api;
+const result = await modalForm.openForm({
+	title: 'Example form',
+	fields: [
+		{
+			name: 'name',
+			label: 'Name',
+			type: 'text',
+			description: 'Your name',
+		},
+		{
+			name: 'age',
+			label: 'Age',
+			type: 'number',
+			description: 'Your age',
+		},
+		{
+			name: 'favorite_meal',
+			label: 'Favorite meal',
+			type: 'text',
+			description: 'Your favorite meal',
+		},
+		{
+			name: 'is_family',
+			label: 'Is family',
+			type: 'toggle',
+			description: 'Are you family?',
+			required: true,
+		},
+	],
+});
+```
+
+You can make it smaller by removing some of the optional fields like description or label, but I really encourage you to define them all.
 
 ## Manually installing the plugin
 
