@@ -141,6 +141,8 @@ The form is self-explanatory, but here is some key points you need to keep in mi
 - The title is what you will see as header in the modal window when you open the form
 - You will not be able to save the form unless all the fields are valid (which means they have a name and a type)
 
+![form editor/creator](media/editor.png)
+
 #### Inline forms
 
 The plugin also supports inline forms, which are forms that are defined when you call the openForm method. This is useful when you want to create a form that is only used in one place and it is simple enough. However, note the format is a bit verbose for typing it manually and it is error prone, so unless it is a very small form, you will most likely prefer to use a named form.
@@ -155,20 +157,20 @@ const result = await modalForm.openForm({
 		{
 			name: 'name',
 			label: 'Name',
-			type: 'text',
 			description: 'Your name',
+			input: { type: 'text'} ,
 		},
 		{
 			name: 'age',
 			label: 'Age',
-			type: 'number',
 			description: 'Your age',
+			input: { type: 'number'} ,
 		},
 		{
 			name: 'favorite_meal',
 			label: 'Favorite meal',
-			type: 'text',
 			description: 'Your favorite meal',
+			input: { type: 'text'} ,
 		},
 		{
 			name: 'is_family',
@@ -176,12 +178,24 @@ const result = await modalForm.openForm({
 			type: 'toggle',
 			description: 'Are you family?',
 			required: true,
+			input: { type: 'toggle'} ,
 		},
 	],
 });
 ```
 
 You can make it smaller by removing some of the optional fields like description or label, but I really encourage you to define them all.
+
+## Installing the plugin
+
+Until the plugin is accepted in the community plugins list, you will need to install it either manually or through [BRAT](obsidian://show-plugin?id=obsidian42-brat)
+
+### Installing with BRAT
+1. Install the [BRAT](obsidian://show-plugin?id=obsidian42-brat) plugin (GitHub page) and enable it.
+2. Open command palette and run the command BRAT: Add a beta plugin for testing.
+3. Enter `https://github.com/danielo515/obsidian-modal-form` into the modal and press the Add Plugin button.
+4. Return to the settings and navigate to Community plugins tab.
+5. Enable the plugin.
 
 ## Manually installing the plugin
 

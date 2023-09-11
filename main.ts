@@ -44,8 +44,7 @@ export default class ModalFormPlugin extends Plugin {
 		if (!formDefinition) {
 			throw new ModalFormError(`Form ${formName} not found`)
 		}
-		const leaf = await this.activateView(EDIT_FORM_VIEW);
-		leaf.setViewState({ type: EDIT_FORM_VIEW, state: formDefinition });
+		await this.activateView(EDIT_FORM_VIEW, formDefinition);
 
 	}
 
@@ -106,20 +105,20 @@ export default class ModalFormPlugin extends Plugin {
 
 	onunload() { }
 
-	async activateView(viewType: ViewType, state?: any) {
+	async activateView(viewType: ViewType, state?: FormDefinition) {
 		this.app.workspace.detachLeavesOfType(viewType);
 
 		if (Platform.isMobile) {
 			await this.app.workspace.getLeaf(false).setViewState({
 				type: viewType,
 				active: true,
-				// state,
+				state,
 			});
 		} else {
 			await this.app.workspace.getRightLeaf(false).setViewState({
 				type: viewType,
 				active: true,
-				// state,
+				state,
 			});
 		}
 
