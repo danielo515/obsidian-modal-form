@@ -29,7 +29,7 @@ https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4
     - list of fixed values 
     - list of notes from a folder
 
-
+![example form](media/example.png)
 ## Why this plugin?
 
 Obsidian is a great tool for taking notes, but it is also a nice for managing data.
