@@ -41,6 +41,16 @@
 		});
 	}
 
+	function moveField(from: number, direction: "up" | "down") {
+		const to = direction === "up" ? from - 1 : from + 1;
+		if (to < 0 || to >= definition.fields.length) return;
+		const tmp = definition.fields[from];
+		definition.fields[from] = definition.fields[to];
+		definition.fields[to] = tmp;
+		definition.fields = definition.fields;
+		onChange();
+	}
+
 	const handleSubmit = () => {
 		if (!isValidFormDefinition(definition)) return;
 		onSubmit(definition);
@@ -127,17 +137,6 @@
 								style:white-space={"nowrap"}
 								>delete {index}</label
 							>
-							<button
-								use:setIcon={"trash"}
-								type="button"
-								id={delete_id}
-								on:click={() => {
-									definition.fields =
-										definition.fields.filter(
-											(_, i) => i !== index
-										);
-								}}
-							/>
 						</div>
 					</div>
 
@@ -279,6 +278,30 @@
 								<label>Source Folder</label>
 							</div>
 						{/if}
+					</div>
+					<div class="flex gap1">
+						<button
+							type="button"
+							disabled={index === 0}
+							use:setIcon={"arrow-up"}
+							on:click={() => moveField(index, "up")}
+						/>
+						<button
+							type="button"
+							disabled={index === definition.fields.length - 1}
+							use:setIcon={"arrow-down"}
+							on:click={() => moveField(index, "down")}
+						/>
+						<button
+							use:setIcon={"trash"}
+							type="button"
+							id={delete_id}
+							on:click={() => {
+								definition.fields = definition.fields.filter(
+									(_, i) => i !== index
+								);
+							}}
+						/>
 					</div>
 					<hr />
 				{/each}
