@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.2.0](https://github.com/danielo515/obsidian-modal-form/compare/v1.1.0...v1.2.0) (2023-09-11)
+
+
+### Features
+
+* complete core decoding and validation ([7fc538c](https://github.com/danielo515/obsidian-modal-form/commit/7fc538ca28d4b6b4114640f298a093d5639c4326))
+* FormEditor V1 ([ce228ef](https://github.com/danielo515/obsidian-modal-form/commit/ce228efb38cb18985e61923b67f5f25fd5b74c4e))
+* manage forms view ([bb99d2d](https://github.com/danielo515/obsidian-modal-form/commit/bb99d2d6df9dd7867f7f4d504a4ca25fa1597c3d))
+* mobile handling of the form editor ([1be84bd](https://github.com/danielo515/obsidian-modal-form/commit/1be84bd71ce04565ac08cec6a82b398b004447ff))
+* suggest folder input ([3adaf07](https://github.com/danielo515/obsidian-modal-form/commit/3adaf0774858ef34a0e2b3eb26657ee45bd119cd))
+
+
+### Bug Fixes
+
+* delete forms ([70c6a77](https://github.com/danielo515/obsidian-modal-form/commit/70c6a77629953f63243bc2b1e8a0504fb54c1f74))
+* icons ([fca57dd](https://github.com/danielo515/obsidian-modal-form/commit/fca57dd872fd80c2f92cdbad2f67a5249a4be8dd))
+
 ## [1.1.0](https://github.com/danielo515/obsidian-modal-form/compare/v1.0.0...v1.1.0) (2023-09-07)
 
 
