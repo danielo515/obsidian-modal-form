@@ -45,6 +45,7 @@ export class EditFormView extends ItemView {
 	formEditor!: FormEditor;
 	constructor(readonly leaf: WorkspaceLeaf, readonly plugin: ModalFormPlugin) {
 		super(leaf);
+		this.icon = 'note-glyph'
 	}
 
 	getViewType() {
@@ -75,7 +76,7 @@ export class EditFormView extends ItemView {
 	}
 
 	async setState(state: unknown, result: ViewStateResult): Promise<void> {
-		console.log('setState of edit form called', { state, result })
+		console.log('setState of edit form called', state)
 		if (parseState(state)) {
 			this.formState = state;
 			this.formEditor.$set({ definition: this.formState })

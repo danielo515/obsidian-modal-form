@@ -12,6 +12,7 @@ export class ManageFormsView extends ItemView {
 	forms!: FormDefinition[];
 	constructor(readonly leaf: WorkspaceLeaf, readonly plugin: ModalFormPlugin) {
 		super(leaf);
+		this.icon = "documents";
 	}
 
 	getViewType() {
@@ -19,7 +20,7 @@ export class ManageFormsView extends ItemView {
 	}
 
 	getDisplayText() {
-		return "Edit form";
+		return "Manage forms";
 	}
 
 	async onOpen() {

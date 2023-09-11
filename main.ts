@@ -71,10 +71,10 @@ export default class ModalFormPlugin extends Plugin {
 
 		// This creates an icon in the left ribbon.
 		const ribbonIconEl = this.addRibbonIcon(
-			"form",
+			"documents",
 			"Edit forms",
 			(evt: MouseEvent) => {
-				new Notice("This is a notice!");
+				this.manageForms()
 			}
 		);
 		// Perform additional things with the ribbon
@@ -106,18 +106,20 @@ export default class ModalFormPlugin extends Plugin {
 
 	onunload() { }
 
-	async activateView(viewType: ViewType) {
+	async activateView(viewType: ViewType, state?: any) {
 		this.app.workspace.detachLeavesOfType(viewType);
 
 		if (Platform.isMobile) {
 			await this.app.workspace.getLeaf(false).setViewState({
 				type: viewType,
 				active: true,
+				// state,
 			});
 		} else {
 			await this.app.workspace.getRightLeaf(false).setViewState({
 				type: viewType,
 				active: true,
+				// state,
 			});
 		}
 
