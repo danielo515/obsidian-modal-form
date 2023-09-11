@@ -1,48 +1,10 @@
 import { App, Modal, Setting } from "obsidian";
-import FormResult, { ModalFormData } from "./FormResult";
+import FormResult, { type ModalFormData } from "./FormResult";
 import { exhaustiveGuard } from "./safety";
 import { FileSuggest } from "./suggestFile";
 import { get_tfiles_from_folder } from "./utils/files";
-export type FieldType =
-	| "text"
-	| "number"
-	| "date"
-	| "time"
-	| "datetime"
-	| "toggle";
+import type { FormDefinition } from "./core/formDefinition";
 
-type inputType =
-	| { type: FieldType }
-	| { type: "note"; folder: string }
-	| { type: "slider"; min: number, max: number }
-	| { type: "select"; source: "notes", folder: string }
-	| {
-		type: "select";
-		source: "fixed";
-		options: { value: string; label: string }[];
-	};
-
-export type AllFieldTypes = FieldType | "note" | "slider" | "select";
-/**
- * FormDefinition is a type that defines the structure of a form.
- * @param title - The title of the form which will appear as H1 heading in the form modal.
- * @param fields - An array of field objects, each representing a field in the form.
- * Each field object has the following properties:
- * @param name - The name of the field. This will be the key name in the resulting data returned
- * @param label - optinal label to show in the UI. If it does not exist, the name will be used.
- * @param description - A description of the field.
- * @param type - The type of the field. Can be one of "text", "number", "date", "time", "datetime", "toggle".
- */
-export type FormDefinition = {
-	title: string;
-	name: string;
-	fields: {
-		name: string;
-		label?: string;
-		description: string;
-		input: inputType;
-	}[];
-};
 export type SubmitFn = (formResult: FormResult) => void;
 
 export class FormModal extends Modal {

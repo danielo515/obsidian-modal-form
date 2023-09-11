@@ -1,4 +1,4 @@
-import { FormDefinition } from "src/FormModal";
+import type { FormDefinition } from "./core/formDefinition";
 
 export const exampleModalDefinition: FormDefinition = {
 	title: "Example form",

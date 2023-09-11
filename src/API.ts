@@ -1,10 +1,11 @@
 import { App } from "obsidian";
 
-import { FormDefinition, FormModal } from "./FormModal";
+import type { FormDefinition } from "./core/formDefinition";
 import FormResult from "./FormResult";
 import { exampleModalDefinition } from "./exampleModalDefinition";
 import ModalFormPlugin from "main";
 import { ModalFormError } from "./utils/Error";
+import { FormModal } from "./FormModal";
 
 export class API {
 	/**

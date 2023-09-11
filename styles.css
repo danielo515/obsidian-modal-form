@@ -6,3 +6,27 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+
+/* Utilities to remove styles from native obsidian elements when wrapped like this
+<div class='utility'>
+	<div>...</div>
+</div>
+*/
+.remove-border div:first-of-type {
+	border: none;
+}
+.remove-padding div:first-of-type {
+	padding: 0;
+}
+
+.fix-suggest .setting-item-info {
+	display: none;
+}
+
+.modal-form-danger {
+	color: var(--text-error);
+}
+
+.modal-form-primary {
+	color: var(--text-accent);
+}
