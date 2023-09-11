@@ -22,3 +22,11 @@ If your plugin does not need CSS, delete this file.
 .fix-suggest .setting-item-info {
 	display: none;
 }
+
+.modal-form-danger {
+	color: var(--text-error);
+}
+
+.modal-form-primary {
+	color: var(--text-accent);
+}

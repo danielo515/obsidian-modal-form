@@ -48,20 +48,30 @@ export class ManageFormsView extends ItemView {
 		rows.setCssStyles({ display: 'flex', flexDirection: 'column', gap: '10px' });
 		forms.forEach(form => {
 			const row = rows.createDiv()
-			row.setCssStyles({ display: 'flex', flexDirection: 'row', gap: '8px' })
+			row.setCssStyles({ display: 'flex', flexDirection: 'column', gap: '8px' })
 			row.createEl("h4", { text: form.name });
 			new Setting(row)
 				.setName(form.title)
-				.addButton((button) =>
+				.then((setting) => {
+					console.log(setting)
+					setting.settingEl.setCssStyles({ borderTop: 'none', borderBottom: '1px solid var(--background-modifier-border)' })
+				})
+				.addButton((button) => {
 					button.setButtonText("Delete").onClick(async () => {
 						await this.plugin.deleteForm(form.name);
-						this.renderForms(root)
-					})
+						this.renderForms(root);
+					});
+					button.setIcon('trash')
+					button.setClass('modal-form-danger')
+					button.setTooltip('delete form ' + form.name)
+				}
 				)
-				.addButton((button) =>
-					button.setButtonText("Edit").onClick(async () => {
+				.addButton((button) => {
+					button.setClass('modal-form-primary')
+					return button.setButtonText("Edit").onClick(async () => {
 						await this.plugin.editForm(form.name);
-					})
+					});
+				}
 				);
 		})
 	}
