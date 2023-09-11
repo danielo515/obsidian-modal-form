@@ -32,11 +32,11 @@ export default class ModalFormPlugin extends Plugin {
 	public api!: PublicAPI;
 
 	manageForms() {
-		this.activateView(MANAGE_FORMS_VIEW);
+		return this.activateView(MANAGE_FORMS_VIEW);
 	}
 
 	createNewForm() {
-		this.activateView(EDIT_FORM_VIEW);
+		return this.activateView(EDIT_FORM_VIEW);
 	}
 
 	async editForm(formName: string) {
@@ -56,6 +56,16 @@ export default class ModalFormPlugin extends Plugin {
 			this.settings?.formDefinitions.splice(index, 1, formDefinition);
 		}
 		console.log(this.settings, index)
+		await this.saveSettings();
+		// go back to manage forms and refresh it
+		await this.activateView(MANAGE_FORMS_VIEW);
+	}
+	async deleteForm(formName: string) {
+		// This should never happen, but because obsidian plugin life-cycle we can not guarantee that the settings are loaded
+		if (!this.settings) {
+			throw new ModalFormError('Settings not found')
+		}
+		this.settings.formDefinitions = this.settings.formDefinitions.filter(form => form.name !== formName);
 		await this.saveSettings();
 	}
 

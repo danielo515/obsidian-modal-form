@@ -9,7 +9,6 @@ export const MANAGE_FORMS_VIEW = "modal-form-manage-forms-view";
  * Manage existing forms and create new ones
  */
 export class ManageFormsView extends ItemView {
-	forms!: FormDefinition[];
 	constructor(readonly leaf: WorkspaceLeaf, readonly plugin: ModalFormPlugin) {
 		super(leaf);
 		this.icon = "documents";
@@ -24,13 +23,12 @@ export class ManageFormsView extends ItemView {
 	}
 
 	async onOpen() {
+		// console.log('On open manage forms');
 		const container = this.containerEl.children[1];
-		const settings = await this.plugin.getSettings();
-		this.forms = settings.formDefinitions;
 		container.empty();
 		container.createEl("h3", { text: "Manage forms" });
 		this.renderControls(container.createDiv());
-		this.renderForms(container.createDiv());
+		await this.renderForms(container.createDiv());
 	}
 
 	renderControls(root: HTMLElement) {
@@ -41,11 +39,14 @@ export class ManageFormsView extends ItemView {
 		})
 	}
 
-	renderForms(root: HTMLElement) {
+	async renderForms(root: HTMLElement) {
+
+		const settings = await this.plugin.getSettings();
+		const forms = settings.formDefinitions;
 		root.empty();
 		const rows = root.createDiv();
 		rows.setCssStyles({ display: 'flex', flexDirection: 'column', gap: '10px' });
-		this.forms.forEach(form => {
+		forms.forEach(form => {
 			const row = rows.createDiv()
 			row.setCssStyles({ display: 'flex', flexDirection: 'row', gap: '8px' })
 			row.createEl("h4", { text: form.name });
@@ -53,12 +54,7 @@ export class ManageFormsView extends ItemView {
 				.setName(form.title)
 				.addButton((button) =>
 					button.setButtonText("Delete").onClick(async () => {
-						const index =
-							this.forms.indexOf(form);
-						if (index > -1) {
-							this.forms.splice(index, 1);
-						}
-						await this.plugin.saveSettings();
+						await this.plugin.deleteForm(form.name);
 						this.renderForms(root)
 					})
 				)
