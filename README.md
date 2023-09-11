@@ -30,7 +30,12 @@ https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4
 Obsidian is a great tool for taking notes, but it is also a nice for managing data.
 However, when it's time to capture structured data it doesn't offer many conveniences.
 Some plugins like [Templater](https://github.com/SilentVoid13/Templater) or [QuickAdd](https://github.com/chhoumann/quickadd) alleviate this problem with templates/automation that ease the creation of notes with a predefined structure, but then you have to fill the data manually. 
-This plugins have some little convenience inputs, but they are limited to a single value at a time, and they don't even have labels.
+The mentioned plugins (templater, quickAdd) have some little convenience inputs, but they have certain tradeoffs/problems: 
+
+- they are limited to input a single value at a time
+- they don't have labels, or detailed descriptions about the field you are filling
+- you can't skip fields, you will always be prompted for all of them one by one
+
 All of the mentioned tools are great at their job and unleash super convenient workflows.
 For that reason, rather than offering an alternative, this plugin is designed as a complement to them, offering some basic building blocks that you can integrate with your existing templates and workflows.
 
