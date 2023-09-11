@@ -173,7 +173,7 @@ export function isValidFormDefinition(input: unknown): input is FormDefinition {
 	if (typeof input.title !== "string") {
 		return false;
 	}
-	if (typeof input.name !== "string") {
+	if (typeof input.name !== "string" || input.name === '') {
 		return false;
 	}
 	console.log('basic is valid');

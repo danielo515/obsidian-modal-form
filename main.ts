@@ -1,26 +1,24 @@
-import { Notice, Platform, Plugin } from "obsidian";
+import { Platform, Plugin, WorkspaceLeaf } from "obsidian";
 import FormResult from "src/FormResult";
 import { exampleModalDefinition } from "src/exampleModalDefinition";
-import { ModalFormSettingTab } from "ModalFormSettingTab";
+import { ModalFormSettingTab } from "src/ModalFormSettingTab";
 import { API } from "src/API";
-import { EDIT_FORM_VIEW, EditFormView } from "src/EditFormView";
+import { EDIT_FORM_VIEW, EditFormView } from "src/views/EditFormView";
 import { MANAGE_FORMS_VIEW, ManageFormsView } from "src/views/ManageFormsView";
 import { ModalFormError } from "src/utils/Error";
 import type { FormDefinition } from "src/core/formDefinition";
+import type { ModalFormSettings, OpenPosition } from "src/core/settings";
 
 // Remember to rename these classes and interfaces!
 
 type ViewType = typeof EDIT_FORM_VIEW | typeof MANAGE_FORMS_VIEW;
 
-interface ModalFormSettings {
-	formDefinitions: FormDefinition[];
-}
-
 const DEFAULT_SETTINGS: ModalFormSettings = {
+	editorPosition: "right",
 	formDefinitions: [],
 };
 
-// Define functions and properties you want to make available to other plugins, or templater temmplates, etc
+// Define functions and properties you want to make available to other plugins, or templater templates, etc
 interface PublicAPI {
 	exampleForm(): Promise<FormResult>;
 	openForm(name: string): Promise<FormResult>;
@@ -69,6 +67,55 @@ export default class ModalFormPlugin extends Plugin {
 		await this.saveSettings();
 	}
 
+
+	closeEditForm() {
+		this.app.workspace.detachLeavesOfType(EDIT_FORM_VIEW);
+	}
+
+
+	onunload() { }
+
+	async activateView(viewType: ViewType, state?: FormDefinition) {
+		this.app.workspace.detachLeavesOfType(viewType);
+
+		let leaf: WorkspaceLeaf;
+		if (Platform.isMobile || this.settings?.editorPosition === "mainView") {
+			leaf = this.app.workspace.getLeaf(false)
+		} else if (this.settings?.editorPosition === "right") {
+			leaf = this.app.workspace.getRightLeaf(false);
+		} else if (this.settings?.editorPosition === "left") {
+			leaf = this.app.workspace.getLeftLeaf(false);
+		} else if (this.settings?.editorPosition === "modal") {
+			leaf = this.app.workspace.getLeaf(false)
+		} else {
+			leaf = this.app.workspace.getRightLeaf(false)
+		}
+
+		await leaf.setViewState({
+			type: viewType,
+			active: true,
+			state,
+		});
+		const leave = this.app.workspace.getLeavesOfType(viewType)[0]
+		this.app.workspace.revealLeaf(
+			leave
+		);
+		return leave;
+	}
+
+	async getSettings(): Promise<ModalFormSettings> {
+		return Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+	}
+
+	private async saveSettings() {
+		await this.saveData(this.settings);
+	}
+
+	async setEditorPosition(position: OpenPosition) {
+		this.settings!.editorPosition = position;
+		await this.saveSettings();
+	}
+
 	async onload() {
 		this.settings = await this.getSettings();
 		if (this.settings.formDefinitions.length === 0) {
@@ -108,42 +155,4 @@ export default class ModalFormPlugin extends Plugin {
 		this.addSettingTab(new ModalFormSettingTab(this.app, this));
 	}
 
-	closeEditForm() {
-		this.app.workspace.detachLeavesOfType(EDIT_FORM_VIEW);
-	}
-
-
-	onunload() { }
-
-	async activateView(viewType: ViewType, state?: FormDefinition) {
-		this.app.workspace.detachLeavesOfType(viewType);
-
-		if (Platform.isMobile) {
-			await this.app.workspace.getLeaf(false).setViewState({
-				type: viewType,
-				active: true,
-				state,
-			});
-		} else {
-			await this.app.workspace.getRightLeaf(false).setViewState({
-				type: viewType,
-				active: true,
-				state,
-			});
-		}
-
-		const leave = this.app.workspace.getLeavesOfType(viewType)[0]
-		this.app.workspace.revealLeaf(
-			leave
-		);
-		return leave;
-	}
-
-	async getSettings(): Promise<ModalFormSettings> {
-		return Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-	}
-
-	async saveSettings() {
-		await this.saveData(this.settings);
-	}
 }

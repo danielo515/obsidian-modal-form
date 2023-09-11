@@ -8,7 +8,7 @@
 		isInputNoteFromFolder,
 	} from "src/core/formDefinition";
 	import { FolderSuggest } from "src/suggestFolder";
-	import { FieldTypeReadable } from "src/EditFormView";
+	import { FieldTypeReadable } from "src/views/EditFormView";
 	import { setIcon, Setting, App } from "obsidian";
 	import FormRow from "./components/FormRow.svelte";
 
