@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/danielo515/obsidian-modal-form/compare/1.2.2...1.3.0) (2023-09-11)
+
+
+### Features
+
+* ability to order fields ([79517c0](https://github.com/danielo515/obsidian-modal-form/commit/79517c03a9bceab06e9239e99ca8a3e100273f1d))
+
 ## [1.2.2](https://github.com/danielo515/obsidian-modal-form/compare/1.2.1...1.2.2) (2023-09-11)
 
 
