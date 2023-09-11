@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/danielo515/obsidian-modal-form/compare/v1.2.0...1.2.1) (2023-09-11)
+
+
+### Bug Fixes
+
+* do not include v in tag ([7a54a24](https://github.com/danielo515/obsidian-modal-form/commit/7a54a246aa6b7262dc63130deed49ac0387226a3))
+
 ## [1.2.0](https://github.com/danielo515/obsidian-modal-form/compare/v1.1.0...v1.2.0) (2023-09-11)
 
 
