@@ -58,13 +58,13 @@ Since the main usage of this plugin is opening forms and getting back their data
 The plugin exposes an API that can be accessed from any JavaScript code that has access to the global `app` object. So, in order to get the API you can do:
 
 ```javascript
-const modalForm = app.plugins.plugins.obsidianModalForm.api;
+const modalForm = app.plugins.plugins.modalforms.api;
 ````
 
 From here you can call any of the main method of the API, `openForm` which allows you to open a form by name and get back the data. Let's see an example:
 
 ```javascript
-const modalForm = app.plugins.plugins.obsidianModalForm.api;
+const modalForm = app.plugins.plugins.modalforms.api;
 const result = await modalForm.openForm('example-form');
 ```
 
@@ -78,7 +78,7 @@ One of them is `asFrontmatterString`, which returns the data as a string that ca
 ```javascript
 ---
 <%* 
-const modalForm = app.plugins.plugins.obsidianModalForm.api;
+const modalForm = app.plugins.plugins.modalforms.api;
 const result = await modalForm.openForm('example-form');
 tR += result.asFrontmatterString();
 -%>
@@ -92,7 +92,7 @@ When you insert this template in a note, it will open the form, and once you sub
 In order to open a form from QuickAdd capture, you need to create a capture and activate the capture format, then in the format text-area you must create a code block with the language defined as `js quickadd` and copy the code below:
 ```javascript
 	```js quickadd
-	const modalForm = app.plugins.plugins.obsidianModalForm.api;
+	const modalForm = app.plugins.plugins.modalforms.api;
 	const result = await modalForm.openForm('example-form');
 	return result.asDataviewProperties();
 	``` 
@@ -123,7 +123,7 @@ This method returns the form data formatted as a string matching the provided te
 
 ```
 <%* 
-const modalForm = app.plugins.plugins.obsidianModalForm.api;
+const modalForm = app.plugins.plugins.modalforms.api;
 const result = await modalForm.openForm('example-form');
 tR += result.asString('{{Name}} is {{age}} years old and his/her favorite food is {{favorite_meal}}. Family status: {{is_family}}');
 -%>
@@ -150,7 +150,7 @@ The plugin also supports inline forms, which are forms that are defined when you
 Here is an example of how to use it:
 
 ```javascript
-const modalForm = app.plugins.plugins.obsidianModalForm.api;
+const modalForm = app.plugins.plugins.modalforms.api;
 const result = await modalForm.openForm({
 	title: 'Example form',
 	fields: [
