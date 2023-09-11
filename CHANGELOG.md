@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/danielo515/obsidian-modal-form/compare/1.2.1...1.2.2) (2023-09-11)
+
+
+### Bug Fixes
+
+* rename the plugin to follow obsidian guidelines ([2487590](https://github.com/danielo515/obsidian-modal-form/commit/24875901eb01321d8d92ed2efffc70e661907b20))
+
 ## [1.2.1](https://github.com/danielo515/obsidian-modal-form/compare/v1.2.0...1.2.1) (2023-09-11)
 
 
