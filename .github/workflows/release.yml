@@ -28,6 +28,7 @@ jobs:
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   release-type: node
+                  include-v-in-tag: false
                   package-name: obsidian-modal-form
                   extra-files: |
                       manifest.json
