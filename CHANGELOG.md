@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://github.com/danielo515/obsidian-modal-form/compare/1.3.0...1.4.0) (2023-09-11)
+
+
+### Features
+
+* decide where to open the forms editor/manager ([bd5a957](https://github.com/danielo515/obsidian-modal-form/commit/bd5a957b7664eefd5df188b6424c046cfd0efd73))
+
+
+### Bug Fixes
+
+* make field name required ([2892503](https://github.com/danielo515/obsidian-modal-form/commit/2892503b0beb4588833ac46cd2a32ad567140d88))
+
 ## [1.3.0](https://github.com/danielo515/obsidian-modal-form/compare/1.2.2...1.3.0) (2023-09-11)
 
 
