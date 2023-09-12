@@ -35,8 +35,7 @@ function parseState(maybeState: unknown): maybeState is FormDefinition {
  * Simple, right?
  */
 export class EditFormView extends ItemView {
-	formState: FormDefinition = { title: 'New form', name: '', fields: [] };
-	editType: 'new-form' | 'edit-form' = 'new-form';
+	formState: FormDefinition = { title: '', name: '', fields: [] };
 	formEditor!: FormEditor;
 	constructor(readonly leaf: WorkspaceLeaf, readonly plugin: ModalFormPlugin) {
 		super(leaf);
@@ -61,12 +60,20 @@ export class EditFormView extends ItemView {
 					console.log(this.formState)
 					this.app.workspace.requestSaveLayout()
 				},
-				onSubmit: (formDefinition: FormDefinition) => { console.log({ formDefinition }); this.plugin.saveForm(formDefinition); this.plugin.closeEditForm() },
+				onSubmit: (formDefinition: FormDefinition) => {
+					console.log({ formDefinition });
+					this.plugin.saveForm(formDefinition);
+					this.plugin.closeEditForm()
+				},
+				onCancel: () => {
+					this.plugin.closeEditForm()
+				}
 			}
 		});
 	}
 
 	async onClose() {
+		console.log('onClose of edit form called')
 		this.formEditor.$destroy();
 	}
 

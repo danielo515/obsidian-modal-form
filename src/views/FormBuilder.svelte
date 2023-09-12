@@ -20,6 +20,7 @@
 	export let app: App;
 	export let onChange: () => void;
 	export let onSubmit: (formDefinition: FormDefinition) => void;
+	export let onCancel: () => void;
 
 	$: isValid = isValidFormDefinition(definition);
 
@@ -99,6 +100,9 @@
 					}}>Add more fields</button
 				>
 				<button type="submit" disabled={!isValid}>Save and close</button
+				>
+				<button type="button" class="mod-warning" on:click={onCancel}
+					>Cancel</button
 				>
 			</div>
 		</fieldset>

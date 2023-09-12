@@ -38,7 +38,13 @@ export default class ModalFormPlugin extends Plugin {
 	}
 
 	async editForm(formName: string) {
-		const formDefinition = this.settings?.formDefinitions.find(form => form.name === formName);
+		// By reading settings from the disk we get a copy of the form
+		// effectively preventing any unexpected side effects to the running configuration
+		// For example, mutating a form, cancelling the edit but the form is already mutated,
+		// then if you save another form you will unexpectedly save the mutated form too.
+		// Maybe we could instead do a deep copy instead, but until this proven to be a bottleneck I will leave it like this.
+		const savedSettings = await this.getSettings();
+		const formDefinition = savedSettings.formDefinitions.find(form => form.name === formName);
 		if (!formDefinition) {
 			throw new ModalFormError(`Form ${formName} not found`)
 		}
