@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.7.0](https://github.com/danielo515/obsidian-modal-form/compare/obsidian-modal-form-v1.6.0...obsidian-modal-form-1.7.0) (2023-09-12)
+
+
+### Features
+
+* duplicate form ([7a0f1c6](https://github.com/danielo515/obsidian-modal-form/commit/7a0f1c6000d309c447fc4cb7e345dbf0f435944e)), closes [#20](https://github.com/danielo515/obsidian-modal-form/issues/20)
+
+
+### Bug Fixes
+
+* fix the versioning, I hope ([7bb7d7d](https://github.com/danielo515/obsidian-modal-form/commit/7bb7d7da9b58c1a7055d3178b4528f346ea62edd))
+
 ## [1.6.0](https://github.com/danielo515/obsidian-modal-form/compare/1.5.0...1.6.0) (2023-09-12)
 
 
