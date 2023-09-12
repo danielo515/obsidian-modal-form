@@ -37,6 +37,21 @@ export default class ModalFormPlugin extends Plugin {
 		return this.activateView(EDIT_FORM_VIEW);
 	}
 
+	formExists(formName: string): boolean {
+		return this.settings?.formDefinitions.some(form => form.name === formName) ?? false;
+	}
+
+	async duplicateForm(form: FormDefinition) {
+		let newForm = { ...form };
+		newForm.name = form.name + '-copy';
+		let i = 1;
+		while (this.formExists(newForm.name)) {
+			newForm.name = form.name + '-copy-' + i;
+			i++;
+		}
+		await this.saveForm(newForm);
+	}
+
 	async editForm(formName: string) {
 		// By reading settings from the disk we get a copy of the form
 		// effectively preventing any unexpected side effects to the running configuration

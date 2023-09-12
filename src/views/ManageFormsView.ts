@@ -54,6 +54,7 @@ export class ManageFormsView extends ItemView {
 				.setName(form.title)
 				.then((setting) => {
 					console.log(setting)
+					// This moves the separator of the settings container from he top to the bottom
 					setting.settingEl.setCssStyles({ borderTop: 'none', borderBottom: '1px solid var(--background-modifier-border)' })
 				})
 				.addButton((button) => {
@@ -72,7 +73,14 @@ export class ManageFormsView extends ItemView {
 						await this.plugin.editForm(form.name);
 					});
 				}
-				);
+				)
+				.addButton(btn => {
+					btn.setTooltip('duplicate ' + form.name)
+					btn.setButtonText('Duplicate').onClick(() => {
+						this.plugin.duplicateForm(form);
+					})
+				})
+				;
 		})
 	}
 
