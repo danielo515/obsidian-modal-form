@@ -25,9 +25,8 @@ jobs:
               uses: google-github-actions/release-please-action@v3
               id: release
               with:
-                command: manifest
-                token: ${{secrets.GITHUB_TOKEN}}
-                default-branch: main
+                  command: manifest
+                  token: ${{secrets.GITHUB_TOKEN}}
             - name: Sync version with manifest and versions.json
               run: node version-bump.mjs
             - uses: stefanzweifel/git-auto-commit-action@v4
