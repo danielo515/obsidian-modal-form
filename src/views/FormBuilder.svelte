@@ -42,6 +42,32 @@
 		});
 	}
 
+	function findFreeName(fieldIndex: number): string {
+		const field = definition.fields[fieldIndex];
+		let name = field.name;
+		const allNames = definition.fields.map((f) => f.name);
+		let i = 1;
+		while (allNames.includes(name)) {
+			name = `${field.name}_${i}`;
+			i++;
+		}
+		return name;
+	}
+
+	function duplicateField(fieldIndex: number) {
+		const field = definition.fields[fieldIndex];
+		const newField = {
+			...field,
+			name: findFreeName(fieldIndex),
+		};
+		definition.fields = [
+			...definition.fields.slice(0, fieldIndex + 1),
+			newField,
+			...definition.fields.slice(fieldIndex + 1),
+		];
+		onChange();
+	}
+
 	function moveField(from: number, direction: "up" | "down") {
 		const to = direction === "up" ? from - 1 : from + 1;
 		if (to < 0 || to >= definition.fields.length) return;
@@ -296,6 +322,11 @@
 							use:setIcon={"arrow-down"}
 							on:click={() => moveField(index, "down")}
 						/>
+						<button
+							type="button"
+							on:click={() => duplicateField(index)}
+							>Duplicate</button
+						>
 						<button
 							use:setIcon={"trash"}
 							type="button"
