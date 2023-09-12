@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/danielo515/obsidian-modal-form/compare/1.5.0...1.6.0) (2023-09-12)
+
+
+### Features
+
+* allow to duplicate fields ([21777e9](https://github.com/danielo515/obsidian-modal-form/commit/21777e98252c6f0d403ea6223a007eb5c8ba1866)), closes [#20](https://github.com/danielo515/obsidian-modal-form/issues/20)
+
 ## [1.5.0](https://github.com/danielo515/obsidian-modal-form/compare/1.4.0...1.5.0) (2023-09-12)
 
 
