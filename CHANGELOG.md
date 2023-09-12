@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/danielo515/obsidian-modal-form/compare/1.4.0...1.5.0) (2023-09-12)
+
+
+### Features
+
+* ability to cancel edits to a form ([f90d7f0](https://github.com/danielo515/obsidian-modal-form/commit/f90d7f0344b6af0beba6f004e33719948dc6a36f)), closes [#8](https://github.com/danielo515/obsidian-modal-form/issues/8)
+
 ## [1.4.0](https://github.com/danielo515/obsidian-modal-form/compare/1.3.0...1.4.0) (2023-09-11)
 
 
