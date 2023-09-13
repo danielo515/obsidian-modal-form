@@ -6,11 +6,12 @@
 		type FormDefinition,
 		isValidFormDefinition,
 		isInputNoteFromFolder,
+		FieldTypeReadable,
 	} from "src/core/formDefinition";
 	import { FolderSuggest } from "src/suggesters/suggestFolder";
-	import { FieldTypeReadable } from "src/views/EditFormView";
 	import { setIcon, Setting, App } from "obsidian";
 	import FormRow from "./components/FormRow.svelte";
+	import InputBuilderDataview from "./components/inputBuilderDataview.svelte";
 
 	export let definition: EditableFormDefinition = {
 		title: "",
@@ -307,6 +308,11 @@
 							>
 								<label>Source Folder</label>
 							</div>
+						{:else if field.input.type === "dataview"}
+							<InputBuilderDataview
+								{index}
+								bind:value={field.input.query}
+							/>
 						{/if}
 					</div>
 					<div class="flex gap1">

@@ -30,6 +30,18 @@ type inputType =
 	| inputDataviewSource
 	| inputSelectFixed;
 
+export const FieldTypeReadable: Record<AllFieldTypes, string> = {
+	"text": "Text",
+	"number": "Number",
+	"date": "Date",
+	"time": "Time",
+	"datetime": "DateTime",
+	"toggle": "Toggle",
+	"note": "Note",
+	"slider": "Slider",
+	"select": "Select",
+	"dataview": "Dataview",
+} as const;
 
 function isObject(input: unknown): input is Record<string, unknown> {
 	return typeof input === "object" && input !== null;
@@ -69,7 +81,7 @@ export function isInputSelectFixed(input: unknown): input is inputSelectFixed {
 	})
 }
 
-export type AllFieldTypes = FieldType | "note" | "slider" | "select";
+export type AllFieldTypes = inputType['type']
 export type FieldDefinition = {
 	name: string;
 	label?: string;
@@ -96,7 +108,7 @@ export type FormDefinition = {
 // It has all the possible values, and then you need to narrow it down
 // to the actual type.
 export type EditableInput = {
-	type: FieldType | "select" | "slider" | "note";
+	type: AllFieldTypes;
 	source?: "notes" | "fixed";
 	folder?: string;
 	min?: number;

@@ -4,17 +4,6 @@ import type { FormDefinition, AllFieldTypes } from "../core/formDefinition";
 import FormEditor from './FormBuilder.svelte'
 
 export const EDIT_FORM_VIEW = "modal-form-edit-form-view";
-export const FieldTypeReadable: Record<AllFieldTypes, string> = {
-	"text": "Text",
-	"number": "Number",
-	"date": "Date",
-	"time": "Time",
-	"datetime": "DateTime",
-	"toggle": "Toggle",
-	"note": "Note",
-	"slider": "Slider",
-	"select": "Select"
-} as const;
 
 function parseState(maybeState: unknown): maybeState is FormDefinition {
 	if (maybeState === null) {

@@ -25,7 +25,7 @@ https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4
   - toggle (true/false)
   - free text
   - text with autocompletion for note names (from a folder or root)
-  - text with autocompletion from a dataview query
+  - text with autocompletion from a dataview query (requires dataview plugin)
   - select from a list 
     - list of fixed values 
     - list of notes from a folder

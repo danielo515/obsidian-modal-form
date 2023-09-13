@@ -30,3 +30,11 @@ If your plugin does not need CSS, delete this file.
 .modal-form-primary {
 	color: var(--text-accent);
 }
+
+.modal-form-hint {
+	color: var(--text-muted);
+}
+/* .modal-form-hint code {
+	color: var(--text-normal);
+	background-color: var(--background-secondary);
+} */
