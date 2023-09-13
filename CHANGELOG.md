@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/danielo515/obsidian-modal-form/compare/obsidian-modal-form-1.7.1...obsidian-modal-form-1.8.0) (2023-09-13)
+
+
+### Features
+
+* dataview input type ([22b8949](https://github.com/danielo515/obsidian-modal-form/commit/22b8949bbde2deeb417c89921ec4531b03af4ed2))
+
 ## [1.7.1](https://github.com/danielo515/obsidian-modal-form/compare/obsidian-modal-form-1.7.0...obsidian-modal-form-1.7.1) (2023-09-13)
 
 
