@@ -51,6 +51,15 @@ export const exampleModalDefinition: FormDefinition = {
 			}
 		},
 		{
+			name: 'dataview_example',
+			label: 'Dataview example',
+			description: 'Only people matching the dataview query will be shown',
+			input: {
+				type: 'dataview',
+				query: 'dv.pages("#person").filter(p => p.age < 30).map(p => p.file.name)'
+			}
+		},
+		{
 			name: "friendship_level",
 			label: "Friendship level",
 			description: "How good friends are you?",

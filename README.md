@@ -25,6 +25,7 @@ https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4
   - toggle (true/false)
   - free text
   - text with autocompletion for note names (from a folder or root)
+  - text with autocompletion from a dataview query
   - select from a list 
     - list of fixed values 
     - list of notes from a folder
@@ -43,6 +44,11 @@ The mentioned plugins (templater, quickAdd) have some little convenience inputs,
 
 All of the mentioned tools are great at their job and unleash super convenient workflows.
 For that reason, rather than offering an alternative, this plugin is designed as a complement to them, offering some basic building blocks that you can integrate with your existing templates and workflows.
+
+## Friends of modal form
+- [Templater](https://github.com/SilentVoid13/Templater) to open modals from templates
+- [QuickAdd](https://github.com/chhoumann/quickadd) to quickly capture data from a modal
+- [dataview](https://github.com/blacksmithgu/obsidian-dataview) to provide values for autocompletion
 
 ## Scope of this plugin
 

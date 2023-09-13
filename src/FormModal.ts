@@ -4,6 +4,7 @@ import { exhaustiveGuard } from "./safety";
 import { get_tfiles_from_folder } from "./utils/files";
 import type { FormDefinition } from "./core/formDefinition";
 import { FileSuggest } from "./suggesters/suggestFile";
+import { DataviewSuggest } from "./suggesters/suggestFromDataview";
 
 export type SubmitFn = (formResult: FormResult) => void;
 
@@ -96,6 +97,14 @@ export class FormModal extends Modal {
 						slider.setDynamicTooltip();
 						slider.setValue(fieldInput.min);
 						slider.onChange(async (value) => {
+							this.formResult[definition.name] = value;
+						});
+					});
+				case "dataview":
+					const query = fieldInput.query;
+					return fieldBase.addText((element) => {
+						new DataviewSuggest(element.inputEl, query, this.app);
+						element.onChange(async (value) => {
 							this.formResult[definition.name] = value;
 						});
 					});

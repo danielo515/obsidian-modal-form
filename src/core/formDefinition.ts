@@ -15,6 +15,7 @@ export type FieldType =
 type selectFromNotes = { type: "select"; source: "notes", folder: string };
 type inputSlider = { type: "slider"; min: number, max: number };
 type inputNoteFromFolder = { type: "note"; folder: string };
+type inputDataviewSource = { type: 'dataview', query: string };
 type inputSelectFixed = {
 	type: "select";
 	source: "fixed";
@@ -26,12 +27,17 @@ type inputType =
 	| inputNoteFromFolder
 	| inputSlider
 	| selectFromNotes
+	| inputDataviewSource
 	| inputSelectFixed;
 
 
 function isObject(input: unknown): input is Record<string, unknown> {
 	return typeof input === "object" && input !== null;
 }
+export function isDataViewSource(input: unknown): input is inputDataviewSource {
+	return isObject(input) && input.type === 'dataview' && typeof input.query === 'string';
+}
+
 export function isInputSlider(input: unknown): input is inputSlider {
 	if (!isObject(input)) {
 		return false;
@@ -126,6 +132,8 @@ export function isInputTypeValid(input: unknown): input is inputType {
 	} else if (isSelectFromNotes(input)) {
 		return true;
 	} else if (isInputSelectFixed(input)) {
+		return true;
+	} else if (isDataViewSource(input)) {
 		return true;
 	} else {
 		return false;
