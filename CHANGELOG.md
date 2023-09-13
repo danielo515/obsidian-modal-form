@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/danielo515/obsidian-modal-form/compare/obsidian-modal-form-1.7.0...obsidian-modal-form-1.7.1) (2023-09-13)
+
+
+### Bug Fixes
+
+* remove deprecated usages of app ([343ff57](https://github.com/danielo515/obsidian-modal-form/commit/343ff573ae7ed4710b3f3290bf752dee84e7aaae))
+
 ## [1.7.0](https://github.com/danielo515/obsidian-modal-form/compare/obsidian-modal-form-v1.6.0...obsidian-modal-form-1.7.0) (2023-09-12)
 
 
