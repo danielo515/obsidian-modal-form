@@ -1,0 +1,21 @@
+# makes sure that all files have the required version information
+# This only runs when the release-please action has labeled a release pull request
+# so before it is merged, this ensures that all the files have the correct version
+name: sync versions
+
+on:
+    pull_request:
+        types: [labeled]
+
+jobs:
+    build:
+        if: "${{ github.event.label.name == 'autorelease: pending' }}"
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v3
+            - name: Sync version with manifest and versions.json
+              run: node version-bump.mjs
+            - uses: stefanzweifel/git-auto-commit-action@v4
+              with:
+                  commit_message: "chore: sync versions"
