@@ -9,9 +9,7 @@ on:
 
 jobs:
     build:
-        if: "${{ github.event.label.name == 'autorelease: pending' }}"
         runs-on: ubuntu-latest
-
         steps:
             - uses: actions/checkout@v3
             - name: Sync version with manifest and versions.json
