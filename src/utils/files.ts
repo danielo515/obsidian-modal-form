@@ -1,7 +1,7 @@
-import { TAbstractFile, TFile, TFolder, Vault, normalizePath } from "obsidian";
+import { App, TAbstractFile, TFile, TFolder, Vault, normalizePath } from "obsidian";
 import { ModalFormError } from "./Error";
 
-export function resolve_tfolder(folder_str: string): TFolder {
+export function resolve_tfolder(folder_str: string, app: App): TFolder {
 	folder_str = normalizePath(folder_str);
 
 	const folder = app.vault.getAbstractFileByPath(folder_str);
@@ -15,7 +15,7 @@ export function resolve_tfolder(folder_str: string): TFolder {
 	return folder;
 }
 
-export function resolve_tfile(file_str: string): TFile {
+export function resolve_tfile(file_str: string, app: App): TFile {
 	file_str = normalizePath(file_str);
 
 	const file = app.vault.getAbstractFileByPath(file_str);
@@ -29,8 +29,8 @@ export function resolve_tfile(file_str: string): TFile {
 	return file;
 }
 
-export function get_tfiles_from_folder(folder_str: string): Array<TFile> {
-	const folder = resolve_tfolder(folder_str);
+export function get_tfiles_from_folder(folder_str: string, app: App): Array<TFile> {
+	const folder = resolve_tfolder(folder_str, app);
 
 	const files: Array<TFile> = [];
 	Vault.recurseChildren(folder, (file: TAbstractFile) => {

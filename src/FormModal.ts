@@ -1,9 +1,9 @@
 import { App, Modal, Setting } from "obsidian";
 import FormResult, { type ModalFormData } from "./FormResult";
 import { exhaustiveGuard } from "./safety";
-import { FileSuggest } from "./suggestFile";
 import { get_tfiles_from_folder } from "./utils/files";
 import type { FormDefinition } from "./core/formDefinition";
+import { FileSuggest } from "./suggesters/suggestFile";
 
 export type SubmitFn = (formResult: FormResult) => void;
 
@@ -124,7 +124,7 @@ export class FormModal extends Modal {
 
 							case "notes":
 								return fieldBase.addDropdown((element) => {
-									const files = get_tfiles_from_folder(fieldInput.folder);
+									const files = get_tfiles_from_folder(fieldInput.folder, this.app);
 									const options = files.reduce(
 										(
 											acc: Record<string, string>,

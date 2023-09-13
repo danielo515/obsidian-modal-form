@@ -2,8 +2,8 @@
 
 import { App, TAbstractFile, TFile } from "obsidian";
 import { TextInputSuggest } from "./suggest";
-import { get_tfiles_from_folder } from "./utils/files";
-import { errorWrapperSync } from "./utils/Error";
+import { get_tfiles_from_folder } from "../utils/files";
+import { errorWrapperSync } from "../utils/Error";
 
 // Instead of hardcoding the logic in separate and almost identical classes,
 // we move this little logic parts into an interface and we can use the samme
@@ -25,7 +25,7 @@ export class FileSuggest extends TextInputSuggest<TFile> {
 
 	getSuggestions(input_str: string): TFile[] {
 		const all_files = errorWrapperSync(
-			() => get_tfiles_from_folder(this.folder),
+			() => get_tfiles_from_folder(this.folder, this.app),
 			"The folder does not exist"
 		);
 		if (!all_files) {

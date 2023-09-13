@@ -7,7 +7,7 @@
 		isValidFormDefinition,
 		isInputNoteFromFolder,
 	} from "src/core/formDefinition";
-	import { FolderSuggest } from "src/suggestFolder";
+	import { FolderSuggest } from "src/suggesters/suggestFolder";
 	import { FieldTypeReadable } from "src/views/EditFormView";
 	import { setIcon, Setting, App } from "obsidian";
 	import FormRow from "./components/FormRow.svelte";
