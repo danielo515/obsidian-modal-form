@@ -149,6 +149,11 @@ The form is self-explanatory, but here is some key points you need to keep in mi
 
 ![form editor/creator](media/editor.png)
 
+
+#### Dataview integration
+
+![dataview](media/dataview.png)
+
 #### Inline forms
 
 The plugin also supports inline forms, which are forms that are defined when you call the openForm method. This is useful when you want to create a form that is only used in one place and it is simple enough. However, note the format is a bit verbose for typing it manually and it is error prone, so unless it is a very small form, you will most likely prefer to use a named form.
