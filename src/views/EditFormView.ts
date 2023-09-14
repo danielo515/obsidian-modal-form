@@ -57,7 +57,7 @@ export class EditFormView extends ItemView {
 				onCancel: () => {
 					this.plugin.closeEditForm()
 				},
-				onPreview: (formDefinition) => {
+				onPreview: (formDefinition: FormDefinition) => {
 					this.plugin.api.openForm(formDefinition)
 				},
 			}

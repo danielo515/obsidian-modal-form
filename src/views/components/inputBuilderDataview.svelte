@@ -2,7 +2,7 @@
 	import FormRow from "./FormRow.svelte";
 
 	export let index: number;
-	export let value: string;
+	export let value: string = "";
 	$: id = `dataview_${index}`;
 </script>
 

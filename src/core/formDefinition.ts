@@ -114,6 +114,7 @@ export type EditableInput = {
 	min?: number;
 	max?: number;
 	options?: { value: string; label: string }[];
+	query?: string;
 };
 
 export type EditableFormDefinition = {
