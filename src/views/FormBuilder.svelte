@@ -85,9 +85,9 @@
 	};
 </script>
 
-<div class="flex column gap2">
+<div class="flex column gap2 wrapper modal-form">
 	<form on:submit|preventDefault={handleSubmit}>
-		<fieldset class="flex column gap2">
+		<fieldset class="flex column gap2 header">
 			<label for="name">Form unique name</label>
 			<span class="hint"
 				>This name will identify this form uniquely, and will be the
@@ -134,9 +134,9 @@
 			</div>
 		</fieldset>
 
-		<h3>Fields</h3>
-		{#if definition.fields.length > 0}
-			<fieldset class="flex column gap2 p-2">
+		<fieldset class="flex column gap2 fields">
+			<h3>Fields</h3>
+			{#if definition.fields.length > 0}
 				{#each definition.fields as field, index}
 					{@const desc_id = `desc_${index}`}
 					{@const delete_id = `delete_${index}`}
@@ -346,14 +346,29 @@
 					</div>
 					<hr />
 				{/each}
-			</fieldset>
-		{:else}
-			No fields yet
-		{/if}
+			{:else}
+				No fields yet
+			{/if}
+		</fieldset>
 	</form>
 </div>
 
 <style>
+	.wrapper,
+	form {
+		max-height: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+	.header {
+		box-shadow: var(--shadow-bottom) var(--divider-color);
+		padding: 1rem;
+	}
+	.fields {
+		overflow-y: auto;
+		padding: 1rem;
+	}
 	.flex {
 		display: flex;
 	}
