@@ -1,4 +1,5 @@
 import { App, Modal, Setting } from "obsidian";
+import MultiSelect from "./views/components/MultiSelect.svelte";
 import FormResult, { type ModalFormData } from "./FormResult";
 import { exhaustiveGuard } from "./safety";
 import { get_tfiles_from_folder } from "./utils/files";
@@ -101,14 +102,18 @@ export class FormModal extends Modal {
 							this.formResult[definition.name] = value;
 						});
 					});
+				case 'multiselect':
+					return fieldBase.controlEl.appendChild(new MultiSelect({}))
 				case "dataview":
-					const query = fieldInput.query;
-					return fieldBase.addText((element) => {
-						new DataviewSuggest(element.inputEl, query, this.app);
-						element.onChange(async (value) => {
-							this.formResult[definition.name] = value;
+					{
+						const query = fieldInput.query;
+						return fieldBase.addText((element) => {
+							new DataviewSuggest(element.inputEl, query, this.app);
+							element.onChange(async (value) => {
+								this.formResult[definition.name] = value;
+							});
 						});
-					});
+					}
 				case "select":
 					{
 						const source = fieldInput.source;

@@ -22,12 +22,14 @@ type inputSelectFixed = {
 	options: { value: string; label: string }[];
 }
 type basicInput = { type: FieldType };
+type multiselect = { type: 'multiselect' };
 type inputType =
 	| basicInput
 	| inputNoteFromFolder
 	| inputSlider
 	| selectFromNotes
 	| inputDataviewSource
+	| multiselect
 	| inputSelectFixed;
 
 export const FieldTypeReadable: Record<AllFieldTypes, string> = {
@@ -41,6 +43,7 @@ export const FieldTypeReadable: Record<AllFieldTypes, string> = {
 	"slider": "Slider",
 	"select": "Select",
 	"dataview": "Dataview",
+	"multiselect": "Multiselect",
 } as const;
 
 function isObject(input: unknown): input is Record<string, unknown> {
