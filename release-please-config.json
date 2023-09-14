@@ -1,6 +1,6 @@
 {
 	"bootstrap-sha": "8076767948c92ccf03aa87ed704119be17ea94e4",
-	"release-type": "node",
+	"release-type": "simple",
 	"include-v-in-tag": false,
 	"packages": {
 		".": {}
@@ -9,6 +9,11 @@
 		{
 			"type": "json",
 			"path": "manifest.json",
+			"jsonpath": "$.version"
+		},
+		{
+			"type": "json",
+			"path": "package.json",
 			"jsonpath": "$.version"
 		}
 	]
