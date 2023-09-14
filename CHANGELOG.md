@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/danielo515/obsidian-modal-form/compare/1.10.0...1.11.0) (2023-09-14)
+
+
+### Features
+
+* preview form from the editor ([2d8e2d6](https://github.com/danielo515/obsidian-modal-form/commit/2d8e2d6aec99f27a30e86ffc49312a2876e5195e)), closes [#17](https://github.com/danielo515/obsidian-modal-form/issues/17)
+
 ## [1.10.0](https://github.com/danielo515/obsidian-modal-form/compare/1.9.1...1.10.0) (2023-09-14)
 
 
