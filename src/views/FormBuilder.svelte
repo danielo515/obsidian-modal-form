@@ -131,12 +131,13 @@
 						onChange();
 					}}>Add more fields</button
 				>
-				<button type="submit" disabled={!isValid}>Save and close</button
-				>
 				<button
 					type="button"
 					on:click={handlePreview}
 					disabled={!isValid}>Preview</button
+				>
+				<button class="mod-cta" type="submit" disabled={!isValid}
+					>Save and close</button
 				>
 				<button type="button" class="mod-warning" on:click={onCancel}
 					>Cancel</button
