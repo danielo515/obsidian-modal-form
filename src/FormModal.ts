@@ -72,6 +72,7 @@ export class FormModal extends Modal {
 				case "toggle":
 					return fieldBase.addToggle((toggle) => {
 						toggle.setValue(false);
+						this.formResult[definition.name] = false;
 						return toggle.onChange(async (value) => {
 							this.formResult[definition.name] = value;
 						});
