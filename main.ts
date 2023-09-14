@@ -21,7 +21,7 @@ const DEFAULT_SETTINGS: ModalFormSettings = {
 // Define functions and properties you want to make available to other plugins, or templater templates, etc
 interface PublicAPI {
 	exampleForm(): Promise<FormResult>;
-	openForm(name: string): Promise<FormResult>;
+	openForm(formReference: string | FormDefinition): Promise<FormResult>
 }
 // This is the plugin entrypoint
 export default class ModalFormPlugin extends Plugin {

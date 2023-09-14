@@ -22,6 +22,7 @@
 	export let onChange: () => void;
 	export let onSubmit: (formDefinition: FormDefinition) => void;
 	export let onCancel: () => void;
+	export let onPreview: (formDefinition: FormDefinition) => void;
 
 	$: isValid = isValidFormDefinition(definition);
 
@@ -83,6 +84,10 @@
 		if (!isValidFormDefinition(definition)) return;
 		onSubmit(definition);
 	};
+	const handlePreview = () => {
+		if (!isValidFormDefinition(definition)) return;
+		onPreview(definition);
+	};
 </script>
 
 <div class="flex column gap2 wrapper modal-form">
@@ -127,6 +132,11 @@
 					}}>Add more fields</button
 				>
 				<button type="submit" disabled={!isValid}>Save and close</button
+				>
+				<button
+					type="button"
+					on:click={handlePreview}
+					disabled={!isValid}>Preview</button
 				>
 				<button type="button" class="mod-warning" on:click={onCancel}
 					>Cancel</button
