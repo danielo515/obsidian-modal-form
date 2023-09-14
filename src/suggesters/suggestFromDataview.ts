@@ -1,7 +1,8 @@
 // Credits go to Liam's Periodic Notes Plugin: https://github.com/liamcain/obsidian-periodic-notes
 import { App, TAbstractFile, TFolder } from "obsidian";
 import { TextInputSuggest } from "./suggest";
-import { ModalFormError } from "src/utils/Error";
+import { ModalFormError, tryCatch } from "src/utils/Error";
+import { log_error } from "src/utils/Log";
 
 /**
  * Offers suggestions based on a dataview query.
@@ -13,24 +14,28 @@ export class DataviewSuggest extends TextInputSuggest<string> {
 
 	constructor(
 		public inputEl: HTMLInputElement,
-		private dvQuery: string,
+		dvQuery: string,
 		protected app: App,
 	) {
 		super(app, inputEl);
-		this.sandboxedQuery = eval(`(function sandboxedQuery(dv, pages) { return ${dvQuery} })`)
-
+		this.sandboxedQuery = tryCatch(
+			() => eval(`(function sandboxedQuery(dv, pages) { return ${dvQuery} })`),
+			"Invalid dataview query"
+		)
 	}
 
 	getSuggestions(inputStr: string): string[] {
 		const dv = this.app.plugins.plugins.dataview?.api
 		if (!dv) {
-			throw new ModalFormError("Dataview plugin is not enabled")
+			log_error(new ModalFormError("Dataview plugin is not enabled"))
+			return [];
 		}
 		const result = this.sandboxedQuery(dv, dv.pages)
 		if (!Array.isArray(result)) {
-			throw new ModalFormError("The dataview query did not return an array")
+			log_error(new ModalFormError("The dataview query did not return an array"))
+			return [];
 		}
-		return result
+		return result.filter(r => r.toLowerCase().includes(inputStr.toLowerCase()))
 	}
 
 	renderSuggestion(option: string, el: HTMLElement): void {

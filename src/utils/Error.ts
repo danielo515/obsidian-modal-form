@@ -21,10 +21,19 @@ export async function errorWrapper<T>(
 			log_error(e);
 		}
 		return null;
-}
+	}
 }
 
-export function errorWrapperSync<T>(fn: () => T, msg: string): T | null {
+/**
+ * I case of error, logs it to the console and to the UI
+ * and returns null
+ * @export
+ * @template T
+ * @param {() => T} fn
+ * @param {string} msg
+ * @return {*}  {(T | null)}
+ */
+export function tryCatch<T>(fn: () => T, msg: string): T | null {
 	try {
 		return fn();
 	} catch (e: any) {
