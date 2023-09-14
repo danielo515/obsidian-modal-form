@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.1](https://github.com/danielo515/obsidian-modal-form/compare/1.9.0...1.9.1) (2023-09-14)
+
+
+### Bug Fixes
+
+* release process ([790d84d](https://github.com/danielo515/obsidian-modal-form/commit/790d84d83200243b01ca6080575e3aabda663ff5))
+
 ## [1.9.0](https://github.com/danielo515/obsidian-modal-form/compare/obsidian-modal-form-1.8.0...obsidian-modal-form-1.9.0) (2023-09-14)
 
 
