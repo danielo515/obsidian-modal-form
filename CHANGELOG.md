@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.9.0](https://github.com/danielo515/obsidian-modal-form/compare/obsidian-modal-form-1.8.0...obsidian-modal-form-1.9.0) (2023-09-14)
+
+
+### Features
+
+* keep the form header always visible ([216d9b4](https://github.com/danielo515/obsidian-modal-form/commit/216d9b40a9ebfcc4ca208a5d0ba326cd73c755d5)), closes [#11](https://github.com/danielo515/obsidian-modal-form/issues/11)
+
+
+### Bug Fixes
+
+* release-bot ([0586068](https://github.com/danielo515/obsidian-modal-form/commit/0586068e6b69a3659fd27377510b0de3eeba6387))
+
 ## [1.8.0](https://github.com/danielo515/obsidian-modal-form/compare/obsidian-modal-form-1.7.1...obsidian-modal-form-1.8.0) (2023-09-13)
 
 
