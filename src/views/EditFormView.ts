@@ -41,7 +41,7 @@ export class EditFormView extends ItemView {
 
 	async onOpen() {
 		this.formEditor = new FormEditor({
-			target: this.contentEl,
+			target: this.containerEl,
 			props: {
 				definition: this.formState,
 				app: this.app,

@@ -53,7 +53,6 @@ export class ManageFormsView extends ItemView {
 			new Setting(row)
 				.setName(form.title)
 				.then((setting) => {
-					console.log(setting)
 					// This moves the separator of the settings container from he top to the bottom
 					setting.settingEl.setCssStyles({ borderTop: 'none', borderBottom: '1px solid var(--background-modifier-border)' })
 				})
