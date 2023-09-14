@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.10.0](https://github.com/danielo515/obsidian-modal-form/compare/1.9.1...1.10.0) (2023-09-14)
+
+
+### Features
+
+* show better errors ([8202d37](https://github.com/danielo515/obsidian-modal-form/commit/8202d378cac76f6a3f49058c78e9988daa5432e6))
+
+
+### Bug Fixes
+
+* dataview input was not filtering ([8202d37](https://github.com/danielo515/obsidian-modal-form/commit/8202d378cac76f6a3f49058c78e9988daa5432e6))
+
 ## [1.9.1](https://github.com/danielo515/obsidian-modal-form/compare/1.9.0...1.9.1) (2023-09-14)
 
 
