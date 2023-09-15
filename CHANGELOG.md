@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.14.0](https://github.com/danielo515/obsidian-modal-form/compare/1.13.0...1.14.0) (2023-09-15)
+
+
+### Features
+
+* show result preview ([7425df1](https://github.com/danielo515/obsidian-modal-form/commit/7425df13425c5e957dc9a9f1cc2a8f2bcb1d1c5f))
+
+
+### Bug Fixes
+
+* filtering in multi with uppercase ([fac67ea](https://github.com/danielo515/obsidian-modal-form/commit/fac67ea1199b2db9d27e4df0010e959e939927ab))
+* multi select was not including the values ([1885834](https://github.com/danielo515/obsidian-modal-form/commit/1885834ded85f09deac185e2a3b2d91502585504))
+
 ## [1.13.0](https://github.com/danielo515/obsidian-modal-form/compare/1.12.1...1.13.0) (2023-09-15)
 
 
