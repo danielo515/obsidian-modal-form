@@ -1,6 +1,6 @@
 import { TextInputSuggest } from "./suggest";
 
-export class MultiSelect extends TextInputSuggest<string> {
+export class MultiSuggest extends TextInputSuggest<string> {
 	content: Set<string>;
 
 	constructor(input: HTMLInputElement, content: Set<string>, private onSelect: (value: string) => void) {
@@ -20,9 +20,10 @@ export class MultiSelect extends TextInputSuggest<string> {
 	}
 
 	selectSuggestion(content: string): void {
-		this.inputEl.value = "";
-		this.inputEl.trigger("input");
 		this.onSelect(content);
+		this.inputEl.value = "";
+		// this.inputEl.trigger("blur");
+		this.inputEl.blur()
 		this.close();
 	}
 }
