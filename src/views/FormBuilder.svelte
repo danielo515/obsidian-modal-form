@@ -368,6 +368,7 @@
 	.wrapper,
 	form {
 		max-height: 100%;
+		min-height: 100%;
 		height: 100%;
 		display: flex;
 		flex-direction: column;
@@ -395,9 +396,6 @@
 	fieldset {
 		border: none;
 		padding: 0;
-	}
-	.p-2 {
-		padding: 0.5rem;
 	}
 	.hint {
 		color: var(--color-base-70);

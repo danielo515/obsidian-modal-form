@@ -1,11 +1,11 @@
 import ModalFormPlugin from "main";
 import { ItemView, type ViewStateResult, WorkspaceLeaf } from "obsidian";
-import type { FormDefinition, AllFieldTypes } from "../core/formDefinition";
+import type { FormDefinition, EditableFormDefinition } from "../core/formDefinition";
 import FormEditor from './FormBuilder.svelte'
 
 export const EDIT_FORM_VIEW = "modal-form-edit-form-view";
 
-function parseState(maybeState: unknown): maybeState is FormDefinition {
+function parseState(maybeState: unknown): maybeState is EditableFormDefinition {
 	if (maybeState === null) {
 		return false
 	}
@@ -24,7 +24,7 @@ function parseState(maybeState: unknown): maybeState is FormDefinition {
  * Simple, right?
  */
 export class EditFormView extends ItemView {
-	formState: FormDefinition = { title: '', name: '', fields: [] };
+	formState: EditableFormDefinition = { title: '', name: '', fields: [] };
 	formEditor!: FormEditor;
 	constructor(readonly leaf: WorkspaceLeaf, readonly plugin: ModalFormPlugin) {
 		super(leaf);
@@ -40,6 +40,7 @@ export class EditFormView extends ItemView {
 	}
 
 	async onOpen() {
+		this.containerEl.empty()
 		this.formEditor = new FormEditor({
 			target: this.containerEl,
 			props: {

@@ -13,7 +13,7 @@ permissions:
 
 jobs:
     sync-versions:
-        # if: "${{ github.event.label.name == 'autorelease: pending' }}"
+        # if: "${{ contains(github.event.pull_request.labels.*.name, 'autorelease: pending') }}"
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
