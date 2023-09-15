@@ -205,7 +205,7 @@
 						</div>
 					</div>
 					<div class="flex gap1">
-						{#if field.input.type === "select"}
+						{#if field.input.type === "select" || field.input.type === "multiselect"}
 							{@const source_id = `source_${index}`}
 							<div class="flex column gap1">
 								<label for={source_id}>Source</label>

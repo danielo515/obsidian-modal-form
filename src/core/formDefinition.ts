@@ -22,12 +22,14 @@ type inputSelectFixed = {
 	options: { value: string; label: string }[];
 }
 type basicInput = { type: FieldType };
+type multiselect = { type: 'multiselect', source: 'notes', folder: string } | { type: 'multiselect', source: 'fixed', options: string[] }
 type inputType =
 	| basicInput
 	| inputNoteFromFolder
 	| inputSlider
 	| selectFromNotes
 	| inputDataviewSource
+	| multiselect
 	| inputSelectFixed;
 
 export const FieldTypeReadable: Record<AllFieldTypes, string> = {
@@ -41,6 +43,7 @@ export const FieldTypeReadable: Record<AllFieldTypes, string> = {
 	"slider": "Slider",
 	"select": "Select",
 	"dataview": "Dataview",
+	"multiselect": "Multiselect",
 } as const;
 
 function isObject(input: unknown): input is Record<string, unknown> {
@@ -135,21 +138,27 @@ export function isValidBasicInput(input: unknown): input is basicInput {
 	return ["text", "number", "date", "time", "datetime", "toggle"].includes(input.type as string);
 }
 
+export function isMultiSelect(input: unknown): input is multiselect {
+	return isObject(input)
+		&& input.type === 'multiselect'
+		&& (
+			(input.source === 'notes' && typeof input.folder === 'string') || (input.source === 'fixed' && Array.isArray(input.options))
+		)
+}
+
 export function isInputTypeValid(input: unknown): input is inputType {
-	if (isValidBasicInput(input)) {
-		return true;
-	} else if (isInputNoteFromFolder(input)) {
-		return true;
-	} else if (isInputSlider(input)) {
-		return true;
-	} else if (isSelectFromNotes(input)) {
-		return true;
-	} else if (isInputSelectFixed(input)) {
-		return true;
-	} else if (isDataViewSource(input)) {
-		return true;
-	} else {
-		return false;
+	switch (true) {
+		case isValidBasicInput(input):
+		case isInputNoteFromFolder(input):
+		case isInputSlider(input):
+		case isSelectFromNotes(input):
+		case isInputSelectFixed(input):
+		case isDataViewSource(input):
+		case isMultiSelect(input):
+			return true;
+		default:
+			return false;
+
 	}
 }
 
