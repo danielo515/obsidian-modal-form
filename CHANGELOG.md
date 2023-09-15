@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.1](https://github.com/danielo515/obsidian-modal-form/compare/1.12.0...1.12.1) (2023-09-15)
+
+
+### Bug Fixes
+
+* make sure the editor always has the right height ([53f10b3](https://github.com/danielo515/obsidian-modal-form/commit/53f10b3a2451efd347855e486f46aa64eaaeeec3)), closes [#38](https://github.com/danielo515/obsidian-modal-form/issues/38)
+
 ## [1.12.0](https://github.com/danielo515/obsidian-modal-form/compare/1.11.0...1.12.0) (2023-09-15)
 
 
