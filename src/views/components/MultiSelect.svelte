@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Setting } from "obsidian";
+	import { remove_inplace } from "../../utils/array";
 	import { MultiSuggest } from "../../suggesters/MultiSuggest";
 
 	export let selectedVales: string[] = [];
@@ -16,12 +17,13 @@
 	function createInput(element: HTMLInputElement) {
 		new MultiSuggest(element, remainingOptions, (selected) => {
 			selectedVales.push(selected);
-			selectedVales = [...new Set(selectedVales)];
 			remainingOptions.delete(selected);
+			selectedVales = selectedVales;
 		});
 	}
 	function reomoveValue(value: string) {
-		selectedVales = selectedVales.filter((v) => v !== value);
+		remove_inplace(selectedVales, value);
+		selectedVales = selectedVales;
 		remainingOptions.add(value);
 	}
 </script>
