@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.12.0](https://github.com/danielo515/obsidian-modal-form/compare/1.11.0...1.12.0) (2023-09-15)
+
+
+### Features
+
+* multi select UI builder ([3eff7a8](https://github.com/danielo515/obsidian-modal-form/commit/3eff7a89c7177faa47940c16d04f97f5d72a3a21))
+* multi-select v1 ([e3ee492](https://github.com/danielo515/obsidian-modal-form/commit/e3ee49281f39ed6708cdd48f8bba527e74d5584b))
+
+
+### Bug Fixes
+
+* proper colors for save and close ([4c6d495](https://github.com/danielo515/obsidian-modal-form/commit/4c6d495a8b0e550b9f117e5d340885a8052f55c9))
+* toggles always have a value ([72cfc3e](https://github.com/danielo515/obsidian-modal-form/commit/72cfc3e65624a31d4a200301465aa9044e908357))
+
 ## [1.11.0](https://github.com/danielo515/obsidian-modal-form/compare/1.10.0...1.11.0) (2023-09-14)
 
 
