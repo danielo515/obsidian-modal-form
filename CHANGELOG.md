@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/danielo515/obsidian-modal-form/compare/1.12.1...1.13.0) (2023-09-15)
+
+
+### Features
+
+* limitedForm api ([b0acb29](https://github.com/danielo515/obsidian-modal-form/commit/b0acb29e85dc806bbf3ff04391c42c220bfcb178)), closes [#39](https://github.com/danielo515/obsidian-modal-form/issues/39)
+
 ## [1.12.1](https://github.com/danielo515/obsidian-modal-form/compare/1.12.0...1.12.1) (2023-09-15)
 
 
