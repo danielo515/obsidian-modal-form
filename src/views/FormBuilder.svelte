@@ -60,6 +60,7 @@
 		const field = definition.fields[fieldIndex];
 		const newField = {
 			...field,
+			input: structuredClone(field.input),
 			name: findFreeName(fieldIndex),
 		};
 		definition.fields = [
