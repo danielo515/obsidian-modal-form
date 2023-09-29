@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.14.1](https://github.com/danielo515/obsidian-modal-form/compare/1.14.0...1.14.1) (2023-09-29)
+
+
+### Bug Fixes
+
+* properly clone elements ([667ebe0](https://github.com/danielo515/obsidian-modal-form/commit/667ebe0d94526803dbad6d62069c36757355dbe5)), closes [#51](https://github.com/danielo515/obsidian-modal-form/issues/51)
+* set a default value for inputs of type select ([2c514b1](https://github.com/danielo515/obsidian-modal-form/commit/2c514b1095edf37e37151ca89f2ea10b440db446)), closes [#45](https://github.com/danielo515/obsidian-modal-form/issues/45)
+
 ## [1.14.0](https://github.com/danielo515/obsidian-modal-form/compare/1.13.0...1.14.0) (2023-09-15)
 
 
