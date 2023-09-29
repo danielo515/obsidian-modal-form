@@ -145,6 +145,7 @@ export class FormModal extends Modal {
                     {}
                   );
                   element.addOptions(options);
+                  this.formResult[definition.name] = element.getValue();
                   element.onChange(async (value) => {
                     this.formResult[definition.name] =
                       value;
@@ -166,6 +167,7 @@ export class FormModal extends Modal {
                     {}
                   );
                   element.addOptions(options);
+                  this.formResult[definition.name] = element.getValue();
                   element.onChange(async (value) => {
                     this.formResult[definition.name] =
                       value;
