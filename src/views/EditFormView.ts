@@ -1,4 +1,4 @@
-import ModalFormPlugin from "main";
+import ModalFormPlugin from "../main";
 import { ItemView, type ViewStateResult, WorkspaceLeaf } from "obsidian";
 import type { FormDefinition, EditableFormDefinition } from "../core/formDefinition";
 import FormEditor from './FormBuilder.svelte'

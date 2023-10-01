@@ -3,7 +3,7 @@ import { App } from "obsidian";
 import type { FormDefinition } from "./core/formDefinition";
 import FormResult from "./FormResult";
 import { exampleModalDefinition } from "./exampleModalDefinition";
-import ModalFormPlugin from "main";
+import ModalFormPlugin from "./main";
 import { ModalFormError } from "./utils/Error";
 import { FormModal } from "./FormModal";
 import { log_error } from "./utils/Log";
@@ -23,7 +23,7 @@ export class API {
 	/**
 	 * Constructor for the API class
 	 * @param {App} app - The application instance
-	 * @param {ModalFormPlugin} plugin - The plugin instance
+	 * @param {typeof ModalFormPlugin} plugin - The plugin instance
 	 */
 	constructor(private app: App, private plugin: ModalFormPlugin) { }
 

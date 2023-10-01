@@ -25,7 +25,7 @@ interface PublicAPI {
 }
 // This is the plugin entrypoint
 export default class ModalFormPlugin extends Plugin {
-	settings: ModalFormSettings | undefined;
+	public settings: ModalFormSettings | undefined;
 	// This things will be setup in the onload function rather than constructor
 	public api!: PublicAPI;
 
@@ -42,7 +42,7 @@ export default class ModalFormPlugin extends Plugin {
 	}
 
 	async duplicateForm(form: FormDefinition) {
-		let newForm = { ...form };
+		const newForm = { ...form };
 		newForm.name = form.name + '-copy';
 		let i = 1;
 		while (this.formExists(newForm.name)) {
