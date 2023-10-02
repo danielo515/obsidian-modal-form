@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.15.0](https://github.com/danielo515/obsidian-modal-form/compare/1.14.1...1.15.0) (2023-10-02)
+
+
+### Features
+
+* default values support for most input types ([f8415a3](https://github.com/danielo515/obsidian-modal-form/commit/f8415a32554f1add8b50e667a7ca9664232ee2e1))
+
+
+### Bug Fixes
+
+* do not use innerHTML ([8ae7d5b](https://github.com/danielo515/obsidian-modal-form/commit/8ae7d5be014840ddb8e19619097af7ad1d9bccc2))
+
 ## [1.14.1](https://github.com/danielo515/obsidian-modal-form/compare/1.14.0...1.14.1) (2023-09-29)
 
 
