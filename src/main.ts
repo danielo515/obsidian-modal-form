@@ -158,14 +158,14 @@ export default class ModalFormPlugin extends Plugin {
 		ribbonIconEl.addClass("my-plugin-ribbon-class");
 
 		this.addCommand({
-			id: "modal-form-new-form",
+			id: "new-form",
 			name: "New form",
 			callback: () => {
 				this.createNewForm();
 			},
 		});
 		this.addCommand({
-			id: "modal-form-manage-forms",
+			id: "manage-forms",
 			name: "Manage forms",
 			callback: () => {
 				this.manageForms();
