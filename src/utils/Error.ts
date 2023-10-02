@@ -36,8 +36,9 @@ export async function errorWrapper<T>(
 export function tryCatch<T>(fn: () => T, msg: string): T | null {
 	try {
 		return fn();
-	} catch (e: any) {
-		log_error(new ModalFormError(msg, e.message));
+	} catch (e) {
+		if (e instanceof Error)
+			log_error(new ModalFormError(msg, e.message));
 		return null;
 	}
 }

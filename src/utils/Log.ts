@@ -1,26 +1,25 @@
 import { Notice } from "obsidian";
 import { ModalFormError } from "./Error";
 
-export function log_update(msg: string): void {
-  const notice = new Notice("", 15000);
-  // TODO: Find better way for this
-  // @ts-ignore
-  notice.noticeEl.innerHTML = `<b>Modal form update</b>:<br/>${msg}`;
-}
 
 export function log_notice(title: string, msg: string): void {
-  const notice = new Notice("", 15000);
-  // TODO: Find better way for this
-  // @ts-ignore
-  notice.noticeEl.innerHTML = `<b>${title}</b>:<br/>${msg}`;
+	const notice = new Notice("", 15000);
+	const el = notice.noticeEl;
+	el.empty();
+	const head = el.createEl('h6', { text: title })
+	const body = el.createEl('div', { text: title })
+	el.append(head, body);
+}
+
+export function log_update(msg: string): void {
+	log_notice('Modal form update', msg)
 }
 
 export function log_error(e: Error | ModalFormError): void {
-  const notice = new Notice("", 8000);
-  if (e instanceof ModalFormError && e.console_msg) {
-    notice.noticeEl.innerHTML = `<b>Modal form Error</b>:<br/>${e.message}<br/>Check console for more information`;
-    console.error(`Modal form Error:`, e.message, "\n", e.console_msg);
-  } else {
-    notice.noticeEl.innerHTML = `<b>Modal form Error</b>:<br/>${e.message}`;
-  }
+	if (e instanceof ModalFormError && e.console_msg) {
+		log_notice('Modal from error', e.message)
+		console.error(`Modal form Error:`, e.message, "\n", e.console_msg);
+	} else {
+		log_notice('Modal from error', e.message)
+	}
 }
