@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.0](https://github.com/danielo515/obsidian-modal-form/compare/1.15.0...1.16.0) (2023-10-03)
+
+
+### Features
+
+* add multi-line text area ([1cf1559](https://github.com/danielo515/obsidian-modal-form/commit/1cf155951b1c38af59abb84cf16e6c852bd87abd)), closes [#46](https://github.com/danielo515/obsidian-modal-form/issues/46)
+
 ## [1.15.0](https://github.com/danielo515/obsidian-modal-form/compare/1.14.1...1.15.0) (2023-10-02)
 
 
