@@ -1,4 +1,4 @@
-import { App, Modal, Setting } from "obsidian";
+import { App, Modal, Platform, Setting } from "obsidian";
 import MultiSelect from "./views/components/MultiSelect.svelte";
 import FormResult, { formDataFromFormOptions, type ModalFormData } from "./FormResult";
 import { exhaustiveGuard } from "./safety";
@@ -35,6 +35,20 @@ export class FormModal extends Modal {
             const type = fieldInput.type;
             const initialValue = this.formResult[definition.name];
             switch (type) {
+                case "textarea":
+                    fieldBase.setClass('modal-form-textarea')
+                    return fieldBase.addTextArea((textEl) => {
+                        textEl.onChange(value => {
+
+                            this.formResult[definition.name] = value;
+                        });
+                        textEl.inputEl.rows = 6;
+                        if (Platform.isIosApp)
+                            textEl.inputEl.style.width = "100%";
+                        else if (Platform.isDesktopApp) {
+                            textEl.inputEl.rows = 10;
+                        }
+                    })
                 case "text":
                     return fieldBase.addText((text) => {
                         initialValue !== undefined && text.setValue(String(initialValue));

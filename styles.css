@@ -7,37 +7,57 @@ If your plugin does not need CSS, delete this file.
 
 */
 
+:root {
+    --mf-spacing: 0.75rem;
+}
+
 /* Utilities to remove styles from native obsidian elements when wrapped like this
 <div class='utility'>
 	<div>...</div>
 </div>
 */
 .remove-border div:first-of-type {
-	border: none;
+    border: none;
 }
 .remove-padding div:first-of-type {
-	padding: 0;
+    padding: 0;
 }
 
 .fix-suggest .setting-item-info {
-	display: none;
+    display: none;
 }
 
 .modal-form-danger {
-	color: var(--text-error);
+    color: var(--text-error);
 }
 
 .modal-form-primary {
-	color: var(--text-accent);
+    color: var(--text-accent);
 }
 
 .modal-form-hint {
-	color: var(--text-muted);
+    color: var(--text-muted);
 }
 .modal-form {
-	--shadow-bottom: 0 0.8rem 0.8rem -0.8rem;
+    --shadow-bottom: 0 0.8rem 0.8rem -0.8rem;
 }
 /* .modal-form-hint code {
 	color: var(--text-normal);
 	background-color: var(--background-secondary);
 } */
+
+.modal-form-textarea {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--mf-spacing);
+}
+
+.modal-form-textarea .setting-item-control {
+    flex: 1;
+    width: 100%;
+}
+
+.modal-form-textarea .setting-item-control textarea {
+    width: 100%;
+}

@@ -4,13 +4,17 @@
  * Here are the types, validators, rules etc.
  */
 
-export type FieldType =
-    | "text"
-    | "number"
-    | "date"
-    | "time"
-    | "datetime"
-    | "toggle";
+const fieldTypeMap = {
+    text: "Text",
+    number: "Number",
+    date: "Date",
+    time: "Time",
+    datetime: "DateTime",
+    textarea: "Text area",
+    toggle: "Toggle"
+} as const;
+
+type FieldType = keyof typeof fieldTypeMap
 
 type selectFromNotes = { type: "select"; source: "notes", folder: string };
 type inputSlider = { type: "slider"; min: number, max: number };
@@ -33,12 +37,7 @@ type inputType =
     | inputSelectFixed;
 
 export const FieldTypeReadable: Record<AllFieldTypes, string> = {
-    "text": "Text",
-    "number": "Number",
-    "date": "Date",
-    "time": "Time",
-    "datetime": "DateTime",
-    "toggle": "Toggle",
+    ...fieldTypeMap,
     "note": "Note",
     "slider": "Slider",
     "select": "Select",
@@ -136,10 +135,10 @@ export type EditableFormDefinition = {
 };
 
 export function isValidBasicInput(input: unknown): input is basicInput {
-    if (!isObject(input)) {
+    if (!isObject(input) || typeof input.type !== "string") {
         return false;
     }
-    return ["text", "number", "date", "time", "datetime", "toggle"].includes(input.type as string);
+    return input.type in fieldTypeMap;
 }
 
 export function isMultiSelect(input: unknown): input is multiselect {
@@ -162,7 +161,6 @@ export function isInputTypeValid(input: unknown): input is inputType {
             return true;
         default:
             return false;
-
     }
 }
 
