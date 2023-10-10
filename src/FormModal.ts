@@ -160,17 +160,13 @@ export class FormModal extends Modal {
                         switch (source) {
                             case "fixed":
                                 return fieldBase.addDropdown((element) => {
-                                    const options = fieldInput.options.reduce(
+                                    fieldInput.options.forEach(
                                         (
-                                            acc: Record<string, string>,
                                             option
                                         ) => {
-                                            acc[option.value] = option.label;
-                                            return acc;
+                                            element.addOption(option.value, option.label);
                                         },
-                                        {}
                                     );
-                                    element.addOptions(options);
                                     this.formResult[definition.name] = element.getValue();
                                     element.onChange(async (value) => {
                                         this.formResult[definition.name] =
