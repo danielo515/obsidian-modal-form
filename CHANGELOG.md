@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.1](https://github.com/danielo515/obsidian-modal-form/compare/1.16.0...1.16.1) (2023-10-10)
+
+
+### Bug Fixes
+
+* ensure order of fixed select ([62b407e](https://github.com/danielo515/obsidian-modal-form/commit/62b407ea50b39c873d3f83e86ff9e502a88a6d22)), closes [#61](https://github.com/danielo515/obsidian-modal-form/issues/61)
+
 ## [1.16.0](https://github.com/danielo515/obsidian-modal-form/compare/1.15.0...1.16.0) (2023-10-03)
 
 
