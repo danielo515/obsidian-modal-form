@@ -49,7 +49,7 @@ export const exampleModalDefinition: FormDefinition = {
             name: "multi_example_2",
             label: "Multi select fixed",
             description: "Allows to pick many notes from a fixed list",
-            input: { type: "multiselect", source: "fixed", options: ['Android', 'iOS', 'Windows', 'MacOS', 'Linux', 'Solaris', 'MS2'] },
+            input: { type: "multiselect", source: "fixed", multi_select_options: ['Android', 'iOS', 'Windows', 'MacOS', 'Linux', 'Solaris', 'MS2'] },
         },
         {
             name: "best_fried",

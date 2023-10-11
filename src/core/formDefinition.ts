@@ -26,7 +26,7 @@ type inputSelectFixed = {
     options: { value: string; label: string }[];
 }
 type basicInput = { type: FieldType };
-type multiselect = { type: 'multiselect', source: 'notes', folder: string } | { type: 'multiselect', source: 'fixed', options: string[] }
+type multiselect = { type: 'multiselect', source: 'notes', folder: string } | { type: 'multiselect', source: 'fixed', multi_select_options: string[] }
 type inputType =
     | basicInput
     | inputNoteFromFolder
@@ -120,6 +120,7 @@ export type EditableInput = {
     min?: number;
     max?: number;
     options?: { value: string; label: string }[];
+    multi_select_options?: string[];
     query?: string;
 };
 
@@ -145,7 +146,10 @@ export function isMultiSelect(input: unknown): input is multiselect {
     return isObject(input)
         && input.type === 'multiselect'
         && (
-            (input.source === 'notes' && typeof input.folder === 'string') || (input.source === 'fixed' && Array.isArray(input.options))
+            (input.source === 'notes' && typeof input.folder === 'string')
+            || (
+                input.source === 'fixed' && Array.isArray(input.multi_select_options) && input.multi_select_options.every((option: unknown) => typeof option === 'string')
+            )
         )
 }
 

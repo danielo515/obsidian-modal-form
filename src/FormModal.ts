@@ -132,7 +132,7 @@ export class FormModal extends Modal {
                     {
                         this.formResult[definition.name] = this.formResult[definition.name] || []
                         const options = fieldInput.source == 'fixed'
-                            ? fieldInput.options
+                            ? fieldInput.multi_select_options
                             : get_tfiles_from_folder(fieldInput.folder, this.app).map(file => file.basename);
                         this.svelteComponents.push(new MultiSelect({
                             target: fieldBase.controlEl,
