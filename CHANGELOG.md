@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.2](https://github.com/danielo515/obsidian-modal-form/compare/1.16.1...1.16.2) (2023-10-11)
+
+
+### Bug Fixes
+
+* make multi-select static work ([fa5987a](https://github.com/danielo515/obsidian-modal-form/commit/fa5987a93ae7ef7bc6aea60f6273bbcb6e78fcc1)), closes [#63](https://github.com/danielo515/obsidian-modal-form/issues/63)
+
 ## [1.16.1](https://github.com/danielo515/obsidian-modal-form/compare/1.16.0...1.16.1) (2023-10-10)
 
 
