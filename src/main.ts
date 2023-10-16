@@ -98,7 +98,7 @@ export default class ModalFormPlugin extends Plugin {
 
     async activateView(viewType: ViewType, state?: FormDefinition) {
         const { workspace } = this.app;
-        let leaf = workspace.getLeavesOfType(viewType)[0];
+        let leaf: WorkspaceLeaf | undefined = workspace.getLeavesOfType(viewType)[0];
         if (leaf) {
             console.info('found leaf, no reason to create a new one')
         } else if (Platform.isMobile || this.settings?.editorPosition === "mainView") {
