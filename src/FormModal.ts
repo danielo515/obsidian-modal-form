@@ -38,8 +38,8 @@ export class FormModal extends Modal {
                 case "textarea":
                     fieldBase.setClass('modal-form-textarea')
                     return fieldBase.addTextArea((textEl) => {
+                        if (typeof initialValue === 'string') { textEl.setValue(initialValue); }
                         textEl.onChange(value => {
-
                             this.formResult[definition.name] = value;
                         });
                         textEl.inputEl.rows = 6;
