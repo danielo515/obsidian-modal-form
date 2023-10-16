@@ -1,6 +1,5 @@
 import ModalFormPlugin from "../main";
 import { ItemView, Setting, WorkspaceLeaf } from "obsidian";
-import { type FormDefinition } from "../core/formDefinition";
 
 export const MANAGE_FORMS_VIEW = "modal-form-manage-forms-view";
 
@@ -24,7 +23,7 @@ export class ManageFormsView extends ItemView {
 
     async onOpen() {
         // console.log('On open manage forms');
-        const container = this.containerEl.children[1];
+        const container = this.containerEl.children[1] || this.containerEl.createDiv();
         container.empty();
         container.createEl("h3", { text: "Manage forms" });
         this.renderControls(container.createDiv());

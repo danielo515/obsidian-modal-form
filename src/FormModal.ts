@@ -140,6 +140,7 @@ export class FormModal extends Modal {
                                 selectedVales: this.formResult[definition.name] as string[],
                                 availableOptions: options,
                                 setting: fieldBase,
+                                app: this.app,
                             }
                         }))
                         return;
