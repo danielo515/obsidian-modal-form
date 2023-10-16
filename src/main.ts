@@ -97,11 +97,12 @@ export default class ModalFormPlugin extends Plugin {
     onunload() { }
 
     async activateView(viewType: ViewType, state?: FormDefinition) {
-        this.app.workspace.detachLeavesOfType(viewType);
-
-        let leaf: WorkspaceLeaf;
-        if (Platform.isMobile || this.settings?.editorPosition === "mainView") {
-            leaf = this.app.workspace.getLeaf(false)
+        const { workspace } = this.app;
+        let leaf = workspace.getLeavesOfType(viewType)[0];
+        if (leaf) {
+            console.info('found leaf, no reason to create a new one')
+        } else if (Platform.isMobile || this.settings?.editorPosition === "mainView") {
+            leaf = this.app.workspace.getLeaf('tab')
         } else if (this.settings?.editorPosition === "right") {
             leaf = this.app.workspace.getRightLeaf(false);
         } else if (this.settings?.editorPosition === "left") {
@@ -117,11 +118,10 @@ export default class ModalFormPlugin extends Plugin {
             active: true,
             state,
         });
-        const leave = this.app.workspace.getLeavesOfType(viewType)[0]
         this.app.workspace.revealLeaf(
-            leave
+            leaf
         );
-        return leave;
+        return leaf;
     }
 
     async getSettings(): Promise<ModalFormSettings> {
