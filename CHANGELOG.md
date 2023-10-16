@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.3](https://github.com/danielo515/obsidian-modal-form/compare/1.16.2...1.16.3) (2023-10-16)
+
+
+### Bug Fixes
+
+* text-area initial value ([f21b783](https://github.com/danielo515/obsidian-modal-form/commit/f21b783cfefc9485a8f7748539076bb7d0def2b8))
+
 ## [1.16.2](https://github.com/danielo515/obsidian-modal-form/compare/1.16.1...1.16.2) (2023-10-11)
 
 
