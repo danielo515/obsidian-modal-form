@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.16.4](https://github.com/danielo515/obsidian-modal-form/compare/1.16.3...1.16.4) (2023-10-16)
+
+
+### Bug Fixes
+
+* do not close existing leafs, reuse instead ([b00b6b8](https://github.com/danielo515/obsidian-modal-form/commit/b00b6b8d407371450bf4ab0f88cf1fd68f36855f)), closes [#36](https://github.com/danielo515/obsidian-modal-form/issues/36)
+* open the main view in a new tab ([b00b6b8](https://github.com/danielo515/obsidian-modal-form/commit/b00b6b8d407371450bf4ab0f88cf1fd68f36855f))
+
 ## [1.16.3](https://github.com/danielo515/obsidian-modal-form/compare/1.16.2...1.16.3) (2023-10-16)
 
 
