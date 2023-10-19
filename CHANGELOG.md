@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.6](https://github.com/danielo515/obsidian-modal-form/compare/1.16.5...1.16.6) (2023-10-19)
+
+
+### Bug Fixes
+
+* remove all trace of text input suggest ([68cace2](https://github.com/danielo515/obsidian-modal-form/commit/68cace2135ac38d66027d1f620f34eda700e82df))
+
 ## [1.16.5](https://github.com/danielo515/obsidian-modal-form/compare/1.16.4...1.16.5) (2023-10-19)
 
 
