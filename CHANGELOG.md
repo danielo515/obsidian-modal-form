@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.5](https://github.com/danielo515/obsidian-modal-form/compare/1.16.4...1.16.5) (2023-10-19)
+
+
+### Bug Fixes
+
+* separate input builder for select ([e75a1f4](https://github.com/danielo515/obsidian-modal-form/commit/e75a1f43f7e7e674806ae9771d9c9155a8a0e7cc)), closes [#75](https://github.com/danielo515/obsidian-modal-form/issues/75)
+
 ## [1.16.4](https://github.com/danielo515/obsidian-modal-form/compare/1.16.3...1.16.4) (2023-10-16)
 
 
