@@ -27,7 +27,6 @@
         "typescript": "^5.2.2"
     },
     "dependencies": {
-        "@popperjs/core": "^2.11.8",
         "fuse.js": "^6.6.2"
     }
 }
