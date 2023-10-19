@@ -11,11 +11,13 @@
         "importHelpers": true,
         "isolatedModules": true,
         "strictNullChecks": true,
+        "verbatimModuleSyntax": false,
         "strict": true,
         "noUncheckedIndexedAccess": true,
         "types": [
             "svelte",
-            "node"
+            "node",
+            "jest"
         ],
         "lib": [
             "DOM",
