@@ -9,6 +9,7 @@
     import { setIcon, Setting, App } from "obsidian";
     import FormRow from "./components/FormRow.svelte";
     import InputBuilderDataview from "./components/inputBuilderDataview.svelte";
+    import InputBuilderSelect from "./components/InputBuilderSelect.svelte";
 
     export let definition: EditableFormDefinition = {
         title: "",
@@ -203,7 +204,15 @@
                         </div>
                     </div>
                     <div class="flex gap1">
-                        {#if field.input.type === "select" || field.input.type === "multiselect"}
+                        {#if field.input.type === "select"}
+                            <InputBuilderSelect
+                                {index}
+                                bind:source={field.input.source}
+                                bind:options={field.input.options}
+                                bind:folder={field.input.folder}
+                                notifyChange={onChange}
+                            />
+                        {:else if field.input.type === "multiselect"}
                             {@const source_id = `source_${index}`}
                             <div class="flex column gap1">
                                 <label for={source_id}>Source</label>

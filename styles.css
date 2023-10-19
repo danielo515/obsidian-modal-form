@@ -61,3 +61,15 @@ If your plugin does not need CSS, delete this file.
 .modal-form-textarea .setting-item-control textarea {
     width: 100%;
 }
+.modal-form.flex {
+    display: flex;
+}
+.modal-form.column {
+    flex-direction: column;
+}
+.modal-form.gap1 {
+    gap: 0.5rem;
+}
+.modal-form.gap2 {
+    gap: 1rem;
+}
