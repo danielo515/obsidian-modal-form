@@ -1,4 +1,3 @@
-// Credits go to Liam's Periodic Notes Plugin: https://github.com/liamcain/obsidian-periodic-notes
 import { AbstractInputSuggest, App } from "obsidian";
 import { ModalFormError, tryCatch } from "src/utils/Error";
 import { log_error } from "src/utils/Log";

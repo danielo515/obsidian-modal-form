@@ -8,7 +8,6 @@ export class FolderSuggest extends AbstractInputSuggest<TFolder> {
         public app: App,
     ) {
         super(app, inputEl);
-        console.log('FolderSuggest constructor');
     }
     getSuggestions(inputStr: string): TFolder[] {
         const abstractFiles = this.app.vault.getAllLoadedFiles();
