@@ -10,6 +10,7 @@
     import FormRow from "./components/FormRow.svelte";
     import InputBuilderDataview from "./components/inputBuilderDataview.svelte";
     import InputBuilderSelect from "./components/InputBuilderSelect.svelte";
+    import InputFolder from "./components/InputFolder.svelte";
 
     export let definition: EditableFormDefinition = {
         title: "",
@@ -279,13 +280,11 @@
                                     {/each}
                                 </FormRow>
                             {:else if field.input.source === "notes"}
-                                <!-- The autocomplete input will be inside the first div, so we remove some styles with the utility classes -->
-                                <div
-                                    class="flex column gap1 remove-padding remove-border fix-suggest"
-                                    use:folderField={index}
-                                >
-                                    <label for={source_id}>Source Folder</label>
-                                </div>
+                                <InputFolder
+                                    {index}
+                                    bind:folder={field.input.folder}
+                                    notifyChange={onChange}
+                                />
                             {/if}
                         {:else if field.input.type === "slider"}
                             {@const min_id = `min_${index}`}

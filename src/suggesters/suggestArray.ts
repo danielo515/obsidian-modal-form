@@ -1,11 +1,10 @@
-import { App } from "obsidian";
-import { TextInputSuggest } from "./suggest";
+import { AbstractInputSuggest, App } from "obsidian";
 
-export class ArraySuggest extends TextInputSuggest<string> {
+export class ArraySuggest extends AbstractInputSuggest<string> {
     content: Set<string>;
 
-    constructor(app: App, input: HTMLInputElement, content: Set<string>) {
-        super(app, input);
+    constructor(app: App, private inputEl: HTMLInputElement, content: Set<string>) {
+        super(app, inputEl);
         this.content = content;
     }
 
