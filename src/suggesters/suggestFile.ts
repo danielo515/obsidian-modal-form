@@ -1,7 +1,4 @@
-// Credits go to Liam's Periodic Notes Plugin: https://github.com/liamcain/obsidian-periodic-notes
-
-import { App, TAbstractFile, TFile } from "obsidian";
-import { TextInputSuggest } from "./suggest";
+import { AbstractInputSuggest, App, TAbstractFile, TFile } from "obsidian";
 import { get_tfiles_from_folder } from "../utils/files";
 import { tryCatch } from "../utils/Error";
 
@@ -13,9 +10,9 @@ export interface FileStrategy {
     selectSuggestion(file: TFile): string;
 }
 
-export class FileSuggest extends TextInputSuggest<TFile> {
+export class FileSuggest extends AbstractInputSuggest<TFile> {
     constructor(
-        protected app: App,
+        public app: App,
         public inputEl: HTMLInputElement,
         private strategy: FileStrategy,
         private folder: string,
