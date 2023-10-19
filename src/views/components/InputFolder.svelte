@@ -20,7 +20,7 @@
             });
         });
     }
-    $: id = `dataview_${index}`;
+    $: id = `input_folder_${index}`;
 </script>
 
 <!-- The autocomplete input will be inside the first div, so we remove some styles with the utility classes -->
