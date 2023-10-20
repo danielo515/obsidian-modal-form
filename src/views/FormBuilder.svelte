@@ -4,6 +4,7 @@
         type FormDefinition,
         isValidFormDefinition,
         FieldTypeReadable,
+        validateFields,
     } from "src/core/formDefinition";
     import { FolderSuggest } from "src/suggesters/suggestFolder";
     import { setIcon, Setting, App } from "obsidian";
@@ -24,6 +25,7 @@
     export let onPreview: (formDefinition: FormDefinition) => void;
 
     $: isValid = isValidFormDefinition(definition);
+    $: errors = validateFields(definition.fields);
 
     function folderField(element: HTMLElement, index: number) {
         const field = definition.fields[index];
@@ -143,6 +145,22 @@
                     >Cancel</button
                 >
             </div>
+            {#if errors.length > 0}
+                <h3 style="margin: 0;">
+                    <span class="error">Form is invalid</span>, check the
+                    following:
+                </h3>
+                <ul style="margin: 0;">
+                    {#each errors as error}
+                        <li>
+                            {error.message}
+                            {#if error.path}
+                                at {error.path}
+                            {/if}
+                        </li>
+                    {/each}
+                </ul>
+            {/if}
         </fieldset>
 
         <fieldset class="flex column gap2 fields">
@@ -395,6 +413,10 @@
     }
     .hint {
         color: var(--color-base-70);
+    }
+    .error {
+        color: var(--text-error);
+        font-weight: bold;
     }
     button:disabled {
         opacity: 0.5;
