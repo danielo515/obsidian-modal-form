@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.17.0](https://github.com/danielo515/obsidian-modal-form/compare/1.16.6...1.17.0) (2023-10-20)
+
+
+### Features
+
+* added tests ([1230a34](https://github.com/danielo515/obsidian-modal-form/commit/1230a3477209141870856a2b7804bec5cc92c9c0))
+* show errors when form has any invalid field ([54e9eaf](https://github.com/danielo515/obsidian-modal-form/commit/54e9eaf4a0827958fc7f7e312b928d793e026963))
+
 ## [1.16.6](https://github.com/danielo515/obsidian-modal-form/compare/1.16.5...1.16.6) (2023-10-19)
 
 
