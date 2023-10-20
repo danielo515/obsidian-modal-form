@@ -17,6 +17,16 @@
     export let is_multi: boolean;
     $: id = `builder_select_${index}`;
     $: options_id = `builder_select_options_btn_${index}`;
+
+    function moveOption(from: number, direction: "up" | "down") {
+        const to = direction === "up" ? from - 1 : from + 1;
+        if (to < 0 || to >= options.length) return;
+        const tmp = options[from]
+        options[from] = options[to]
+        options[to] = tmp;
+        options = options;
+        notifyChange();
+    }
 </script>
 
 <FormRow label="Source" {id}>
@@ -42,6 +52,30 @@
         {#each options || [] as option, idx}
             {@const value_id = `${options_id}_option_${idx}`}
             <div class="modal-form flex row gap1">
+                <FormRow
+                    label="Button"
+                    id={"button-up" + value_id}
+                    hideLabel={true}
+                >
+                    <button
+                        type="button"
+                        disabled={idx === 0}
+                        use:setIcon={"arrow-up"}
+                        on:click={() => moveOption(idx, "up")}
+                    /></FormRow
+                >
+                <FormRow
+                    label="Button"
+                    id={"button-down" + value_id}
+                    hideLabel={true}
+                >
+                    <button
+                        type="button"
+                        disabled={idx === options?.length - 1}
+                        use:setIcon={"arrow-down"}
+                        on:click={() => moveOption(idx, "down")}
+                    /></FormRow
+                >
                 {#if is_multi }
                 <FormRow label="Value" id={value_id}>
                     <input
@@ -93,4 +127,8 @@
 {/if}
 
 <style>
+    button:disabled {
+    opacity: 0.5;
+    cursor: forbidden;
+}
 </style>
