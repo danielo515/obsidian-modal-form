@@ -1,10 +1,18 @@
+import { object, number, literal, type Output, is, array, string, union, optional, safeParse, minLength, toTrimmed, flatten } from "valibot";
 /**
  * Here are the core logic around the main domain of the plugin,
  * which is the form definition.
  * Here are the types, validators, rules etc.
  */
 
-const fieldTypeMap = {
+function nonEmptyString(name: string) {
+    return string(`${name} should be a string`, [toTrimmed(), minLength(1, `${name} should not be empty`)])
+}
+
+const FieldTypeSchema = union([literal("text"), literal("number"), literal("date"), literal("time"), literal("datetime"), literal("textarea"), literal("toggle")]);
+type FieldType = Output<typeof FieldTypeSchema>;
+
+const fieldTypeMap: Record<FieldType, string> = {
     text: "Text",
     number: "Number",
     date: "Date",
@@ -12,29 +20,49 @@ const fieldTypeMap = {
     datetime: "DateTime",
     textarea: "Text area",
     toggle: "Toggle"
-} as const;
+};
+//=========== Schema definitions
+const SelectFromNotesSchema = object({ type: literal("select"), source: literal("notes"), folder: nonEmptyString('folder name') });
+const InputSliderSchema = object({ type: literal("slider"), min: number(), max: number() })
+const InputNoteFromFolderSchema = object({ type: literal("note"), folder: nonEmptyString('folder name') });
+const InputDataviewSourceSchema = object({ type: literal("dataview"), query: nonEmptyString('dataview query') });
+const BasicInputSchema = object({ type: FieldTypeSchema });
 
-type FieldType = keyof typeof fieldTypeMap
+const InputSelectFixedSchema = object({
+    type: literal("select"),
+    source: literal("fixed"),
+    options: array(object({
+        value: nonEmptyString('Value of a select option'), label: string()
+    }))
+});
 
-type selectFromNotes = { type: "select"; source: "notes", folder: string };
-type inputSlider = { type: "slider"; min: number, max: number };
-type inputNoteFromFolder = { type: "note"; folder: string };
-type inputDataviewSource = { type: 'dataview', query: string };
-type inputSelectFixed = {
-    type: "select";
-    source: "fixed";
-    options: { value: string; label: string }[];
-}
-type basicInput = { type: FieldType };
-type multiselect = { type: 'multiselect', source: 'notes', folder: string } | { type: 'multiselect', source: 'fixed', multi_select_options: string[] }
-type inputType =
-    | basicInput
-    | inputNoteFromFolder
-    | inputSlider
-    | selectFromNotes
-    | inputDataviewSource
-    | multiselect
-    | inputSelectFixed;
+const MultiSelectNotesSchema = object({
+    type: literal("multiselect"), source: literal("notes"),
+    folder: nonEmptyString('multi select source folder')
+});
+const MultiSelectFixedSchema = object({ type: literal("multiselect"), source: literal("fixed"), multi_select_options: array(string()) });
+export const MultiselectSchema = union([MultiSelectNotesSchema, MultiSelectFixedSchema]);
+
+//=========== Types derived from schemas
+type selectFromNotes = Output<typeof SelectFromNotesSchema>;
+type inputSlider = Output<typeof InputSliderSchema>;
+type inputNoteFromFolder = Output<typeof InputNoteFromFolderSchema>;
+type inputDataviewSource = Output<typeof InputDataviewSourceSchema>;
+type inputSelectFixed = Output<typeof InputSelectFixedSchema>;
+type basicInput = Output<typeof BasicInputSchema>;
+type multiselect = Output<typeof MultiselectSchema>;
+
+const InputTypeSchema = union([
+    BasicInputSchema,
+    InputNoteFromFolderSchema,
+    InputSliderSchema,
+    SelectFromNotesSchema,
+    InputDataviewSourceSchema,
+    InputSelectFixedSchema,
+    MultiselectSchema
+]);
+
+type inputType = Output<typeof InputTypeSchema>;
 
 export const FieldTypeReadable: Record<AllFieldTypes, string> = {
     ...fieldTypeMap,
@@ -49,47 +77,33 @@ function isObject(input: unknown): input is Record<string, unknown> {
     return typeof input === "object" && input !== null;
 }
 export function isDataViewSource(input: unknown): input is inputDataviewSource {
-    return isObject(input) && input.type === 'dataview' && typeof input.query === 'string';
+    return is(InputDataviewSourceSchema, input);
 }
 
 export function isInputSlider(input: unknown): input is inputSlider {
-    if (!isObject(input)) {
-        return false;
-    }
-    if ('min' in input && 'max' in input && typeof input.min === 'number' && typeof input.max === 'number' && input.type === 'slider') {
-        return true;
-    }
-    return false
+    return is(InputSliderSchema, input);
 }
 export function isSelectFromNotes(input: unknown): input is selectFromNotes {
-    if (!isObject(input)) {
-        return false;
-    }
-    return input.type === "select" && input.source === "notes" && typeof input.folder === "string";
+    return is(SelectFromNotesSchema, input);
 }
 
 export function isInputNoteFromFolder(input: unknown): input is inputNoteFromFolder {
-    if (!isObject(input)) {
-        return false;
-    }
-    return input.type === "note" && typeof input.folder === "string";
+    return is(InputNoteFromFolderSchema, input);
 }
 export function isInputSelectFixed(input: unknown): input is inputSelectFixed {
-    if (!isObject(input)) {
-        return false;
-    }
-    return input.type === "select" && input.source === "fixed" && Array.isArray(input.options) && input.options.every((option: unknown) => {
-        return isObject(option) && typeof option.value === "string" && typeof option.label === "string";
-    })
+    return is(InputSelectFixedSchema, input);
 }
 
 export type AllFieldTypes = inputType['type']
-export type FieldDefinition = {
-    name: string;
-    label?: string;
-    description: string;
-    input: inputType;
-}
+const FieldDefinitionSchema = object({
+    name: nonEmptyString('field name'),
+    label: optional(string()),
+    description: string(),
+    input: InputTypeSchema
+});
+
+export type FieldDefinition = Output<typeof FieldDefinitionSchema>;
+const FieldListSchema = array(FieldDefinitionSchema);
 /**
  * FormDefinition is an already valid form, ready to be used in the form modal.
  * @param title - The title of the form which will appear as H1 heading in the form modal.
@@ -136,70 +150,28 @@ export type EditableFormDefinition = {
 };
 
 export function isValidBasicInput(input: unknown): input is basicInput {
-    if (!isObject(input) || typeof input.type !== "string") {
-        return false;
-    }
-    return input.type in fieldTypeMap;
+    return is(BasicInputSchema, input);
 }
 
 export function isMultiSelect(input: unknown): input is multiselect {
-    return isObject(input)
-        && input.type === 'multiselect'
-        && (
-            (input.source === 'notes' && typeof input.folder === 'string')
-            || (
-                input.source === 'fixed' && Array.isArray(input.multi_select_options) && input.multi_select_options.every((option: unknown) => typeof option === 'string')
-            )
-        )
+    return is(MultiselectSchema, input);
 }
 
 export function isInputTypeValid(input: unknown): input is inputType {
-    switch (true) {
-        case isValidBasicInput(input):
-        case isInputNoteFromFolder(input):
-        case isInputSlider(input):
-        case isSelectFromNotes(input):
-        case isInputSelectFixed(input):
-        case isDataViewSource(input):
-        case isMultiSelect(input):
-            return true;
-        default:
-            return false;
-    }
+    return is(InputTypeSchema, input);
 }
 
 
-export function decodeInputType(input: EditableInput): inputType | null {
-    if (isInputSlider(input)) {
-        return { type: "slider", min: input.min, max: input.max };
-    } else if (isSelectFromNotes(input)) {
-        return { type: "select", source: "notes", folder: input.folder };
-    } else if (isInputNoteFromFolder(input)) {
-        return { type: "note", folder: input.folder! };
-    } else if (isInputSelectFixed(input)) {
-        return { type: "select", source: "fixed", options: input.options };
-    } else if (isValidBasicInput(input)) {
-        return { type: input.type };
-    } else {
-        return null;
-    }
-}
+export function validateFields(fields: unknown) {
+    const result = safeParse(FieldListSchema, fields);
 
-export function isFieldValid(input: unknown): input is FieldDefinition {
-    if (!isObject(input)) {
-        return false;
+    if (result.success) {
+        return []
     }
-    if (typeof input.name !== "string" || input.name.length === 0) {
-        return false;
-    }
-    if (typeof input.description !== "string") {
-        return false;
-    }
-    if (input.label !== undefined && typeof input.label !== "string") {
-        return false;
-    }
-    console.log('basic input fields are valid')
-    return isInputTypeValid(input.input);
+    console.error('Fields issues', result.issues)
+    return result.issues.map(issue =>
+        ({ message: issue.message, path: issue.path?.map(item => item.key).join('.') })
+    );
 }
 
 export function isValidFormDefinition(input: unknown): input is FormDefinition {
@@ -213,5 +185,10 @@ export function isValidFormDefinition(input: unknown): input is FormDefinition {
         return false;
     }
     console.log('basic is valid');
-    return Array.isArray(input.fields) && input.fields.every(isFieldValid);
+    const fieldsAreValid = is(FieldListSchema, input.fields);
+    if (!fieldsAreValid) {
+        return false;
+    }
+    console.log('fields are valid');
+    return true;
 }

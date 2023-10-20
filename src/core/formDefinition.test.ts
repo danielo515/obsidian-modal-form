@@ -5,7 +5,9 @@ import {
     isInputSelectFixed,
     isInputSlider,
     isSelectFromNotes,
+    MultiselectSchema,
 } from "./formDefinition";
+import { parse } from "valibot";
 
 describe("FieldTypeReadable", () => {
     it("should have the correct readable names for field types", () => {
@@ -125,5 +127,60 @@ describe("isSelectFromNotes", () => {
         expect(isSelectFromNotes({ type: "note", folder: "some folder" })).toBe(
             false
         );
+    });
+});
+describe("MultiSelectFixedSchema", () => {
+    it("should validate a valid multiselect fixed schema", () => {
+        const validSchema = {
+            type: "multiselect",
+            source: "fixed",
+            multi_select_options: ["Option 1", "Option 2", "Option 3"],
+        };
+        expect(parse(MultiselectSchema, validSchema)).toEqual(validSchema);
+    });
+
+    it("should not validate an invalid multiselect fixed schema with missing properties", () => {
+        const invalidSchema = {
+            type: "multiselect",
+            source: "fixed",
+        };
+        expect(() => parse(MultiselectSchema, invalidSchema)).toThrow();
+    });
+
+    it("should not validate an invalid multiselect fixed schema with incorrect properties", () => {
+        const invalidSchema = {
+            type: "multiselect",
+            source: "fixed",
+            multi_select_options: ["Option 1", 2, "Option 3"],
+        };
+        expect(() => parse(MultiselectSchema, invalidSchema)).toThrow();
+    });
+});
+
+describe("MultiSelectNotesSchema", () => {
+    it("should validate a valid multiselect notes schema", () => {
+        const validSchema = {
+            type: "multiselect",
+            source: "notes",
+            folder: "some folder",
+        };
+        expect(parse(MultiselectSchema, validSchema)).toEqual(validSchema);
+    });
+
+    it("should not validate an invalid multiselect notes schema with missing properties", () => {
+        const invalidSchema = {
+            type: "multiselect",
+            source: "notes",
+        };
+        expect(() => parse(MultiselectSchema, invalidSchema)).toThrow();
+    });
+
+    it("should not validate an invalid multiselect notes schema with incorrect properties", () => {
+        const invalidSchema = {
+            type: "multiselect",
+            source: "notes",
+            folder: 123,
+        };
+        expect(() => parse(MultiselectSchema, invalidSchema)).toThrow();
     });
 });
