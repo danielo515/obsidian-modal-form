@@ -14,6 +14,7 @@
     export let folder: string | undefined;
     export let options: EditableInput["options"] = [];
     export let notifyChange: () => void;
+    export let is_multi: boolean;
     $: id = `builder_select_${index}`;
     $: options_id = `builder_select_options_btn_${index}`;
 </script>
@@ -29,15 +30,29 @@
         <button
             type="button"
             on:click={() => {
-                options?.push({ value: "", label: "" });
+                if (is_multi) { 
+                    options?.push("");
+                } else {
+                    options?.push({ value: "", label: "" });
+                }
                 options = options;
                 notifyChange();
             }}>Add more options</button
         >
         {#each options || [] as option, idx}
             {@const value_id = `${options_id}_option_${idx}`}
-            {@const label_id = `${options_id}_option_label_${idx}`}
             <div class="modal-form flex row gap1">
+                {#if is_multi }
+                <FormRow label="Value" id={value_id}>
+                    <input
+                        type="text"
+                        placeholder="Value"
+                        bind:value={option}
+                        id={value_id}
+                    /></FormRow
+                >
+                {:else}
+                {@const label_id = `${options_id}_option_label_${idx}`}
                 <FormRow label="Label" id={label_id}>
                     <input
                         type="text"
@@ -53,7 +68,8 @@
                         id={value_id}
                     /></FormRow
                 >
-
+                
+                {/if}
                 <FormRow
                     label="Delete"
                     id={"button" + value_id}
