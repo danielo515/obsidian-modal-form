@@ -26,6 +26,7 @@
 
     $: isValid = isValidFormDefinition(definition);
     $: errors = validateFields(definition.fields);
+    $: activeFieldIndex = 0;
 
     function folderField(element: HTMLElement, index: number) {
         const field = definition.fields[index];
@@ -43,6 +44,18 @@
                 onChange();
             });
         });
+    }
+
+    function scrollWhenActive(element: HTMLElement, index: number) {
+        function update() {
+            if (index === activeFieldIndex) {
+                element.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+        }
+        update();
+        return {
+            update,
+        };
     }
 
     function findFreeName(fieldIndex: number): string {
@@ -130,7 +143,8 @@
                                 input: { type: "text" },
                             },
                         ];
-                        onChange();
+                        // onChange();
+                        activeFieldIndex = definition.fields.length - 1;
                     }}>Add more fields</button
                 >
                 <button
@@ -169,7 +183,10 @@
                 {#each definition.fields as field, index}
                     {@const desc_id = `desc_${index}`}
                     {@const delete_id = `delete_${index}`}
-                    <div class="flex column md-row gap2">
+                    <div
+                        class="flex column md-row gap2"
+                        use:scrollWhenActive={index}
+                    >
                         <div class="flex column gap1">
                             <label for={`name_${index}`}>Name</label>
                             <input
