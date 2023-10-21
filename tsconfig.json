@@ -15,9 +15,9 @@
         "strict": true,
         "noUncheckedIndexedAccess": true,
         "types": [
-            "svelte",
+            "jest",
             "node",
-            "jest"
+            "svelte",
         ],
         "lib": [
             "DOM",
@@ -27,6 +27,6 @@
         ]
     },
     "include": [
-        "**/*.ts"
+        "src/**/*",
     ]
 }
