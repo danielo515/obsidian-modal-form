@@ -28,24 +28,6 @@
     $: errors = validateFields(definition.fields);
     $: activeFieldIndex = 0;
 
-    function folderField(element: HTMLElement, index: number) {
-        const field = definition.fields[index];
-        const inputType = field.input;
-        if (inputType.folder == null) {
-            inputType.folder = "";
-        }
-
-        new Setting(element).addSearch((search) => {
-            search.setPlaceholder("Select a folder");
-            search.setValue(inputType.folder || "");
-            new FolderSuggest(search.inputEl, app);
-            search.onChange((value) => {
-                inputType.folder = value;
-                onChange();
-            });
-        });
-    }
-
     function scrollWhenActive(element: HTMLElement, index: number) {
         function update() {
             if (index === activeFieldIndex) {
@@ -258,7 +240,6 @@
                                 notifyChange={onChange}
                                 is_multi={true}
                             />
-                            
                         {:else if field.input.type === "slider"}
                             {@const min_id = `min_${index}`}
                             {@const max_id = `max_${index}`}
@@ -281,13 +262,11 @@
                                 />
                             </div>
                         {:else if field.input.type === "note"}
-                            <!-- The autocomplete input will be inside the first div, so we remove some styles with the utility classes -->
-                            <div
-                                class="flex column gap1 remove-padding remove-border fix-suggest"
-                                use:folderField={index}
-                            >
-                                <label>Source Folder</label>
-                            </div>
+                            <InputFolder
+                                {index}
+                                bind:folder={field.input.folder}
+                                notifyChange={onChange}
+                            />
                         {:else if field.input.type === "dataview"}
                             <InputBuilderDataview
                                 {index}
