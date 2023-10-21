@@ -7,7 +7,7 @@
         validateFields,
     } from "src/core/formDefinition";
     import { FolderSuggest } from "src/suggesters/suggestFolder";
-    import { setIcon, Setting, App, Notice } from "obsidian";
+    import { setIcon, Setting, App } from "obsidian";
     import FormRow from "./components/FormRow.svelte";
     import InputBuilderDataview from "./components/inputBuilderDataview.svelte";
     import InputBuilderSelect from "./components/InputBuilderSelect.svelte";
@@ -90,11 +90,6 @@
         if (!isValidFormDefinition(definition)) return;
         onPreview(definition);
     };
-    const handleExport = () => {
-        if (!isValidFormDefinition(definition)) return;
-        navigator.clipboard.writeText(JSON.stringify(definition));
-        new Notice("Form has been copied to the clipboard");
-    };
 </script>
 
 <div class="flex column gap2 wrapper modal-form">
@@ -149,11 +144,6 @@
                 <button type="button" class="mod-warning" on:click={onCancel}
                     >Cancel</button
                 >
-                <button
-                    type="button"
-                    use:setIcon={"clipboard-copy"}
-                    on:click={handleExport}
-                    disabled={!isValid}/>
             </div>
             {#if errors.length > 0}
                 <h3 style="margin: 0;">

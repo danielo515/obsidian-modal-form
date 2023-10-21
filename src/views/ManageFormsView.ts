@@ -1,5 +1,5 @@
 import ModalFormPlugin from "../main";
-import { ItemView, Setting, WorkspaceLeaf } from "obsidian";
+import { ItemView, Notice, Setting, WorkspaceLeaf } from "obsidian";
 
 export const MANAGE_FORMS_VIEW = "modal-form-manage-forms-view";
 
@@ -77,6 +77,13 @@ export class ManageFormsView extends ItemView {
                     btn.setButtonText('Duplicate').onClick(() => {
                         this.plugin.duplicateForm(form);
                     })
+                })
+                .addButton(button => {
+                    button.setIcon('clipboard-copy')
+                    button.onClick(() => {
+                        navigator.clipboard.writeText(JSON.stringify(form, null, 2));
+                        new Notice("Form has been copied to the clipboard");
+                    });
                 })
                 ;
         })
