@@ -8,7 +8,6 @@
     import { setIcon } from "obsidian";
     import FormRow from "./FormRow.svelte";
     import InputFolder from "./InputFolder.svelte";
-    import type { EditableInput } from "src/core/formDefinition";
 
     export let index: number;
     export let source: string = "fixed";
@@ -79,7 +78,7 @@
                         on:click={() => moveOption(idx, "down")}
                     /></FormRow
                 >
-                {#if is_multi}
+                {#if "string" == typeof option}
                     <FormRow label="Value" id={value_id}>
                         <input
                             type="text"
