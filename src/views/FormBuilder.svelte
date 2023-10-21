@@ -230,80 +230,18 @@
                                 bind:options={field.input.options}
                                 bind:folder={field.input.folder}
                                 notifyChange={onChange}
+                                is_multi={false}
                             />
                         {:else if field.input.type === "multiselect"}
-                            {@const source_id = `source_${index}`}
-                            <div class="flex column gap1">
-                                <label for={source_id}>Source</label>
-                                <select
-                                    bind:value={field.input.source}
-                                    id={source_id}
-                                >
-                                    <option value="fixed">Static</option>
-                                    <option value="notes">Notes</option>
-                                </select>
-                            </div>
-                            {#if field.input.source === "fixed"}
-                                {@const options_id = `options_btn_${index}`}
-                                <FormRow label="Options" id={options_id}>
-                                    <button
-                                        type="button"
-                                        on:click={() => {
-                                            field.input.multi_select_options =
-                                                field.input
-                                                    .multi_select_options || [];
-                                            field.input.multi_select_options = [
-                                                ...field.input
-                                                    .multi_select_options,
-                                                "",
-                                            ];
-                                            onChange();
-                                        }}>Add more options</button
-                                    >
-                                    {#each field.input.multi_select_options || [] as option, idx}
-                                        {@const value_id = `${options_id}_option_${idx}`}
-                                        <div class="flex row gap1">
-                                            <FormRow
-                                                label="Value"
-                                                id={value_id}
-                                            >
-                                                <input
-                                                    type="text"
-                                                    placeholder="Value"
-                                                    bind:value={option}
-                                                    id={value_id}
-                                                /></FormRow
-                                            >
-
-                                            <FormRow
-                                                label="Delete"
-                                                id={"button" + value_id}
-                                                hideLabel={true}
-                                            >
-                                                <button
-                                                    id={"button" + value_id}
-                                                    use:setIcon={"trash"}
-                                                    type="button"
-                                                    on:click={() => {
-                                                        field.input.options =
-                                                            field.input.options?.filter(
-                                                                (_, i) =>
-                                                                    i !== idx
-                                                            );
-                                                        onChange();
-                                                    }}
-                                                /></FormRow
-                                            >
-                                        </div>
-                                    {/each}
-                                </FormRow>
-                            {:else if field.input.source === "notes"}
-                                <InputFolder
-                                    {index}
-                                    bind:folder={field.input.folder}
-                                    notifyChange={onChange}
-                                />
-                            {/if}
+                            <InputBuilderSelect
+                                {index}
+                                bind:source={field.input.source}
+                                bind:options={field.input.multi_select_options}
+                                bind:folder={field.input.folder}
+                                notifyChange={onChange}
+                                is_multi={true}
+                            />
+                            
                         {:else if field.input.type === "slider"}
                             {@const min_id = `min_${index}`}
                             {@const max_id = `max_${index}`}
