@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.0](https://github.com/danielo515/obsidian-modal-form/compare/1.17.0...1.18.0) (2023-10-21)
+
+
+### Features
+
+* ability to order select options ([#64](https://github.com/danielo515/obsidian-modal-form/issues/64)) ([b955726](https://github.com/danielo515/obsidian-modal-form/commit/b955726bf3d44ea258ed2656ae746af3ab5e710b))
+
 ## [1.17.0](https://github.com/danielo515/obsidian-modal-form/compare/1.16.6...1.17.0) (2023-10-20)
 
 
