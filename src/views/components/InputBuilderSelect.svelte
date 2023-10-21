@@ -3,6 +3,7 @@
      * This component is specific for the input builder,
      * specifically to build the select input type
      */
+    type option = { label: string; value: string } | string;
 
     import { setIcon } from "obsidian";
     import FormRow from "./FormRow.svelte";
@@ -12,7 +13,7 @@
     export let index: number;
     export let source: string = "fixed";
     export let folder: string | undefined;
-    export let options: EditableInput["options"] = [];
+    export let options: option[] = [];
     export let notifyChange: () => void;
     export let is_multi: boolean;
     $: id = `builder_select_${index}`;
@@ -21,8 +22,10 @@
     function moveOption(from: number, direction: "up" | "down") {
         const to = direction === "up" ? from - 1 : from + 1;
         if (to < 0 || to >= options.length) return;
-        const tmp = options[from]
-        options[from] = options[to]
+        const tmp = options[from];
+        const target = options[to];
+        if (!target || !tmp) return;
+        options[from] = target;
         options[to] = tmp;
         options = options;
         notifyChange();
@@ -40,7 +43,7 @@
         <button
             type="button"
             on:click={() => {
-                if (is_multi) { 
+                if (is_multi) {
                     options?.push("");
                 } else {
                     options?.push({ value: "", label: "" });
@@ -76,33 +79,32 @@
                         on:click={() => moveOption(idx, "down")}
                     /></FormRow
                 >
-                {#if is_multi }
-                <FormRow label="Value" id={value_id}>
-                    <input
-                        type="text"
-                        placeholder="Value"
-                        bind:value={option}
-                        id={value_id}
-                    /></FormRow
-                >
+                {#if is_multi}
+                    <FormRow label="Value" id={value_id}>
+                        <input
+                            type="text"
+                            placeholder="Value"
+                            bind:value={option}
+                            id={value_id}
+                        /></FormRow
+                    >
                 {:else}
-                {@const label_id = `${options_id}_option_label_${idx}`}
-                <FormRow label="Label" id={label_id}>
-                    <input
-                        type="text"
-                        placeholder="Label"
-                        bind:value={option.label}
-                        id={label_id}
-                    /></FormRow
-                ><FormRow label="Value" id={value_id}>
-                    <input
-                        type="text"
-                        placeholder="Value"
-                        bind:value={option.value}
-                        id={value_id}
-                    /></FormRow
-                >
-                
+                    {@const label_id = `${options_id}_option_label_${idx}`}
+                    <FormRow label="Label" id={label_id}>
+                        <input
+                            type="text"
+                            placeholder="Label"
+                            bind:value={option.label}
+                            id={label_id}
+                        /></FormRow
+                    ><FormRow label="Value" id={value_id}>
+                        <input
+                            type="text"
+                            placeholder="Value"
+                            bind:value={option.value}
+                            id={value_id}
+                        /></FormRow
+                    >
                 {/if}
                 <FormRow
                     label="Delete"
@@ -128,7 +130,7 @@
 
 <style>
     button:disabled {
-    opacity: 0.5;
-    cursor: forbidden;
-}
+        opacity: 0.5;
+        cursor: forbidden;
+    }
 </style>
