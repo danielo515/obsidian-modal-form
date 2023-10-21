@@ -6,12 +6,12 @@
         FieldTypeReadable,
         validateFields,
     } from "src/core/formDefinition";
-    import { FolderSuggest } from "src/suggesters/suggestFolder";
-    import { setIcon, Setting, App } from "obsidian";
-    import FormRow from "./components/FormRow.svelte";
+    import { setIcon, App } from "obsidian";
     import InputBuilderDataview from "./components/inputBuilderDataview.svelte";
     import InputBuilderSelect from "./components/InputBuilderSelect.svelte";
     import InputFolder from "./components/InputFolder.svelte";
+    import { log_error } from "src/utils/Log";
+    import { ModalFormError } from "src/utils/Error";
 
     export let definition: EditableFormDefinition = {
         title: "",
@@ -42,6 +42,15 @@
 
     function findFreeName(fieldIndex: number): string {
         const field = definition.fields[fieldIndex];
+        if (!field) {
+            log_error(
+                new ModalFormError(
+                    "Unexpected error, no field at that index",
+                    fieldIndex + " leads to undefined"
+                )
+            );
+            return Date.now() + "";
+        }
         let name = field.name;
         const allNames = definition.fields.map((f) => f.name);
         let i = 1;
@@ -54,6 +63,15 @@
 
     function duplicateField(fieldIndex: number) {
         const field = definition.fields[fieldIndex];
+        if (!field) {
+            log_error(
+                new ModalFormError(
+                    "Unexpected error, no field at that index",
+                    fieldIndex + " leads to undefined"
+                )
+            );
+            return;
+        }
         const newField = {
             ...field,
             input: structuredClone(field.input),
@@ -71,7 +89,9 @@
         const to = direction === "up" ? from - 1 : from + 1;
         if (to < 0 || to >= definition.fields.length) return;
         const tmp = definition.fields[from];
-        definition.fields[from] = definition.fields[to];
+        const target = definition.fields[to];
+        if (!target || !tmp) return;
+        definition.fields[from] = target;
         definition.fields[to] = tmp;
         definition.fields = definition.fields;
         onChange();
