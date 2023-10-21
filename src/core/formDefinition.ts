@@ -1,4 +1,4 @@
-import { object, number, literal, type Output, is, array, string, union, optional, safeParse, minLength, toTrimmed, flatten } from "valibot";
+import { object, number, literal, type Output, is, array, string, union, optional, safeParse, minLength, toTrimmed } from "valibot";
 /**
  * Here are the core logic around the main domain of the plugin,
  * which is the form definition.
