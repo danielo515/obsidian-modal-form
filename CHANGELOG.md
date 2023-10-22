@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.1](https://github.com/danielo515/obsidian-modal-form/compare/1.20.0...1.20.1) (2023-10-22)
+
+
+### Bug Fixes
+
+* proper duplicate scroll ([28cebd4](https://github.com/danielo515/obsidian-modal-form/commit/28cebd42d0b50d968b4fa2678425d4a378f9dd00))
+
 ## [1.20.0](https://github.com/danielo515/obsidian-modal-form/compare/1.19.0...1.20.0) (2023-10-22)
 
 
