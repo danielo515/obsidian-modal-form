@@ -32,7 +32,7 @@ const InputSelectFixedSchema = object({
     type: literal("select"),
     source: literal("fixed"),
     options: array(object({
-        value: nonEmptyString('Value of a select option'), label: string()
+        value: string([toTrimmed()]), label: string()
     }))
 });
 
