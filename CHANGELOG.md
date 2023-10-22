@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.19.0](https://github.com/danielo515/obsidian-modal-form/compare/1.18.0...1.19.0) (2023-10-22)
+
+
+### Features
+
+* Export form as JSON button ([#29](https://github.com/danielo515/obsidian-modal-form/issues/29)) ([defc86c](https://github.com/danielo515/obsidian-modal-form/commit/defc86c654b80ebb071e1eaa8b715f962e41c044))
+* scroll to elements on the list ([f9804a7](https://github.com/danielo515/obsidian-modal-form/commit/f9804a7dde5ba46b045f4f4ad41eacb4b6e3fd22))
+* scroll to new fields in the editor ([ce3ece5](https://github.com/danielo515/obsidian-modal-form/commit/ce3ece5da6fc42b295eee06d7295891ce20622ba))
+
+
+### Bug Fixes
+
+* accept empty option values for now ([6293dad](https://github.com/danielo515/obsidian-modal-form/commit/6293dade57e451bc68162d5a07db2664fecbfd1f))
+* ensure types in svelte at build ([fbe03d3](https://github.com/danielo515/obsidian-modal-form/commit/fbe03d36bdf70551c73c3ce12150e6cdae2264b9))
+* pipelines install ([2c9a17f](https://github.com/danielo515/obsidian-modal-form/commit/2c9a17f62a017f2b190b1abf99cfb1a0e015c4d6))
+* type check also svelte files ([903b9bf](https://github.com/danielo515/obsidian-modal-form/commit/903b9bfc680666b1d9d1e71196bdd732504b7083))
+* type narrow on svelte ([c46dc40](https://github.com/danielo515/obsidian-modal-form/commit/c46dc400dee5bc2df704d0c95a5577a298f517a8))
+
 ## [1.18.0](https://github.com/danielo515/obsidian-modal-form/compare/1.17.0...1.18.0) (2023-10-21)
 
 
