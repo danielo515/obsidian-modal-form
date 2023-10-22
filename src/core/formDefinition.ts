@@ -170,7 +170,10 @@ export function validateFields(fields: unknown) {
     }
     console.error('Fields issues', result.issues)
     return result.issues.map(issue =>
-        ({ message: issue.message, path: issue.path?.map(item => item.key).join('.') })
+    ({
+        message: issue.message, path: issue.path?.map(item => item.key).join('.'),
+        index: issue.path?.[0]?.key ?? 0
+    })
     );
 }
 
