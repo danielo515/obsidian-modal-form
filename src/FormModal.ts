@@ -205,15 +205,27 @@ export class FormModal extends Modal {
                     return exhaustiveGuard(type);
             }
         });
+        
+        const submit = () => {
+            this.onSubmit(new FormResult(this.formResult, "ok"));
+            this.close();
+        }
+
         new Setting(contentEl).addButton((btn) =>
             btn
                 .setButtonText("Submit")
                 .setCta()
-                .onClick(() => {
-                    this.onSubmit(new FormResult(this.formResult, "ok"));
-                    this.close();
-                })
-        );
+                .onClick(submit)
+        )
+
+        const submitEnterCallback = (evt: KeyboardEvent) => {
+            if ((evt.ctrlKey || evt.metaKey) && evt.key === "Enter") {
+                evt.preventDefault();
+                submit();
+            }
+        };
+
+        contentEl.addEventListener("keydown", submitEnterCallback)
     }
 
     onClose() {
