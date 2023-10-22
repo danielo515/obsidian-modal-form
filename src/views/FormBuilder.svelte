@@ -18,7 +18,6 @@
         name: "",
         fields: [],
     };
-    export let app: App;
     export let onChange: () => void;
     export let onSubmit: (formDefinition: FormDefinition) => void;
     export let onCancel: () => void;
@@ -28,13 +27,18 @@
     $: errors = validateFields(definition.fields);
     $: activeFieldIndex = 0;
 
-    function scrollWhenActive(element: HTMLElement, index: number) {
-        function update() {
-            if (index === activeFieldIndex) {
-                element.scrollIntoView({ behavior: "smooth", block: "center" });
+    function scrollWhenActive(element: HTMLElement, isActive: boolean) {
+        function update(isActive: boolean) {
+            if (isActive) {
+                setTimeout(() => {
+                    element.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                    });
+                }, 100);
             }
         }
-        update();
+        update(isActive);
         return {
             update,
         };
@@ -83,6 +87,7 @@
             ...definition.fields.slice(fieldIndex + 1),
         ];
         onChange();
+        activeFieldIndex = fieldIndex + 1;
     }
 
     function moveField(from: number, direction: "up" | "down") {
@@ -95,6 +100,7 @@
         definition.fields[to] = tmp;
         definition.fields = definition.fields;
         onChange();
+        activeFieldIndex = to;
     }
 
     const handleSubmit = () => {
@@ -173,6 +179,12 @@
                             {#if error.path}
                                 at {error.path}
                             {/if}
+                            <button
+                                type="button"
+                                on:click={() => {
+                                    activeFieldIndex = error.index;
+                                }}>Go to problem</button
+                            >
                         </li>
                     {/each}
                 </ul>
@@ -187,7 +199,7 @@
                     {@const delete_id = `delete_${index}`}
                     <div
                         class="flex column md-row gap2"
-                        use:scrollWhenActive={index}
+                        use:scrollWhenActive={index === activeFieldIndex}
                     >
                         <div class="flex column gap1">
                             <label for={`name_${index}`}>Name</label>
