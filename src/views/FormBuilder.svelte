@@ -81,11 +81,8 @@
             input: structuredClone(field.input),
             name: findFreeName(fieldIndex),
         };
-        definition.fields = [
-            ...definition.fields.slice(0, fieldIndex + 1),
-            newField,
-            ...definition.fields.slice(fieldIndex + 1),
-        ];
+        definition.fields.splice(fieldIndex + 1, 0, newField);
+        definition.fields = definition.fields;
         onChange();
         activeFieldIndex = fieldIndex + 1;
     }
