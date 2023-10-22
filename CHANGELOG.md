@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.0](https://github.com/danielo515/obsidian-modal-form/compare/1.19.0...1.20.0) (2023-10-22)
+
+
+### Features
+
+* Enable Ctrl+Enter form submission ([#60](https://github.com/danielo515/obsidian-modal-form/issues/60)) ([7f72122](https://github.com/danielo515/obsidian-modal-form/commit/7f721222733e93f0c6d600bf55c0a203135e20df))
+
 ## [1.19.0](https://github.com/danielo515/obsidian-modal-form/compare/1.18.0...1.19.0) (2023-10-22)
 
 
