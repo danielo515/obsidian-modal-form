@@ -3,6 +3,7 @@ import type { FormDefinition } from "./core/formDefinition";
 export const exampleModalDefinition: FormDefinition = {
     title: "Example form",
     name: "example-form",
+    version: "1",
     fields: [
         {
             name: "Name",

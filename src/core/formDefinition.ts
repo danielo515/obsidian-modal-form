@@ -1,4 +1,4 @@
-import { object, number, literal, type Output, is, array, string, union, optional, safeParse, minLength, toTrimmed } from "valibot";
+import { object, number, literal, type Output, is, array, string, union, optional, safeParse, minLength, toTrimmed, merge, any } from "valibot";
 /**
  * Here are the core logic around the main domain of the plugin,
  * which is the form definition.
@@ -43,15 +43,6 @@ const MultiSelectNotesSchema = object({
 const MultiSelectFixedSchema = object({ type: literal("multiselect"), source: literal("fixed"), multi_select_options: array(string()) });
 export const MultiselectSchema = union([MultiSelectNotesSchema, MultiSelectFixedSchema]);
 
-//=========== Types derived from schemas
-type selectFromNotes = Output<typeof SelectFromNotesSchema>;
-type inputSlider = Output<typeof InputSliderSchema>;
-type inputNoteFromFolder = Output<typeof InputNoteFromFolderSchema>;
-type inputDataviewSource = Output<typeof InputDataviewSourceSchema>;
-type inputSelectFixed = Output<typeof InputSelectFixedSchema>;
-type basicInput = Output<typeof BasicInputSchema>;
-type multiselect = Output<typeof MultiselectSchema>;
-
 const InputTypeSchema = union([
     BasicInputSchema,
     InputNoteFromFolderSchema,
@@ -62,6 +53,42 @@ const InputTypeSchema = union([
     MultiselectSchema
 ]);
 
+const FieldDefinitionSchema = object({
+    name: nonEmptyString('field name'),
+    label: optional(string()),
+    description: string(),
+    input: InputTypeSchema
+});
+
+const FieldListSchema = array(FieldDefinitionSchema);
+
+/**
+ * This is the most basic representation of a form definition.
+ * It is not useful for anything other than being the base for
+ * other versioned schemas.
+ * This is the V0 schema.
+ */
+const FormDefinitionBasicSchema = object({
+    title: nonEmptyString('form title'),
+    name: nonEmptyString('form name'),
+    fields: array(any()),
+});
+
+/**
+ * This is the V1 schema.
+ */
+const FormDefinitionV1Schema = merge([FormDefinitionBasicSchema, object({
+    version: literal("1"),
+    fields: FieldListSchema,
+})]);
+//=========== Types derived from schemas
+type selectFromNotes = Output<typeof SelectFromNotesSchema>;
+type inputSlider = Output<typeof InputSliderSchema>;
+type inputNoteFromFolder = Output<typeof InputNoteFromFolderSchema>;
+type inputDataviewSource = Output<typeof InputDataviewSourceSchema>;
+type inputSelectFixed = Output<typeof InputSelectFixedSchema>;
+type basicInput = Output<typeof BasicInputSchema>;
+type multiselect = Output<typeof MultiselectSchema>;
 type inputType = Output<typeof InputTypeSchema>;
 
 export const FieldTypeReadable: Record<AllFieldTypes, string> = {
@@ -73,9 +100,6 @@ export const FieldTypeReadable: Record<AllFieldTypes, string> = {
     "multiselect": "Multiselect",
 } as const;
 
-function isObject(input: unknown): input is Record<string, unknown> {
-    return typeof input === "object" && input !== null;
-}
 export function isDataViewSource(input: unknown): input is inputDataviewSource {
     return is(InputDataviewSourceSchema, input);
 }
@@ -95,30 +119,12 @@ export function isInputSelectFixed(input: unknown): input is inputSelectFixed {
 }
 
 export type AllFieldTypes = inputType['type']
-const FieldDefinitionSchema = object({
-    name: nonEmptyString('field name'),
-    label: optional(string()),
-    description: string(),
-    input: InputTypeSchema
-});
 
 export type FieldDefinition = Output<typeof FieldDefinitionSchema>;
-const FieldListSchema = array(FieldDefinitionSchema);
 /**
  * FormDefinition is an already valid form, ready to be used in the form modal.
- * @param title - The title of the form which will appear as H1 heading in the form modal.
- * @param fields - An array of field objects, each representing a field in the form.
- * Each field object has the following properties:
- * @param name - The name of the field. This will be the key name in the resulting data returned
- * @param label - optional label to show in the UI. If it does not exist, the name will be used.
- * @param description - A description of the field.
- * @param type - The type of the field. Can be one of "text", "number", "date", "time", "datetime", "toggle".
  */
-export type FormDefinition = {
-    title: string;
-    name: string;
-    fields: FieldDefinition[];
-};
+export type FormDefinition = Output<typeof FormDefinitionV1Schema>;
 
 export type FormOptions = {
     values?: Record<string, unknown>;
@@ -178,13 +184,7 @@ export function validateFields(fields: unknown) {
 }
 
 export function isValidFormDefinition(input: unknown): input is FormDefinition {
-    if (!isObject(input)) {
-        return false;
-    }
-    if (typeof input.title !== "string") {
-        return false;
-    }
-    if (typeof input.name !== "string" || input.name === '') {
+    if (!is(FormDefinitionBasicSchema, input)) {
         return false;
     }
     console.log('basic is valid');
