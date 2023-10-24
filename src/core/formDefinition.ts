@@ -1,4 +1,4 @@
-import { object, number, literal, type Output, is, array, string, union, optional, safeParse, minLength, toTrimmed, merge, any } from "valibot";
+import { object, number, literal, type Output, is, array, string, union, optional, safeParse, minLength, toTrimmed, merge, any, SafeParseResult, Issues } from "valibot";
 /**
  * Here are the core logic around the main domain of the plugin,
  * which is the form definition.
@@ -81,6 +81,35 @@ const FormDefinitionV1Schema = merge([FormDefinitionBasicSchema, object({
     version: literal("1"),
     fields: FieldListSchema,
 })]);
+
+type FormDefinitionV1 = Output<typeof FormDefinitionV1Schema>;
+class MigrationError {
+    constructor(readonly issues: Issues) { }
+}
+
+function fromV0toV1(data: unknown): FormDefinitionV1 | MigrationError {
+    const v0 = safeParse(FormDefinitionBasicSchema, data)
+    if (!v0.success) {
+        return new MigrationError(v0.issues)
+    }
+    const unparsedV1 = {
+        ...v0.output,
+        version: "1",
+    }
+    const v1 = safeParse(FormDefinitionV1Schema, unparsedV1)
+    if (!v1.success) {
+        return new MigrationError(v1.issues)
+    }
+    return v1.output
+}
+
+export function migrateToLatest(data: unknown): FormDefinition | MigrationError {
+    if (is(FormDefinitionV1Schema, data)) {
+        return data;
+    }
+    return fromV0toV1(data);
+}
+
 //=========== Types derived from schemas
 type selectFromNotes = Output<typeof SelectFromNotesSchema>;
 type inputSlider = Output<typeof InputSliderSchema>;
