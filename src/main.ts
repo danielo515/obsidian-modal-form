@@ -9,7 +9,8 @@ import { ModalFormError } from "src/utils/Error";
 import { formNeedsMigration, type FormDefinition, migrateToLatest } from "src/core/formDefinition";
 import { parseSettings, type ModalFormSettings, type OpenPosition } from "src/core/settings";
 import { log_error, log_notice } from "./utils/Log";
-import { pipe } from "fp-ts/lib/function";
+import * as E from "fp-ts/Either";
+import { pipe } from "fp-ts/function";
 import * as A from "fp-ts/Array"
 
 type ViewType = typeof EDIT_FORM_VIEW | typeof MANAGE_FORMS_VIEW;
@@ -123,12 +124,12 @@ export default class ModalFormPlugin extends Plugin {
     async getSettings(): Promise<ModalFormSettings> {
         const data = await this.loadData();
         const settingsParsed = parseSettings(data);
-        if (!settingsParsed.success) {
-            const error = new ModalFormError('Settings are not valid, check the errors', JSON.stringify(settingsParsed.issues))
+        if (E.isLeft(settingsParsed)) {
+            const error = new ModalFormError('Settings are not valid, check the errors', JSON.stringify(settingsParsed.left.issues))
             log_error(error)
             throw error;
         }
-        const settings = settingsParsed.output;
+        const settings = settingsParsed.right;
         const migrationIsNeeded = settings.formDefinitions.some(formNeedsMigration);
         // Migrate to latest also validates and parses the form definitions, so we always execute it
         const formDefinitions = pipe(settings.formDefinitions, A.partitionMap(migrateToLatest))
