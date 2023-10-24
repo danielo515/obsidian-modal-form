@@ -6,17 +6,13 @@ import { API } from "src/API";
 import { EDIT_FORM_VIEW, EditFormView } from "src/views/EditFormView";
 import { MANAGE_FORMS_VIEW, ManageFormsView } from "src/views/ManageFormsView";
 import { ModalFormError } from "src/utils/Error";
-import type { FormDefinition } from "src/core/formDefinition";
-import type { ModalFormSettings, OpenPosition } from "src/core/settings";
-
-// Remember to rename these classes and interfaces!
+import { formNeedsMigration, type FormDefinition, migrateToLatest } from "src/core/formDefinition";
+import { parseSettings, type ModalFormSettings, type OpenPosition } from "src/core/settings";
+import { log_error, log_notice } from "./utils/Log";
+import { pipe } from "fp-ts/lib/function";
+import * as A from "fp-ts/Array"
 
 type ViewType = typeof EDIT_FORM_VIEW | typeof MANAGE_FORMS_VIEW;
-
-const DEFAULT_SETTINGS: ModalFormSettings = {
-    editorPosition: "right",
-    formDefinitions: [],
-};
 
 // Define functions and properties you want to make available to other plugins, or templater templates, etc
 interface PublicAPI {
@@ -125,7 +121,28 @@ export default class ModalFormPlugin extends Plugin {
     }
 
     async getSettings(): Promise<ModalFormSettings> {
-        return Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+        const data = await this.loadData();
+        const settingsParsed = parseSettings(data);
+        if (!settingsParsed.success) {
+            const error = new ModalFormError('Settings are not valid, check the errors', JSON.stringify(settingsParsed.issues))
+            log_error(error)
+            throw error;
+        }
+        const settings = settingsParsed.output;
+        const migrationIsNeeded = settings.formDefinitions.some(formNeedsMigration);
+        // Migrate to latest also validates and parses the form definitions, so we always execute it
+        const formDefinitions = pipe(settings.formDefinitions, A.partitionMap(migrateToLatest))
+        if (formDefinitions.left.length > 0) {
+            log_notice('Some forms could not be parsed',
+                `We tried to perform an automatic migration, but we failed, please take a look at the following errors: 
+            ${formDefinitions.left.join('\n')}`
+            )
+        }
+        if (migrationIsNeeded) {
+            await this.saveSettings();
+            console.info('Settings were migrated to the latest version')
+        }
+        return { ...settings, formDefinitions: formDefinitions.right }
     }
 
     private async saveSettings() {

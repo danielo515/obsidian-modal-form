@@ -1,4 +1,5 @@
-import { object, number, literal, type Output, is, array, string, union, optional, safeParse, minLength, toTrimmed, merge, any, SafeParseResult, Issues } from "valibot";
+import * as E from "fp-ts/Either";
+import { object, number, literal, type Output, is, array, string, union, optional, safeParse, minLength, toTrimmed, merge, any, Issues } from "valibot";
 /**
  * Here are the core logic around the main domain of the plugin,
  * which is the form definition.
@@ -82,15 +83,24 @@ const FormDefinitionV1Schema = merge([FormDefinitionBasicSchema, object({
     fields: FieldListSchema,
 })]);
 
+// This is the latest schema.
+// Make sure to update this when you add a new version.
+const FormDefinitionLatestSchema = FormDefinitionV1Schema;
+
 type FormDefinitionV1 = Output<typeof FormDefinitionV1Schema>;
 class MigrationError {
+    static readonly _tag = "MigrationError" as const;
     constructor(readonly issues: Issues) { }
+    toString(): string {
+        return `MigrationError: ${this.issues.map(issue => issue.message).join(', ')}`
+    }
 }
 
-function fromV0toV1(data: unknown): FormDefinitionV1 | MigrationError {
+//=========== Migration logic
+function fromV0toV1(data: unknown): E.Either<MigrationError, FormDefinitionV1> {
     const v0 = safeParse(FormDefinitionBasicSchema, data)
     if (!v0.success) {
-        return new MigrationError(v0.issues)
+        return E.left(new MigrationError(v0.issues))
     }
     const unparsedV1 = {
         ...v0.output,
@@ -98,16 +108,24 @@ function fromV0toV1(data: unknown): FormDefinitionV1 | MigrationError {
     }
     const v1 = safeParse(FormDefinitionV1Schema, unparsedV1)
     if (!v1.success) {
-        return new MigrationError(v1.issues)
+        return E.left(new MigrationError(v1.issues))
     }
-    return v1.output
+    return E.right(v1.output)
 }
 
-export function migrateToLatest(data: unknown): FormDefinition | MigrationError {
-    if (is(FormDefinitionV1Schema, data)) {
-        return data;
+/**
+ * 
+ * Parses the form definition and migrates it to the latest version in one operation.
+ */
+export function migrateToLatest(data: unknown): E.Either<MigrationError, FormDefinition> {
+    if (is(FormDefinitionLatestSchema, data)) {
+        return E.right(data);
     }
     return fromV0toV1(data);
+}
+
+export function formNeedsMigration(data: unknown): boolean {
+    return !is(FormDefinitionLatestSchema, data);
 }
 
 //=========== Types derived from schemas
@@ -153,7 +171,7 @@ export type FieldDefinition = Output<typeof FieldDefinitionSchema>;
 /**
  * FormDefinition is an already valid form, ready to be used in the form modal.
  */
-export type FormDefinition = Output<typeof FormDefinitionV1Schema>;
+export type FormDefinition = Output<typeof FormDefinitionLatestSchema>;
 
 export type FormOptions = {
     values?: Record<string, unknown>;
