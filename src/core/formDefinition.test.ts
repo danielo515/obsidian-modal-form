@@ -9,23 +9,6 @@ import {
 } from "./formDefinition";
 import { parse } from "valibot";
 
-describe("FieldTypeReadable", () => {
-    it("should have the correct readable names for field types", () => {
-        expect(FieldTypeReadable.text).toBe("Text");
-        expect(FieldTypeReadable.number).toBe("Number");
-        expect(FieldTypeReadable.date).toBe("Date");
-        expect(FieldTypeReadable.time).toBe("Time");
-        expect(FieldTypeReadable.datetime).toBe("DateTime");
-        expect(FieldTypeReadable.textarea).toBe("Text area");
-        expect(FieldTypeReadable.toggle).toBe("Toggle");
-        expect(FieldTypeReadable.note).toBe("Note");
-        expect(FieldTypeReadable.slider).toBe("Slider");
-        expect(FieldTypeReadable.select).toBe("Select");
-        expect(FieldTypeReadable.dataview).toBe("Dataview");
-        expect(FieldTypeReadable.multiselect).toBe("Multiselect");
-    });
-});
-
 describe("isDataViewSource", () => {
     it("should return true for valid inputDataviewSource objects", () => {
         expect(

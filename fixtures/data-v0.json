@@ -1,0 +1,330 @@
+{
+    "editorPosition": "mainView",
+    "formDefinitions": [
+        {
+            "title": "Kill bugs softly",
+            "name": "kill-bugs",
+            "fields": [
+                {
+                    "name": "num",
+                    "label": "Number of people",
+                    "description": "Be nice",
+                    "input": {
+                        "type": "number",
+                        "source": "notes",
+                        "options": [
+                            {
+                                "label": "",
+                                "value": ""
+                            },
+                            {
+                                "label": "",
+                                "value": ""
+                            }
+                        ],
+                        "folder": "Books"
+                    }
+                },
+                {
+                    "name": "lol",
+                    "label": "Lol",
+                    "description": "Super lol",
+                    "input": {
+                        "type": "select",
+                        "source": "fixed",
+                        "options": [
+                            {
+                                "label": "First",
+                                "value": "1"
+                            },
+                            {
+                                "label": "Second",
+                                "value": "2"
+                            }
+                        ],
+                        "folder": "People"
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Is example",
+            "name": "example-form",
+            "fields": [
+                {
+                    "name": "second",
+                    "label": "Second",
+                    "description": "Slide it",
+                    "input": {
+                        "type": "slider",
+                        "min": 1,
+                        "max": 12
+                    }
+                },
+                {
+                    "name": "dataview",
+                    "label": "persons",
+                    "description": "This is persons dv",
+                    "input": {
+                        "type": "dataview",
+                        "query": "dv.pages('#person').map(p=>p.file.name)"
+                    }
+                },
+                {
+                    "name": "toggle",
+                    "label": "Toggle",
+                    "description": "Yes or no",
+                    "input": {
+                        "type": "toggle"
+                    }
+                },
+                {
+                    "name": "multi_books",
+                    "label": "Books read",
+                    "description": "they are nice",
+                    "input": {
+                        "type": "multiselect",
+                        "source": "notes",
+                        "folder": "Books",
+                        "min": 1,
+                        "max": 11
+                    }
+                },
+                {
+                    "name": "select",
+                    "label": "Select",
+                    "description": "Pick a value",
+                    "input": {
+                        "type": "select",
+                        "source": "fixed",
+                        "options": [
+                            {
+                                "label": "First",
+                                "value": "first"
+                            },
+                            {
+                                "label": "Second",
+                                "value": "second"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "multi_2",
+                    "label": "Multi select fixed",
+                    "description": "Pick some values",
+                    "input": {
+                        "type": "multiselect",
+                        "source": "fixed",
+                        "options": [
+                            "static one",
+                            "static two",
+                            ""
+                        ],
+                        "multi_select_options": [
+                            "first",
+                            "second",
+                            "LOL"
+                        ]
+                    }
+                },
+                {
+                    "name": "text_area",
+                    "label": "",
+                    "description": "Multi line",
+                    "input": {
+                        "type": "textarea"
+                    }
+                },
+                {
+                    "name": "text_area_1",
+                    "label": "",
+                    "description": "Multi line",
+                    "input": {
+                        "type": "textarea"
+                    }
+                }
+            ]
+        },
+        {
+            "title": "New form",
+            "name": "Suggesters",
+            "fields": [
+                {
+                    "name": "automata",
+                    "label": "Automata type",
+                    "description": "LOL",
+                    "input": {
+                        "type": "select",
+                        "source": "fixed",
+                        "multi_select_options": [
+                            ""
+                        ],
+                        "options": [
+                            {
+                                "value": "robot",
+                                "label": "🤖 Robot"
+                            },
+                            {
+                                "value": "huan",
+                                "label": "Human"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "select_notes",
+                    "label": "Select notes",
+                    "description": "Les notes",
+                    "input": {
+                        "type": "select",
+                        "source": "notes",
+                        "multi_select_options": [
+                            ""
+                        ],
+                        "options": [
+                            {
+                                "value": "robot",
+                                "label": "🤖 Robot"
+                            },
+                            {
+                                "value": "huan",
+                                "label": "Human"
+                            }
+                        ],
+                        "folder": "Books"
+                    }
+                },
+                {
+                    "name": "note",
+                    "label": "Suggest note",
+                    "description": "pick a note",
+                    "input": {
+                        "type": "note",
+                        "folder": "People"
+                    }
+                }
+            ]
+        },
+        {
+            "title": "New form",
+            "name": "Suggesters-copy",
+            "fields": [
+                {
+                    "name": "automata",
+                    "label": "Automata type",
+                    "description": "LOL",
+                    "input": {
+                        "type": "select",
+                        "source": "fixed",
+                        "multi_select_options": [
+                            ""
+                        ],
+                        "options": [
+                            {
+                                "value": "robot",
+                                "label": "🤖 Robot"
+                            },
+                            {
+                                "value": "huan",
+                                "label": "Human"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "select_notes",
+                    "label": "Select notes",
+                    "description": "Les notes",
+                    "input": {
+                        "type": "select",
+                        "source": "notes",
+                        "multi_select_options": [
+                            ""
+                        ],
+                        "options": [
+                            {
+                                "value": "robot",
+                                "label": "🤖 Robot"
+                            },
+                            {
+                                "value": "huan",
+                                "label": "Human"
+                            }
+                        ],
+                        "folder": "Books"
+                    }
+                },
+                {
+                    "name": "note",
+                    "label": "Suggest note",
+                    "description": "pick a note",
+                    "input": {
+                        "type": "note",
+                        "folder": "People"
+                    }
+                }
+            ]
+        },
+        {
+            "title": "New form",
+            "name": "Suggesters renamed",
+            "fields": [
+                {
+                    "name": "automata",
+                    "label": "Automata type",
+                    "description": "LOL",
+                    "input": {
+                        "type": "select",
+                        "source": "fixed",
+                        "multi_select_options": [
+                            ""
+                        ],
+                        "options": [
+                            {
+                                "value": "robot",
+                                "label": "🤖 Robot"
+                            },
+                            {
+                                "value": "huan",
+                                "label": "Human"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "select_notes",
+                    "label": "Select notes",
+                    "description": "Les notes",
+                    "input": {
+                        "type": "select",
+                        "source": "notes",
+                        "multi_select_options": [
+                            ""
+                        ],
+                        "options": [
+                            {
+                                "value": "robot",
+                                "label": "🤖 Robot"
+                            },
+                            {
+                                "value": "huan",
+                                "label": "Human"
+                            }
+                        ],
+                        "folder": "Books"
+                    }
+                },
+                {
+                    "name": "note",
+                    "label": "Suggest note",
+                    "description": "pick a note",
+                    "input": {
+                        "type": "note",
+                        "folder": "People"
+                    }
+                }
+            ]
+        }
+    ]
+}
