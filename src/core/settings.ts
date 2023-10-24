@@ -27,12 +27,13 @@ const ModalFormSettingsSchema = object({
 
 type ModalFormSettingsPartial = Output<typeof ModalFormSettingsSchema>;
 
-const DEFAULT_SETTINGS: ModalFormSettings = {
+export const DEFAULT_SETTINGS: ModalFormSettings = {
     editorPosition: 'right',
     formDefinitions: [],
 };
+
 export function parseSettings(maybeSettings: unknown): E.Either<ValiError, ModalFormSettingsPartial> {
-    if (maybeSettings === null) return E.right(DEFAULT_SETTINGS)
+    if (maybeSettings === null) return E.right({ ...DEFAULT_SETTINGS })
         ;
     return E.tryCatch(() => parse(ModalFormSettingsSchema, { ...DEFAULT_SETTINGS, ...maybeSettings }), e => e as ValiError);
 }

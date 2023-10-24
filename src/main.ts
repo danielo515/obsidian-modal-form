@@ -7,7 +7,7 @@ import { EDIT_FORM_VIEW, EditFormView } from "src/views/EditFormView";
 import { MANAGE_FORMS_VIEW, ManageFormsView } from "src/views/ManageFormsView";
 import { ModalFormError } from "src/utils/Error";
 import { formNeedsMigration, type FormDefinition, migrateToLatest } from "src/core/formDefinition";
-import { parseSettings, type ModalFormSettings, type OpenPosition } from "src/core/settings";
+import { parseSettings, type ModalFormSettings, type OpenPosition, DEFAULT_SETTINGS } from "src/core/settings";
 import { log_error, log_notice } from "./utils/Log";
 import * as E from "fp-ts/Either";
 import { pipe } from "fp-ts/function";
@@ -125,9 +125,9 @@ export default class ModalFormPlugin extends Plugin {
         const data = await this.loadData();
         const settingsParsed = parseSettings(data);
         if (E.isLeft(settingsParsed)) {
-            const error = new ModalFormError('Settings are not valid, check the errors', JSON.stringify(settingsParsed.left.issues))
+            const error = new ModalFormError('Settings are not valid, check the errors', JSON.stringify(settingsParsed.left.issues, null, 2))
             log_error(error)
-            throw error;
+            return { ...DEFAULT_SETTINGS };
         }
         const settings = settingsParsed.right;
         const migrationIsNeeded = settings.formDefinitions.some(formNeedsMigration);

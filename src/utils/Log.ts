@@ -17,7 +17,7 @@ export function log_update(msg: string): void {
 
 export function log_error(e: Error | ModalFormError): void {
     if (e instanceof ModalFormError && e.console_msg) {
-        log_notice('Modal from error', e.message)
+        log_notice('Modal from error: ', e.message + "\n" + e.console_msg)
         console.error(`Modal form Error:`, e.message, "\n", e.console_msg);
     } else {
         log_notice('Modal from error', e.message)
