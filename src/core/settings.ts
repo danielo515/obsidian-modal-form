@@ -28,24 +28,25 @@ const ModalFormSettingsSchema = object({
 
 type ModalFormSettingsPartial = Output<typeof ModalFormSettingsSchema>;
 
-const DEFAULT_SETTINGS: ModalFormSettings = {
-    editorPosition: 'right',
-    formDefinitions: [],
-};
-
 export function getDefaultSettings(): ModalFormSettings {
-    return { ...DEFAULT_SETTINGS };
+    return { editorPosition: 'right', formDefinitions: []};
 }
 
 export class NullSettingsError {
     readonly _tag = 'NullSettingsError';
 }
 
+/**
+ * Parses the settings and returns a validation error if the settings are invalid.
+ * The reason why we don't return default settings when the settings are invalid is because
+ * in case of default settings there are several operations that could be skipped,
+ * like migrations and validation.
+ */
 export function parseSettings(maybeSettings: unknown): E.Either<ValiError | NullSettingsError, ModalFormSettingsPartial> {
     return pipe(
         maybeSettings,
         E.fromNullable(new NullSettingsError()),
-        E.chainW((s) => parse(ModalFormSettingsSchema, { ...DEFAULT_SETTINGS, ...s })),
+        E.chainW((s) => parse(ModalFormSettingsSchema, { ...getDefaultSettings(), ...s })),
     )
 }
 
