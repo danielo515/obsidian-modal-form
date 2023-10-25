@@ -49,9 +49,9 @@ export class API {
     getFormByName(name: string): FormDefinition | undefined {
         const form = this.plugin.settings?.formDefinitions.find((form) => form.name === name);
         if (form instanceof MigrationError) {
-            log_notice('The form you tried to load hs an invalid format', `
-            The form ${name} has an invalid format.
-            We tried to automatically convert it but it failed, please fix it manually in the forms manager.
+            log_notice('🚫 The form you tried to load has an invalid format', 
+            `The form "${name}" has an invalid format.`+
+            `We tried to automatically convert it but it failed, please fix it manually in the forms manager.
             `)
             return undefined;
         } else {
