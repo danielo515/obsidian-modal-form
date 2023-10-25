@@ -1,16 +1,10 @@
-import { parseSettings } from "./settings";
+import { NullSettingsError, parseSettings } from "./settings";
 import * as E from "fp-ts/Either";
 
 describe("parseSettings", () => {
-    it("should return the default settings when given null", () => {
+    it("should notify a NullSettingsError when given null", () => {
         const result = parseSettings(null);
-        expect(E.isRight(result)).toBe(true);
-        if (E.isRight(result)) {
-            expect(result.right).toEqual({
-                editorPosition: "right",
-                formDefinitions: [],
-            });
-        }
+        expect(result).toEqual(E.left(new NullSettingsError()));
     });
 
     it("should return the parsed settings when given valid input", () => {
@@ -19,8 +13,7 @@ describe("parseSettings", () => {
             formDefinitions: [],
         };
         const result = parseSettings(input);
-        expect(E.isRight(result)).toBe(true);
-        if (E.isRight(result)) expect(result.right).toEqual(input);
+        expect(result).toEqual(E.of(input));
     });
 
     it("should return a validation error when given invalid input", () => {
@@ -30,6 +23,7 @@ describe("parseSettings", () => {
         };
         const result = parseSettings(input);
         expect(E.isLeft(result)).toBe(true);
-        if (E.isLeft(result)) expect(result.left).toBeDefined();
+        if (E.isLeft(result)) expect(result.left).toBeDefined()
+        else fail("Expected a left value")
     });
 });

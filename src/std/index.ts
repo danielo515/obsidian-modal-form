@@ -14,8 +14,6 @@ export const E = {
     tryCatchK,
 }
 
-export const O = {
-    Option
-}
+export const O = {}
 
 export const parse = tryCatchK(parseV, (e: unknown) => e as ValiError)

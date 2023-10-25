@@ -8,6 +8,7 @@
         "build": "npm run check && node esbuild.config.mjs production",
         "check": "svelte-check --tsconfig tsconfig.json",
         "test": "jest",
+        "test-w": "jest --watch",
         "version": "node version-bump.mjs && git add manifest.json versions.json"
     },
     "keywords": [],
