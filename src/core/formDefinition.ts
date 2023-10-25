@@ -1,6 +1,6 @@
 import { parse, pipe } from "@std";
 import * as E from "fp-ts/Either";
-import { object, number, literal, type Output, is, array, string, union, optional, safeParse, minLength, toTrimmed, merge, any, ValiError } from "valibot";
+import { object, number, literal, type Output, is, array, string, union, optional, safeParse, minLength, toTrimmed, merge, unknown, ValiError } from "valibot";
 /**
  * Here are the core logic around the main domain of the plugin,
  * which is the form definition.
@@ -73,7 +73,7 @@ const FieldListSchema = array(FieldDefinitionSchema);
 const FormDefinitionBasicSchema = object({
     title: nonEmptyString('form title'),
     name: nonEmptyString('form name'),
-    fields: array(any()),
+    fields: array(unknown()),
 });
 
 /**
