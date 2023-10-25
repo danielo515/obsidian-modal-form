@@ -141,10 +141,12 @@ export default class ModalFormPlugin extends Plugin {
         return leaf;
     }
 
+    // TODO: extract the migration logic to a separate function and test it
+    // TODO: collect actual migration events to decide if we need to migrate or not rather than this naive approach
     async getSettings(): Promise<ModalFormSettings> {
         const data = await this.loadData();
-        const [migrationIsNeeded, settings] = pipe(data,
-            parseSettings,
+        const [migrationIsNeeded, settings] = pipe(
+            parseSettings(data),
             E.map((settings): [boolean, ModalFormSettings] => {
                 const migrationIsNeeded = settings.formDefinitions.some(formNeedsMigration);
                 const { right: formDefinitions, left: errors } = A.partitionMap(migrateToLatest)(settings.formDefinitions);
