@@ -107,6 +107,9 @@ export class MigrationError {
             ${this.error.message}
             ${this.error.issues.map((issue) => issue.message).join(', ')}`
     }
+    toJSON() {
+        return this.form
+    }
 }
 
 /**

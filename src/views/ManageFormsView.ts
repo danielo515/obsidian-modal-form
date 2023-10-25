@@ -1,3 +1,4 @@
+import { MigrationError } from "src/core/formDefinition";
 import ModalFormPlugin from "../main";
 import { ItemView, Notice, Setting, WorkspaceLeaf } from "obsidian";
 
@@ -31,7 +32,7 @@ export class ManageFormsView extends ItemView {
     }
 
     renderControls(root: HTMLElement) {
-        new Setting(root).addButton(button => {
+        new Setting(root).addButton((button) => {
             button.setButtonText('Add new form').onClick(() => {
                 this.plugin.createNewForm();
             })
@@ -45,7 +46,10 @@ export class ManageFormsView extends ItemView {
         root.empty();
         const rows = root.createDiv();
         rows.setCssStyles({ display: 'flex', flexDirection: 'column', gap: '10px' });
-        forms.forEach(form => {
+        forms.forEach((form) => {
+            if (form instanceof MigrationError) {
+                return // TODO: UI for migration errors
+            }
             const row = rows.createDiv()
             row.setCssStyles({ display: 'flex', flexDirection: 'column', gap: '8px' })
             row.createEl("h4", { text: form.name });
@@ -72,13 +76,13 @@ export class ManageFormsView extends ItemView {
                     });
                 }
                 )
-                .addButton(btn => {
+                .addButton((btn) => {
                     btn.setTooltip('duplicate ' + form.name)
                     btn.setButtonText('Duplicate').onClick(() => {
                         this.plugin.duplicateForm(form);
                     })
                 })
-                .addButton(button => {
+                .addButton((button) => {
                     button.setIcon('clipboard-copy')
                     button.onClick(() => {
                         navigator.clipboard.writeText(JSON.stringify(form, null, 2));

@@ -51,5 +51,5 @@ export function parseSettings(maybeSettings: unknown): E.Either<ValiError | Null
 
 export interface ModalFormSettings {
     editorPosition: OpenPosition;
-    formDefinitions: (FormDefinition | MigrationError)[];
+    formDefinitions: (MigrationError | FormDefinition)[];
 }
