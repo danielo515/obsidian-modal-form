@@ -3,6 +3,7 @@
     "compilerOptions": {
         "baseUrl": ".",
         "inlineSources": true,
+        "resolveJsonModule": true,
         "module": "ESNext",
         "target": "ES6",
         "allowJs": true,
@@ -24,9 +25,14 @@
             "ES5",
             "ES6",
             "ES7"
-        ]
+        ],
+        "paths": {
+            "@std": [
+                "src/std"
+            ]
+        }
     },
     "include": [
-        "src/**/*",
+        "src/**/*"
     ]
 }

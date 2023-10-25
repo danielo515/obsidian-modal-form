@@ -6,9 +6,9 @@ import { API } from "src/API";
 import { EDIT_FORM_VIEW, EditFormView } from "src/views/EditFormView";
 import { MANAGE_FORMS_VIEW, ManageFormsView } from "src/views/ManageFormsView";
 import { ModalFormError } from "src/utils/Error";
-import { formNeedsMigration, type FormDefinition, migrateToLatest } from "src/core/formDefinition";
-import { parseSettings, type ModalFormSettings, type OpenPosition, DEFAULT_SETTINGS } from "src/core/settings";
-import { log_error, log_notice } from "./utils/Log";
+import { formNeedsMigration, type FormDefinition, migrateToLatest, MigrationError, InvalidData } from "src/core/formDefinition";
+import { parseSettings, type ModalFormSettings, type OpenPosition, getDefaultSettings } from "src/core/settings";
+import { log_notice } from "./utils/Log";
 import * as E from "fp-ts/Either";
 import { pipe } from "fp-ts/function";
 import * as A from "fp-ts/Array"
@@ -19,6 +19,22 @@ type ViewType = typeof EDIT_FORM_VIEW | typeof MANAGE_FORMS_VIEW;
 interface PublicAPI {
     exampleForm(): Promise<FormResult>;
     openForm(formReference: string | FormDefinition): Promise<FormResult>
+}
+
+function notifyParsingErrors(errors: InvalidData[]) {
+    if (errors.length === 0) { return }
+    log_notice('Some forms could not be parsed',
+        `We found some invalid data while parsing the form settings, please take a look at the following errors: 
+            ${errors.join('\n')}`
+    )
+}
+
+function notifyMigrationErrors(errors: MigrationError[]) {
+    if (errors.length === 0) { return }
+    log_notice('Some forms could not be migrated',
+        `We tried to perform an automatic migration, but we failed. Go to the forms manager and fix the following forms:
+            ${errors.map((e) => e.name).join('\n')}`
+    )
 }
 // This is the plugin entrypoint
 export default class ModalFormPlugin extends Plugin {
@@ -35,7 +51,7 @@ export default class ModalFormPlugin extends Plugin {
     }
 
     formExists(formName: string): boolean {
-        return this.settings?.formDefinitions.some(form => form.name === formName) ?? false;
+        return this.settings?.formDefinitions.some((form) => form.name === formName) ?? false;
     }
 
     async duplicateForm(form: FormDefinition) {
@@ -56,16 +72,20 @@ export default class ModalFormPlugin extends Plugin {
         // then if you save another form you will unexpectedly save the mutated form too.
         // Maybe we could instead do a deep copy instead, but until this proven to be a bottleneck I will leave it like this.
         const savedSettings = await this.getSettings();
-        const formDefinition = savedSettings.formDefinitions.find(form => form.name === formName);
+        const formDefinition = savedSettings.formDefinitions.find((form) => form.name === formName);
         if (!formDefinition) {
             throw new ModalFormError(`Form ${formName} not found`)
+        }
+        if (formDefinition instanceof MigrationError) {
+            notifyMigrationErrors([formDefinition])
+            return
         }
         await this.activateView(EDIT_FORM_VIEW, formDefinition);
 
     }
 
     async saveForm(formDefinition: FormDefinition) {
-        const index = this.settings?.formDefinitions.findIndex(form => form.name === formDefinition.name);
+        const index = this.settings?.formDefinitions.findIndex((form) => form.name === formDefinition.name);
         if (index === undefined || index === -1) {
             this.settings?.formDefinitions.push(formDefinition);
         } else {
@@ -81,7 +101,7 @@ export default class ModalFormPlugin extends Plugin {
         if (!this.settings) {
             throw new ModalFormError('Settings not found')
         }
-        this.settings.formDefinitions = this.settings.formDefinitions.filter(form => form.name !== formName);
+        this.settings.formDefinitions = this.settings.formDefinitions.filter((form) => form.name !== formName);
         await this.saveSettings();
     }
 
@@ -121,33 +141,31 @@ export default class ModalFormPlugin extends Plugin {
         return leaf;
     }
 
+    // TODO: extract the migration logic to a separate function and test it
+    // TODO: collect actual migration events to decide if we need to migrate or not rather than this naive approach
     async getSettings(): Promise<ModalFormSettings> {
         const data = await this.loadData();
-        const settingsParsed = parseSettings(data);
-        if (E.isLeft(settingsParsed)) {
-            const error = new ModalFormError('Settings are not valid, check the errors', JSON.stringify(settingsParsed.left.issues, null, 2))
-            log_error(error)
-            return { ...DEFAULT_SETTINGS };
-        }
-        const settings = settingsParsed.right;
-        const migrationIsNeeded = settings.formDefinitions.some(formNeedsMigration);
-        // Migrate to latest also validates and parses the form definitions, so we always execute it
-        const formDefinitions = pipe(settings.formDefinitions, A.partitionMap(migrateToLatest))
-        if (formDefinitions.left.length > 0) {
-            log_notice('Some forms could not be parsed',
-                `We tried to perform an automatic migration, but we failed, please take a look at the following errors: 
-            ${formDefinitions.left.join('\n')}`
-            )
-        }
+        const [migrationIsNeeded, settings] = pipe(
+            parseSettings(data),
+            E.map((settings): [boolean, ModalFormSettings] => {
+                const migrationIsNeeded = settings.formDefinitions.some(formNeedsMigration);
+                const { right: formDefinitions, left: errors } = A.partitionMap(migrateToLatest)(settings.formDefinitions);
+                notifyParsingErrors(errors);
+                const validSettings: ModalFormSettings = { ...settings, formDefinitions }
+                return [migrationIsNeeded, validSettings]
+            }),
+            E.getOrElse(() => [false, getDefaultSettings()])
+        )
+
         if (migrationIsNeeded) {
-            await this.saveSettings();
+            await this.saveSettings(settings);
             console.info('Settings were migrated to the latest version')
         }
-        return { ...settings, formDefinitions: formDefinitions.right }
+        return settings;
     }
 
-    private async saveSettings() {
-        await this.saveData(this.settings);
+    private async saveSettings(newSettings?: ModalFormSettings) {
+        await this.saveData(newSettings || this.settings);
     }
 
     async setEditorPosition(position: OpenPosition) {

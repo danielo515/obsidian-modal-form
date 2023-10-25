@@ -1,5 +1,6 @@
+import { parse, pipe } from "@std";
 import * as E from "fp-ts/Either";
-import { object, number, literal, type Output, is, array, string, union, optional, safeParse, minLength, toTrimmed, merge, any, Issues } from "valibot";
+import { object, number, literal, type Output, is, array, string, union, optional, safeParse, minLength, toTrimmed, merge, unknown, ValiError } from "valibot";
 /**
  * Here are the core logic around the main domain of the plugin,
  * which is the form definition.
@@ -72,7 +73,7 @@ const FieldListSchema = array(FieldDefinitionSchema);
 const FormDefinitionBasicSchema = object({
     title: nonEmptyString('form title'),
     name: nonEmptyString('form name'),
-    fields: array(any()),
+    fields: array(unknown()),
 });
 
 /**
@@ -88,40 +89,62 @@ const FormDefinitionV1Schema = merge([FormDefinitionBasicSchema, object({
 const FormDefinitionLatestSchema = FormDefinitionV1Schema;
 
 type FormDefinitionV1 = Output<typeof FormDefinitionV1Schema>;
-class MigrationError {
+type FormDefinitionBasic = Output<typeof FormDefinitionBasicSchema>;
+
+/**
+ * This means the basic structure of the form is valid
+ * but we were unable to perform an automatic migration
+ * and we need the user to fix the form manually.
+ */
+export class MigrationError {
     static readonly _tag = "MigrationError" as const;
-    constructor(readonly issues: Issues) { }
+    public readonly name: string;
+    constructor(public form: FormDefinitionBasic, readonly error: ValiError) {
+        this.name = form.name;
+    }
     toString(): string {
-        return `MigrationError: ${this.issues.map(issue => issue.message).join(', ')}`
+        return `MigrationError: 
+            ${this.error.message}
+            ${this.error.issues.map((issue) => issue.message).join(', ')}`
+    }
+    toJSON() {
+        return this.form
+    }
+}
+
+/**
+ * This represents totally invalid data.
+ */
+export class InvalidData {
+    static readonly _tag = "InvalidData" as const;
+    constructor(public data: unknown, readonly error: ValiError) { }
+    toString(): string {
+        return `InvalidData: ${this.error.issues.map((issue) => issue.message).join(', ')}`
     }
 }
 
 //=========== Migration logic
-function fromV0toV1(data: unknown): E.Either<MigrationError, FormDefinitionV1> {
-    const v0 = safeParse(FormDefinitionBasicSchema, data)
-    if (!v0.success) {
-        return E.left(new MigrationError(v0.issues))
-    }
-    const unparsedV1 = {
-        ...v0.output,
-        version: "1",
-    }
-    const v1 = safeParse(FormDefinitionV1Schema, unparsedV1)
-    if (!v1.success) {
-        return E.left(new MigrationError(v1.issues))
-    }
-    return E.right(v1.output)
+function fromV0toV1(data: FormDefinitionBasic): MigrationError | FormDefinitionV1 {
+    return pipe(
+        parse(FormDefinitionV1Schema, { ...data, version: "1" }),
+        E.getOrElseW((error) => (new MigrationError(data, error)))
+    )
 }
 
 /**
  * 
  * Parses the form definition and migrates it to the latest version in one operation.
  */
-export function migrateToLatest(data: unknown): E.Either<MigrationError, FormDefinition> {
-    if (is(FormDefinitionLatestSchema, data)) {
-        return E.right(data);
-    }
-    return fromV0toV1(data);
+export function migrateToLatest(data: unknown): E.Either<InvalidData, MigrationError | FormDefinition> {
+    return pipe(
+        // first try a quick one with the latest schema
+        parse(FormDefinitionLatestSchema, data, { abortEarly: true }),
+        E.orElse(() => pipe(
+            parse(FormDefinitionBasicSchema, data),
+            E.mapLeft((error) => new InvalidData(data, error)),
+            E.map(fromV0toV1),
+        )),
+    )
 }
 
 export function formNeedsMigration(data: unknown): boolean {
@@ -222,9 +245,9 @@ export function validateFields(fields: unknown) {
         return []
     }
     console.error('Fields issues', result.issues)
-    return result.issues.map(issue =>
+    return result.issues.map((issue) =>
     ({
-        message: issue.message, path: issue.path?.map(item => item.key).join('.'),
+        message: issue.message, path: issue.path?.map((item) => item.key).join('.'),
         index: issue.path?.[0]?.key ?? 0
     })
     );

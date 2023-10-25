@@ -1,12 +1,12 @@
 import { App } from "obsidian";
 
-import type { FormDefinition, FormOptions } from "./core/formDefinition";
+import { MigrationError, type FormDefinition, type FormOptions } from "./core/formDefinition";
 import FormResult from "./FormResult";
 import { exampleModalDefinition } from "./exampleModalDefinition";
 import ModalFormPlugin from "./main";
 import { ModalFormError } from "./utils/Error";
 import { FormModal } from "./FormModal";
-import { log_error } from "./utils/Log";
+import { log_error, log_notice } from "./utils/Log";
 
 type pickOption = { pick: string[] }
 type omitOption = { omit: string[] }
@@ -47,7 +47,17 @@ export class API {
     }
 
     getFormByName(name: string): FormDefinition | undefined {
-        return this.plugin.settings?.formDefinitions.find(form => form.name === name);
+        const form = this.plugin.settings?.formDefinitions.find((form) => form.name === name);
+        if (form instanceof MigrationError) {
+            log_notice('🚫 The form you tried to load has an invalid format', 
+            `The form "${name}" has an invalid format.`+
+            `We tried to automatically convert it but it failed, please fix it manually in the forms manager.
+            `)
+            return undefined;
+        } else {
+
+            return form;
+        }
     }
 
     /**
@@ -73,9 +83,9 @@ export class API {
         if (formDefinition) {
             if (isOmitOption(opts)) {
                 const omit = opts.omit
-                newFormDefinition = { ...formDefinition, fields: formDefinition.fields.filter(field => !omit.includes(field.name)) }
+                newFormDefinition = { ...formDefinition, fields: formDefinition.fields.filter((field) => !omit.includes(field.name)) }
             } else if (isPickOption(opts)) {
-                newFormDefinition = { ...formDefinition, fields: formDefinition.fields.filter(field => opts.pick.includes(field.name)) }
+                newFormDefinition = { ...formDefinition, fields: formDefinition.fields.filter((field) => opts.pick.includes(field.name)) }
             } else {
                 throw new ModalFormError('Invalid options provided to limitedForm', `GOT: ${JSON.stringify(opts)}`)
             }
