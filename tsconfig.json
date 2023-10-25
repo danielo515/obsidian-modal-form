@@ -24,7 +24,12 @@
             "ES5",
             "ES6",
             "ES7"
-        ]
+        ],
+        "paths": {
+            "@std": [
+                "src/std"
+            ]
+        }
     },
     "include": [
         "src/**/*",
