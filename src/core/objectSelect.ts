@@ -1,21 +1,28 @@
 import { E, parse, pipe } from "@std";
 import * as O from "fp-ts/Option";
 import * as NEA from "fp-ts/NonEmptyArray";
-import { filterWithIndex } from "fp-ts/lib/Record";
+import { filterWithIndex } from "fp-ts/Record";
 import { object, optional, array, string, coerce } from "valibot";
+import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 
 const KeysSchema = array(coerce(string(), String))
 
 const PickOmitSchema = object({
-    pick: optional(KeysSchema),
-    omit: optional(KeysSchema),
+  pick: optional(KeysSchema),
+  omit: optional(KeysSchema),
 });
 
 function picKeys(obj: Record<string, unknown>) {
-    return (keys: string[]) =>
-        pipe(obj,
-            filterWithIndex((k) => keys.includes(k))
-        );
+  return (keys: NonEmptyArray<string>) =>
+    pipe(obj,
+      filterWithIndex((k) => keys.includes(k))
+    );
+}
+function omitKeys(obj: Record<string, unknown>) {
+  return (keys: NonEmptyArray<string>) =>
+    pipe(obj,
+      filterWithIndex((k) => !keys.includes(k))
+    );
 }
 
 /**
@@ -26,24 +33,24 @@ function picKeys(obj: Record<string, unknown>) {
  * @param opts the options for picking/omitting based on key names
  */
 export function objectSelect(obj: Record<string, unknown>, opts: unknown): Record<string, unknown> {
-    return pipe(
-        parse(PickOmitSchema, opts, { abortEarly: true }),
-        E.map((opts) => {
-            const picked = pipe(
-                O.fromNullable(opts.pick),
-                O.flatMap(NEA.fromArray),
-                O.map(picKeys(obj)),
-                O.getOrElse(() => obj)
-            );
-            return pipe(
-                O.fromNullable(opts.omit),
-                O.map((omit) =>
-                    filterWithIndex((k) => !omit.includes(k))(picked)),
-                O.getOrElse(() => picked)
-            )
-        }
-        ),
-        E.getOrElse(() => obj)
-    )
+  return pipe(
+    parse(PickOmitSchema, opts, { abortEarly: true }),
+    E.map((opts) => {
+      const picked = pipe(
+        O.fromNullable(opts.pick),
+        O.flatMap(NEA.fromArray),
+        O.map(picKeys(obj)),
+        O.getOrElse(() => obj)
+      );
+      return pipe(
+        O.fromNullable(opts.omit),
+        O.flatMap(NEA.fromArray),
+        O.map(omitKeys(picked)),
+        O.getOrElse(() => picked)
+      )
+    }
+    ),
+    E.getOrElse(() => obj)
+  )
 }
 
