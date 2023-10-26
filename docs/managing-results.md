@@ -44,3 +44,4 @@ Returns the current data as a block of dataview properties.
 ```typescript
 const result = await form.openForm('my-form')
 tR += result.asDataviewProperties({ pick: ['title'] });`
+```
