@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.22.0](https://github.com/danielo515/obsidian-modal-form/compare/1.21.0...1.22.0) (2023-10-26)
+
+
+### Features
+
+* allow pick/omit in Result helpers ([1c5bd5f](https://github.com/danielo515/obsidian-modal-form/commit/1c5bd5f09a2525ffcdb9226834730b044a3aee6c)), closes [#101](https://github.com/danielo515/obsidian-modal-form/issues/101)
+
+
+### Bug Fixes
+
+* add tests for result class and helpers ([e4eea18](https://github.com/danielo515/obsidian-modal-form/commit/e4eea189d168fb80000ca722630334c018f6fd04))
+* dataview list format is now correct ([e4eea18](https://github.com/danielo515/obsidian-modal-form/commit/e4eea189d168fb80000ca722630334c018f6fd04))
+
 ## [1.21.0](https://github.com/danielo515/obsidian-modal-form/compare/1.20.0...1.21.0) (2023-10-25)
 
 
