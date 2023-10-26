@@ -30,9 +30,22 @@
             "@std": [
                 "src/std"
             ]
-        }
+        },
+        "plugins": [
+            {
+                "name": "@unsplash/ts-namespace-import-plugin",
+                "namespaces": {
+                    "O": {
+                        "importPath": "fp-ts/Option"
+                    },
+                    "NEA": {
+                        "importPath": "fp-ts/NonEmptyArray"
+                    }
+                }
+            }
+        ]
     },
     "include": [
         "src/**/*"
-    ]
+    ],
 }

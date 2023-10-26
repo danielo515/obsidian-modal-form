@@ -1,6 +1,7 @@
+import { objectSelect } from './objectSelect';
 import { stringifyYaml } from "obsidian";
-import { log_error } from "./utils/Log";
-import { ModalFormError } from "./utils/Error";
+import { log_error } from "../utils/Log";
+import { ModalFormError } from "../utils/Error";
 
 type ResultStatus = "ok" | "cancelled";
 
@@ -14,6 +15,7 @@ function isPrimitive(value: unknown): value is string | boolean | number {
 function isPrimitiveArray(value: unknown): value is string[] {
     return Array.isArray(value) && value.every(isPrimitive)
 }
+
 
 export function formDataFromFormOptions(values: Record<string, unknown>) {
     const result: ModalFormData = {};
@@ -35,16 +37,33 @@ export function formDataFromFormOptions(values: Record<string, unknown>) {
 
 export default class FormResult {
     constructor(private data: ModalFormData, public status: ResultStatus) { }
-    asFrontmatterString() {
-        return stringifyYaml(this.data);
+    /**
+     * Transform  the current data into a frontmatter string, which is expected
+     * to be enclosed in `---` when used in a markdown file.
+     * This method does not add the enclosing `---` to the string, 
+     * so you can put it anywhere inside the frontmatter.
+     * @param {Object} [options] an options object describing what options to pick or omit
+     * @param {string[]} [options.pick] an array of key names to pick from the data
+     * @param {string[]} [options.omit] an array of key names to omit from the data
+     * @returns the data formatted as a frontmatter string
+     */
+    asFrontmatterString(options?: unknown) {
+        const data = objectSelect(this.data, options)
+        return stringifyYaml(data);
     }
     /**
      * Return the current data as a block of dataview properties
+     * @param {Object} [options] an options object describing what options to pick or omit
+     * @param {string[]} [options.pick] an array of key names to pick from the data
+     * @param {string[]} [options.omit] an array of key names to omit from the data
      * @returns string
      */
-    asDataviewProperties(): string {
-        return Object.entries(this.data)
-            .map(([key, value]) => `${key}:: ${value}`)
+    asDataviewProperties(options?: unknown): string {
+        const data = objectSelect(this.data, options)
+        return Object.entries(data)
+            .map(([key, value]) =>
+                `${key}:: ${Array.isArray(value) ? value.map((v) => JSON.stringify(v)) : value}`
+            )
             .join("\n");
     }
     /**

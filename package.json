@@ -8,7 +8,7 @@
         "build": "npm run check && node esbuild.config.mjs production",
         "check": "svelte-check --tsconfig tsconfig.json",
         "test": "jest",
-        "test-w": "jest --watch",
+        "test-w": "jest --watch --no-cache",
         "version": "node version-bump.mjs && git add manifest.json versions.json"
     },
     "keywords": [],
@@ -20,6 +20,7 @@
         "@types/node": "^16.11.6",
         "@typescript-eslint/eslint-plugin": "^6.7.0",
         "@typescript-eslint/parser": "^6.7.0",
+        "@unsplash/ts-namespace-import-plugin": "^1.0.0",
         "builtin-modules": "3.3.0",
         "esbuild": "0.17.3",
         "esbuild-svelte": "^0.8.0",
@@ -31,7 +32,8 @@
         "ts-jest": "^29.1.1",
         "ts-node": "^10.9.1",
         "tslib": "2.4.0",
-        "typescript": "^5.2.2"
+        "typescript": "^5.2.2",
+        "yaml": "^2.3.3"
     },
     "dependencies": {
         "fp-ts": "^2.16.1",

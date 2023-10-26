@@ -1,5 +1,5 @@
 import { Platform, Plugin, WorkspaceLeaf } from "obsidian";
-import FormResult from "src/FormResult";
+import FormResult from "src/core/FormResult";
 import { exampleModalDefinition } from "src/exampleModalDefinition";
 import { ModalFormSettingTab } from "src/ModalFormSettingTab";
 import { API } from "src/API";
