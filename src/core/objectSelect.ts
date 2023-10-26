@@ -11,7 +11,12 @@ const PickOmitSchema = object({
     omit: optional(KeysSchema),
 });
 
-
+function picKeys(obj: Record<string, unknown>) {
+    return (keys: string[]) =>
+        pipe(obj,
+            filterWithIndex((k) => keys.includes(k))
+        );
+}
 
 /**
  * Utility to pick/omit keys from an object.
@@ -27,9 +32,7 @@ export function objectSelect(obj: Record<string, unknown>, opts: unknown): Recor
             const picked = pipe(
                 O.fromNullable(opts.pick),
                 O.flatMap(NEA.fromArray),
-                O.map((pick) => {
-                    return filterWithIndex((k) => pick.includes(k))(obj);
-                }),
+                O.map(picKeys(obj)),
                 O.getOrElse(() => obj)
             );
             return pipe(
