@@ -61,4 +61,47 @@ isEmployed:: true`;
             expect(result.asString(template)).toEqual(expectedOutput);
         });
     });
+    describe("asDataviewProperties pick/omit", () => {
+        it("should return the data as a string of dataview properties with only the specified keys using options.pick", () => {
+            const result = new FormResult(formData, "ok");
+            const expectedOutput = `name:: John Doe
+age:: 30`;
+            expect(
+                result.asDataviewProperties({ pick: ["name", "age"] })
+            ).toEqual(expectedOutput);
+        });
+
+        it("should return the data as a string of dataview properties with all keys except the specified ones using options.omit", () => {
+            const result = new FormResult(formData, "ok");
+            const expectedOutput = `name:: John Doe
+age:: 30`;
+            expect(
+                result.asDataviewProperties({ omit: ["hobbies", "isEmployed"] })
+            ).toEqual(expectedOutput);
+        });
+
+        it("should return the data as a string of dataview properties with only the specified keys using options.pick and ignoring options.omit", () => {
+            const result = new FormResult(formData, "ok");
+            const expectedOutput = `name:: John Doe
+age:: 30`;
+            expect(
+                result.asDataviewProperties({
+                    pick: ["name", "age"],
+                    omit: ["hobbies", "isEmployed"],
+                })
+            ).toEqual(expectedOutput);
+        });
+
+        it("should return the data as a string of dataview properties with all keys except the specified ones using options.omit and ignoring options.pick", () => {
+            const result = new FormResult(formData, "ok");
+            const expectedOutput = `name:: John Doe
+age:: 30`;
+            expect(
+                result.asDataviewProperties({
+                    omit: ["hobbies", "isEmployed"],
+                    pick: ["name", "age"],
+                })
+            ).toEqual(expectedOutput);
+        });
+    });
 });
