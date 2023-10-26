@@ -1,6 +1,6 @@
 import { App, Modal, Platform, Setting } from "obsidian";
 import MultiSelect from "./views/components/MultiSelect.svelte";
-import FormResult, { formDataFromFormOptions, type ModalFormData } from "./FormResult";
+import FormResult, { formDataFromFormOptions, type ModalFormData } from "./core/FormResult";
 import { exhaustiveGuard } from "./safety";
 import { get_tfiles_from_folder } from "./utils/files";
 import type { FormDefinition, FormOptions } from "./core/formDefinition";
@@ -39,7 +39,7 @@ export class FormModal extends Modal {
                     fieldBase.setClass('modal-form-textarea')
                     return fieldBase.addTextArea((textEl) => {
                         if (typeof initialValue === 'string') { textEl.setValue(initialValue); }
-                        textEl.onChange(value => {
+                        textEl.onChange((value) => {
                             this.formResult[definition.name] = value;
                         });
                         textEl.inputEl.rows = 6;
@@ -133,7 +133,7 @@ export class FormModal extends Modal {
                         this.formResult[definition.name] = this.formResult[definition.name] || []
                         const options = fieldInput.source == 'fixed'
                             ? fieldInput.multi_select_options
-                            : get_tfiles_from_folder(fieldInput.folder, this.app).map(file => file.basename);
+                            : get_tfiles_from_folder(fieldInput.folder, this.app).map((file) => file.basename);
                         this.svelteComponents.push(new MultiSelect({
                             target: fieldBase.controlEl,
                             props: {
@@ -205,7 +205,7 @@ export class FormModal extends Modal {
                     return exhaustiveGuard(type);
             }
         });
-        
+
         const submit = () => {
             this.onSubmit(new FormResult(this.formResult, "ok"));
             this.close();
@@ -230,7 +230,7 @@ export class FormModal extends Modal {
 
     onClose() {
         const { contentEl } = this;
-        this.svelteComponents.forEach(component => component.$destroy())
+        this.svelteComponents.forEach((component) => component.$destroy())
         contentEl.empty();
         this.formResult = {};
     }

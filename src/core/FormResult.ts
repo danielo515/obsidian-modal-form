@@ -1,6 +1,8 @@
 import { stringifyYaml } from "obsidian";
-import { log_error } from "./utils/Log";
-import { ModalFormError } from "./utils/Error";
+import { log_error } from "../utils/Log";
+import { ModalFormError } from "../utils/Error";
+import { object, optional, array, string, coerce } from "valibot";
+import { parse } from "@std";
 
 type ResultStatus = "ok" | "cancelled";
 
@@ -14,6 +16,17 @@ function isPrimitive(value: unknown): value is string | boolean | number {
 function isPrimitiveArray(value: unknown): value is string[] {
     return Array.isArray(value) && value.every(isPrimitive)
 }
+
+const KeysSchema = array(coerce(string(), String))
+
+const PickOmitSchema = object({
+    pick: optional(KeysSchema),
+    omit: optional(KeysSchema),
+});
+
+console.log(parse(PickOmitSchema, { pick: ['a', 'b'] }))
+console.log(parse(PickOmitSchema, { pick: [11], omit: ['a', 'b'] }))
+console.log(parse(PickOmitSchema, undefined))
 
 export function formDataFromFormOptions(values: Record<string, unknown>) {
     const result: ModalFormData = {};
@@ -44,7 +57,9 @@ export default class FormResult {
      */
     asDataviewProperties(): string {
         return Object.entries(this.data)
-            .map(([key, value]) => `${key}:: ${value}`)
+            .map(([key, value]) =>
+                `${key}:: ${Array.isArray(value) ? value.map((v) => JSON.stringify(v)) : value}`
+            )
             .join("\n");
     }
     /**
