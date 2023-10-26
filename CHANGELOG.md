@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.21.0](https://github.com/danielo515/obsidian-modal-form/compare/1.20.0...1.21.0) (2023-10-25)
+
+
+### Features
+
+* detect invalid data on data.json ([91aa99c](https://github.com/danielo515/obsidian-modal-form/commit/91aa99c1c899f2831999318d377b7dee01b642a7)), closes [#98](https://github.com/danielo515/obsidian-modal-form/issues/98)
+* migrate between form format versions ([b4e6c96](https://github.com/danielo515/obsidian-modal-form/commit/b4e6c963ad7359ca094b5fc92658e50976bbd18a)), closes [#92](https://github.com/danielo515/obsidian-modal-form/issues/92)
+
+
+### Bug Fixes
+
+* add version to the form definition ([c7fdd77](https://github.com/danielo515/obsidian-modal-form/commit/c7fdd777f9f1fbce4402a58000ecea1a84d0af52))
+* proper duplicate scroll ([28cebd4](https://github.com/danielo515/obsidian-modal-form/commit/28cebd42d0b50d968b4fa2678425d4a378f9dd00))
+
 ## [1.20.0](https://github.com/danielo515/obsidian-modal-form/compare/1.19.0...1.20.0) (2023-10-22)
 
 
