@@ -7,7 +7,7 @@ assignees: danielo515
 
 ---
 
-<--! Use this template just as a guidance, it's not strict -->
+<!-- Use this template just as a guidance, it's not strict -->
 **Describe the bug**
 
 
@@ -20,8 +20,4 @@ Steps to reproduce the bug:
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
 **Additional context**
-Add any other context about the problem here.
