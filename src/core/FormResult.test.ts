@@ -104,4 +104,53 @@ age:: 30`;
             ).toEqual(expectedOutput);
         });
     });
+    describe("asFrontmatterString pick/omit", () => {
+        it("should return the data as a YAML frontmatter string with only the specified keys using options.pick", () => {
+            const result = new FormResult(formData, "ok");
+            const expectedOutput = `name: John Doe
+age: 30`;
+            expect(
+                result.asFrontmatterString({ pick: ["name", "age"] }).trim()
+            ).toEqual(expectedOutput);
+        });
+
+        it("should return the data as a YAML frontmatter string with all keys except the specified ones using options.omit", () => {
+            const result = new FormResult(formData, "ok");
+            const expectedOutput = `name: John Doe
+age: 30`;
+            expect(
+                result
+                    .asFrontmatterString({ omit: ["hobbies", "isEmployed"] })
+                    .trim()
+            ).toEqual(expectedOutput);
+        });
+
+        it("should return the data as a YAML frontmatter string with only the specified keys using options.pick and ignoring options.omit", () => {
+            const result = new FormResult(formData, "ok");
+            const expectedOutput = `name: John Doe
+age: 30`;
+            expect(
+                result
+                    .asFrontmatterString({
+                        pick: ["name", "age"],
+                        omit: ["hobbies", "isEmployed"],
+                    })
+                    .trim()
+            ).toEqual(expectedOutput);
+        });
+
+        it("should return the data as a YAML frontmatter string with all keys except the specified ones using options.omit and ignoring options.pick", () => {
+            const result = new FormResult(formData, "ok");
+            const expectedOutput = `name: John Doe
+age: 30`;
+            expect(
+                result
+                    .asFrontmatterString({
+                        omit: ["hobbies", "isEmployed"],
+                        pick: ["name", "age"],
+                    })
+                    .trim()
+            ).toEqual(expectedOutput);
+        });
+    });
 });
