@@ -110,7 +110,8 @@ Here you have an example screenshot of how it should look like:
 
 ### FormResult Methods
 
-The `FormResult` object returned by the `openForm` method has several methods that can be used to process the form data. Here is a brief description of each method:
+When you open a form, you get back a `FormResult` object. This object contains the data of the form and some methods to help you process it.
+This `FormResult` object returned by the `openForm` method has several methods that can be used to process the form data. Here is a brief description of each method:
 
 #### asFrontmatterString()
 
@@ -136,6 +137,9 @@ tR += result.asString('{{Name}} is {{age}} years old and his/her favorite food i
 -%>
 ```
 
+#### Advanced usage
+
+For more advanced usage of the `FormResult` methods please refer to the specific documentation of FormResult [here](docs/managing-results.md)
 
 ### Define a form
 
