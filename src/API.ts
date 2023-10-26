@@ -1,7 +1,7 @@
 import { App } from "obsidian";
 
 import { MigrationError, type FormDefinition, type FormOptions } from "./core/formDefinition";
-import FormResult from "./FormResult";
+import FormResult from "./core/FormResult";
 import { exampleModalDefinition } from "./exampleModalDefinition";
 import ModalFormPlugin from "./main";
 import { ModalFormError } from "./utils/Error";
@@ -49,9 +49,9 @@ export class API {
     getFormByName(name: string): FormDefinition | undefined {
         const form = this.plugin.settings?.formDefinitions.find((form) => form.name === name);
         if (form instanceof MigrationError) {
-            log_notice('🚫 The form you tried to load has an invalid format', 
-            `The form "${name}" has an invalid format.`+
-            `We tried to automatically convert it but it failed, please fix it manually in the forms manager.
+            log_notice('🚫 The form you tried to load has an invalid format',
+                `The form "${name}" has an invalid format.` +
+                `We tried to automatically convert it but it failed, please fix it manually in the forms manager.
             `)
             return undefined;
         } else {
