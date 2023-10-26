@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.1](https://github.com/danielo515/obsidian-modal-form/compare/1.22.0...1.22.1) (2023-10-26)
+
+
+### Bug Fixes
+
+* big bundle size ([e5f566e](https://github.com/danielo515/obsidian-modal-form/commit/e5f566ea8411be7fa7c06efaddca125b7799ec34))
+
 ## [1.22.0](https://github.com/danielo515/obsidian-modal-form/compare/1.21.0...1.22.0) (2023-10-26)
 
 
