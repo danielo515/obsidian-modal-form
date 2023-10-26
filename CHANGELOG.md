@@ -1,5 +1,65 @@
 # Changelog
 
+## [1.23.0](https://github.com/danielo515/obsidian-modal-form/compare/v1.22.0...1.23.0) (2023-10-26)
+
+
+### Features
+
+* ability to order select options ([#64](https://github.com/danielo515/obsidian-modal-form/issues/64)) ([b955726](https://github.com/danielo515/obsidian-modal-form/commit/b955726bf3d44ea258ed2656ae746af3ab5e710b))
+* add multi-line text area ([1cf1559](https://github.com/danielo515/obsidian-modal-form/commit/1cf155951b1c38af59abb84cf16e6c852bd87abd)), closes [#46](https://github.com/danielo515/obsidian-modal-form/issues/46)
+* added tests ([1230a34](https://github.com/danielo515/obsidian-modal-form/commit/1230a3477209141870856a2b7804bec5cc92c9c0))
+* allow pick/omit in Result helpers ([1c5bd5f](https://github.com/danielo515/obsidian-modal-form/commit/1c5bd5f09a2525ffcdb9226834730b044a3aee6c)), closes [#101](https://github.com/danielo515/obsidian-modal-form/issues/101)
+* dataview input type ([22b8949](https://github.com/danielo515/obsidian-modal-form/commit/22b8949bbde2deeb417c89921ec4531b03af4ed2))
+* default values support for most input types ([f8415a3](https://github.com/danielo515/obsidian-modal-form/commit/f8415a32554f1add8b50e667a7ca9664232ee2e1))
+* detect invalid data on data.json ([91aa99c](https://github.com/danielo515/obsidian-modal-form/commit/91aa99c1c899f2831999318d377b7dee01b642a7)), closes [#98](https://github.com/danielo515/obsidian-modal-form/issues/98)
+* duplicate form ([7a0f1c6](https://github.com/danielo515/obsidian-modal-form/commit/7a0f1c6000d309c447fc4cb7e345dbf0f435944e)), closes [#20](https://github.com/danielo515/obsidian-modal-form/issues/20)
+* Enable Ctrl+Enter form submission ([#60](https://github.com/danielo515/obsidian-modal-form/issues/60)) ([7f72122](https://github.com/danielo515/obsidian-modal-form/commit/7f721222733e93f0c6d600bf55c0a203135e20df))
+* Export form as JSON button ([#29](https://github.com/danielo515/obsidian-modal-form/issues/29)) ([defc86c](https://github.com/danielo515/obsidian-modal-form/commit/defc86c654b80ebb071e1eaa8b715f962e41c044))
+* keep the form header always visible ([216d9b4](https://github.com/danielo515/obsidian-modal-form/commit/216d9b40a9ebfcc4ca208a5d0ba326cd73c755d5)), closes [#11](https://github.com/danielo515/obsidian-modal-form/issues/11)
+* limitedForm api ([b0acb29](https://github.com/danielo515/obsidian-modal-form/commit/b0acb29e85dc806bbf3ff04391c42c220bfcb178)), closes [#39](https://github.com/danielo515/obsidian-modal-form/issues/39)
+* migrate between form format versions ([b4e6c96](https://github.com/danielo515/obsidian-modal-form/commit/b4e6c963ad7359ca094b5fc92658e50976bbd18a)), closes [#92](https://github.com/danielo515/obsidian-modal-form/issues/92)
+* multi select UI builder ([3eff7a8](https://github.com/danielo515/obsidian-modal-form/commit/3eff7a89c7177faa47940c16d04f97f5d72a3a21))
+* multi-select v1 ([e3ee492](https://github.com/danielo515/obsidian-modal-form/commit/e3ee49281f39ed6708cdd48f8bba527e74d5584b))
+* preview form from the editor ([2d8e2d6](https://github.com/danielo515/obsidian-modal-form/commit/2d8e2d6aec99f27a30e86ffc49312a2876e5195e)), closes [#17](https://github.com/danielo515/obsidian-modal-form/issues/17)
+* scroll to elements on the list ([f9804a7](https://github.com/danielo515/obsidian-modal-form/commit/f9804a7dde5ba46b045f4f4ad41eacb4b6e3fd22))
+* scroll to new fields in the editor ([ce3ece5](https://github.com/danielo515/obsidian-modal-form/commit/ce3ece5da6fc42b295eee06d7295891ce20622ba))
+* show better errors ([8202d37](https://github.com/danielo515/obsidian-modal-form/commit/8202d378cac76f6a3f49058c78e9988daa5432e6))
+* show errors when form has any invalid field ([54e9eaf](https://github.com/danielo515/obsidian-modal-form/commit/54e9eaf4a0827958fc7f7e312b928d793e026963))
+* show result preview ([7425df1](https://github.com/danielo515/obsidian-modal-form/commit/7425df13425c5e957dc9a9f1cc2a8f2bcb1d1c5f))
+
+
+### Bug Fixes
+
+* accept empty option values for now ([6293dad](https://github.com/danielo515/obsidian-modal-form/commit/6293dade57e451bc68162d5a07db2664fecbfd1f))
+* add tests for result class and helpers ([e4eea18](https://github.com/danielo515/obsidian-modal-form/commit/e4eea189d168fb80000ca722630334c018f6fd04))
+* add version to the form definition ([c7fdd77](https://github.com/danielo515/obsidian-modal-form/commit/c7fdd777f9f1fbce4402a58000ecea1a84d0af52))
+* dataview input was not filtering ([8202d37](https://github.com/danielo515/obsidian-modal-form/commit/8202d378cac76f6a3f49058c78e9988daa5432e6))
+* dataview list format is now correct ([e4eea18](https://github.com/danielo515/obsidian-modal-form/commit/e4eea189d168fb80000ca722630334c018f6fd04))
+* do not close existing leafs, reuse instead ([b00b6b8](https://github.com/danielo515/obsidian-modal-form/commit/b00b6b8d407371450bf4ab0f88cf1fd68f36855f)), closes [#36](https://github.com/danielo515/obsidian-modal-form/issues/36)
+* do not use innerHTML ([8ae7d5b](https://github.com/danielo515/obsidian-modal-form/commit/8ae7d5be014840ddb8e19619097af7ad1d9bccc2))
+* ensure order of fixed select ([62b407e](https://github.com/danielo515/obsidian-modal-form/commit/62b407ea50b39c873d3f83e86ff9e502a88a6d22)), closes [#61](https://github.com/danielo515/obsidian-modal-form/issues/61)
+* ensure types in svelte at build ([fbe03d3](https://github.com/danielo515/obsidian-modal-form/commit/fbe03d36bdf70551c73c3ce12150e6cdae2264b9))
+* filtering in multi with uppercase ([fac67ea](https://github.com/danielo515/obsidian-modal-form/commit/fac67ea1199b2db9d27e4df0010e959e939927ab))
+* fix the versioning, I hope ([7bb7d7d](https://github.com/danielo515/obsidian-modal-form/commit/7bb7d7da9b58c1a7055d3178b4528f346ea62edd))
+* make multi-select static work ([fa5987a](https://github.com/danielo515/obsidian-modal-form/commit/fa5987a93ae7ef7bc6aea60f6273bbcb6e78fcc1)), closes [#63](https://github.com/danielo515/obsidian-modal-form/issues/63)
+* make sure the editor always has the right height ([53f10b3](https://github.com/danielo515/obsidian-modal-form/commit/53f10b3a2451efd347855e486f46aa64eaaeeec3)), closes [#38](https://github.com/danielo515/obsidian-modal-form/issues/38)
+* multi select was not including the values ([1885834](https://github.com/danielo515/obsidian-modal-form/commit/1885834ded85f09deac185e2a3b2d91502585504))
+* open the main view in a new tab ([b00b6b8](https://github.com/danielo515/obsidian-modal-form/commit/b00b6b8d407371450bf4ab0f88cf1fd68f36855f))
+* pipelines install ([2c9a17f](https://github.com/danielo515/obsidian-modal-form/commit/2c9a17f62a017f2b190b1abf99cfb1a0e015c4d6))
+* proper colors for save and close ([4c6d495](https://github.com/danielo515/obsidian-modal-form/commit/4c6d495a8b0e550b9f117e5d340885a8052f55c9))
+* proper duplicate scroll ([28cebd4](https://github.com/danielo515/obsidian-modal-form/commit/28cebd42d0b50d968b4fa2678425d4a378f9dd00))
+* properly clone elements ([667ebe0](https://github.com/danielo515/obsidian-modal-form/commit/667ebe0d94526803dbad6d62069c36757355dbe5)), closes [#51](https://github.com/danielo515/obsidian-modal-form/issues/51)
+* release process ([790d84d](https://github.com/danielo515/obsidian-modal-form/commit/790d84d83200243b01ca6080575e3aabda663ff5))
+* release-bot ([0586068](https://github.com/danielo515/obsidian-modal-form/commit/0586068e6b69a3659fd27377510b0de3eeba6387))
+* remove all trace of text input suggest ([68cace2](https://github.com/danielo515/obsidian-modal-form/commit/68cace2135ac38d66027d1f620f34eda700e82df))
+* remove deprecated usages of app ([343ff57](https://github.com/danielo515/obsidian-modal-form/commit/343ff573ae7ed4710b3f3290bf752dee84e7aaae))
+* separate input builder for select ([e75a1f4](https://github.com/danielo515/obsidian-modal-form/commit/e75a1f43f7e7e674806ae9771d9c9155a8a0e7cc)), closes [#75](https://github.com/danielo515/obsidian-modal-form/issues/75)
+* set a default value for inputs of type select ([2c514b1](https://github.com/danielo515/obsidian-modal-form/commit/2c514b1095edf37e37151ca89f2ea10b440db446)), closes [#45](https://github.com/danielo515/obsidian-modal-form/issues/45)
+* text-area initial value ([f21b783](https://github.com/danielo515/obsidian-modal-form/commit/f21b783cfefc9485a8f7748539076bb7d0def2b8))
+* toggles always have a value ([72cfc3e](https://github.com/danielo515/obsidian-modal-form/commit/72cfc3e65624a31d4a200301465aa9044e908357))
+* type check also svelte files ([903b9bf](https://github.com/danielo515/obsidian-modal-form/commit/903b9bfc680666b1d9d1e71196bdd732504b7083))
+* type narrow on svelte ([c46dc40](https://github.com/danielo515/obsidian-modal-form/commit/c46dc400dee5bc2df704d0c95a5577a298f517a8))
+
 ## [1.22.0](https://github.com/danielo515/obsidian-modal-form/compare/1.21.0...1.22.0) (2023-10-26)
 
 
