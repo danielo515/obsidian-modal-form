@@ -58,7 +58,12 @@ export class ManageFormsView extends ItemView {
                 },
                 duplicateForm: (form: FormDefinition) => {
                     this.plugin.duplicateForm(form);
+                },
+                copyFormToClipboard: async (form: FormDefinition) => {
+                    await navigator.clipboard.writeText(JSON.stringify(form, null, 2));
+                    new Notice("Form has been copied to the clipboard");
                 }
+
             }
         })
         // container.createEl("h3", { text: "Manage forms" });

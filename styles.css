@@ -9,6 +9,7 @@ If your plugin does not need CSS, delete this file.
 
 :root {
     --mf-spacing: 0.75rem;
+    --mf-spacing2: 1.5rem;
 }
 
 /* Utilities to remove styles from native obsidian elements when wrapped like this
