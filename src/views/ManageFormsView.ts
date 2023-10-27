@@ -1,6 +1,9 @@
-import { MigrationError } from "src/core/formDefinition";
+import { FormDefinition, MigrationError } from "src/core/formDefinition";
+import ManageForms from './ManageForms.svelte'
 import ModalFormPlugin from "../main";
+import * as A from 'fp-ts/Array'
 import { ItemView, Notice, Setting, WorkspaceLeaf } from "obsidian";
+import { E, pipe } from "@std";
 
 export const MANAGE_FORMS_VIEW = "modal-form-manage-forms-view";
 
@@ -9,6 +12,7 @@ export const MANAGE_FORMS_VIEW = "modal-form-manage-forms-view";
  * Manage existing forms and create new ones
  */
 export class ManageFormsView extends ItemView {
+    component!: ManageForms;
     constructor(readonly leaf: WorkspaceLeaf, readonly plugin: ModalFormPlugin) {
         super(leaf);
         this.icon = "documents";
@@ -26,9 +30,40 @@ export class ManageFormsView extends ItemView {
         // console.log('On open manage forms');
         const container = this.containerEl.children[1] || this.containerEl.createDiv();
         container.empty();
-        container.createEl("h3", { text: "Manage forms" });
-        this.renderControls(container.createDiv());
-        await this.renderForms(container.createDiv());
+
+        const settings = await this.plugin.getSettings();
+        const allForms = settings.formDefinitions;
+        const { left: invalidForms, right: forms } = pipe(
+            allForms,
+            A.partitionMap((form) => {
+                if (form instanceof MigrationError) {
+                    return E.left(form);
+                } else {
+                    return E.right(form);
+                }
+            }));
+        this.component = new ManageForms({
+            target: container,
+            props: {
+                forms,
+                invalidForms,
+                createNewForm: () => {
+                    this.plugin.createNewForm();
+                },
+                editForm: (formName: string) => {
+                    this.plugin.editForm(formName);
+                },
+                deleteForm: (formName: string) => {
+                    this.plugin.deleteForm(formName);
+                },
+                duplicateForm: (form: FormDefinition) => {
+                    this.plugin.duplicateForm(form);
+                }
+            }
+        })
+        // container.createEl("h3", { text: "Manage forms" });
+        // this.renderControls(container.createDiv());
+        // await this.renderForms(container.createDiv());
     }
 
     renderControls(root: HTMLElement) {
@@ -94,6 +129,7 @@ export class ManageFormsView extends ItemView {
     }
 
     async onClose() {
+        this.component.$destroy();
     }
 
 }
