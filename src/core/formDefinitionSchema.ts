@@ -3,7 +3,7 @@ import * as E from "fp-ts/Either";
 import { object, number, literal, type Output, is, array, string, union, optional, minLength, toTrimmed, merge, unknown, ValiError, BaseSchema, enumType, passthrough } from "valibot";
 import { AllFieldTypes, FormDefinition } from "./formDefinition";
 import * as Separated from "fp-ts/Separated";
-import { findInputSchema, InvalidInputError } from "./findInputSchema";
+import { findInputDefinitionSchema, InvalidInputError } from "./findInputDefinitionSchema";
 
 /**
  * Here are the core logic around the main domain of the plugin,
@@ -121,7 +121,7 @@ export class MigrationError {
             this.form.fields,
             A.map((field) => {
                 return pipe(
-                    findInputSchema(field),
+                    findInputDefinitionSchema(field),
                     E.chainW(([field, inputSchema]) => pipe(
                         parse(inputSchema, field.input),
                         E.mapLeft((error) => new InvalidInputError(field, error))
