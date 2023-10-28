@@ -1,9 +1,8 @@
-import { A, parse, pipe } from "@std";
 import * as E from "fp-ts/Either";
+import { pipe, parse } from "@std";
 import { object, number, literal, type Output, is, array, string, union, optional, minLength, toTrimmed, merge, unknown, ValiError, BaseSchema, enumType, passthrough } from "valibot";
 import { AllFieldTypes, FormDefinition } from "./formDefinition";
-import * as Separated from "fp-ts/Separated";
-import { findInputDefinitionSchema, InvalidInputError } from "./findInputDefinitionSchema";
+import { findFieldErrors } from "./findInputDefinitionSchema";
 
 /**
  * Here are the core logic around the main domain of the plugin,
@@ -56,12 +55,6 @@ export const InputTypeToParserMap: Record<AllFieldTypes, BaseSchema> = {
     dataview: InputDataviewSourceSchema,
     multiselect: MultiselectSchema,
 };
-export const FieldMinimalSchema = passthrough(object({
-    name: string(),
-    input: object({ type: string() })
-}));
-
-export type FieldMinimal = Output<typeof FieldMinimalSchema>;
 
 export const FieldDefinitionSchema = object({
     name: nonEmptyString('field name'),
@@ -69,6 +62,17 @@ export const FieldDefinitionSchema = object({
     description: string(),
     input: InputTypeSchema
 });
+/**
+ * Only for error reporting purposes
+ */
+export const FieldMinimalSchema = passthrough(merge([
+    FieldDefinitionSchema,
+    object({ input: object({ type: string() }) })
+]));
+
+export type FieldMinimal = Output<typeof FieldMinimalSchema>;
+
+
 export const FieldListSchema = array(FieldDefinitionSchema);
 /**
  * This is the most basic representation of a form definition.
@@ -117,20 +121,7 @@ export class MigrationError {
         return this.form;
     }
     get fieldErrors() {
-        return pipe(
-            this.form.fields,
-            A.map((field) => {
-                return pipe(
-                    findInputDefinitionSchema(field),
-                    E.chainW(([field, inputSchema]) => pipe(
-                        parse(inputSchema, field.input),
-                        E.mapLeft((error) => new InvalidInputError(field, error))
-                    )),
-                )
-            }),
-            A.partition(E.isLeft),
-            Separated.right,
-        );
+        return findFieldErrors(this.form.fields);
     }
 }
 /**

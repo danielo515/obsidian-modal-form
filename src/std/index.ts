@@ -1,6 +1,6 @@
 import { pipe as p } from "fp-ts/function";
 import { partitionMap, partition, map as mapArr } from "fp-ts/Array";
-import { isLeft, isRight, tryCatchK, map, getOrElse, right, left } from "fp-ts/Either";
+import { isLeft, isRight, tryCatchK, map, getOrElse, right, left, mapLeft } from "fp-ts/Either";
 import { ValiError, parse as parseV } from "valibot";
 
 export const pipe = p
@@ -17,7 +17,8 @@ export const E = {
     right,
     tryCatchK,
     getOrElse,
-    map
+    map,
+    mapLeft,
 }
 
 export const parse = tryCatchK(parseV, (e: unknown) => e as ValiError)

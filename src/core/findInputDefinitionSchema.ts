@@ -1,25 +1,38 @@
-import { parse, pipe } from "@std";
+import { A, parse, pipe } from "@std";
 import * as E from "fp-ts/Either";
 import { ValiError, BaseSchema } from "valibot";
+import { FieldMinimal, FieldMinimalSchema, InputTypeToParserMap } from "./formDefinitionSchema";
 import { AllFieldTypes } from "./formDefinition";
-import { FieldMinimal, InputTypeToParserMap, FieldMinimalSchema } from "./formDefinitionSchema";
 
-
+function stringifyError(error: ValiError) {
+    return error.issues.map((issue) => `${issue.path?.map((i) => i.key)}: ${issue.message} got ${issue.input}`).join(', ');
+}
 export class InvalidInputTypeError {
     static readonly _tag = "InvalidInputTypeError" as const;
-    constructor(public input: unknown) { }
+    constructor(readonly input: unknown) { }
     toString(): string {
-        return `InvalidInputTypeError: ${JSON.stringify(this.input)}`;
+        return `InvalidInputTypeError: "input.type" is invalid, got: ${JSON.stringify(this.input)}`;
     }
 }
-
 export class InvalidInputError {
     static readonly _tag = "InvalidInputError" as const;
     constructor(public input: FieldMinimal, readonly error: ValiError) { }
     toString(): string {
-        return `InvalidInputError: ${this.error.issues.map((issue) => issue.message).join(', ')}`;
+        return `InvalidInputError: ${stringifyError(this.error)}`;
     }
 }
+
+export class InvalidFieldError {
+    static readonly _tag = "InvalidFieldError" as const;
+    constructor(public field: unknown, readonly error: ValiError) { }
+    toString(): string {
+        return `InvalidFieldError: ${stringifyError(this.error)}`;
+    }
+    static of(field: unknown) {
+        return (error: ValiError) => new InvalidFieldError(field, error);
+    }
+}
+
 function isValidInputType(input: unknown): input is AllFieldTypes {
     return 'string' === typeof input && input in InputTypeToParserMap;
 }
@@ -33,13 +46,40 @@ function isValidInputType(input: unknown): input is AllFieldTypes {
  * @param fieldDefinition a field definition to find the input schema for
  * @returns a tuple of the basic field definition and the input schema
  */
-export function findInputDefinitionSchema(fieldDefinition: unknown): E.Either<ValiError | InvalidInputTypeError, [FieldMinimal, BaseSchema]> {
+export function findInputDefinitionSchema(fieldDefinition: unknown): E.Either<InvalidFieldError | InvalidInputTypeError, [FieldMinimal, BaseSchema]> {
     return pipe(
         parse(FieldMinimalSchema, fieldDefinition),
+        E.mapLeft(InvalidFieldError.of(fieldDefinition)),
         E.chainW((field) => {
             const type = field.input.type;
             if (isValidInputType(type)) return E.right([field, InputTypeToParserMap[type]]);
             else return E.left(new InvalidInputTypeError(type));
         })
     );
+}
+/**
+ * Given an array of fields that have failed to parse,
+ * this function tries to find the corresponding input schema
+ * and then parses the input with that schema to get the specific errors.
+ * The result is an array of field errors.
+ * This is needed because valibot doesn't provide a way to get the specific error of union types
+ */
+export function findFieldErrors(fields: unknown[]) {
+    return pipe(
+        fields,
+        A.map((fieldUnparsed) => {
+            return pipe(
+                findInputDefinitionSchema(fieldUnparsed),
+                E.chainW(([field, inputSchema]) => pipe(
+                    parse(inputSchema, field.input),
+                    E.bimap(
+                        (error) => new InvalidInputError(field, error),
+                        () => field
+                    )),
+                ))
+        }),
+        // A.partition(E.isLeft),
+        // Separated.right,
+    );
+
 }
