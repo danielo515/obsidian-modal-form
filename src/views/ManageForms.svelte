@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { setIcon } from "obsidian";
-    import { FormDefinition, MigrationError } from "src/core/formDefinition";
-    import Button from "./components/Button.svelte";
+    import { FormDefinition } from "src/core/formDefinition";
     import KeyValue from "./components/KeyValue.svelte";
+    import Button from "./components/Button.svelte";
+    import { MigrationError } from "src/core/formDefinitionSchema";
 
     export let createNewForm: () => void;
     export let deleteForm: (formName: string) => void;

@@ -1,4 +1,5 @@
-import { FormDefinition, MigrationError } from "src/core/formDefinition";
+import { FormDefinition } from "src/core/formDefinition";
+import { MigrationError } from "src/core/formDefinitionSchema";
 import ManageForms from './ManageForms.svelte'
 import ModalFormPlugin from "../main";
 import * as A from 'fp-ts/Array'

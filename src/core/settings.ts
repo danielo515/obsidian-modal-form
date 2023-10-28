@@ -1,5 +1,6 @@
 import { Output, ValiError, array, enumType, is, object, optional, unknown } from "valibot";
-import type { FormDefinition, MigrationError } from "./formDefinition";
+import type { FormDefinition } from "./formDefinition";
+import type { MigrationError } from "./formDefinitionSchema";
 import * as E from 'fp-ts/Either';
 import { pipe, parse } from "@std";
 
@@ -29,7 +30,7 @@ const ModalFormSettingsSchema = object({
 type ModalFormSettingsPartial = Output<typeof ModalFormSettingsSchema>;
 
 export function getDefaultSettings(): ModalFormSettings {
-    return { editorPosition: 'right', formDefinitions: []};
+    return { editorPosition: 'right', formDefinitions: [] };
 }
 
 export class NullSettingsError {

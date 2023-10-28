@@ -1,6 +1,7 @@
 import { App } from "obsidian";
 
-import { MigrationError, type FormDefinition, type FormOptions } from "./core/formDefinition";
+import { type FormDefinition, type FormOptions } from "./core/formDefinition";
+import { MigrationError } from "./core/formDefinitionSchema";
 import FormResult from "./core/FormResult";
 import { exampleModalDefinition } from "./exampleModalDefinition";
 import ModalFormPlugin from "./main";
