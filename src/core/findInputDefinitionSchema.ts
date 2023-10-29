@@ -1,24 +1,31 @@
-import { A, parse, pipe } from "@std";
+import { A, NonEmptyArray, parse, pipe } from "@std";
 import * as E from "fp-ts/Either";
 import { ValiError, BaseSchema } from "valibot";
 import { FieldMinimal, FieldMinimalSchema, InputTypeToParserMap } from "./formDefinitionSchema";
 import { AllFieldTypes } from "./formDefinition";
 
-function stringifyError(error: ValiError) {
-    return error.issues.map((issue) => `${issue.path?.map((i) => i.key)}: ${issue.message} got ${issue.input}`).join(', ');
+function stringifyIssues(error: ValiError): NonEmptyArray<string> {
+    return error.issues.map((issue) => `${issue.path?.map((i) => i.key)}: ${issue.message} got ${issue.input}`) as NonEmptyArray<string>;
 }
 export class InvalidInputTypeError {
     static readonly _tag = "InvalidInputTypeError" as const;
     constructor(readonly input: unknown) { }
     toString(): string {
-        return `InvalidInputTypeError: "input.type" is invalid, got: ${JSON.stringify(this.input)}`;
+        return `InvalidInputTypeError: ${this.getFieldErrors()[0]}`;
+    }
+    getFieldErrors(): NonEmptyArray<string> {
+        return [`"input.type" is invalid, got: ${JSON.stringify(this.input)}`]
     }
 }
 export class InvalidInputError {
     static readonly _tag = "InvalidInputError" as const;
-    constructor(public input: FieldMinimal, readonly error: ValiError) { }
+    constructor(readonly field: FieldMinimal, readonly error: ValiError) { }
     toString(): string {
-        return `InvalidInputError: ${stringifyError(this.error)}`;
+        return `InvalidInputError: ${stringifyIssues(this.error).join(', ')}`;
+    }
+
+    getFieldErrors(): NonEmptyArray<string> {
+        return stringifyIssues(this.error)
     }
 }
 
@@ -26,7 +33,10 @@ export class InvalidFieldError {
     static readonly _tag = "InvalidFieldError" as const;
     constructor(public field: unknown, readonly error: ValiError) { }
     toString(): string {
-        return `InvalidFieldError: ${stringifyError(this.error)}`;
+        return `InvalidFieldError: ${stringifyIssues(this.error).join(', ')}`;
+    }
+    getFieldErrors(): string[] {
+        return stringifyIssues(this.error)
     }
     static of(field: unknown) {
         return (error: ValiError) => new InvalidFieldError(field, error);
