@@ -1,4 +1,4 @@
-import { A, NonEmptyArray, parse, pipe } from "@std";
+import { A, NonEmptyArray, ParsingFn, parse, pipe } from "@std";
 import * as E from "fp-ts/Either";
 import { ValiError, BaseSchema } from "valibot";
 import { FieldMinimal, FieldMinimalSchema, InputTypeToParserMap } from "./formDefinitionSchema";
@@ -63,7 +63,7 @@ function isValidInputType(input: unknown): input is AllFieldTypes {
  * @param fieldDefinition a field definition to find the input schema for
  * @returns a tuple of the basic field definition and the input schema
  */
-export function findInputDefinitionSchema(fieldDefinition: unknown): E.Either<InvalidFieldError | InvalidInputTypeError, [FieldMinimal, BaseSchema]> {
+export function findInputDefinitionSchema(fieldDefinition: unknown): E.Either<InvalidFieldError | InvalidInputTypeError, [FieldMinimal, ParsingFn<BaseSchema>]> {
     return pipe(
         parse(FieldMinimalSchema, fieldDefinition),
         E.mapLeft(InvalidFieldError.of(fieldDefinition)),
@@ -87,8 +87,8 @@ export function findFieldErrors(fields: unknown[]) {
         A.map((fieldUnparsed) => {
             return pipe(
                 findInputDefinitionSchema(fieldUnparsed),
-                E.chainW(([field, inputSchema]) => pipe(
-                    parse(inputSchema, field.input),
+                E.chainW(([field, parser]) => pipe(
+                    parser(field.input),
                     E.bimap(
                         (error) => new InvalidInputError(field, error),
                         () => field

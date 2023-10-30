@@ -1,6 +1,6 @@
 import { pipe as p } from "fp-ts/function";
 import { partitionMap, partition, map as mapArr } from "fp-ts/Array";
-import { isLeft, isRight, tryCatchK, map, getOrElse, right, left, mapLeft, Either, bimap, reduce } from "fp-ts/Either";
+import { isLeft, isRight, tryCatchK, map, getOrElse, right, left, mapLeft, Either, bimap } from "fp-ts/Either";
 import { BaseSchema, Output, ValiError, parse as parseV } from "valibot";
 import { Semigroup, concatAll } from "fp-ts/Semigroup";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
@@ -40,7 +40,7 @@ type ParseOpts = Parameters<typeof parse>[2]
 export function parseC<S extends BaseSchema>(schema: S, options?: ParseOpts) {
     return (input: unknown) => parse(schema, input, options)
 }
-type ParsingFn<S extends BaseSchema> = (input: unknown) => Either<ValiError, Output<S>>
+export type ParsingFn<S extends BaseSchema> = (input: unknown) => Either<ValiError, Output<S>>
 /**
  * Concatenates two parsing functions that return Either<ValiError, B> into one.
  * If the first function returns a Right, the second function is not called.

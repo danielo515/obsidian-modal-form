@@ -1,5 +1,5 @@
 import * as E from "fp-ts/Either";
-import { pipe, parse } from "@std";
+import { pipe, parse, trySchemas, ParsingFn, parseC } from "@std";
 import { object, number, literal, type Output, is, array, string, union, optional, minLength, toTrimmed, merge, unknown, ValiError, BaseSchema, enumType, passthrough } from "valibot";
 import { AllFieldTypes, FormDefinition } from "./formDefinition";
 import { findFieldErrors } from "./findInputDefinitionSchema";
@@ -41,19 +41,19 @@ export const InputTypeSchema = union([
     InputSelectFixedSchema,
     MultiselectSchema
 ]);
-export const InputTypeToParserMap: Record<AllFieldTypes, BaseSchema> = {
-    number: InputBasicSchema,
-    text: InputBasicSchema,
-    date: InputBasicSchema,
-    time: InputBasicSchema,
-    datetime: InputBasicSchema,
-    textarea: InputBasicSchema,
-    toggle: InputBasicSchema,
-    note: InputNoteFromFolderSchema,
-    slider: InputSliderSchema,
-    select: SelectFromNotesSchema,
-    dataview: InputDataviewSourceSchema,
-    multiselect: MultiselectSchema,
+export const InputTypeToParserMap: Record<AllFieldTypes, ParsingFn<BaseSchema>> = {
+    number: parseC(InputBasicSchema),
+    text: parseC(InputBasicSchema),
+    date: parseC(InputBasicSchema),
+    time: parseC(InputBasicSchema),
+    datetime: parseC(InputBasicSchema),
+    textarea: parseC(InputBasicSchema),
+    toggle: parseC(InputBasicSchema),
+    note: parseC(InputNoteFromFolderSchema),
+    slider: parseC(InputSliderSchema),
+    select: trySchemas([SelectFromNotesSchema, InputSelectFixedSchema]),
+    dataview: parseC(InputDataviewSourceSchema),
+    multiselect: parseC(MultiselectSchema),
 };
 
 export const FieldDefinitionSchema = object({
@@ -67,7 +67,7 @@ export const FieldDefinitionSchema = object({
  */
 export const FieldMinimalSchema = passthrough(merge([
     FieldDefinitionSchema,
-    object({ input: object({ type: string() }) })
+    object({ input: passthrough(object({ type: string() })) })
 ]));
 
 export type FieldMinimal = Output<typeof FieldMinimalSchema>;
