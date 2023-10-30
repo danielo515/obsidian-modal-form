@@ -1,5 +1,5 @@
 import { E, trySchemas } from "./index";
-import { string, number, array, boolean, object, ValiError } from "valibot";
+import { string, number, array, boolean, object } from "valibot";
 
 describe("trySchemas", () => {
     const schema1 = object({
