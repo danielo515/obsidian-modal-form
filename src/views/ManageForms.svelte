@@ -3,6 +3,10 @@
     import KeyValue from "./components/KeyValue.svelte";
     import Button from "./components/Button.svelte";
     import { MigrationError } from "src/core/formDefinitionSchema";
+    import { is } from "valibot";
+    import { isLeft } from "fp-ts/lib/Either";
+    import { E } from "@std";
+    import { right } from "fp-ts/lib/Separated";
 
     export let createNewForm: () => void;
     export let deleteForm: (formName: string) => void;
@@ -104,10 +108,21 @@
             {#each invalidForms as form}
                 <div class="form-row">
                     <h4 class="form-name">{form.name}</h4>
-                    {#each form.error.issues as error}
-                        <KeyValue key={error.reason}>
-                            <span>{error.message}</span>
-                        </KeyValue>
+                    {#each form.fieldErrors as error}
+                        <div class="flex-row">
+                            {#if E.isLeft(error)}
+                                <pre><code>
+                                    {JSON.stringify(error.left.field, null, 1)}
+                                </code></pre>
+                                <KeyValue key={error.left.path}>
+                                    {#each error.left.getFieldErrors() as fieldError}
+                                        <span>{fieldError}</span>
+                                    {/each}
+                                </KeyValue>
+                            {:else}
+                                error.right.name ✅
+                            {/if}
+                        </div>
                     {/each}
                 </div>
             {/each}
@@ -137,5 +152,13 @@
     }
     h5 {
         margin-bottom: 0;
+    }
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+    }
+    pre {
+        white-space: pre-wrap;
     }
 </style>

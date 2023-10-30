@@ -9,17 +9,21 @@ function stringifyIssues(error: ValiError): NonEmptyArray<string> {
 }
 export class InvalidInputTypeError {
     static readonly _tag = "InvalidInputTypeError" as const;
-    constructor(readonly input: unknown) { }
+    readonly path: string = 'input.type';
+    constructor(readonly field: FieldMinimal, readonly inputType: unknown) { }
     toString(): string {
         return `InvalidInputTypeError: ${this.getFieldErrors()[0]}`;
     }
     getFieldErrors(): NonEmptyArray<string> {
-        return [`"input.type" is invalid, got: ${JSON.stringify(this.input)}`]
+        return [`"input.type" is invalid, got: ${JSON.stringify(this.inputType)}`]
     }
 }
 export class InvalidInputError {
     static readonly _tag = "InvalidInputError" as const;
-    constructor(readonly field: FieldMinimal, readonly error: ValiError) { }
+    readonly path: string;
+    constructor(readonly field: FieldMinimal, readonly error: ValiError) {
+        this.path = error.issues[0].path?.map((i) => i.key).join('.') ?? '';
+    }
     toString(): string {
         return `InvalidInputError: ${stringifyIssues(this.error).join(', ')}`;
     }
@@ -31,7 +35,10 @@ export class InvalidInputError {
 
 export class InvalidFieldError {
     static readonly _tag = "InvalidFieldError" as const;
-    constructor(public field: unknown, readonly error: ValiError) { }
+    readonly path: string;
+    constructor(public field: unknown, readonly error: ValiError) {
+        this.path = error.issues[0].path?.map((i) => i.key).join('.') ?? '';
+    }
     toString(): string {
         return `InvalidFieldError: ${stringifyIssues(this.error).join(', ')}`;
     }
@@ -63,7 +70,7 @@ export function findInputDefinitionSchema(fieldDefinition: unknown): E.Either<In
         E.chainW((field) => {
             const type = field.input.type;
             if (isValidInputType(type)) return E.right([field, InputTypeToParserMap[type]]);
-            else return E.left(new InvalidInputTypeError(type));
+            else return E.left(new InvalidInputTypeError(field, type));
         })
     );
 }
