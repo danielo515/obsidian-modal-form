@@ -1,7 +1,7 @@
 import { pipe as p } from "fp-ts/function";
 import { partitionMap, partition, map as mapArr } from "fp-ts/Array";
-import { isLeft, isRight, tryCatchK, map, getOrElse, right, left, mapLeft, Either } from "fp-ts/Either";
-import { BaseSchema, ValiError, parse as parseV } from "valibot";
+import { isLeft, isRight, tryCatchK, map, getOrElse, right, left, mapLeft, Either, bimap, reduce } from "fp-ts/Either";
+import { BaseSchema, Output, ValiError, parse as parseV } from "valibot";
 import { Semigroup, concatAll } from "fp-ts/Semigroup";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 export type { NonEmptyArray } from 'fp-ts/NonEmptyArray'
@@ -22,6 +22,7 @@ export const E = {
     getOrElse,
     map,
     mapLeft,
+    bimap,
 }
 
 
@@ -39,13 +40,13 @@ type ParseOpts = Parameters<typeof parse>[2]
 export function parseC<S extends BaseSchema>(schema: S, options?: ParseOpts) {
     return (input: unknown) => parse(schema, input, options)
 }
-
+type ParsingFn<S extends BaseSchema> = (input: unknown) => Either<ValiError, Output<S>>
 /**
  * Concatenates two parsing functions that return Either<ValiError, B> into one.
  * If the first function returns a Right, the second function is not called.
  */
-class _EFunSemigroup<A, B> implements Semigroup<(i: A) => Either<ValiError, B>> {
-    concat(f: (i: A) => Either<ValiError, B>, g: (i: A) => Either<ValiError, B>): (i: A) => Either<ValiError, B> {
+class _EFunSemigroup<A extends BaseSchema, B extends BaseSchema> implements Semigroup<ParsingFn<A>> {
+    concat(f: ParsingFn<A>, g: ParsingFn<B>): (i: unknown) => Either<ValiError, unknown> {
         return (i) => {
             const fRes = f(i)
             if (isRight(fRes)) return fRes

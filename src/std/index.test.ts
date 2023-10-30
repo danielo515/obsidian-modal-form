@@ -1,4 +1,4 @@
-import { E, trySchemas } from "./index";
+import { E, pipe, trySchemas } from "./index";
 import { string, number, array, boolean, object } from "valibot";
 
 describe("trySchemas", () => {
@@ -29,6 +29,7 @@ describe("trySchemas", () => {
             hobbies: ["reading", "swimming"],
             isEmployed: true,
         };
+        console.log(' ====== 1 =====')
         const result = trySchemas([schema1, schema2, schema3])(input);
         expect(result).toEqual({
             _tag: "Right",
@@ -48,6 +49,7 @@ describe("trySchemas", () => {
             age: 25,
             isStudent: true,
         };
+        console.log(' ====== 2 =====')
         const result = trySchemas([schema1, schema2, schema3])(input);
         expect(result).toEqual({
             _tag: "Right",
@@ -63,15 +65,42 @@ describe("trySchemas", () => {
     it("should return a Left with a ValiError if the input does not match any of the schemas", () => {
         const input = {
             name: "John Doe",
-            age: "30",
+            age: "30", // This is a string, not a number, will fail, is what I want
             hobbies: ["reading", "swimming"],
             isEmployed: true,
         };
+        console.log(' ====== 3 =====')
         const result = trySchemas([schema1, schema2, schema3])(input);
         if (E.isLeft(result)) {
             expect(result.left.message).toEqual('Invalid type');
         } else {
             fail('expected a Left')
         }
+    });
+
+    it("What if I only provide one schema and an input that matches?", () => {
+        const input = {
+            name: "John Doe",
+            age: 30,
+            hobbies: ["reading", "swimming"],
+            isEmployed: true,
+        };
+        console.log(' ====== 4 =====')
+        const result = trySchemas([schema1])(input);
+        expect(result).toEqual(E.right(input));
+    });
+
+    it("What if I only provide one schema and an input that fails?", () => {
+        const input = {
+            name: "John Doe",
+            age: "30",
+            hobbies: ["reading", "swimming"],
+            isEmployed: true,
+        };
+        const result = trySchemas([schema1])(input);
+        pipe(result, E.bimap(
+            (x) => expect(x.message).toEqual('Invalid type'),
+            () => fail('expected a Left')
+        ))
     });
 });
