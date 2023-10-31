@@ -119,8 +119,11 @@
                                         <span>{fieldError}</span>
                                     {/each}
                                 </KeyValue>
+                                <hr />
                             {:else}
-                                error.right.name ✅
+                                <KeyValue key="field">
+                                    <span>{error.right.name} ✅</span>
+                                </KeyValue>
                             {/if}
                         </div>
                     {/each}
