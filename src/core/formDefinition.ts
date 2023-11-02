@@ -1,5 +1,6 @@
 import { type Output, is, safeParse } from "valibot";
-import { SelectFromNotesSchema, InputSliderSchema, InputNoteFromFolderSchema, InputDataviewSourceSchema, InputSelectFixedSchema, InputBasicSchema, MultiselectSchema, InputTypeSchema, FieldDefinitionSchema, FormDefinitionLatestSchema, FieldListSchema, FormDefinitionBasicSchema } from "./formDefinitionSchema";
+import { SelectFromNotesSchema, InputSliderSchema, InputNoteFromFolderSchema, InputDataviewSourceSchema, InputSelectFixedSchema, InputBasicSchema, MultiselectSchema, InputTypeSchema, FieldDefinitionSchema, FormDefinitionLatestSchema, FieldListSchema, FormDefinitionBasicSchema, MigrationError } from "./formDefinitionSchema";
+import { A, O, pipe } from "@std";
 //=========== Types derived from schemas
 type selectFromNotes = Output<typeof SelectFromNotesSchema>;
 type inputSlider = Output<typeof InputSliderSchema>;
@@ -119,4 +120,32 @@ export function isValidFormDefinition(input: unknown): input is FormDefinition {
     }
     console.log('fields are valid');
     return true;
+}
+
+export function duplicateForm(formName: string, forms: (FormDefinition | MigrationError)[]) {
+    return pipe(
+        forms,
+        A.findFirstMap((f) => {
+            if (f instanceof MigrationError) {
+                return O.none;
+            }
+            if (f.name === formName) {
+                return O.some(f);
+            }
+            return O.none;
+        }),
+        O.map((f) => {
+            let newName = f.name + '-copy';
+            let i = 1;
+            while (forms.some((f) => f.name === newName)) {
+                newName = f.name + '-copy-' + i;
+                i++;
+            }
+            return { ...f, name: newName };
+        }),
+        O.map((f) => {
+            return [...forms, f];
+        }),
+        O.getOrElse(() => forms)
+    )
 }

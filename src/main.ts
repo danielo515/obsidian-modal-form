@@ -13,6 +13,7 @@ import { log_notice } from "./utils/Log";
 import * as E from "fp-ts/Either";
 import { pipe } from "fp-ts/function";
 import * as A from "fp-ts/Array"
+import { settingsStore } from "./store/store";
 
 type ViewType = typeof EDIT_FORM_VIEW | typeof MANAGE_FORMS_VIEW;
 
@@ -40,6 +41,7 @@ function notifyMigrationErrors(errors: MigrationError[]) {
 // This is the plugin entrypoint
 export default class ModalFormPlugin extends Plugin {
     public settings: ModalFormSettings | undefined;
+    private unsubscribeSettingsStore: () => void = () => { };
     // This things will be setup in the onload function rather than constructor
     public api!: PublicAPI;
 
@@ -55,17 +57,10 @@ export default class ModalFormPlugin extends Plugin {
         return this.settings?.formDefinitions.some((form) => form.name === formName) ?? false;
     }
 
-    async duplicateForm(form: FormDefinition) {
-        const newForm = { ...form };
-        newForm.name = form.name + '-copy';
-        let i = 1;
-        while (this.formExists(newForm.name)) {
-            newForm.name = form.name + '-copy-' + i;
-            i++;
-        }
-        await this.saveForm(newForm);
-    }
-
+    /**
+     * Opens the form in the editor.
+     * @returns 
+     */
     async editForm(formName: string) {
         // By reading settings from the disk we get a copy of the form
         // effectively preventing any unexpected side effects to the running configuration
@@ -97,22 +92,15 @@ export default class ModalFormPlugin extends Plugin {
         // go back to manage forms and refresh it
         await this.activateView(MANAGE_FORMS_VIEW);
     }
-    async deleteForm(formName: string) {
-        // This should never happen, but because obsidian plugin life-cycle we can not guarantee that the settings are loaded
-        if (!this.settings) {
-            throw new ModalFormError('Settings not found')
-        }
-        this.settings.formDefinitions = this.settings.formDefinitions.filter((form) => form.name !== formName);
-        await this.saveSettings();
-    }
-
 
     closeEditForm() {
         this.app.workspace.detachLeavesOfType(EDIT_FORM_VIEW);
     }
 
 
-    onunload() { }
+    onunload() {
+        this.unsubscribeSettingsStore();
+    }
 
     async activateView(viewType: ViewType, state?: FormDefinition) {
         const { workspace } = this.app;
@@ -175,10 +163,16 @@ export default class ModalFormPlugin extends Plugin {
     }
 
     async onload() {
-        this.settings = await this.getSettings();
-        if (this.settings.formDefinitions.length === 0) {
-            this.settings.formDefinitions.push(exampleModalDefinition);
+        const settings = await this.getSettings();
+        if (settings.formDefinitions.length === 0) {
+            settings.formDefinitions.push(exampleModalDefinition);
         }
+        settingsStore.set(settings);
+        this.unsubscribeSettingsStore = settingsStore.subscribe((s) => {
+            console.log('settings changed', s)
+            this.settings = s;
+            this.saveSettings(s)
+        });
         this.api = new API(this.app, this);
         this.registerView(EDIT_FORM_VIEW, (leaf) => new EditFormView(leaf, this));
         this.registerView(MANAGE_FORMS_VIEW, (leaf) => new ManageFormsView(leaf, this));

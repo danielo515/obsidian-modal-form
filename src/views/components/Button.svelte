@@ -16,7 +16,6 @@
     let root: HTMLElement;
     onMount(() => {
         const btn = new ButtonComponent(root);
-        console.log({ root, btn });
         if (icon) btn.setIcon(icon);
         if (tooltip) btn.setTooltip(tooltip);
         if (text) btn.setButtonText(text);

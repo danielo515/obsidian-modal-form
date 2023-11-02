@@ -3,19 +3,17 @@
     import KeyValue from "./components/KeyValue.svelte";
     import Button from "./components/Button.svelte";
     import { MigrationError } from "src/core/formDefinitionSchema";
-    import { is } from "valibot";
-    import { isLeft } from "fp-ts/lib/Either";
     import { E } from "@std";
-    import { right } from "fp-ts/lib/Separated";
+    import { Readable } from "svelte/store";
 
     export let createNewForm: () => void;
     export let deleteForm: (formName: string) => void;
-    export let duplicateForm: (form: FormDefinition) => void;
+    export let duplicateForm: (formName: string) => void;
     export let editForm: (formName: string) => void;
     export let copyFormToClipboard: (form: FormDefinition) => void;
 
-    export let forms: FormDefinition[];
-    export let invalidForms: MigrationError[] = [];
+    export let forms: Readable<FormDefinition[]>;
+    export let invalidForms: Readable<MigrationError[]>;
     function handleDeleteForm(formName: string) {
         const confirmed = confirm(
             `Are you sure you want to delete ${formName}?`,
@@ -31,7 +29,7 @@
     }
     function handleDuplicateForm(form: FormDefinition) {
         console.log(`Duplicating ${form.name}`);
-        duplicateForm(form);
+        duplicateForm(form.name);
     }
     function handleCopyForm(form: FormDefinition) {
         console.log(`Copying ${form.name}`);
@@ -43,9 +41,9 @@
     <h1>Manage forms</h1>
     <Button onClick={createNewForm} text="Create new form" variant="primary"
     ></Button>
-    {#if invalidForms.length}
+    {#if $invalidForms.length}
         <h5 class="modal-form-danger">
-            There are {invalidForms.length} invalid forms.
+            There are {$invalidForms.length} invalid forms.
         </h5>
         <p>
             Please take a look at the invalid forms section for details and
@@ -55,7 +53,7 @@
 </div>
 
 <div id="form-rows">
-    {#each forms as form}
+    {#each $forms as form}
         <div class="form-row">
             <h4 class="form-name">{form.name}</h4>
             <div>
@@ -102,10 +100,10 @@
             </div>
         </div>
     {/each}
-    {#if invalidForms.length}
+    {#if $invalidForms.length}
         <h3 class="form-name modal-form-danger">Invalid forms</h3>
         <div>
-            {#each invalidForms as form}
+            {#each $invalidForms as form}
                 <div class="form-row">
                     <h4 class="form-name">{form.name}</h4>
                     {#each form.fieldErrors as error}

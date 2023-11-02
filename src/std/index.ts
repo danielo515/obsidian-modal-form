@@ -1,5 +1,6 @@
 import { pipe as p } from "fp-ts/function";
-import { partitionMap, partition, map as mapArr } from "fp-ts/Array";
+import { partitionMap, findFirst, findFirstMap, partition, map as mapArr, filter } from "fp-ts/Array";
+import { map as mapO, getOrElse as getOrElseOpt, some, none } from 'fp-ts/Option'
 import { isLeft, isRight, tryCatchK, map, getOrElse, right, left, mapLeft, Either, bimap } from "fp-ts/Either";
 import { BaseSchema, Output, ValiError, parse as parseV } from "valibot";
 import { Semigroup, concatAll } from "fp-ts/Semigroup";
@@ -10,7 +11,10 @@ export const pipe = p
 export const A = {
     partitionMap,
     partition,
+    findFirst,
+    findFirstMap,
     map: mapArr,
+    filter
 }
 
 export const E = {
@@ -23,6 +27,12 @@ export const E = {
     map,
     mapLeft,
     bimap,
+}
+
+export const O = {
+    map: mapO,
+    getOrElse: getOrElseOpt,
+    some, none,
 }
 
 
