@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.23.0](https://github.com/danielo515/obsidian-modal-form/compare/1.22.1...1.23.0) (2023-11-02)
+
+
+### Features
+
+* specific field/input error reporting methods ([3bfd22d](https://github.com/danielo515/obsidian-modal-form/commit/3bfd22d7c2da0511ee2fc82859de0a9e2b37f045))
+
+
+### Bug Fixes
+
+* forms can not be renamed ([ab2e20d](https://github.com/danielo515/obsidian-modal-form/commit/ab2e20d5a6f8b76d3ed4685c2a4fddcb9c3ce261)), closes [#108](https://github.com/danielo515/obsidian-modal-form/issues/108)
+* ManageForms view is now reactive thanks to stores ([040f8f5](https://github.com/danielo515/obsidian-modal-form/commit/040f8f504c282876b7798da00db3ddda9f8a1c9f))
+
 ## [1.22.1](https://github.com/danielo515/obsidian-modal-form/compare/1.22.0...1.22.1) (2023-10-26)
 
 
