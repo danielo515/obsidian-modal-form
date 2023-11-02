@@ -26,6 +26,12 @@ export const settingsStore = {
             return { ...s, formDefinitions: forms };
         });
     },
+    addNewForm(form: FormDefinition) {
+        update((s): ModalFormSettings => {
+            const forms = [...s.formDefinitions, form];
+            return { ...s, formDefinitions: forms };
+        });
+    },
     removeForm(name: string) {
         update((s): ModalFormSettings => {
             const forms = s.formDefinitions.filter((f) => f.name !== name);

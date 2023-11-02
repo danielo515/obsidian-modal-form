@@ -3,6 +3,7 @@ import { ItemView, type ViewStateResult, WorkspaceLeaf } from "obsidian";
 import type { FormDefinition, EditableFormDefinition } from "../core/formDefinition";
 import FormEditor from './FormBuilder.svelte'
 import { log_notice } from "src/utils/Log";
+import { settingsStore } from "src/store/store";
 
 export const EDIT_FORM_VIEW = "modal-form-edit-form-view";
 
@@ -26,6 +27,7 @@ function parseState(maybeState: unknown): maybeState is EditableFormDefinition {
  */
 export class EditFormView extends ItemView {
     formState: EditableFormDefinition = { title: '', name: '', fields: [] };
+    originalFormName?: string;
     formEditor!: FormEditor;
     constructor(readonly leaf: WorkspaceLeaf, readonly plugin: ModalFormPlugin) {
         super(leaf);
@@ -47,12 +49,16 @@ export class EditFormView extends ItemView {
             props: {
                 definition: this.formState,
                 onChange: () => {
-                    console.log(this.formState)
+                    console.log('Save form state', this.formState)
                     this.app.workspace.requestSaveLayout()
                 },
                 onSubmit: (formDefinition: FormDefinition) => {
-                    console.log({ formDefinition });
-                    this.plugin.saveForm(formDefinition);
+                    console.log('Submitting form', { formDefinition });
+                    if (this.originalFormName && this.originalFormName !== '') {
+                        settingsStore.updateForm(this.originalFormName, formDefinition)
+                    } else {
+                        settingsStore.addNewForm(formDefinition)
+                    }
                     this.plugin.closeEditForm()
                 },
                 onCancel: () => {
@@ -77,6 +83,7 @@ export class EditFormView extends ItemView {
         console.log('setState of edit form called', state)
         if (parseState(state)) {
             this.formState = state;
+            this.originalFormName = state.name;
             this.formEditor.$set({ definition: this.formState })
         }
         return super.setState(state, result);

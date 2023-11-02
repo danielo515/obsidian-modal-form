@@ -53,10 +53,6 @@ export default class ModalFormPlugin extends Plugin {
         return this.activateView(EDIT_FORM_VIEW);
     }
 
-    formExists(formName: string): boolean {
-        return this.settings?.formDefinitions.some((form) => form.name === formName) ?? false;
-    }
-
     /**
      * Opens the form in the editor.
      * @returns 
