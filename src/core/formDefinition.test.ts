@@ -5,14 +5,14 @@ import {
     isInputSelectFixed,
     isInputSlider,
     isSelectFromNotes,
-    MultiselectSchema,
 } from "./formDefinition";
+import { MultiselectSchema } from "./formDefinitionSchema";
 import { parse } from "valibot";
 
 describe("isDataViewSource", () => {
     it("should return true for valid inputDataviewSource objects", () => {
         expect(
-            isDataViewSource({ type: "dataview", query: "some query" })
+            isDataViewSource({ type: "dataview", query: "some query" }),
         ).toBe(true);
     });
 
@@ -20,7 +20,7 @@ describe("isDataViewSource", () => {
         expect(isDataViewSource({ type: "dataview" })).toBe(false);
         expect(isDataViewSource({ type: "dataview", query: 123 })).toBe(false);
         expect(isDataViewSource({ type: "select", query: "some query" })).toBe(
-            false
+            false,
         );
     });
 });
@@ -28,17 +28,17 @@ describe("isDataViewSource", () => {
 describe("isInputNoteFromFolder", () => {
     it("should return true for valid inputNoteFromFolder objects", () => {
         expect(
-            isInputNoteFromFolder({ type: "note", folder: "some folder" })
+            isInputNoteFromFolder({ type: "note", folder: "some folder" }),
         ).toBe(true);
     });
 
     it("should return false for invalid inputNoteFromFolder objects", () => {
         expect(isInputNoteFromFolder({ type: "note" })).toBe(false);
         expect(isInputNoteFromFolder({ type: "note", folder: 123 })).toBe(
-            false
+            false,
         );
         expect(
-            isInputNoteFromFolder({ type: "select", folder: "some folder" })
+            isInputNoteFromFolder({ type: "select", folder: "some folder" }),
         ).toBe(false);
     });
 });
@@ -50,27 +50,27 @@ describe("isInputSelectFixed", () => {
                 type: "select",
                 source: "fixed",
                 options: [{ value: "1", label: "Option 1" }],
-            })
+            }),
         ).toBe(true);
     });
 
     it("should return false for invalid inputSelectFixed objects", () => {
         expect(isInputSelectFixed({ type: "select", source: "fixed" })).toBe(
-            false
+            false,
         );
         expect(
             isInputSelectFixed({
                 type: "select",
                 source: "fixed",
                 options: [{ value: "1", label: 123 }],
-            })
+            }),
         ).toBe(false);
         expect(
             isInputSelectFixed({
                 type: "select",
                 source: "notes",
                 options: [{ value: "1", label: "Option 1" }],
-            })
+            }),
         ).toBe(false);
     });
 });
@@ -83,7 +83,7 @@ describe("isInputSlider", () => {
     it("should return false for invalid inputSlider objects", () => {
         expect(isInputSlider({ type: "slider" })).toBe(false);
         expect(isInputSlider({ type: "slider", min: "0", max: 10 })).toBe(
-            false
+            false,
         );
         expect(isInputSlider({ type: "select", min: 0, max: 10 })).toBe(false);
     });
@@ -96,19 +96,19 @@ describe("isSelectFromNotes", () => {
                 type: "select",
                 source: "notes",
                 folder: "some folder",
-            })
+            }),
         ).toBe(true);
     });
 
     it("should return false for invalid selectFromNotes objects", () => {
         expect(isSelectFromNotes({ type: "select", source: "notes" })).toBe(
-            false
+            false,
         );
         expect(
-            isSelectFromNotes({ type: "select", source: "notes", folder: 123 })
+            isSelectFromNotes({ type: "select", source: "notes", folder: 123 }),
         ).toBe(false);
         expect(isSelectFromNotes({ type: "note", folder: "some folder" })).toBe(
-            false
+            false,
         );
     });
 });
