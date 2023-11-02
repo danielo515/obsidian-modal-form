@@ -76,23 +76,9 @@ export default class ModalFormPlugin extends Plugin {
 
     }
 
-    async saveForm(formDefinition: FormDefinition) {
-        const index = this.settings?.formDefinitions.findIndex((form) => form.name === formDefinition.name);
-        if (index === undefined || index === -1) {
-            this.settings?.formDefinitions.push(formDefinition);
-        } else {
-            this.settings?.formDefinitions.splice(index, 1, formDefinition);
-        }
-        console.log(this.settings, index)
-        await this.saveSettings();
-        // go back to manage forms and refresh it
-        await this.activateView(MANAGE_FORMS_VIEW);
-    }
-
     closeEditForm() {
         this.app.workspace.detachLeavesOfType(EDIT_FORM_VIEW);
     }
-
 
     onunload() {
         this.unsubscribeSettingsStore();
