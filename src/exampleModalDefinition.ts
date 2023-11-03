@@ -53,6 +53,12 @@ export const exampleModalDefinition: FormDefinition = {
             input: { type: "multiselect", source: "fixed", multi_select_options: ['Android', 'iOS', 'Windows', 'MacOS', 'Linux', 'Solaris', 'MS2'] },
         },
         {
+            name: "multi_select_dataview",
+            label: "Multi select dataview",
+            description: "Allows to pick several values from a dv query",
+            input: { type: "multiselect", source: "dataview", query: 'dv.pages("#person").map(p => p.file.name)' },
+        },
+        {
             name: "best_fried",
             label: "Best friend",
             description: "Pick one",

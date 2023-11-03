@@ -8,9 +8,12 @@
     import { setIcon } from "obsidian";
     import FormRow from "./FormRow.svelte";
     import InputFolder from "./InputFolder.svelte";
+    import { AllSources } from "src/core/formDefinition";
+    import InputBuilderDataview from "./inputBuilderDataview.svelte";
 
     export let index: number;
-    export let source: string = "fixed";
+    export let source: AllSources = "fixed";
+    export let query: string = "";
     export let folder: string | undefined;
     export let options: option[] = [];
     export let notifyChange: () => void;
@@ -35,6 +38,10 @@
     <select bind:value={source} {id}>
         <option value="fixed">Static</option>
         <option value="notes">Notes</option>
+        {#if is_multi}
+            <!-- For now, only multi-select allows for dataview  -->
+            <option value="dataview">Dataview</option>
+        {/if}
     </select>
 </FormRow>
 {#if source === "fixed"}
@@ -125,6 +132,8 @@
     </FormRow>
 {:else if source === "notes"}
     <InputFolder {index} bind:folder {notifyChange} />
+{:else if source === "dataview"}
+    <InputBuilderDataview {index} bind:value={query} />
 {/if}
 
 <style>

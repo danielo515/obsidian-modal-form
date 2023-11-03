@@ -56,12 +56,20 @@ export type FormOptions = {
     values?: Record<string, unknown>;
 }
 
+type KeyOfUnion<T> = T extends unknown ? keyof T : never
+type PickUnion<T, K extends KeyOfUnion<T>> =
+    T extends unknown
+    ? K & keyof T extends never ? never : Pick<T, K & keyof T>
+    : never
+
+export type AllSources = PickUnion<inputType, 'source'>['source']
+
 // When an input is in edit state, it is represented by this type.
 // It has all the possible values, and then you need to narrow it down
 // to the actual type.
 export type EditableInput = {
     type: AllFieldTypes;
-    source?: "notes" | "fixed";
+    source?: AllSources;
     folder?: string;
     min?: number;
     max?: number;

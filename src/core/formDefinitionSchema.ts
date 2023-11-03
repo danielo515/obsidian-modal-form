@@ -31,7 +31,12 @@ const MultiSelectNotesSchema = object({
     folder: nonEmptyString('multi select source folder')
 });
 const MultiSelectFixedSchema = object({ type: literal("multiselect"), source: literal("fixed"), multi_select_options: array(string()) });
-export const MultiselectSchema = union([MultiSelectNotesSchema, MultiSelectFixedSchema]);
+const MultiSelectQuerySchema = object({
+    type: literal("multiselect"),
+    source: literal("dataview"),
+    query: nonEmptyString('dataview query')
+});
+export const MultiselectSchema = union([MultiSelectNotesSchema, MultiSelectFixedSchema, MultiSelectQuerySchema]);
 export const InputTypeSchema = union([
     InputBasicSchema,
     InputNoteFromFolderSchema,
