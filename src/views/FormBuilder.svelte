@@ -50,8 +50,8 @@
             log_error(
                 new ModalFormError(
                     "Unexpected error, no field at that index",
-                    fieldIndex + " leads to undefined"
-                )
+                    fieldIndex + " leads to undefined",
+                ),
             );
             return Date.now() + "";
         }
@@ -71,8 +71,8 @@
             log_error(
                 new ModalFormError(
                     "Unexpected error, no field at that index",
-                    fieldIndex + " leads to undefined"
-                )
+                    fieldIndex + " leads to undefined",
+                ),
             );
             return;
         }
@@ -266,6 +266,7 @@
                                 bind:source={field.input.source}
                                 bind:options={field.input.multi_select_options}
                                 bind:folder={field.input.folder}
+                                bind:query={field.input.query}
                                 notifyChange={onChange}
                                 is_multi={true}
                             />
@@ -327,7 +328,7 @@
                             id={delete_id}
                             on:click={() => {
                                 definition.fields = definition.fields.filter(
-                                    (_, i) => i !== index
+                                    (_, i) => i !== index,
                                 );
                             }}
                         />
