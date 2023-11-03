@@ -7,6 +7,7 @@ import type { FormDefinition, FormOptions } from "./core/formDefinition";
 import { FileSuggest } from "./suggesters/suggestFile";
 import { DataviewSuggest } from "./suggesters/suggestFromDataview";
 import { SvelteComponent } from "svelte";
+import { executeSandboxedDvQuery, sandboxedDvQuery } from "./suggesters/SafeDataviewQuery";
 
 export type SubmitFn = (formResult: FormResult) => void;
 
@@ -131,9 +132,12 @@ export class FormModal extends Modal {
                 case 'multiselect':
                     {
                         this.formResult[definition.name] = this.formResult[definition.name] || []
-                        const options = fieldInput.source == 'fixed'
+                        const source = fieldInput.source;
+                        const options = source == 'fixed'
                             ? fieldInput.multi_select_options
-                            : get_tfiles_from_folder(fieldInput.folder, this.app).map((file) => file.basename);
+                            : source == 'notes'
+                                ? get_tfiles_from_folder(fieldInput.folder, this.app).map((file) => file.basename)
+                                : executeSandboxedDvQuery(sandboxedDvQuery(fieldInput.query), this.app)
                         this.svelteComponents.push(new MultiSelect({
                             target: fieldBase.controlEl,
                             props: {
