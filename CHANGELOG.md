@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.24.0](https://github.com/danielo515/obsidian-modal-form/compare/1.23.0...1.24.0) (2023-11-03)
+
+
+### Features
+
+* **editor:** create dataview inputs ([75f71f1](https://github.com/danielo515/obsidian-modal-form/commit/75f71f1438afeab75dbeef179e41521244896797))
+* **inputs:** dataview can be used as source for multi-select ([cd39785](https://github.com/danielo515/obsidian-modal-form/commit/cd39785d68fb78444db1d230f55c71907d218b6a)), closes [#50](https://github.com/danielo515/obsidian-modal-form/issues/50)
+
 ## [1.23.0](https://github.com/danielo515/obsidian-modal-form/compare/1.22.1...1.23.0) (2023-11-02)
 
 
