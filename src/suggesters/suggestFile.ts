@@ -1,6 +1,6 @@
 import { AbstractInputSuggest, App, TAbstractFile, TFile } from "obsidian";
 import { get_tfiles_from_folder } from "../utils/files";
-import { tryCatch } from "../utils/Error";
+import { E } from "@std";
 
 // Instead of hardcoding the logic in separate and almost identical classes,
 // we move this little logic parts into an interface and we can use the samme
@@ -9,6 +9,7 @@ export interface FileStrategy {
     renderSuggestion(file: TFile): string;
     selectSuggestion(file: TFile): string;
 }
+
 
 export class FileSuggest extends AbstractInputSuggest<TFile> {
     constructor(
@@ -21,17 +22,14 @@ export class FileSuggest extends AbstractInputSuggest<TFile> {
     }
 
     getSuggestions(input_str: string): TFile[] {
-        const all_files = tryCatch(
-            () => get_tfiles_from_folder(this.folder, this.app),
-            "The folder does not exist"
-        );
-        if (!all_files) {
+        const all_files = get_tfiles_from_folder(this.folder, this.app)
+        if (E.isLeft(all_files)) {
             return [];
         }
 
         const lower_input_str = input_str.toLowerCase();
 
-        return all_files.filter((file: TAbstractFile) => {
+        return all_files.right.filter((file: TAbstractFile) => {
             return (
                 file instanceof TFile &&
                 file.extension === "md" &&

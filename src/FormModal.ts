@@ -8,6 +8,9 @@ import { FileSuggest } from "./suggesters/suggestFile";
 import { DataviewSuggest } from "./suggesters/suggestFromDataview";
 import { SvelteComponent } from "svelte";
 import { executeSandboxedDvQuery, sandboxedDvQuery } from "./suggesters/SafeDataviewQuery";
+import { pipe } from "fp-ts/lib/function";
+import { A, E } from "@std";
+import { log_error } from "./utils/Log";
 
 export type SubmitFn = (formResult: FormResult) => void;
 
@@ -136,7 +139,14 @@ export class FormModal extends Modal {
                         const options = source == 'fixed'
                             ? fieldInput.multi_select_options
                             : source == 'notes'
-                                ? get_tfiles_from_folder(fieldInput.folder, this.app).map((file) => file.basename)
+                                ? pipe(
+                                    get_tfiles_from_folder(fieldInput.folder, this.app),
+                                    E.map(A.map((file) => file.basename)),
+                                    E.getOrElse((err) => {
+                                        log_error(err)
+                                        return [] as string[];
+                                    })
+                                )
                                 : executeSandboxedDvQuery(sandboxedDvQuery(fieldInput.query), this.app)
                         this.svelteComponents.push(new MultiSelect({
                             target: fieldBase.controlEl,
@@ -182,18 +192,27 @@ export class FormModal extends Modal {
                             case "notes":
                                 return fieldBase.addDropdown((element) => {
                                     const files = get_tfiles_from_folder(fieldInput.folder, this.app);
-                                    const options = files.reduce(
-                                        (
-                                            acc: Record<string, string>,
-                                            option
-                                        ) => {
-                                            acc[option.basename] =
-                                                option.basename;
-                                            return acc;
-                                        },
-                                        {}
+                                    pipe(
+                                        files,
+                                        E.map((files) => files.reduce(
+                                            (
+                                                acc: Record<string, string>,
+                                                option
+                                            ) => {
+                                                acc[option.basename] =
+                                                    option.basename;
+                                                return acc;
+                                            },
+                                            {}
+                                        )),
+                                        E.mapLeft((err) => {
+                                            log_error(err);
+                                            return err;
+                                        }),
+                                        E.map((options) => {
+                                            element.addOptions(options)
+                                        })
                                     );
-                                    element.addOptions(options);
                                     this.formResult[definition.name] = element.getValue();
                                     element.onChange(async (value) => {
                                         this.formResult[definition.name] =
