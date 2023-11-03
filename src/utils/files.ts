@@ -27,10 +27,9 @@ export class NotAFileError extends Error {
 type FolderError = FolderDoesNotExistError | NotAFolderError;
 
 export function resolve_tfolder(folder_str: string, app: App): Either<FolderError, TFolder> {
-    folder_str = normalizePath(folder_str);
-
     return pipe(
-        app.vault.getAbstractFileByPath(folder_str),
+        normalizePath(folder_str),
+        (path) => app.vault.getAbstractFileByPath(path),
         E.fromNullable(new FolderDoesNotExistError(`Folder "${folder_str}" doesn't exist`)),
         E.flatMap((file) => {
             if (!(file instanceof TFolder)) {
@@ -44,7 +43,7 @@ export function resolve_tfolder(folder_str: string, app: App): Either<FolderErro
 export function resolve_tfile(file_str: string, app: App): Either<FileDoesNotExistError | NotAFileError, TFile> {
     return pipe(
         normalizePath(file_str),
-        app.vault.getAbstractFileByPath,
+        (path) => app.vault.getAbstractFileByPath(path),
         E.fromNullable(FileDoesNotExistError.of(file_str)),
         E.flatMap((file) => {
             if (!(file instanceof TFile)) {
