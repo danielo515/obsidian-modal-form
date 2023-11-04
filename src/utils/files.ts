@@ -1,47 +1,75 @@
 import { App, TAbstractFile, TFile, TFolder, Vault, normalizePath } from "obsidian";
-import { ModalFormError } from "./Error";
-
-export function resolve_tfolder(folder_str: string, app: App): TFolder {
-	folder_str = normalizePath(folder_str);
-
-	const folder = app.vault.getAbstractFileByPath(folder_str);
-	if (!folder) {
-		throw new ModalFormError(`Folder "${folder_str}" doesn't exist`);
-	}
-	if (!(folder instanceof TFolder)) {
-		throw new ModalFormError(`${folder_str} is a file, not a folder`);
-	}
-
-	return folder;
+import { E, Either, pipe } from "@std";
+export class FolderDoesNotExistError extends Error {
+    static readonly tag = "FolderDoesNotExistError";
 }
 
-export function resolve_tfile(file_str: string, app: App): TFile {
-	file_str = normalizePath(file_str);
-
-	const file = app.vault.getAbstractFileByPath(file_str);
-	if (!file) {
-		throw new ModalFormError(`File "${file_str}" doesn't exist`);
-	}
-	if (!(file instanceof TFile)) {
-		throw new ModalFormError(`${file_str} is a folder, not a file`);
-	}
-
-	return file;
+export class NotAFolderError extends Error {
+    static readonly tag = "NotAFolderError";
+    constructor(public file: TAbstractFile) {
+        super(`File ${file.path} is not a folder`);
+    }
 }
 
-export function get_tfiles_from_folder(folder_str: string, app: App): Array<TFile> {
-	const folder = resolve_tfolder(folder_str, app);
+export class FileDoesNotExistError extends Error {
+    static readonly tag = "FileDoesNotExistError";
+    static of(file: string) {
+        return new FileDoesNotExistError(`File "${file}" doesn't exist`);
+    }
+}
+export class NotAFileError extends Error {
+    static readonly tag = "NotAFileError";
+    constructor(public file: TAbstractFile) {
+        super(`File ${file.path} is not a file`);
+    }
+}
 
-	const files: Array<TFile> = [];
-	Vault.recurseChildren(folder, (file: TAbstractFile) => {
-		if (file instanceof TFile) {
-			files.push(file);
-		}
-	});
+type FolderError = FolderDoesNotExistError | NotAFolderError;
 
-	files.sort((a, b) => {
-		return a.basename.localeCompare(b.basename);
-	});
+export function resolve_tfolder(folder_str: string, app: App): Either<FolderError, TFolder> {
+    return pipe(
+        normalizePath(folder_str),
+        (path) => app.vault.getAbstractFileByPath(path),
+        E.fromNullable(new FolderDoesNotExistError(`Folder "${folder_str}" doesn't exist`)),
+        E.flatMap((file) => {
+            if (!(file instanceof TFolder)) {
+                return E.left(new NotAFolderError(file));
+            }
+            return E.right(file);
+        })
+    );
+}
 
-	return files;
+export function resolve_tfile(file_str: string, app: App): Either<FileDoesNotExistError | NotAFileError, TFile> {
+    return pipe(
+        normalizePath(file_str),
+        (path) => app.vault.getAbstractFileByPath(path),
+        E.fromNullable(FileDoesNotExistError.of(file_str)),
+        E.flatMap((file) => {
+            if (!(file instanceof TFile)) {
+                return E.left(new NotAFileError(file));
+            }
+            return E.right(file);
+        })
+    )
+}
+
+export function get_tfiles_from_folder(folder_str: string, app: App): Either<FolderError, Array<TFile>> {
+    return pipe(
+        resolve_tfolder(folder_str, app),
+        E.flatMap((folder) => {
+            const files: Array<TFile> = [];
+            Vault.recurseChildren(folder, (file: TAbstractFile) => {
+                if (file instanceof TFile) {
+                    files.push(file);
+                }
+            });
+            return E.right(files);
+        }),
+        E.map((files) => {
+            return files.sort((a, b) => {
+                return a.basename.localeCompare(b.basename);
+            });
+        }
+        ))
 }

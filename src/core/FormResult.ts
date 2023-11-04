@@ -1,7 +1,7 @@
 import { objectSelect } from './objectSelect';
 import { stringifyYaml } from "obsidian";
 import { log_error } from "../utils/Log";
-import { ModalFormError } from "../utils/Error";
+import { ModalFormError } from "../utils/ModalFormError";
 
 type ResultStatus = "ok" | "cancelled";
 

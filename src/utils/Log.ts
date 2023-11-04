@@ -1,5 +1,5 @@
 import { Notice } from "obsidian";
-import { ModalFormError } from "./Error";
+import { ModalFormError } from "./ModalFormError";
 
 
 export function log_notice(title: string, msg: string | DocumentFragment): void {

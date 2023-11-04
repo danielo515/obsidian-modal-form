@@ -86,6 +86,8 @@ export type EditableFormDefinition = {
         label?: string;
         description: string;
         input: EditableInput;
+        folder?: string;
+        options?: { value: string; label: string }[];
     }[];
 };
 
