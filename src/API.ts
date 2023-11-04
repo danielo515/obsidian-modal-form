@@ -5,7 +5,7 @@ import { MigrationError } from "./core/formDefinitionSchema";
 import FormResult from "./core/FormResult";
 import { exampleModalDefinition } from "./exampleModalDefinition";
 import ModalFormPlugin from "./main";
-import { ModalFormError } from "./utils/Error";
+import { ModalFormError } from "./utils/ModalFormError";
 import { FormModal } from "./FormModal";
 import { log_error, log_notice } from "./utils/Log";
 

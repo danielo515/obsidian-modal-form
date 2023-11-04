@@ -11,7 +11,7 @@
     import InputBuilderSelect from "./components/InputBuilderSelect.svelte";
     import InputFolder from "./components/InputFolder.svelte";
     import { log_error } from "src/utils/Log";
-    import { ModalFormError } from "src/utils/Error";
+    import { ModalFormError } from "src/utils/ModalFormError";
 
     export let definition: EditableFormDefinition = {
         title: "",

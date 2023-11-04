@@ -5,7 +5,7 @@ import { ModalFormSettingTab } from "src/ModalFormSettingTab";
 import { API } from "src/API";
 import { EDIT_FORM_VIEW, EditFormView } from "src/views/EditFormView";
 import { MANAGE_FORMS_VIEW, ManageFormsView } from "src/views/ManageFormsView";
-import { ModalFormError } from "src/utils/Error";
+import { ModalFormError } from "src/utils/ModalFormError";
 import { type FormDefinition } from "src/core/formDefinition";
 import { formNeedsMigration, migrateToLatest, MigrationError, InvalidData } from "./core/formDefinitionSchema";
 import { parseSettings, type ModalFormSettings, type OpenPosition, getDefaultSettings } from "src/core/settings";
