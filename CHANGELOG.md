@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.1](https://github.com/danielo515/obsidian-modal-form/compare/1.24.0...1.24.1) (2023-11-04)
+
+
+### Bug Fixes
+
+* **input:** if folder does not exist, the form does not fail ([0d5afbd](https://github.com/danielo515/obsidian-modal-form/commit/0d5afbd399a6635c77534c3fb0e9b2838ee22040)), closes [#90](https://github.com/danielo515/obsidian-modal-form/issues/90)
+
 ## [1.24.0](https://github.com/danielo515/obsidian-modal-form/compare/1.23.0...1.24.0) (2023-11-03)
 
 
