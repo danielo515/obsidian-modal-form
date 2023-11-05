@@ -47,7 +47,7 @@ export class API {
         return this.openModalForm(exampleModalDefinition)
     }
 
-    getFormByName(name: string): FormDefinition | undefined {
+    private getFormByName(name: string): FormDefinition | undefined {
         const form = this.plugin.settings?.formDefinitions.find((form) => form.name === name);
         if (form instanceof MigrationError) {
             log_notice('🚫 The form you tried to load has an invalid format',

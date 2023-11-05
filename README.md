@@ -109,6 +109,24 @@ In order to open a form from QuickAdd capture, you need to create a capture and 
 Here you have an example screenshot of how it should look like:
 ![quick capture example](media/image.png)
 
+### Providing Default Values When Opening a Form
+
+When opening a form you can provide default values for the form fields. This can be done by passing an object to the `openForm` or `limitedForm` methods as part of the `FormOptions` parameter. This object should have the same structure as the form definition, with each key corresponding to a field name and its value being the default value for that field.
+
+Here's an example:
+
+```typescript
+const values = {
+  title: 'My Default Title',
+  description: 'This is a default description.',
+};
+
+api.openModalForm('example-form', { values });
+```
+In this example, the form will open with the `title` field pre-filled with `My Default Title` and the `description` field pre-filled with `This is a default description.`.
+
+**Note**: If a field in the default values object does not exist in the form definition, it will be ignored.
+
 ### FormResult Methods
 
 When you open a form, you get back a `FormResult` object. This object contains the data of the form and some methods to help you process it.
