@@ -223,9 +223,10 @@ You can make it smaller by removing some of the optional fields like description
 
 ## Installing the plugin
 
-Until the plugin is accepted in the community plugins list, you will need to install it either manually or through [BRAT](obsidian://show-plugin?id=obsidian42-brat)
+You can install the plugin directly from the Obsidian plugin store or through [BRAT](obsidian://show-plugin?id=obsidian42-brat)
 
 ### Installing with BRAT
+
 1. Install the [BRAT](obsidian://show-plugin?id=obsidian42-brat) plugin (GitHub page) and enable it.
 2. Open command palette and run the command BRAT: Add a beta plugin for testing.
 3. Enter `https://github.com/danielo515/obsidian-modal-form` into the modal and press the Add Plugin button.
