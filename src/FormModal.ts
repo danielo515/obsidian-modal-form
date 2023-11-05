@@ -53,8 +53,11 @@ export class FormModal extends Modal {
                             textEl.inputEl.rows = 10;
                         }
                     })
+                case "email":
+                case "tel":
                 case "text":
                     return fieldBase.addText((text) => {
+                        text.inputEl.type = type;
                         initialValue !== undefined && text.setValue(String(initialValue));
                         return text.onChange(async (value) => {
                             this.formResult[definition.name] = value;
@@ -63,7 +66,7 @@ export class FormModal extends Modal {
                     );
                 case "number":
                     return fieldBase.addText((text) => {
-                        text.inputEl.type = "number";
+                        text.inputEl.type = 'number';
                         initialValue !== undefined && text.setValue(String(initialValue));
                         text.onChange(async (value) => {
                             if (value !== "") {

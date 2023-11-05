@@ -12,7 +12,7 @@ import { findFieldErrors } from "./findInputDefinitionSchema";
 function nonEmptyString(name: string) {
     return string(`${name} should be a string`, [toTrimmed(), minLength(1, `${name} should not be empty`)]);
 }
-const InputBasicTypeSchema = enumType(["text", "number", "date", "time", "datetime", "textarea", "toggle"]);
+const InputBasicTypeSchema = enumType(["text", "number", "date", "time", "datetime", "textarea", "toggle", "email", "tel"]);
 //=========== Schema definitions
 export const SelectFromNotesSchema = object({ type: literal("select"), source: literal("notes"), folder: nonEmptyString('folder name') });
 export const InputSliderSchema = object({ type: literal("slider"), min: number(), max: number() });
@@ -49,6 +49,8 @@ export const InputTypeSchema = union([
 export const InputTypeToParserMap: Record<AllFieldTypes, ParsingFn<BaseSchema>> = {
     number: parseC(InputBasicSchema),
     text: parseC(InputBasicSchema),
+    email: parseC(InputBasicSchema),
+    tel: parseC(InputBasicSchema),
     date: parseC(InputBasicSchema),
     time: parseC(InputBasicSchema),
     datetime: parseC(InputBasicSchema),

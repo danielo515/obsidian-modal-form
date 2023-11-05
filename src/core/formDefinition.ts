@@ -14,6 +14,8 @@ type inputType = Output<typeof InputTypeSchema>;
 export const FieldTypeReadable: Record<AllFieldTypes, string> = {
     text: "Text",
     number: "Number",
+    email: "Email",
+    tel: "Phone",
     date: "Date",
     time: "Time",
     datetime: "DateTime",
