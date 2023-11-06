@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.0](https://github.com/danielo515/obsidian-modal-form/compare/1.24.1...1.25.0) (2023-11-06)
+
+
+### Features
+
+* make the dataview input more fuzzy ([1971fdc](https://github.com/danielo515/obsidian-modal-form/commit/1971fdc096efce969d2f139b8c67279188418326))
+
 ## [1.24.1](https://github.com/danielo515/obsidian-modal-form/compare/1.24.0...1.24.1) (2023-11-04)
 
 
