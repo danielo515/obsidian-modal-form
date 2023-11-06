@@ -8,8 +8,7 @@ import { FileSuggest } from "./suggesters/suggestFile";
 import { DataviewSuggest } from "./suggesters/suggestFromDataview";
 import { SvelteComponent } from "svelte";
 import { executeSandboxedDvQuery, sandboxedDvQuery } from "./suggesters/SafeDataviewQuery";
-import { pipe } from "fp-ts/lib/function";
-import { A, E } from "@std";
+import { A, E, pipe } from "@std";
 import { log_error } from "./utils/Log";
 
 export type SubmitFn = (formResult: FormResult) => void;

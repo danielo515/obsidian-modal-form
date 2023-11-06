@@ -1,5 +1,4 @@
-import { A } from '@std';
-import { pipe } from 'fp-ts/lib/function';
+import { A, pipe } from '@std';
 import { FormDefinition, duplicateForm } from 'src/core/formDefinition';
 import { MigrationError } from 'src/core/formDefinitionSchema';
 import { ModalFormSettings, getDefaultSettings } from 'src/core/settings';

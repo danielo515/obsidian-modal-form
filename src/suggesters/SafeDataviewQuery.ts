@@ -1,5 +1,4 @@
-import { E, Either, flow } from "@std";
-import { pipe } from "fp-ts/lib/function";
+import { E, Either, flow, pipe } from "@std";
 import { App } from "obsidian";
 import { ModalFormError } from "src/utils/ModalFormError";
 import { log_error } from "src/utils/Log";
