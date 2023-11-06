@@ -1,5 +1,6 @@
 import { AbstractInputSuggest, App } from "obsidian";
 import { SafeDataviewQuery, executeSandboxedDvQuery, sandboxedDvQuery } from "./SafeDataviewQuery";
+import { createRegexFromInput } from "./createRegexFromInput";
 
 /**
  * Offers suggestions based on a dataview query.
@@ -20,7 +21,9 @@ export class DataviewSuggest extends AbstractInputSuggest<string> {
 
     getSuggestions(inputStr: string): string[] {
         const result = executeSandboxedDvQuery(this.sandboxedQuery, this.app)
-        return result.filter((r) => r.toLowerCase().includes(inputStr.toLowerCase()))
+        if (!inputStr) { return result }
+        const regex = createRegexFromInput(inputStr)
+        return result.filter((r) => regex.test(r))
     }
 
     renderSuggestion(option: string, el: HTMLElement): void {
