@@ -16,6 +16,7 @@
     export let definition: EditableFormDefinition = {
         title: "",
         name: "",
+        version: "1",
         fields: [],
     };
     export let onChange: () => void;

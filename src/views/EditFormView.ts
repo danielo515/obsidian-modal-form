@@ -26,7 +26,7 @@ function parseState(maybeState: unknown): maybeState is EditableFormDefinition {
  * Simple, right?
  */
 export class EditFormView extends ItemView {
-    formState: EditableFormDefinition = { title: '', name: '', fields: [] };
+    formState: EditableFormDefinition = { title: '', name: '', version: '1', fields: [] };
     originalFormName?: string;
     formEditor!: FormEditor;
     constructor(readonly leaf: WorkspaceLeaf, readonly plugin: ModalFormPlugin) {
