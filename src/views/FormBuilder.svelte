@@ -135,6 +135,15 @@
                 id="title"
                 bind:value={definition.title}
             />
+            <label for="customClassname">Custom class Name</label><span
+                class="hint"
+                >In case you want to add a class name to the modal form to
+                customize it</span
+            ><input
+                type="text"
+                id="customClassname"
+                bind:value={definition.customClassname}
+            />
             <div class="flex row gap2">
                 <button
                     type="button"

@@ -26,6 +26,7 @@ export class FormModal extends Modal {
 
     onOpen() {
         const { contentEl } = this;
+        if (this.modalDefinition.customClassname) contentEl.addClass(this.modalDefinition.customClassname);
         contentEl.createEl("h1", { text: this.modalDefinition.title });
         this.modalDefinition.fields.forEach((definition) => {
             const fieldBase = new Setting(contentEl)

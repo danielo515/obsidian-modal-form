@@ -90,6 +90,7 @@ export const FieldListSchema = array(FieldDefinitionSchema);
 export const FormDefinitionBasicSchema = object({
     title: nonEmptyString('form title'),
     name: nonEmptyString('form name'),
+    customClassname: optional(string()),
     fields: array(unknown()),
 });
 /**

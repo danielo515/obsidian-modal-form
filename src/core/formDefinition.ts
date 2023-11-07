@@ -80,7 +80,7 @@ export type EditableInput = {
     query?: string;
 };
 
-export type EditableFormDefinition = {
+export type EditableFormDefinition = FormDefinition & {
     title: string;
     name: string;
     fields: {
