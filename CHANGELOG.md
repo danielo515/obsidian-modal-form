@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.0](https://github.com/danielo515/obsidian-modal-form/compare/1.25.0...1.26.0) (2023-11-07)
+
+
+### Features
+
+* ability to add a custom class name to the form body ([28d81b9](https://github.com/danielo515/obsidian-modal-form/commit/28d81b950b3cb91fc85fffad596aa34d78ccd755)), closes [#125](https://github.com/danielo515/obsidian-modal-form/issues/125)
+
 ## [1.25.0](https://github.com/danielo515/obsidian-modal-form/compare/1.24.1...1.25.0) (2023-11-06)
 
 
