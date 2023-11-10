@@ -121,7 +121,8 @@ const values = {
   description: 'This is a default description.',
 };
 
-api.openModalForm('example-form', { values });
+const modalForm = app.plugins.plugins.modalforms.api;
+const result = await modalForm.openForm('example-form', { values: values });
 ```
 In this example, the form will open with the `title` field pre-filled with `My Default Title` and the `description` field pre-filled with `This is a default description.`.
 
