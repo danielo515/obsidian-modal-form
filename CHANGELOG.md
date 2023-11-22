@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.0](https://github.com/danielo515/obsidian-modal-form/compare/1.26.0...1.27.0) (2023-11-22)
+
+
+### Features
+
+* **input:** tag suggest input, initial version ([9f0d8af](https://github.com/danielo515/obsidian-modal-form/commit/9f0d8af170448a2d5593ae47b786316bf7b7a23d)), closes [#118](https://github.com/danielo515/obsidian-modal-form/issues/118)
+
 ## [1.26.0](https://github.com/danielo515/obsidian-modal-form/compare/1.25.0...1.26.0) (2023-11-07)
 
 
