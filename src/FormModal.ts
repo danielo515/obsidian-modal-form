@@ -1,13 +1,19 @@
 import { App, Modal, Platform, Setting } from "obsidian";
 import MultiSelect from "./views/components/MultiSelect.svelte";
-import FormResult, { formDataFromFormOptions, type ModalFormData } from "./core/FormResult";
+import FormResult, {
+    formDataFromFormOptions,
+    type ModalFormData,
+} from "./core/FormResult";
 import { exhaustiveGuard } from "./safety";
 import { get_tfiles_from_folder } from "./utils/files";
 import type { FormDefinition, FormOptions } from "./core/formDefinition";
 import { FileSuggest } from "./suggesters/suggestFile";
 import { DataviewSuggest } from "./suggesters/suggestFromDataview";
 import { SvelteComponent } from "svelte";
-import { executeSandboxedDvQuery, sandboxedDvQuery } from "./suggesters/SafeDataviewQuery";
+import {
+    executeSandboxedDvQuery,
+    sandboxedDvQuery,
+} from "./suggesters/SafeDataviewQuery";
 import { A, E, pipe } from "@std";
 import { log_error } from "./utils/Log";
 
@@ -16,33 +22,41 @@ export type SubmitFn = (formResult: FormResult) => void;
 export class FormModal extends Modal {
     formResult: ModalFormData;
     svelteComponents: SvelteComponent[] = [];
-    constructor(app: App, private modalDefinition: FormDefinition, private onSubmit: SubmitFn, options?: FormOptions) {
+    constructor(
+        app: App,
+        private modalDefinition: FormDefinition,
+        private onSubmit: SubmitFn,
+        options?: FormOptions,
+    ) {
         super(app);
         this.formResult = {};
         if (options?.values) {
-            this.formResult = formDataFromFormOptions(options.values)
+            this.formResult = formDataFromFormOptions(options.values);
         }
     }
 
     onOpen() {
         const { contentEl } = this;
-        if (this.modalDefinition.customClassname) contentEl.addClass(this.modalDefinition.customClassname);
+        if (this.modalDefinition.customClassname)
+            contentEl.addClass(this.modalDefinition.customClassname);
         contentEl.createEl("h1", { text: this.modalDefinition.title });
         this.modalDefinition.fields.forEach((definition) => {
             const fieldBase = new Setting(contentEl)
                 .setName(definition.label || definition.name)
                 .setDesc(definition.description);
             // This intermediary constants are necessary so typescript can narrow down the proper types.
-            // without them, you will have to use the whole access path (definition.input.folder), 
+            // without them, you will have to use the whole access path (definition.input.folder),
             // and it is no specific enough when you use it in a switch statement.
             const fieldInput = definition.input;
             const type = fieldInput.type;
             const initialValue = this.formResult[definition.name];
             switch (type) {
                 case "textarea":
-                    fieldBase.setClass('modal-form-textarea')
+                    fieldBase.setClass("modal-form-textarea");
                     return fieldBase.addTextArea((textEl) => {
-                        if (typeof initialValue === 'string') { textEl.setValue(initialValue); }
+                        if (typeof initialValue === "string") {
+                            textEl.setValue(initialValue);
+                        }
                         textEl.onChange((value) => {
                             this.formResult[definition.name] = value;
                         });
@@ -52,22 +66,23 @@ export class FormModal extends Modal {
                         else if (Platform.isDesktopApp) {
                             textEl.inputEl.rows = 10;
                         }
-                    })
+                    });
                 case "email":
                 case "tel":
                 case "text":
                     return fieldBase.addText((text) => {
                         text.inputEl.type = type;
-                        initialValue !== undefined && text.setValue(String(initialValue));
+                        initialValue !== undefined &&
+                            text.setValue(String(initialValue));
                         return text.onChange(async (value) => {
                             this.formResult[definition.name] = value;
                         });
-                    }
-                    );
+                    });
                 case "number":
                     return fieldBase.addText((text) => {
-                        text.inputEl.type = 'number';
-                        initialValue !== undefined && text.setValue(String(initialValue));
+                        text.inputEl.type = "number";
+                        initialValue !== undefined &&
+                            text.setValue(String(initialValue));
                         text.onChange(async (value) => {
                             if (value !== "") {
                                 this.formResult[definition.name] =
@@ -78,7 +93,8 @@ export class FormModal extends Modal {
                 case "date":
                     return fieldBase.addText((text) => {
                         text.inputEl.type = "date";
-                        initialValue !== undefined && text.setValue(String(initialValue));
+                        initialValue !== undefined &&
+                            text.setValue(String(initialValue));
                         text.onChange(async (value) => {
                             this.formResult[definition.name] = value;
                         });
@@ -86,7 +102,8 @@ export class FormModal extends Modal {
                 case "time":
                     return fieldBase.addText((text) => {
                         text.inputEl.type = "time";
-                        initialValue !== undefined && text.setValue(String(initialValue));
+                        initialValue !== undefined &&
+                            text.setValue(String(initialValue));
                         text.onChange(async (value) => {
                             this.formResult[definition.name] = value;
                         });
@@ -94,7 +111,8 @@ export class FormModal extends Modal {
                 case "datetime":
                     return fieldBase.addText((text) => {
                         text.inputEl.type = "datetime-local";
-                        initialValue !== undefined && text.setValue(String(initialValue));
+                        initialValue !== undefined &&
+                            text.setValue(String(initialValue));
                         text.onChange(async (value) => {
                             this.formResult[definition.name] = value;
                         });
@@ -106,18 +124,22 @@ export class FormModal extends Modal {
                         return toggle.onChange(async (value) => {
                             this.formResult[definition.name] = value;
                         });
-                    }
-                    );
+                    });
                 case "note":
                     return fieldBase.addText((element) => {
-                        new FileSuggest(this.app, element.inputEl, {
-                            renderSuggestion(file) {
-                                return file.basename;
+                        new FileSuggest(
+                            this.app,
+                            element.inputEl,
+                            {
+                                renderSuggestion(file) {
+                                    return file.basename;
+                                },
+                                selectSuggestion(file) {
+                                    return file.basename;
+                                },
                             },
-                            selectSuggestion(file) {
-                                return file.basename;
-                            },
-                        }, fieldInput.folder);
+                            fieldInput.folder,
+                        );
                         element.onChange(async (value) => {
                             this.formResult[definition.name] = value;
                         });
@@ -126,8 +148,8 @@ export class FormModal extends Modal {
                     return fieldBase.addSlider((slider) => {
                         slider.setLimits(fieldInput.min, fieldInput.max, 1);
                         slider.setDynamicTooltip();
-                        if (typeof initialValue === 'number') {
-                            slider.setValue(initialValue)
+                        if (typeof initialValue === "number") {
+                            slider.setValue(initialValue);
                         } else {
                             slider.setValue(fieldInput.min);
                         }
@@ -135,57 +157,87 @@ export class FormModal extends Modal {
                             this.formResult[definition.name] = value;
                         });
                     });
-                case 'multiselect':
-                    {
-                        this.formResult[definition.name] = this.formResult[definition.name] || []
-                        const source = fieldInput.source;
-                        const options = source == 'fixed'
+                case "multiselect": {
+                    this.formResult[definition.name] =
+                        this.formResult[definition.name] || [];
+                    const source = fieldInput.source;
+                    const options =
+                        source == "fixed"
                             ? fieldInput.multi_select_options
-                            : source == 'notes'
+                            : source == "notes"
                                 ? pipe(
-                                    get_tfiles_from_folder(fieldInput.folder, this.app),
+                                    get_tfiles_from_folder(
+                                        fieldInput.folder,
+                                        this.app,
+                                    ),
                                     E.map(A.map((file) => file.basename)),
                                     E.getOrElse((err) => {
-                                        log_error(err)
+                                        log_error(err);
                                         return [] as string[];
-                                    })
+                                    }),
                                 )
-                                : executeSandboxedDvQuery(sandboxedDvQuery(fieldInput.query), this.app)
-                        this.svelteComponents.push(new MultiSelect({
+                                : executeSandboxedDvQuery(
+                                    sandboxedDvQuery(fieldInput.query),
+                                    this.app,
+                                );
+                    this.svelteComponents.push(
+                        new MultiSelect({
                             target: fieldBase.controlEl,
                             props: {
-                                selectedVales: this.formResult[definition.name] as string[],
+                                selectedVales: this.formResult[
+                                    definition.name
+                                ] as string[],
                                 availableOptions: options,
                                 setting: fieldBase,
                                 app: this.app,
-                            }
-                        }))
-                        return;
-                    }
-                case "dataview":
-                    {
-                        const query = fieldInput.query;
-                        return fieldBase.addText((element) => {
-                            new DataviewSuggest(element.inputEl, query, this.app);
-                            element.onChange(async (value) => {
-                                this.formResult[definition.name] = value;
-                            });
+                            },
+                        }),
+                    );
+                    return;
+                }
+                case "tag": {
+                    const options = Object.keys(
+                        this.app.metadataCache.getTags(),
+                    );
+                    this.formResult[definition.name] = this.formResult[definition.name] || [];
+                    this.svelteComponents.push(
+                        new MultiSelect({
+                            target: fieldBase.controlEl,
+                            props: {
+                                selectedVales: this.formResult[
+                                    definition.name
+                                ] as string[],
+                                availableOptions: options,
+                                setting: fieldBase,
+                                app: this.app,
+                            },
+                        }),
+                    );
+                    return;
+                }
+                case "dataview": {
+                    const query = fieldInput.query;
+                    return fieldBase.addText((element) => {
+                        new DataviewSuggest(element.inputEl, query, this.app);
+                        element.onChange(async (value) => {
+                            this.formResult[definition.name] = value;
                         });
-                    }
+                    });
+                }
                 case "select":
                     {
                         const source = fieldInput.source;
                         switch (source) {
                             case "fixed":
                                 return fieldBase.addDropdown((element) => {
-                                    fieldInput.options.forEach(
-                                        (
-                                            option
-                                        ) => {
-                                            element.addOption(option.value, option.label);
-                                        },
-                                    );
-                                    this.formResult[definition.name] = element.getValue();
+                                    fieldInput.options.forEach((option) => {
+                                        element.addOption(
+                                            option.value,
+                                            option.label,
+                                        );
+                                    });
+                                    this.formResult[definition.name] =
+                                        element.getValue();
                                     element.onChange(async (value) => {
                                         this.formResult[definition.name] =
                                             value;
@@ -194,29 +246,35 @@ export class FormModal extends Modal {
 
                             case "notes":
                                 return fieldBase.addDropdown((element) => {
-                                    const files = get_tfiles_from_folder(fieldInput.folder, this.app);
+                                    const files = get_tfiles_from_folder(
+                                        fieldInput.folder,
+                                        this.app,
+                                    );
                                     pipe(
                                         files,
-                                        E.map((files) => files.reduce(
-                                            (
-                                                acc: Record<string, string>,
-                                                option
-                                            ) => {
-                                                acc[option.basename] =
-                                                    option.basename;
-                                                return acc;
-                                            },
-                                            {}
-                                        )),
+                                        E.map((files) =>
+                                            files.reduce(
+                                                (
+                                                    acc: Record<string, string>,
+                                                    option,
+                                                ) => {
+                                                    acc[option.basename] =
+                                                        option.basename;
+                                                    return acc;
+                                                },
+                                                {},
+                                            ),
+                                        ),
                                         E.mapLeft((err) => {
                                             log_error(err);
                                             return err;
                                         }),
                                         E.map((options) => {
-                                            element.addOptions(options)
-                                        })
+                                            element.addOptions(options);
+                                        }),
                                     );
-                                    this.formResult[definition.name] = element.getValue();
+                                    this.formResult[definition.name] =
+                                        element.getValue();
                                     element.onChange(async (value) => {
                                         this.formResult[definition.name] =
                                             value;
@@ -235,14 +293,11 @@ export class FormModal extends Modal {
         const submit = () => {
             this.onSubmit(new FormResult(this.formResult, "ok"));
             this.close();
-        }
+        };
 
         new Setting(contentEl).addButton((btn) =>
-            btn
-                .setButtonText("Submit")
-                .setCta()
-                .onClick(submit)
-        )
+            btn.setButtonText("Submit").setCta().onClick(submit),
+        );
 
         const submitEnterCallback = (evt: KeyboardEvent) => {
             if ((evt.ctrlKey || evt.metaKey) && evt.key === "Enter") {
@@ -251,12 +306,12 @@ export class FormModal extends Modal {
             }
         };
 
-        contentEl.addEventListener("keydown", submitEnterCallback)
+        contentEl.addEventListener("keydown", submitEnterCallback);
     }
 
     onClose() {
         const { contentEl } = this;
-        this.svelteComponents.forEach((component) => component.$destroy())
+        this.svelteComponents.forEach((component) => component.$destroy());
         contentEl.empty();
         this.formResult = {};
     }

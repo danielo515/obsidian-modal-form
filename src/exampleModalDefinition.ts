@@ -50,49 +50,68 @@ export const exampleModalDefinition: FormDefinition = {
             name: "multi_example_2",
             label: "Multi select fixed",
             description: "Allows to pick many notes from a fixed list",
-            input: { type: "multiselect", source: "fixed", multi_select_options: ['Android', 'iOS', 'Windows', 'MacOS', 'Linux', 'Solaris', 'MS2'] },
+            input: {
+                type: "multiselect",
+                source: "fixed",
+                multi_select_options: [
+                    "Android",
+                    "iOS",
+                    "Windows",
+                    "MacOS",
+                    "Linux",
+                    "Solaris",
+                    "MS2",
+                ],
+            },
         },
         {
             name: "multi_select_dataview",
             label: "Multi select dataview",
             description: "Allows to pick several values from a dv query",
-            input: { type: "multiselect", source: "dataview", query: 'dv.pages("#person").map(p => p.file.name)' },
+            input: {
+                type: "multiselect",
+                source: "dataview",
+                query: 'dv.pages("#person").map(p => p.file.name)',
+            },
         },
         {
             name: "best_fried",
             label: "Best friend",
             description: "Pick one",
             input: {
-                type: 'select',
-                source: 'notes',
-                folder: 'People'
-            }
+                type: "select",
+                source: "notes",
+                folder: "People",
+            },
         },
         {
-            name: 'dataview_example',
-            label: 'Dataview example',
-            description: 'Only people matching the dataview query will be shown',
+            name: "dataview_example",
+            label: "Dataview example",
+            description:
+                "Only people matching the dataview query will be shown",
             input: {
-                type: 'dataview',
-                query: 'dv.pages("#person").filter(p => p.age < 30).map(p => p.file.name)'
-            }
+                type: "dataview",
+                query: 'dv.pages("#person").filter(p => p.age < 30).map(p => p.file.name)',
+            },
         },
         {
             name: "friendship_level",
             label: "Friendship level",
             description: "How good friends are you?",
             input: {
-                type: 'slider',
+                type: "slider",
                 min: 0,
-                max: 10
-            }
+                max: 10,
+            },
         },
         {
             name: "favorite_meal",
             label: "Favorite meal",
             description: "Pick one option",
             input: {
-                type: "select", source: "fixed", options: [
+                type: "select",
+                source: "fixed",
+                options: [
                     { value: "pizza", label: "🍕 Pizza" },
                     { value: "pasta", label: "🍝 Pasta" },
                     { value: "burger", label: "🍔 Burger" },
@@ -102,8 +121,8 @@ export const exampleModalDefinition: FormDefinition = {
                     { value: "ramen", label: "🍜 Ramen" },
                     { value: "tacos", label: "🌮 Tacos" },
                     { value: "fish", label: "🐟 Fish" },
-                    { value: "chicken", label: "🍗 Chicken" }
-                ]
+                    { value: "chicken", label: "🍗 Chicken" },
+                ],
             },
         },
         {
@@ -112,7 +131,12 @@ export const exampleModalDefinition: FormDefinition = {
             description: "Put your thouhts here",
             input: {
                 type: "textarea",
-            }
-        }
+            },
+        },
+        {
+            name: "Tags",
+            description: "Tags input example",
+            input: { type: "tag" },
+        },
     ],
 };

@@ -1,5 +1,19 @@
 import { type Output, is, safeParse } from "valibot";
-import { SelectFromNotesSchema, InputSliderSchema, InputNoteFromFolderSchema, InputDataviewSourceSchema, InputSelectFixedSchema, InputBasicSchema, MultiselectSchema, InputTypeSchema, FieldDefinitionSchema, FormDefinitionLatestSchema, FieldListSchema, FormDefinitionBasicSchema, MigrationError } from "./formDefinitionSchema";
+import {
+    SelectFromNotesSchema,
+    InputSliderSchema,
+    InputNoteFromFolderSchema,
+    InputDataviewSourceSchema,
+    InputSelectFixedSchema,
+    InputBasicSchema,
+    MultiselectSchema,
+    InputTypeSchema,
+    FieldDefinitionSchema,
+    FormDefinitionLatestSchema,
+    FieldListSchema,
+    FormDefinitionBasicSchema,
+    MigrationError,
+} from "./formDefinitionSchema";
 import { A, O, pipe } from "@std";
 //=========== Types derived from schemas
 type selectFromNotes = Output<typeof SelectFromNotesSchema>;
@@ -14,6 +28,7 @@ type inputType = Output<typeof InputTypeSchema>;
 export const FieldTypeReadable: Record<AllFieldTypes, string> = {
     text: "Text",
     number: "Number",
+    tag: "Tags",
     email: "Email",
     tel: "Phone",
     date: "Date",
@@ -21,11 +36,11 @@ export const FieldTypeReadable: Record<AllFieldTypes, string> = {
     datetime: "DateTime",
     textarea: "Text area",
     toggle: "Toggle",
-    "note": "Note",
-    "slider": "Slider",
-    "select": "Select",
-    "dataview": "Dataview",
-    "multiselect": "Multiselect",
+    note: "Note",
+    slider: "Slider",
+    select: "Select",
+    dataview: "Dataview",
+    multiselect: "Multiselect",
 } as const;
 
 export function isDataViewSource(input: unknown): input is inputDataviewSource {
@@ -39,14 +54,16 @@ export function isSelectFromNotes(input: unknown): input is selectFromNotes {
     return is(SelectFromNotesSchema, input);
 }
 
-export function isInputNoteFromFolder(input: unknown): input is inputNoteFromFolder {
+export function isInputNoteFromFolder(
+    input: unknown,
+): input is inputNoteFromFolder {
     return is(InputNoteFromFolderSchema, input);
 }
 export function isInputSelectFixed(input: unknown): input is inputSelectFixed {
     return is(InputSelectFixedSchema, input);
 }
 
-export type AllFieldTypes = inputType['type']
+export type AllFieldTypes = inputType["type"];
 
 export type FieldDefinition = Output<typeof FieldDefinitionSchema>;
 /**
@@ -56,15 +73,16 @@ export type FormDefinition = Output<typeof FormDefinitionLatestSchema>;
 
 export type FormOptions = {
     values?: Record<string, unknown>;
-}
+};
 
-type KeyOfUnion<T> = T extends unknown ? keyof T : never
-type PickUnion<T, K extends KeyOfUnion<T>> =
-    T extends unknown
-    ? K & keyof T extends never ? never : Pick<T, K & keyof T>
-    : never
+type KeyOfUnion<T> = T extends unknown ? keyof T : never;
+type PickUnion<T, K extends KeyOfUnion<T>> = T extends unknown
+    ? K & keyof T extends never
+    ? never
+    : Pick<T, K & keyof T>
+    : never;
 
-export type AllSources = PickUnion<inputType, 'source'>['source']
+export type AllSources = PickUnion<inputType, "source">["source"];
 
 // When an input is in edit state, it is represented by this type.
 // It has all the possible values, and then you need to narrow it down
@@ -105,36 +123,37 @@ export function isInputTypeValid(input: unknown): input is inputType {
     return is(InputTypeSchema, input);
 }
 
-
 export function validateFields(fields: unknown) {
     const result = safeParse(FieldListSchema, fields);
 
     if (result.success) {
-        return []
+        return [];
     }
-    console.error('Fields issues', result.issues)
-    return result.issues.map((issue) =>
-    ({
-        message: issue.message, path: issue.path?.map((item) => item.key).join('.'),
-        index: issue.path?.[0]?.key ?? 0
-    })
-    );
+    console.error("Fields issues", result.issues);
+    return result.issues.map((issue) => ({
+        message: issue.message,
+        path: issue.path?.map((item) => item.key).join("."),
+        index: issue.path?.[0]?.key ?? 0,
+    }));
 }
 
 export function isValidFormDefinition(input: unknown): input is FormDefinition {
     if (!is(FormDefinitionBasicSchema, input)) {
         return false;
     }
-    console.log('basic is valid');
+    console.log("basic is valid");
     const fieldsAreValid = is(FieldListSchema, input.fields);
     if (!fieldsAreValid) {
         return false;
     }
-    console.log('fields are valid');
+    console.log("fields are valid");
     return true;
 }
 
-export function duplicateForm(formName: string, forms: (FormDefinition | MigrationError)[]) {
+export function duplicateForm(
+    formName: string,
+    forms: (FormDefinition | MigrationError)[],
+) {
     return pipe(
         forms,
         A.findFirstMap((f) => {
@@ -147,10 +166,10 @@ export function duplicateForm(formName: string, forms: (FormDefinition | Migrati
             return O.none;
         }),
         O.map((f) => {
-            let newName = f.name + '-copy';
+            let newName = f.name + "-copy";
             let i = 1;
             while (forms.some((f) => f.name === newName)) {
-                newName = f.name + '-copy-' + i;
+                newName = f.name + "-copy-" + i;
                 i++;
             }
             return { ...f, name: newName };
@@ -158,6 +177,6 @@ export function duplicateForm(formName: string, forms: (FormDefinition | Migrati
         O.map((f) => {
             return [...forms, f];
         }),
-        O.getOrElse(() => forms)
-    )
+        O.getOrElse(() => forms),
+    );
 }
