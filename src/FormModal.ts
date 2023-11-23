@@ -165,21 +165,21 @@ export class FormModal extends Modal {
                         source == "fixed"
                             ? fieldInput.multi_select_options
                             : source == "notes"
-                                ? pipe(
-                                    get_tfiles_from_folder(
-                                        fieldInput.folder,
-                                        this.app,
-                                    ),
-                                    E.map(A.map((file) => file.basename)),
-                                    E.getOrElse((err) => {
-                                        log_error(err);
-                                        return [] as string[];
-                                    }),
-                                )
-                                : executeSandboxedDvQuery(
-                                    sandboxedDvQuery(fieldInput.query),
-                                    this.app,
-                                );
+                            ? pipe(
+                                  get_tfiles_from_folder(
+                                      fieldInput.folder,
+                                      this.app,
+                                  ),
+                                  E.map(A.map((file) => file.basename)),
+                                  E.getOrElse((err) => {
+                                      log_error(err);
+                                      return [] as string[];
+                                  }),
+                              )
+                            : executeSandboxedDvQuery(
+                                  sandboxedDvQuery(fieldInput.query),
+                                  this.app,
+                              );
                     this.svelteComponents.push(
                         new MultiSelect({
                             target: fieldBase.controlEl,
@@ -198,8 +198,9 @@ export class FormModal extends Modal {
                 case "tag": {
                     const options = Object.keys(
                         this.app.metadataCache.getTags(),
-                    );
-                    this.formResult[definition.name] = this.formResult[definition.name] || [];
+                    ).map((tag) => tag.slice(1)); // remove the #
+                    this.formResult[definition.name] =
+                        this.formResult[definition.name] || [];
                     this.svelteComponents.push(
                         new MultiSelect({
                             target: fieldBase.controlEl,
