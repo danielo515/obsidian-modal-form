@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.1](https://github.com/danielo515/obsidian-modal-form/compare/1.27.0...1.27.1) (2023-11-23)
+
+
+### Bug Fixes
+
+* remove leading # in tags ([556b769](https://github.com/danielo515/obsidian-modal-form/commit/556b7699d544ec67f286e01f41104075f7b2f6a8))
+
 ## [1.27.0](https://github.com/danielo515/obsidian-modal-form/compare/1.26.0...1.27.0) (2023-11-22)
 
 
