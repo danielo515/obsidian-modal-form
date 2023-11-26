@@ -23,7 +23,7 @@ interface FormEngine {
      * Use them to bind the field to the form and be notified of errors.
      * @param field a field definition to start tracking
      */
-    addField: (field: { name: string, isRequired?: boolean }) => { value: Writable<string>, errors: Readable<string[]> };
+    addField: (field: { name: string, label?: string, isRequired?: boolean }) => { value: Writable<string>, errors: Readable<string[]> };
     /**
      * Subscribes to the form store. This method is required to conform to the svelte store interface.
      */
@@ -111,7 +111,7 @@ export function makeFormEngine(onSubmit: (values: Record<string, string>) => voi
         },
         addField: (field) => {
             const { setField, setValue } = setFormField(field.name);
-            setField('', [], field.isRequired ? requiredRule(field.name) : undefined);
+            setField('', [], field.isRequired ? requiredRule(field.label || field.name) : undefined);
             const fieldStore = derived(formStore, ({ fields }) => fields[field.name]);
             const fieldValueStore: Writable<string> = {
                 subscribe(cb) {

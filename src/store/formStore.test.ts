@@ -41,4 +41,20 @@ describe("Form Engine", () => {
         // Assert that the field has errors
         expect(get(field1.errors)).toEqual(["fieldName1 is required"]);
     });
+    it("field errors should prefer field label over field name", () => {
+        const onSubmitMock = jest.fn();
+        const formEngine = makeFormEngine(onSubmitMock);
+        // Add a field to the form
+        const field1 = formEngine.addField({ name: "fieldName1", label: "Field Label", isRequired: true });
+        // Update field value with an empty string
+        field1.value.set("");
+        // Trigger form submission
+        formEngine.onSubmit();
+        // Assert that the form is not valid
+        expect(get(formEngine.isValid)).toBe(false);
+        // Assert that the onSubmit callback is not called
+        expect(onSubmitMock).not.toHaveBeenCalled();
+        // Assert that the field has errors
+        expect(get(field1.errors)).toEqual(["Field Label is required"]);
+    });
 });
