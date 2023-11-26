@@ -9,8 +9,11 @@ import { Writable, derived, writable, Readable, get } from "svelte/store";
 import { toEntries } from "fp-ts/Record";
 
 type Rule = { tag: 'required', message: string } //| { tag: 'minLength', length: number, message: string } | { tag: 'maxLength', length: number, message: string } | { tag: 'pattern', pattern: RegExp, message: string };
+function requiredRule(fieldName: string, message?: string): Rule {
+    return { tag: 'required', message: message ?? `${fieldName} is required` }
+}
 type Field = { value: string, name: string, rules?: Rule, errors: string[] }
-type FormStore = { fields: Record<string, Field>, isValid: boolean };
+type FormStore = { fields: Record<string, Field> };
 
 interface FormEngine {
     /**
@@ -20,7 +23,7 @@ interface FormEngine {
      * Use them to bind the field to the form and be notified of errors.
      * @param field a field definition to start tracking
      */
-    addField: (field: { name: string }) => { value: Writable<string>, errors: Readable<string[]> };
+    addField: (field: { name: string, isRequired?: boolean }) => { value: Writable<string>, errors: Readable<string[]> };
     /**
      * Subscribes to the form store. This method is required to conform to the svelte store interface.
      */
@@ -36,6 +39,9 @@ interface FormEngine {
      */
     onSubmit: () => void;
 }
+function nonEmptyString(s: unknown): s is string {
+    return typeof s === 'string' && s.length > 0
+}
 /**
  * 
  * Validates a field based on the rules that are present on the field.
@@ -45,7 +51,7 @@ interface FormEngine {
 function parseField(field: Field): E.Either<Field, Field> {
     if (!field.rules) return E.right(field)
     switch (field.rules.tag) {
-        case 'required': return field.value ? E.right(field) : E.left({ ...field, errors: [...field.errors, field.rules.message] })
+        case 'required': return nonEmptyString(field.value) ? E.right(field) : E.left({ ...field, errors: [...field.errors, field.rules.message] })
         default: return absurd(field.rules.tag)
     }
 }
@@ -54,21 +60,32 @@ function parseField(field: Field): E.Either<Field, Field> {
  * Transforms a the fields of a form into a validated record of results,
  * or returns a list of fields that failed validation.
  */
-function parseForm(fields: Record<string, { value: string, name: string, rules?: Rule }>): E.Either<Field[], Record<string, string>> {
+function parseForm(fields: Record<string, Field>): E.Either<Field[], Record<string, string>> {
     const { right: ok, left: failed } = pipe(fields, Object.values, A.map(parseField), A.separate)
     if (failed.length > 0) return E.left(failed)
     return E.right(pipe(ok, A.map((field) => [field.name, field.value]), Object.fromEntries))
 }
 
 export function makeFormEngine(onSubmit: (values: Record<string, string>) => void): FormEngine {
-    const formStore: Writable<FormStore> = writable({ fields: {}, isValid: false });
+    const formStore: Writable<FormStore> = writable({ fields: {} });
 
     function setFormField(name: string) {
-        return (value: string, errors = [], rules?: Rule) => {
+        function setField(value: string, errors = [], rules?: Rule) {
             formStore.update((form) => {
-                return { ...form, fields: { ...form.fields, [name]: { value: value, name, errors, rules } } }
-            })
+                return { ...form, fields: { ...form.fields, [name]: { value: value, name, errors, rules } } };
+            });
         }
+        function setValue(value: string) {
+            formStore.update((form) => {
+                const field = form.fields[name];
+                if (!field) {
+                    console.error(new Error(`Field ${name} does not exist`))
+                    return form
+                }
+                return { ...form, fields: { ...form.fields, [name]: { ...field, value } } }
+            });
+        }
+        return { setField, setValue }
     }
 
     function setErrors(failedFields: Field[]) {
@@ -93,15 +110,15 @@ export function makeFormEngine(onSubmit: (values: Record<string, string>) => voi
             pipe(formState.fields, parseForm, E.match(setErrors, onSubmit))
         },
         addField: (field) => {
-            const setField = setFormField(field.name);
-            setField('');
+            const { setField, setValue } = setFormField(field.name);
+            setField('', [], field.isRequired ? requiredRule(field.name) : undefined);
             const fieldStore = derived(formStore, ({ fields }) => fields[field.name]);
             const fieldValueStore: Writable<string> = {
                 subscribe(cb) {
                     return fieldStore.subscribe((value) => cb(value?.value ?? ''));
                 },
                 set(value) {
-                    setField(value);
+                    setValue(value);
                 },
                 update: (updater) => {
                     formStore.update((form) => {
