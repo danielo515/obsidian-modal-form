@@ -6,15 +6,34 @@ import * as E from "fp-ts/Either";
 import { absurd } from "fp-ts/function";
 import * as A from "fp-ts/Array";
 import { Writable, derived, writable, Readable, get } from "svelte/store";
+import { toEntries } from "fp-ts/Record";
 
 type Rule = { tag: 'required', message: string } //| { tag: 'minLength', length: number, message: string } | { tag: 'maxLength', length: number, message: string } | { tag: 'pattern', pattern: RegExp, message: string };
 type Field = { value: string, name: string, rules?: Rule, errors: string[] }
 type FormStore = { fields: Record<string, Field>, isValid: boolean };
 
 interface FormEngine {
-    addField: (field: { name: string }) => { field: Writable<string>, errors: Readable<string[]> };
+    /**
+     * Adds a field to the form engine.
+     * It returns an object with a writable store that represents the value of the field,
+     * and a readable store that represents the errors of the field.
+     * Use them to bind the field to the form and be notified of errors.
+     * @param field a field definition to start tracking
+     */
+    addField: (field: { name: string }) => { value: Writable<string>, errors: Readable<string[]> };
+    /**
+     * Subscribes to the form store. This method is required to conform to the svelte store interface.
+     */
     subscribe: Readable<FormStore>['subscribe'];
-    isValid: () => boolean;
+    /**
+     * Readable store that represents the validity of the form.
+     * If any of the fields in the form have errors, this will be false.
+     */
+    isValid: Readable<boolean>;
+    /**
+     * Wrapper around the provided onSubmit function that validates the form before calling the provided function.
+     * If the form is invalid, the errors are updated and the onSubmit function is not called.
+     */
     onSubmit: () => void;
 }
 /**
@@ -63,7 +82,12 @@ export function makeFormEngine(onSubmit: (values: Record<string, string>) => voi
     // TODO: Validate on updates, reactive isValid, dependent fields, handle more than just strings
     const formEngine: FormEngine = {
         subscribe: formStore.subscribe,
-        isValid: () => true,
+        isValid: derived(formStore, ({ fields }) => pipe(
+            fields,
+            toEntries,
+            A.some(([_, f]) => f.errors.length > 0),
+            (x) => !x)
+        ),
         onSubmit() {
             const formState = get(formStore)
             pipe(formState.fields, parseForm, E.match(setErrors, onSubmit))
@@ -91,7 +115,7 @@ export function makeFormEngine(onSubmit: (values: Record<string, string>) => voi
                     });
                 },
             }
-            return { field: fieldValueStore, errors: derived(formStore, ({ fields }) => fields[field.name]?.errors ?? []) };
+            return { value: fieldValueStore, errors: derived(formStore, ({ fields }) => fields[field.name]?.errors ?? []) };
         }
     }
 
