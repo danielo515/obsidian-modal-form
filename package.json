@@ -15,6 +15,7 @@
     "author": "",
     "license": "MIT",
     "devDependencies": {
+        "@stylistic/eslint-plugin": "^1.4.1",
         "@tsconfig/svelte": "^5.0.2",
         "@types/jest": "^29.5.6",
         "@types/node": "^16.11.6",
@@ -24,6 +25,7 @@
         "builtin-modules": "3.3.0",
         "esbuild": "0.17.3",
         "esbuild-svelte": "^0.8.0",
+        "eslint-plugin-fp-ts": "^0.3.2",
         "jest": "^29.7.0",
         "obsidian": "^1.4.11",
         "prettier": "^3.0.3",

@@ -2,11 +2,12 @@
     "root": true,
     "parser": "@typescript-eslint/parser",
     "env": { "node": true },
-    "plugins": ["@typescript-eslint"],
+    "plugins": ["@typescript-eslint", "fp-ts", "@stylistic"],
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "plugin:fp-ts/recommended"
     ],
     "parserOptions": {
         "sourceType": "module"
@@ -17,6 +18,7 @@
         "@typescript-eslint/ban-ts-comment": "off",
         "no-prototype-builtins": "off",
         "@typescript-eslint/no-empty-function": "off",
-        "arrow-parens": ["error", "always"]
+        "arrow-parens": ["error", "always"],
+        "@stylistic/function-call-argument-newline": ["error", "consistent"]
     }
 }
