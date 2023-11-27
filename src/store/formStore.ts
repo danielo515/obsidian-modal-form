@@ -70,7 +70,6 @@ function parseField<T extends FieldValue>(field: Field<T>): E.Either<FieldFailed
         case 'required': return pipe(
             field.value,
             O.chain(nonEmptyString),
-            (x) => { console.log(x); return x },
             O.match(
                 () => E.left(FieldFailed(field, rule)),
                 (ok) => ok == true ? E.right(field) : E.left(FieldFailed(field, rule)))
