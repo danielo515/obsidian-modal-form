@@ -220,7 +220,7 @@ export class FormModal extends Modal {
                     const query = fieldInput.query;
                     return fieldBase.addText((element) => {
                         new DataviewSuggest(element.inputEl, query, this.app);
-                        element.onChange(async (value) => {
+                        element.onChange((value) => {
                             this.formResult[definition.name] = value;
                         });
                     });
