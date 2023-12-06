@@ -35,7 +35,7 @@ function FieldFailed<T extends FieldValue>(
 }
 type FormStore<T extends FieldValue> = { fields: Record<string, Field<T>> };
 
-// TODO: instead of making the whole enginge generic, make just the addField method generic extending the type of the field value
+// TODO: instead of making the whole engine generic, make just the addField method generic extending the type of the field value
 // Then, the whole formEngine can be typed as FormEngine<FieldValue>
 export interface FormEngine<T extends FieldValue> {
     /**
@@ -63,9 +63,9 @@ export interface FormEngine<T extends FieldValue> {
      * Wrapper around the provided onSubmit function that validates the form before calling the provided function.
      * If the form is invalid, the errors are updated and the onSubmit function is not called.
      */
-    onSubmit: () => void;
+    triggerSubmit: () => void;
 }
-function nonEmptyString(s: FieldValue): Option<FieldValue> {
+function nonEmptyValue(s: FieldValue): Option<FieldValue> {
     switch (typeof s) {
         case "string":
             return s.length > 0 ? O.some(s) : O.none;
@@ -97,7 +97,7 @@ function parseField<T extends FieldValue>(
         case "required":
             return pipe(
                 field.value,
-                O.chain(nonEmptyString),
+                O.chain(nonEmptyValue),
                 O.match(
                     () => E.left(FieldFailed(field, rule)),
                     (ok) =>
@@ -140,10 +140,10 @@ function parseForm<T extends FieldValue>(
     );
 }
 
-export type OnFormSubmit = <T>(values: Record<string, T>) => void;
+export type OnFormSubmit<T> = (values: Record<string, T>) => void;
 
 export function makeFormEngine<T extends FieldValue>(
-    onSubmit: OnFormSubmit,
+    onSubmit: OnFormSubmit<T>,
 ): FormEngine<T> {
     const formStore: Writable<FormStore<T>> = writable({ fields: {} });
 
@@ -203,7 +203,7 @@ export function makeFormEngine<T extends FieldValue>(
                 (x) => !x,
             ),
         ),
-        onSubmit() {
+        triggerSubmit() {
             const formState = get(formStore);
             console.log("Form state", formState.fields);
             pipe(formState.fields, parseForm, E.match(setErrors, onSubmit));

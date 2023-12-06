@@ -18,6 +18,7 @@ import {
     BaseSchema,
     enumType,
     passthrough,
+    boolean,
 } from "valibot";
 import { AllFieldTypes, FormDefinition } from "./formDefinition";
 import { findFieldErrors } from "./findInputDefinitionSchema";
@@ -67,7 +68,7 @@ export const InputDataviewSourceSchema = object({
     type: literal("dataview"),
     query: nonEmptyString("dataview query"),
 });
-export const InputBasicSchema = object({ type: InputBasicTypeSchema });
+export const InputBasicSchema = object({ type: InputBasicTypeSchema, isRequired: optional(boolean()) });
 export const InputSelectFixedSchema = object({
     type: literal("select"),
     source: literal("fixed"),

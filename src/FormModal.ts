@@ -16,13 +16,16 @@ import {
     sandboxedDvQuery,
 } from "./suggesters/SafeDataviewQuery";
 import { A, E, pipe } from "@std";
-import { log_error } from "./utils/Log";
+import { log_error, log_notice } from "./utils/Log";
+import { FieldValue, FormEngine, makeFormEngine } from "./store/formStore";
 
 export type SubmitFn = (formResult: FormResult) => void;
 
 export class FormModal extends Modal {
     formResult: ModalFormData;
     svelteComponents: SvelteComponent[] = [];
+    subscriptions: (() => void)[] = [];
+    formEngine: FormEngine<FieldValue>;
     constructor(
         app: App,
         private modalDefinition: FormDefinition,
@@ -34,9 +37,13 @@ export class FormModal extends Modal {
         if (options?.values) {
             this.formResult = formDataFromFormOptions(options.values);
         }
+        this.formEngine = makeFormEngine((result) => {
+            this.onSubmit(new FormResult(result, "ok"));
+            this.close();
+        });
     }
 
-    onOpen() {
+    onOpen2() {
         const { contentEl } = this;
         const component = new FormModalComponent({
             target: contentEl,
@@ -47,7 +54,7 @@ export class FormModal extends Modal {
         });
         this.svelteComponents.push(component);
     }
-    onOpen2() {
+    onOpen() {
         const { contentEl } = this;
         if (this.modalDefinition.customClassname)
             contentEl.addClass(this.modalDefinition.customClassname);
@@ -62,16 +69,26 @@ export class FormModal extends Modal {
             const fieldInput = definition.input;
             const type = fieldInput.type;
             const initialValue = this.formResult[definition.name];
+            const fieldStore = this.formEngine.addField({ ...definition, isRequired: fieldInput?.isRequired ?? false });
+            const subToErrors = (
+                input: HTMLInputElement | HTMLTextAreaElement,
+            ) => {
+                this.subscriptions.push(
+                    fieldStore.errors.subscribe((errs) => {
+                        errs.forEach((msg) => log_notice('The form has errors', msg))
+                        input.setCustomValidity(errs.join("\n"));
+                    }),
+                );
+            };
             switch (type) {
-                case "textarea":
+                case "textarea": {
                     fieldBase.setClass("modal-form-textarea");
                     return fieldBase.addTextArea((textEl) => {
+                        textEl.onChange(fieldStore.value.set);
+                        subToErrors(textEl.inputEl);
                         if (typeof initialValue === "string") {
                             textEl.setValue(initialValue);
                         }
-                        textEl.onChange((value) => {
-                            this.formResult[definition.name] = value;
-                        });
                         textEl.inputEl.rows = 6;
                         if (Platform.isIosApp)
                             textEl.inputEl.style.width = "100%";
@@ -79,63 +96,43 @@ export class FormModal extends Modal {
                             textEl.inputEl.rows = 10;
                         }
                     });
+                }
                 case "email":
                 case "tel":
+                case "date":
+                case "time":
                 case "text":
                     return fieldBase.addText((text) => {
                         text.inputEl.type = type;
+                        subToErrors(text.inputEl);
+                        text.onChange(fieldStore.value.set);
                         initialValue !== undefined &&
                             text.setValue(String(initialValue));
-                        return text.onChange(async (value) => {
-                            this.formResult[definition.name] = value;
-                        });
                     });
                 case "number":
                     return fieldBase.addText((text) => {
                         text.inputEl.type = "number";
-                        initialValue !== undefined &&
-                            text.setValue(String(initialValue));
-                        text.onChange(async (value) => {
-                            if (value !== "") {
-                                this.formResult[definition.name] =
-                                    Number(value) + "";
+                        subToErrors(text.inputEl);
+                        text.onChange((val) => {
+                            if (val !== "") {
+                                fieldStore.value.set(Number(val) + "");
                             }
                         });
-                    });
-                case "date":
-                    return fieldBase.addText((text) => {
-                        text.inputEl.type = "date";
                         initialValue !== undefined &&
                             text.setValue(String(initialValue));
-                        text.onChange(async (value) => {
-                            this.formResult[definition.name] = value;
-                        });
-                    });
-                case "time":
-                    return fieldBase.addText((text) => {
-                        text.inputEl.type = "time";
-                        initialValue !== undefined &&
-                            text.setValue(String(initialValue));
-                        text.onChange(async (value) => {
-                            this.formResult[definition.name] = value;
-                        });
                     });
                 case "datetime":
                     return fieldBase.addText((text) => {
                         text.inputEl.type = "datetime-local";
                         initialValue !== undefined &&
                             text.setValue(String(initialValue));
-                        text.onChange(async (value) => {
-                            this.formResult[definition.name] = value;
-                        });
+                        subToErrors(text.inputEl);
+                        text.onChange(fieldStore.value.set);
                     });
                 case "toggle":
                     return fieldBase.addToggle((toggle) => {
                         toggle.setValue(!!initialValue);
-                        this.formResult[definition.name] = !!initialValue;
-                        return toggle.onChange(async (value) => {
-                            this.formResult[definition.name] = value;
-                        });
+                        return toggle.onChange(fieldStore.value.set);
                     });
                 case "note":
                     return fieldBase.addText((element) => {
@@ -152,9 +149,7 @@ export class FormModal extends Modal {
                             },
                             fieldInput.folder,
                         );
-                        element.onChange(async (value) => {
-                            this.formResult[definition.name] = value;
-                        });
+                        element.onChange(fieldStore.value.set);
                     });
                 case "slider":
                     return fieldBase.addSlider((slider) => {
@@ -165,9 +160,7 @@ export class FormModal extends Modal {
                         } else {
                             slider.setValue(fieldInput.min);
                         }
-                        slider.onChange(async (value) => {
-                            this.formResult[definition.name] = value;
-                        });
+                        slider.onChange(fieldStore.value.set);
                     });
                 case "multiselect": {
                     this.formResult[definition.name] =
@@ -177,21 +170,21 @@ export class FormModal extends Modal {
                         source == "fixed"
                             ? fieldInput.multi_select_options
                             : source == "notes"
-                            ? pipe(
-                                  get_tfiles_from_folder(
-                                      fieldInput.folder,
-                                      this.app,
-                                  ),
-                                  E.map(A.map((file) => file.basename)),
-                                  E.getOrElse((err) => {
-                                      log_error(err);
-                                      return [] as string[];
-                                  }),
-                              )
-                            : executeSandboxedDvQuery(
-                                  sandboxedDvQuery(fieldInput.query),
-                                  this.app,
-                              );
+                                ? pipe(
+                                    get_tfiles_from_folder(
+                                        fieldInput.folder,
+                                        this.app,
+                                    ),
+                                    E.map(A.map((file) => file.basename)),
+                                    E.getOrElse((err) => {
+                                        log_error(err);
+                                        return [] as string[];
+                                    }),
+                                )
+                                : executeSandboxedDvQuery(
+                                    sandboxedDvQuery(fieldInput.query),
+                                    this.app,
+                                );
                     this.svelteComponents.push(
                         new MultiSelect({
                             target: fieldBase.controlEl,
@@ -232,9 +225,7 @@ export class FormModal extends Modal {
                     const query = fieldInput.query;
                     return fieldBase.addText((element) => {
                         new DataviewSuggest(element.inputEl, query, this.app);
-                        element.onChange((value) => {
-                            this.formResult[definition.name] = value;
-                        });
+                        element.onChange(fieldStore.value.set);
                     });
                 }
                 case "select":
@@ -251,10 +242,7 @@ export class FormModal extends Modal {
                                     });
                                     this.formResult[definition.name] =
                                         element.getValue();
-                                    element.onChange(async (value) => {
-                                        this.formResult[definition.name] =
-                                            value;
-                                    });
+                                    element.onChange(fieldStore.value.set);
                                 });
 
                             case "notes":
@@ -288,10 +276,7 @@ export class FormModal extends Modal {
                                     );
                                     this.formResult[definition.name] =
                                         element.getValue();
-                                    element.onChange(async (value) => {
-                                        this.formResult[definition.name] =
-                                            value;
-                                    });
+                                    element.onChange(fieldStore.value.set);
                                 });
                             default:
                                 exhaustiveGuard(source);
@@ -303,19 +288,17 @@ export class FormModal extends Modal {
             }
         });
 
-        const submit = () => {
-            this.onSubmit(new FormResult(this.formResult, "ok"));
-            this.close();
-        };
-
         new Setting(contentEl).addButton((btn) =>
-            btn.setButtonText("Submit").setCta().onClick(submit),
+            btn
+                .setButtonText("Submit")
+                .setCta()
+                .onClick(this.formEngine.triggerSubmit),
         );
 
         const submitEnterCallback = (evt: KeyboardEvent) => {
             if ((evt.ctrlKey || evt.metaKey) && evt.key === "Enter") {
                 evt.preventDefault();
-                submit();
+                this.formEngine.triggerSubmit();
             }
         };
 
@@ -325,6 +308,7 @@ export class FormModal extends Modal {
     onClose() {
         const { contentEl } = this;
         this.svelteComponents.forEach((component) => component.$destroy());
+        this.subscriptions.forEach((subscription) => subscription());
         contentEl.empty();
         this.formResult = {};
     }

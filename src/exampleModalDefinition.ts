@@ -8,13 +8,13 @@ export const exampleModalDefinition: FormDefinition = {
         {
             name: "Name",
             description: "It is named how?",
-            input: { type: "text" },
+            input: { type: "text", isRequired: true },
         },
         {
             name: "age",
             label: "Age",
             description: "How old",
-            input: { type: "number" },
+            input: { type: "number", isRequired: true },
         },
         {
             name: "dateOfBirth",

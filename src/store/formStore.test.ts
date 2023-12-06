@@ -14,7 +14,7 @@ describe("Form Engine", () => {
         field2.value.set("value2");
 
         // Trigger form submission
-        formEngine.onSubmit();
+        formEngine.triggerSubmit();
         // Assert that the onSubmit callback is called with the correct values
         expect(onSubmitMock).toHaveBeenCalledWith({
             fieldName1: "value1",
@@ -33,7 +33,7 @@ describe("Form Engine", () => {
         // Update field value with an empty string
         field1.value.set("");
         // Trigger form submission
-        formEngine.onSubmit();
+        formEngine.triggerSubmit();
         // Assert that the form is not valid
         expect(get(formEngine.isValid)).toBe(false);
         // Assert that the onSubmit callback is not called
@@ -53,7 +53,7 @@ describe("Form Engine", () => {
         // Update field value with an empty string
         field1.value.set("");
         // Trigger form submission
-        formEngine.onSubmit();
+        formEngine.triggerSubmit();
         // Assert that the form is not valid
         expect(get(formEngine.isValid)).toBe(false);
         // Assert that the onSubmit callback is not called

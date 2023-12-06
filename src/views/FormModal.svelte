@@ -23,5 +23,5 @@
 {/each}
 
 <ObsidianInput>
-    <button on:click={state.onSubmit}>Submit</button>
+    <button on:click={state.triggerSubmit}>Submit</button>
 </ObsidianInput>
