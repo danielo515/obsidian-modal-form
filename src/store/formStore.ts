@@ -37,7 +37,7 @@ type FormStore<T extends FieldValue> = { fields: Record<string, Field<T>> };
 
 // TODO: instead of making the whole enginge generic, make just the addField method generic extending the type of the field value
 // Then, the whole formEngine can be typed as FormEngine<FieldValue>
-interface FormEngine<T extends FieldValue> {
+export interface FormEngine<T extends FieldValue> {
     /**
      * Adds a field to the form engine.
      * It returns an object with a writable store that represents the value of the field,
