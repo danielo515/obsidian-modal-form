@@ -1,23 +1,39 @@
 <script lang="ts">
-    import { Writable, Readable } from "svelte/store";
+    import { Writable } from "svelte/store";
     import { type FieldValue } from "src/store/formStore";
+    import { FormDefinition } from "src/core/formDefinition";
+    import { absurd } from "fp-ts/lib/function";
+    import MultiSelect from "./MultiSelect.svelte";
     export let value: Writable<FieldValue>;
-    export let errors: Readable<string[]>;
-    export let label: string;
-    export let description: string;
+    export let inputType: FormDefinition["fields"][0]["input"]["type"];
     console.log(value);
 </script>
 
-<!-- Trying to emulate native Obsidian settings -->
-<div class="setting-item">
-    <div class="setting-item-info">
-        <div class="setting-item-name">{label}</div>
-        <div class="setting-item-description">{description}</div>
+{#if inputType === "toggle"}
+    <div class="checkbox-container">
+        <input type="checkbox" bind:checked={$value} />
     </div>
-    <div class="setting-item-control">
-        <input type="text" bind:value={$value} />
-    </div>
-    {#each $errors as error}
-        <p>{error}</p>
-    {/each}
-</div>
+{:else if inputType === "number"}
+    <input type="number" bind:value={$value} />
+{:else if inputType === "text"}
+    <input type="text" bind:value={$value} />
+{:else if inputType === "textarea"}
+    <textarea bind:value={$value} />
+{:else if inputType === "select"}
+    TODO
+{:else if inputType === "multiselect"}
+    <MultiSelect selectedVales={$value} options={[]} />
+{:else if inputType === "slider"}
+    <input type="range" bind:value={$value} class="slider" />
+{:else}
+    <!-- {@const error = absurd(inputType)} -->
+    <input type="text" bind:value={$value} />
+{/if}
+
+<style>
+    textarea {
+        width: 100%;
+        flex: 1;
+        padding: 0.5rem;
+    }
+</style>
