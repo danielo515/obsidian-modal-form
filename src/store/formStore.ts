@@ -10,18 +10,33 @@ import { Writable, derived, writable, Readable, get } from "svelte/store";
 import { fromEntries, toEntries } from "fp-ts/Record";
 import { Option } from "fp-ts/Option";
 
-type Rule = { tag: 'required', message: string } //| { tag: 'minLength', length: number, message: string } | { tag: 'maxLength', length: number, message: string } | { tag: 'pattern', pattern: RegExp, message: string };
+type Rule = { tag: "required"; message: string }; //| { tag: 'minLength', length: number, message: string } | { tag: 'maxLength', length: number, message: string } | { tag: 'pattern', pattern: RegExp, message: string };
 function requiredRule(fieldName: string, message?: string): Rule {
-    return { tag: 'required', message: message ?? `${fieldName} is required` }
+    return { tag: "required", message: message ?? `${fieldName} is required` };
 }
-type FieldValue = string | number | boolean | string[];
-type Field<T extends FieldValue> = Readonly<{ value: Option<T>, name: string, rules?: Rule, errors: string[] }>
-type FieldFailed<T extends FieldValue> = { value: Option<T>, name: string, rules: Rule, errors: NonEmptyArray<string> }
-function FieldFailed<T extends FieldValue>(field: Field<T>, failedRule: Rule): FieldFailed<T> {
-    return { ...field, rules: failedRule, errors: [failedRule.message] }
+export type FieldValue = string | number | boolean | string[];
+type Field<T extends FieldValue> = Readonly<{
+    value: Option<T>;
+    name: string;
+    rules?: Rule;
+    errors: string[];
+}>;
+type FieldFailed<T extends FieldValue> = {
+    value: Option<T>;
+    name: string;
+    rules: Rule;
+    errors: NonEmptyArray<string>;
+};
+function FieldFailed<T extends FieldValue>(
+    field: Field<T>,
+    failedRule: Rule,
+): FieldFailed<T> {
+    return { ...field, rules: failedRule, errors: [failedRule.message] };
 }
 type FormStore<T extends FieldValue> = { fields: Record<string, Field<T>> };
 
+// TODO: instead of making the whole enginge generic, make just the addField method generic extending the type of the field value
+// Then, the whole formEngine can be typed as FormEngine<FieldValue>
 interface FormEngine<T extends FieldValue> {
     /**
      * Adds a field to the form engine.
@@ -30,11 +45,15 @@ interface FormEngine<T extends FieldValue> {
      * Use them to bind the field to the form and be notified of errors.
      * @param field a field definition to start tracking
      */
-    addField: (field: { name: string, label?: string, isRequired?: boolean }) => { value: Writable<T>, errors: Readable<string[]> };
+    addField: (field: {
+        name: string;
+        label?: string;
+        isRequired?: boolean;
+    }) => { value: Writable<T>; errors: Readable<string[]> };
     /**
      * Subscribes to the form store. This method is required to conform to the svelte store interface.
      */
-    subscribe: Readable<FormStore<T>>['subscribe'];
+    subscribe: Readable<FormStore<T>>["subscribe"];
     /**
      * Readable store that represents the validity of the form.
      * If any of the fields in the form have errors, this will be false.
@@ -48,107 +67,169 @@ interface FormEngine<T extends FieldValue> {
 }
 function nonEmptyString(s: FieldValue): Option<FieldValue> {
     switch (typeof s) {
-        case "string": return s.length > 0 ? O.some(s) : O.none
+        case "string":
+            return s.length > 0 ? O.some(s) : O.none;
         case "number":
         case "boolean":
-            return O.some(s)
+            return O.some(s);
         case "object":
-            return Array.isArray(s) ? s.length > 0 ? O.some(s) : O.none : O.none
-        default: return absurd(s)
+            return Array.isArray(s)
+                ? s.length > 0
+                    ? O.some(s)
+                    : O.none
+                : O.none;
+        default:
+            return absurd(s);
     }
 }
 /**
- * 
+ *
  * Validates a field based on the rules that are present on the field.
  * If the field meets the requirements, the field is returned as is in a right.
  * If the field does not meet the requirements, the field is returned with the errors in a left.
  */
-function parseField<T extends FieldValue>(field: Field<T>): E.Either<FieldFailed<T>, Field<T>> {
-    if (!field.rules) return E.right(field)
-    const rule = field.rules
+function parseField<T extends FieldValue>(
+    field: Field<T>,
+): E.Either<FieldFailed<T>, Field<T>> {
+    if (!field.rules) return E.right(field);
+    const rule = field.rules;
     switch (rule.tag) {
-        case 'required': return pipe(
-            field.value,
-            O.chain(nonEmptyString),
-            O.match(
-                () => E.left(FieldFailed(field, rule)),
-                (ok) => ok == true ? E.right(field) : E.left(FieldFailed(field, rule)))
-        )
-        default: return absurd(rule.tag)
+        case "required":
+            return pipe(
+                field.value,
+                O.chain(nonEmptyString),
+                O.match(
+                    () => E.left(FieldFailed(field, rule)),
+                    (ok) =>
+                        ok == true
+                            ? E.right(field)
+                            : E.left(FieldFailed(field, rule)),
+                ),
+            );
+        default:
+            return absurd(rule.tag);
     }
 }
-
 
 /**
  * Transforms a the fields of a form into a validated record of results,
  * or returns a list of fields that failed validation.
  */
-function parseForm<T extends FieldValue>(fields: Record<string, Field<T>>): E.Either<Field<T>[], Record<string, T>> {
-    const { right: ok, left: failed } = pipe(fields, Object.values, A.map(parseField<T>), A.separate)
-    if (failed.length > 0) return E.left(failed)
-    return E.right(pipe(
-        ok,
-        A.map(((field) => pipe(field.value, O.map((value) => [field.name, value] as [string, T])))),
-        A.sequence(O.Applicative),
-        O.map((x) => fromEntries(x)),
-        O.getOrElse(() => ({})),
-    ))
+function parseForm<T extends FieldValue>(
+    fields: Record<string, Field<T>>,
+): E.Either<Field<T>[], Record<string, T>> {
+    const { right: ok, left: failed } = pipe(
+        fields,
+        Object.values,
+        A.map(parseField<T>),
+        A.separate,
+    );
+    if (failed.length > 0) return E.left(failed);
+    return E.right(
+        pipe(
+            ok,
+            A.map((field) =>
+                pipe(
+                    field.value,
+                    O.map((value) => [field.name, value] as [string, T]),
+                ),
+            ),
+            A.compact,
+            fromEntries,
+        ),
+    );
 }
 
-export function makeFormEngine<T extends FieldValue>(onSubmit: (values: Record<string, T>) => void): FormEngine<T> {
+export type OnFormSubmit = <T>(values: Record<string, T>) => void;
+
+export function makeFormEngine<T extends FieldValue>(
+    onSubmit: OnFormSubmit,
+): FormEngine<T> {
     const formStore: Writable<FormStore<T>> = writable({ fields: {} });
 
     function setFormField(name: string) {
         function initField(errors = [], rules?: Rule) {
             formStore.update((form) => {
-                return { ...form, fields: { ...form.fields, [name]: { value: O.none, name, errors, rules } } };
+                return {
+                    ...form,
+                    fields: {
+                        ...form.fields,
+                        [name]: { value: O.none, name, errors, rules },
+                    },
+                };
             });
         }
         function setValue(value: T) {
             formStore.update((form) => {
                 const field = form.fields[name];
                 if (!field) {
-                    console.error(new Error(`Field ${name} does not exist`))
-                    return form
+                    console.error(new Error(`Field ${name} does not exist`));
+                    return form;
                 }
-                return { ...form, fields: { ...form.fields, [name]: { ...field, value: O.some(value) } } }
+                return {
+                    ...form,
+                    fields: {
+                        ...form.fields,
+                        [name]: { ...field, value: O.some(value) },
+                    },
+                };
             });
         }
-        return { initField, setValue }
+        return { initField, setValue };
     }
 
     function setErrors(failedFields: Field<T>[]) {
         formStore.update((form) => {
-            return pipe(failedFields, A.reduce(form, (form, field) => {
-                return { ...form, fields: { ...form.fields, [field.name]: field } }
-            }))
-        })
+            return pipe(
+                failedFields,
+                A.reduce(form, (form, field) => {
+                    return {
+                        ...form,
+                        fields: { ...form.fields, [field.name]: field },
+                    };
+                }),
+            );
+        });
     }
 
     // TODO: dependent fields, handle more than just strings
     return {
         subscribe: formStore.subscribe,
-        isValid: derived(formStore, ({ fields }) => pipe(
-            fields,
-            toEntries,
-            A.some(([_, f]) => f.errors.length > 0),
-            (x) => !x)
+        isValid: derived(formStore, ({ fields }) =>
+            pipe(
+                fields,
+                toEntries,
+                A.some(([_, f]) => f.errors.length > 0),
+                (x) => !x,
+            ),
         ),
         onSubmit() {
-            const formState = get(formStore)
-            pipe(formState.fields, parseForm, E.match(setErrors, onSubmit))
+            const formState = get(formStore);
+            console.log("Form state", formState.fields);
+            pipe(formState.fields, parseForm, E.match(setErrors, onSubmit));
         },
         addField: (field) => {
             const { initField: setField, setValue } = setFormField(field.name);
-            setField([], field.isRequired ? requiredRule(field.label || field.name) : undefined);
-            const fieldStore = derived(formStore, ({ fields }) => fields[field.name]);
+            setField(
+                [],
+                field.isRequired
+                    ? requiredRule(field.label || field.name)
+                    : undefined,
+            );
+            const fieldStore = derived(
+                formStore,
+                ({ fields }) => fields[field.name],
+            );
             const fieldValueStore: Writable<T> = {
                 subscribe(cb) {
-                    return fieldStore.subscribe((x) => pipe(
-                        x,
-                        O.fromNullable,
-                        O.chain((x) => x.value),
-                        O.map(cb)));
+                    return fieldStore.subscribe((x) =>
+                        pipe(
+                            x,
+                            O.fromNullable,
+                            O.chain((x) => x.value),
+                            O.map(cb),
+                        ),
+                    );
                 },
                 set(value) {
                     setValue(value);
@@ -157,16 +238,33 @@ export function makeFormEngine<T extends FieldValue>(onSubmit: (values: Record<s
                     formStore.update((form) => {
                         const current = form.fields[field.name];
                         if (!current) {
-                            console.error(new Error(`Field ${field.name} does not exist`))
-                            return form
+                            console.error(
+                                new Error(`Field ${field.name} does not exist`),
+                            );
+                            return form;
                         }
-                        const newValue = pipe(current.value, O.map(updater))
-                        return { ...form, fields: { ...form.fields, [field.name]: { ...current, value: newValue, errors: [] } } }
+                        const newValue = pipe(current.value, O.map(updater));
+                        return {
+                            ...form,
+                            fields: {
+                                ...form.fields,
+                                [field.name]: {
+                                    ...current,
+                                    value: newValue,
+                                    errors: [],
+                                },
+                            },
+                        };
                     });
                 },
-            }
-            return { value: fieldValueStore, errors: derived(formStore, ({ fields }) => fields[field.name]?.errors ?? []) };
-        }
-    }
-
+            };
+            return {
+                value: fieldValueStore,
+                errors: derived(
+                    formStore,
+                    ({ fields }) => fields[field.name]?.errors ?? [],
+                ),
+            };
+        },
+    };
 }
