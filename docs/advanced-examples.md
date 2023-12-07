@@ -22,3 +22,21 @@ app.fileManager.processFrontMatter(tp.config.target_file,
 
 The values the form understand and that are pressent in the frontmatter, will be populated with the values on the frontmatter.
 Then, when you submit the form, the new values will overwrite the old ones, leaving the rest untouched.
+
+## Making calling forms more convenient
+
+If you are using templater, you can make calling forms more convenient by using the following snippet:
+
+```js
+const modalForm = app.plugins.plugins.modalforms.api;
+module.exports = (formName, options) => modalForm.openForm(formName, options);
+```
+
+If you save this snippet as `openForm.js` in your templater snippets folder, then you can then call it like this from templater:
+
+
+```js
+<%*
+const result = await tp.user.openForm('example-form', { values: { size: 'large' }});
+%>
+```
