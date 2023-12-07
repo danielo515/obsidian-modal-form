@@ -56,6 +56,8 @@ export class FormModal extends Modal {
     }
     onOpen() {
         const { contentEl } = this;
+        // This class is very important for scoped styles
+        contentEl.addClass('modal-form');
         if (this.modalDefinition.customClassname)
             contentEl.addClass(this.modalDefinition.customClassname);
         contentEl.createEl("h1", { text: this.modalDefinition.title });
