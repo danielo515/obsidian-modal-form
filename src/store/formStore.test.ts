@@ -39,7 +39,7 @@ describe("Form Engine", () => {
         // Assert that the onSubmit callback is not called
         expect(onSubmitMock).not.toHaveBeenCalled();
         // Assert that the field has errors
-        expect(get(field1.errors)).toEqual(["fieldName1 is required"]);
+        expect(get(field1.errors)).toEqual(["'fieldName1' is required"]);
     });
     it("field errors should prefer field label over field name", () => {
         const onSubmitMock = jest.fn();
@@ -59,7 +59,7 @@ describe("Form Engine", () => {
         // Assert that the onSubmit callback is not called
         expect(onSubmitMock).not.toHaveBeenCalled();
         // Assert that the field has errors
-        expect(get(field1.errors)).toEqual(["Field Label is required"]);
+        expect(get(field1.errors)).toEqual(["'Field Label' is required"]);
     });
     it("Clears the errors when a value is set", () => {
         const onSubmitMock = jest.fn();
@@ -75,7 +75,7 @@ describe("Form Engine", () => {
         formEngine.triggerSubmit();
         expect(get(formEngine.isValid)).toBe(false);
         expect(onSubmitMock).not.toHaveBeenCalled();
-        expect(get(field1.errors)).toEqual(["Field Label is required"]);
+        expect(get(field1.errors)).toEqual(["'Field Label' is required"]);
         // Set the field value, clearing the errors
         field1.value.set("value");
         // Assert that the field errors are cleared
