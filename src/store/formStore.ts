@@ -100,10 +100,8 @@ function parseField<T extends FieldValue>(
                 O.chain(nonEmptyValue),
                 O.match(
                     () => E.left(FieldFailed(field, rule)),
-                    (ok) =>
-                        ok == true
-                            ? E.right(field)
-                            : E.left(FieldFailed(field, rule)),
+                    (value) =>
+                        E.right(field)
                 ),
             );
         default:
@@ -146,8 +144,9 @@ export function makeFormEngine<T extends FieldValue>(
     onSubmit: OnFormSubmit<T>,
 ): FormEngine<T> {
     const formStore: Writable<FormStore<T>> = writable({ fields: {} });
-
+    // Creates helper functions to modify the store immutably
     function setFormField(name: string) {
+        // Set the initial value of the field
         function initField(errors = [], rules?: Rule) {
             formStore.update((form) => {
                 return {
@@ -170,7 +169,7 @@ export function makeFormEngine<T extends FieldValue>(
                     ...form,
                     fields: {
                         ...form.fields,
-                        [name]: { ...field, value: O.some(value) },
+                        [name]: { ...field, value: O.some(value), errors: [] },
                     },
                 };
             });

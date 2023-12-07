@@ -3,7 +3,7 @@ import { makeFormEngine } from "./formStore";
 
 describe("Form Engine", () => {
     it("should update form fields correctly", () => {
-        const onSubmitMock = jest.fn(console.dir);
+        const onSubmitMock = jest.fn();
         const formEngine = makeFormEngine(onSubmitMock);
 
         // Add fields to the form
@@ -60,5 +60,29 @@ describe("Form Engine", () => {
         expect(onSubmitMock).not.toHaveBeenCalled();
         // Assert that the field has errors
         expect(get(field1.errors)).toEqual(["Field Label is required"]);
+    });
+    it("Clears the errors when a value is set", () => {
+        const onSubmitMock = jest.fn();
+        const formEngine = makeFormEngine(onSubmitMock);
+        // Add a field to the form
+        const field1 = formEngine.addField({
+            name: "fieldName1",
+            label: "Field Label",
+            isRequired: true,
+        });
+        // Update field value with an empty string
+        field1.value.set("");
+        formEngine.triggerSubmit();
+        expect(get(formEngine.isValid)).toBe(false);
+        expect(onSubmitMock).not.toHaveBeenCalled();
+        expect(get(field1.errors)).toEqual(["Field Label is required"]);
+        // Set the field value, clearing the errors
+        field1.value.set("value");
+        // Assert that the field errors are cleared
+        expect(get(field1.errors)).toEqual([]);
+        formEngine.triggerSubmit();
+        expect(get(formEngine.isValid)).toBe(true);
+        // Assert that the onSubmit callback is called
+        expect(onSubmitMock).toHaveBeenCalledWith({ fieldName1: "value" });
     });
 });
