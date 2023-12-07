@@ -19,6 +19,7 @@
         "no-prototype-builtins": "off",
         "@typescript-eslint/no-empty-function": "off",
         "arrow-parens": ["error", "always"],
+        "fp-ts/no-lib-imports": "error",
         "@stylistic/function-call-argument-newline": ["error", "consistent"]
     }
 }

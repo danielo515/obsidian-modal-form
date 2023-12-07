@@ -4,7 +4,6 @@ import FormResult, {
     formDataFromFormOptions,
     type ModalFormData,
 } from "./core/FormResult";
-import FormModalComponent from "./views/FormModal.svelte";
 import { exhaustiveGuard } from "./safety";
 import { get_tfiles_from_folder } from "./utils/files";
 import type { FormDefinition, FormOptions } from "./core/formDefinition";
@@ -43,17 +42,17 @@ export class FormModal extends Modal {
         });
     }
 
-    onOpen2() {
-        const { contentEl } = this;
-        const component = new FormModalComponent({
-            target: contentEl,
-            props: {
-                onSubmit: this.onSubmit,
-                formDefinition: this.modalDefinition,
-            },
-        });
-        this.svelteComponents.push(component);
-    }
+    // onOpen2() {
+    //     const { contentEl } = this;
+    //     const component = new FormModalComponent({
+    //         target: contentEl,
+    //         props: {
+    //             onSubmit: this.onSubmit,
+    //             formDefinition: this.modalDefinition,
+    //         },
+    //     });
+    //     this.svelteComponents.push(component);
+    // }
     onOpen() {
         const { contentEl } = this;
         // This class is very important for scoped styles
