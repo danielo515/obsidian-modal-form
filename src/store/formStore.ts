@@ -142,6 +142,7 @@ export type OnFormSubmit<T> = (values: Record<string, T>) => void;
 
 export function makeFormEngine<T extends FieldValue>(
     onSubmit: OnFormSubmit<T>,
+    defaultValues: Record<string, T> = {},
 ): FormEngine<T> {
     const formStore: Writable<FormStore<T>> = writable({ fields: {} });
     // Creates helper functions to modify the store immutably
@@ -153,7 +154,7 @@ export function makeFormEngine<T extends FieldValue>(
                     ...form,
                     fields: {
                         ...form.fields,
-                        [name]: { value: O.none, name, errors, rules },
+                        [name]: { value: O.fromNullable(defaultValues[name]), name, errors, rules },
                     },
                 };
             });

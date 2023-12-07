@@ -85,4 +85,47 @@ describe("Form Engine", () => {
         // Assert that the onSubmit callback is called
         expect(onSubmitMock).toHaveBeenCalledWith({ fieldName1: "value" });
     });
+
+    it("should use default values when field has not been changed, but if they change it should use the value", () => {
+        const onSubmitMock = jest.fn();
+        const defaultValues = {
+            fieldName1: "default1",
+            fieldName2: "default2",
+        };
+        const formEngine = makeFormEngine(onSubmitMock, defaultValues);
+
+        // Add fields to the form
+        const field1 = formEngine.addField({ name: "fieldName1" });
+        const field2 = formEngine.addField({ name: "fieldName2" });
+
+        // Assert that the default values are set
+        expect(get(field1.value)).toBe("default1");
+        expect(get(field2.value)).toBe("default2");
+        field1.value.set("value1");
+        formEngine.triggerSubmit();
+        // Assert that the onSubmit callback is called with the correct values
+        expect(onSubmitMock).toHaveBeenCalledWith({
+            fieldName1: "value1",
+            fieldName2: "default2",
+        });
+    });
+    it("empty values that have not been modified should not be in the result", () => {
+        const onSubmitMock = jest.fn();
+        const defaultValues = {
+            fieldName1: "default1",
+        };
+        const formEngine = makeFormEngine(onSubmitMock, defaultValues);
+
+        // Add fields to the form
+        const field1 = formEngine.addField({ name: "fieldName1" });
+        const field2 = formEngine.addField({ name: "fieldName2" });
+
+        // Assert that the default values are set
+        expect(get(field1.value)).toBe("default1");
+        formEngine.triggerSubmit();
+        // Assert that the onSubmit callback is called with the correct values
+        expect(onSubmitMock).toHaveBeenCalledWith({
+            fieldName1: "default1",
+        });
+    });
 });
