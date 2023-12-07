@@ -71,7 +71,7 @@ export class FormModal extends Modal {
             const fieldInput = definition.input;
             const type = fieldInput.type;
             const initialValue = this.formResult[definition.name];
-            const fieldStore = this.formEngine.addField({ ...definition, isRequired: fieldInput?.isRequired ?? false });
+            const fieldStore = this.formEngine.addField(definition);
             const subToErrors = (
                 input: HTMLInputElement | HTMLTextAreaElement,
             ) => {
@@ -194,6 +194,7 @@ export class FormModal extends Modal {
                                 selectedVales: this.formResult[
                                     definition.name
                                 ] as string[],
+                                onChange: fieldStore.value.set,
                                 availableOptions: options,
                                 setting: fieldBase,
                                 app: this.app,
@@ -215,6 +216,7 @@ export class FormModal extends Modal {
                                 selectedVales: this.formResult[
                                     definition.name
                                 ] as string[],
+                                onChange: fieldStore.value.set,
                                 availableOptions: options,
                                 setting: fieldBase,
                                 app: this.app,

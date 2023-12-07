@@ -68,7 +68,7 @@ export const InputDataviewSourceSchema = object({
     type: literal("dataview"),
     query: nonEmptyString("dataview query"),
 });
-export const InputBasicSchema = object({ type: InputBasicTypeSchema, isRequired: optional(boolean()) });
+export const InputBasicSchema = object({ type: InputBasicTypeSchema, });
 export const InputSelectFixedSchema = object({
     type: literal("select"),
     source: literal("fixed"),
@@ -134,6 +134,7 @@ export const FieldDefinitionSchema = object({
     name: nonEmptyString("field name"),
     label: optional(string()),
     description: string(),
+    isRequired: optional(boolean()),
     input: InputTypeSchema,
 });
 /**
