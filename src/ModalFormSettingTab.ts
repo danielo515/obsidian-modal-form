@@ -19,7 +19,7 @@ export class ModalFormSettingTab extends PluginSettingTab {
         new Setting(containerEl)
             .setName("Editor position")
             .setDesc("Where the form editor will be opened. In mobile it will always be main view.")
-            .addDropdown(component => {
+            .addDropdown((component) => {
                 component
                     .addOptions({
                         left: "Left",

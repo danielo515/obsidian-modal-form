@@ -118,7 +118,7 @@ describe("Form Engine", () => {
 
         // Add fields to the form
         const field1 = formEngine.addField({ name: "fieldName1" });
-        const field2 = formEngine.addField({ name: "fieldName2" });
+        formEngine.addField({ name: "fieldName2" });
 
         // Assert that the default values are set
         expect(get(field1.value)).toBe("default1");

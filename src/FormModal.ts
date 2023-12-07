@@ -37,6 +37,7 @@ export class FormModal extends Modal {
             this.onSubmit(new FormResult(result, "ok"));
             this.close();
         }, this.initialFormValues);
+        this.formEngine.subscribe(console.log)
     }
 
     // onOpen2() {
@@ -71,7 +72,7 @@ export class FormModal extends Modal {
             const subToErrors = (
                 input: HTMLInputElement | HTMLTextAreaElement,
             ) => {
-                const notify = throttle((msg: string) => log_notice('The form has errors', msg), 2000)
+                const notify = throttle((msg: string) => log_notice('⚠️ The form has errors ⚠️', msg, 'notice-warning'), 2000)
                 this.subscriptions.push(
                     fieldStore.errors.subscribe((errs) => {
                         errs.forEach(notify)
@@ -148,6 +149,7 @@ export class FormModal extends Modal {
                             },
                             fieldInput.folder,
                         );
+                        subToErrors(element.inputEl);
                         element.onChange(fieldStore.value.set);
                     });
                 case "slider":
@@ -223,6 +225,7 @@ export class FormModal extends Modal {
                     return fieldBase.addText((element) => {
                         new DataviewSuggest(element.inputEl, query, this.app);
                         element.onChange(fieldStore.value.set);
+                        subToErrors(element.inputEl);
                     });
                 }
                 case "select":
