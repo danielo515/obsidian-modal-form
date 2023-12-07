@@ -91,3 +91,17 @@ export function trySchemas<S extends BaseSchema>(schemas: NonEmptyArray<S>, opti
         concatAll(EFunSemigroup)(parseC(first, options)),
     )
 }
+
+export function throttle<T extends unknown[], V>(cb: (...args: [...T]) => V, timeout?: number): (...args: [...T]) => V | undefined;
+export function throttle(fn: (...args: unknown[]) => unknown, ms = 100) {
+    let lastCall = 0;
+    return function (...args: unknown[]) {
+        const now = Date.now();
+        if (now - lastCall < ms) {
+            lastCall = now;//reset the last call time,so it needs cooldown time 
+            return;
+        }
+        lastCall = now;
+        return fn(...args);
+    };
+}

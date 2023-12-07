@@ -14,7 +14,7 @@ import {
     executeSandboxedDvQuery,
     sandboxedDvQuery,
 } from "./suggesters/SafeDataviewQuery";
-import { A, E, pipe } from "@std";
+import { A, E, pipe, throttle } from "@std";
 import { log_error, log_notice } from "./utils/Log";
 import { FieldValue, FormEngine, makeFormEngine } from "./store/formStore";
 
@@ -32,7 +32,7 @@ export class FormModal extends Modal {
         options?: FormOptions,
     ) {
         super(app);
-        this.initialFormValues = options?.values ? formDataFromFormDefaults(modalDefinition.fields, options.values) : {};
+        this.initialFormValues = formDataFromFormDefaults(modalDefinition.fields, options?.values ?? {})
         this.formEngine = makeFormEngine((result) => {
             this.onSubmit(new FormResult(result, "ok"));
             this.close();
@@ -71,9 +71,10 @@ export class FormModal extends Modal {
             const subToErrors = (
                 input: HTMLInputElement | HTMLTextAreaElement,
             ) => {
+                const notify = throttle((msg: string) => log_notice('The form has errors', msg), 2000)
                 this.subscriptions.push(
                     fieldStore.errors.subscribe((errs) => {
-                        errs.forEach((msg) => log_notice('The form has errors', msg))
+                        errs.forEach(notify)
                         input.setCustomValidity(errs.join("\n"));
                     }),
                 );
