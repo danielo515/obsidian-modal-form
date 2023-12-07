@@ -12,7 +12,7 @@ import { Option } from "fp-ts/Option";
 
 type Rule = { tag: "required"; message: string }; //| { tag: 'minLength', length: number, message: string } | { tag: 'maxLength', length: number, message: string } | { tag: 'pattern', pattern: RegExp, message: string };
 function requiredRule(fieldName: string, message?: string): Rule {
-    return { tag: "required", message: message ?? `${fieldName} is required` };
+    return { tag: "required", message: message ?? `'${fieldName}' is required` };
 }
 export type FieldValue = string | number | boolean | string[];
 type Field<T extends FieldValue> = Readonly<{

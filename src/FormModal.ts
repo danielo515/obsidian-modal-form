@@ -17,6 +17,7 @@ import {
 import { A, E, pipe, throttle } from "@std";
 import { log_error, log_notice } from "./utils/Log";
 import { FieldValue, FormEngine, makeFormEngine } from "./store/formStore";
+import { Writable } from "svelte/store";
 
 export type SubmitFn = (formResult: FormResult) => void;
 
@@ -75,6 +76,7 @@ export class FormModal extends Modal {
                 const notify = throttle((msg: string) => log_notice('⚠️ The form has errors ⚠️', msg, 'notice-warning'), 2000)
                 this.subscriptions.push(
                     fieldStore.errors.subscribe((errs) => {
+                        console.log('errors', errs)
                         errs.forEach(notify)
                         input.setCustomValidity(errs.join("\n"));
                     }),
@@ -184,15 +186,14 @@ export class FormModal extends Modal {
                                     sandboxedDvQuery(fieldInput.query),
                                     this.app,
                                 );
+                    fieldStore.value.set(initialValue ?? [])
                     this.svelteComponents.push(
                         new MultiSelect({
                             target: fieldBase.controlEl,
                             props: {
-                                selectedVales: this.initialFormValues[
-                                    definition.name
-                                ] as string[] ?? [],
-                                onChange: fieldStore.value.set,
+                                values: fieldStore.value as Writable<string[]>,
                                 availableOptions: options,
+                                errors: fieldStore.errors,
                                 setting: fieldBase,
                                 app: this.app,
                             },
@@ -204,16 +205,15 @@ export class FormModal extends Modal {
                     const options = Object.keys(
                         this.app.metadataCache.getTags(),
                     ).map((tag) => tag.slice(1)); // remove the #
+                    fieldStore.value.set(initialValue ?? [])
                     this.svelteComponents.push(
                         new MultiSelect({
                             target: fieldBase.controlEl,
                             props: {
-                                selectedVales: this.initialFormValues[
-                                    definition.name
-                                ] as string[] ?? [],
-                                onChange: fieldStore.value.set,
+                                values: fieldStore.value as Writable<string[]>,
                                 availableOptions: options,
                                 setting: fieldBase,
+                                errors: fieldStore.errors,
                                 app: this.app,
                             },
                         }),

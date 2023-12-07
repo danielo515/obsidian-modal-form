@@ -2,10 +2,11 @@
     import type { App, Setting } from "obsidian";
     import { MultiSuggest } from "../../suggesters/MultiSuggest";
     import { A, pipe } from "@std";
+    import { Readable, Writable } from "svelte/store";
 
-    export let selectedVales: string[] = [];
     export let availableOptions: string[] = [];
-    export let onChange: (values: string[]) => void;
+    export let errors: Readable<string[]>;
+    export let values: Writable<string[]>;
     // We take the setting to make it consistent with the other input components
     export let setting: Setting;
     export let app: App;
@@ -14,26 +15,29 @@
         alignItems: "baseline",
     });
 
-    let remainingOptions = new Set(availableOptions);
+    $: remainingOptions = new Set(availableOptions);
 
     function createInput(element: HTMLInputElement) {
         new MultiSuggest(
             element,
             remainingOptions,
             (selected) => {
-                selectedVales = [...selectedVales, selected];
                 remainingOptions.delete(selected);
-                onChange(selectedVales);
+                remainingOptions = remainingOptions;
+                values.update((x) => [...x, selected]);
             },
             app,
         );
     }
     function removeValue(value: string) {
-        selectedVales = pipe(
-            selectedVales,
-            A.filter((x) => x == value),
-        );
         remainingOptions.add(value);
+        remainingOptions = remainingOptions;
+        values.update((xs) =>
+            pipe(
+                xs,
+                A.filter((x) => x !== value),
+            ),
+        );
     }
 </script>
 
@@ -43,9 +47,13 @@
         type="text"
         class="form-control"
         placeholder="Select"
+        class:invalid={$errors.length > 0}
     />
+    {#each $errors as error}
+        <span class="invalid">{error}</span>
+    {/each}
     <div class="badges">
-        {#each selectedVales as value}
+        {#each $values as value}
             <div class="badge">
                 <span>{value}</span>
                 <button on:click={() => removeValue(value)}>
@@ -96,7 +104,10 @@
         color: var(--pill-color);
         cursor: var(--cursor);
         font-weight: var(--pill-weight);
-        padding: var(--pill-padding-y);
+        padding-top: var(--pill-padding-y);
+        padding-bottom: var(--pill-padding-y);
+        padding-left: var(--pill-padding-x);
+        padding-right: var(--pill-padding-x);
         line-height: 1;
         max-width: 100%;
         gap: var(--size-4-2);
