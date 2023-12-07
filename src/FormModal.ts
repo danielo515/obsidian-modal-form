@@ -1,9 +1,9 @@
 import { App, Modal, Platform, Setting } from "obsidian";
 import MultiSelect from "./views/components/MultiSelect.svelte";
 import FormResult, {
-    formDataFromFormOptions,
     type ModalFormData,
 } from "./core/FormResult";
+import { formDataFromFormDefaults } from './core/formDataFromFormDefaults';
 import { exhaustiveGuard } from "./safety";
 import { get_tfiles_from_folder } from "./utils/files";
 import type { FormDefinition, FormOptions } from "./core/formDefinition";
@@ -32,7 +32,7 @@ export class FormModal extends Modal {
         options?: FormOptions,
     ) {
         super(app);
-        this.initialFormValues = options?.values ? formDataFromFormOptions(options.values) : {};
+        this.initialFormValues = options?.values ? formDataFromFormDefaults(modalDefinition.fields, options.values) : {};
         this.formEngine = makeFormEngine((result) => {
             this.onSubmit(new FormResult(result, "ok"));
             this.close();

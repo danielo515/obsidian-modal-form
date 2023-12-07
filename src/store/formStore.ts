@@ -205,7 +205,6 @@ export function makeFormEngine<T extends FieldValue>(
         ),
         triggerSubmit() {
             const formState = get(formStore);
-            console.log("Form state", formState.fields);
             pipe(formState.fields, parseForm, E.match(setErrors, onSubmit));
         },
         addField: (field) => {

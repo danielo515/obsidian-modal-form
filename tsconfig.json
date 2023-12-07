@@ -40,7 +40,25 @@
                     },
                     "NEA": {
                         "importPath": "fp-ts/NonEmptyArray"
-                    }
+                    },
+                    "E": {
+                        "importPath": "fp-ts/Either"
+                    },
+                    "A": {
+                        "importPath": "fp-ts/Array"
+                    },
+                    "T": {
+                        "importPath": "fp-ts/Task"
+                    },
+                    "TE": {
+                        "importPath": "fp-ts/TaskEither"
+                    },
+                    "R": {
+                        "importPath": "fp-ts/Record"
+                    },
+                    "RA": {
+                        "importPath": "fp-ts/ReadonlyArray"
+                    },
                 }
             }
         ]
