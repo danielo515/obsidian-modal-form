@@ -1,5 +1,5 @@
 import { pipe as p, flow as f } from "fp-ts/function";
-import { partitionMap, findFirst, findFirstMap, partition, map as mapArr, filter } from "fp-ts/Array";
+import { partitionMap, findFirst, findFirstMap, partition, map as mapArr, filter, compact } from "fp-ts/Array";
 import { map as mapO, getOrElse as getOrElseOpt, some, none, fromNullable as fromNullableOpt } from 'fp-ts/Option'
 import { isLeft, isRight, tryCatchK, map, getOrElse, fromNullable, right, left, mapLeft, Either, bimap, tryCatch, flatMap } from "fp-ts/Either";
 import { BaseSchema, Output, ValiError, parse as parseV } from "valibot";
@@ -12,6 +12,7 @@ export const pipe = p
 export const A = {
     partitionMap,
     partition,
+    compact,
     findFirst,
     findFirstMap,
     map: mapArr,
@@ -89,4 +90,18 @@ export function trySchemas<S extends BaseSchema>(schemas: NonEmptyArray<S>, opti
         A.map((schema) => parseC(schema, options)),
         concatAll(EFunSemigroup)(parseC(first, options)),
     )
+}
+
+export function throttle<T extends unknown[], V>(cb: (...args: [...T]) => V, timeout?: number): (...args: [...T]) => V | undefined;
+export function throttle(fn: (...args: unknown[]) => unknown, ms = 100) {
+    let lastCall = 0;
+    return function (...args: unknown[]) {
+        const now = Date.now();
+        if (now - lastCall < ms) {
+            lastCall = now;//reset the last call time,so it needs cooldown time 
+            return;
+        }
+        lastCall = now;
+        return fn(...args);
+    };
 }

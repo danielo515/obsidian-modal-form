@@ -74,3 +74,14 @@ If your plugin does not need CSS, delete this file.
 .modal-form.gap2 {
     gap: 1rem;
 }
+.modal-form input:invalid,
+.modal-form .invalid {
+    border-color: var(--text-error);
+    color: var(--text-error);
+}
+.notice-warning {
+    color: var(--text-warning);
+}
+.notice-error {
+    color: var(--text-error);
+}

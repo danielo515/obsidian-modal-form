@@ -12,6 +12,8 @@
     import InputFolder from "./components/InputFolder.svelte";
     import { log_error } from "src/utils/Log";
     import { ModalFormError } from "src/utils/ModalFormError";
+    import FormRow from "./components/FormRow.svelte";
+    import Toggle from "./components/Toggle.svelte";
 
     export let definition: EditableFormDefinition = {
         title: "",
@@ -107,6 +109,7 @@
     };
     const handlePreview = () => {
         if (!isValidFormDefinition(definition)) return;
+        console.log("preview of", definition);
         onPreview(definition);
     };
 </script>
@@ -227,6 +230,17 @@
                             />
                         </div>
 
+                        {#if ["text", "email", "tel", "number", "note", "tag", "dataview", "multiselect"].includes(field.input.type)}
+                            <FormRow
+                                label="Make required"
+                                id={`required_${index}`}
+                            >
+                                <Toggle
+                                    bind:checked={field.isRequired}
+                                    tabindex={index}
+                                />
+                            </FormRow>
+                        {/if}
                         <div class="flex column gap1">
                             <label
                                 for={delete_id}

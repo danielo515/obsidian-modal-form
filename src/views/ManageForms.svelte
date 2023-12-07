@@ -109,7 +109,7 @@
                     {#each form.fieldErrors as error}
                         <div class="flex-row">
                             {#if E.isLeft(error)}
-                                <pre><code>
+                                <pre class="invalid-field-json"><code>
                                     {JSON.stringify(error.left.field, null, 1)}
                                 </code></pre>
                                 <KeyValue key={error.left.path}>
@@ -161,5 +161,9 @@
     }
     pre {
         white-space: pre-wrap;
+    }
+    .invalid-field-json {
+        background-color: var(--background-secondary);
+        margin: 0;
     }
 </style>

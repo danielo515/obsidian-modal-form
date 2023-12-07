@@ -8,8 +8,9 @@ const jestConfig: JestConfigWithTsJest = {
     moduleNameMapper: {
         '^@std$': '<rootDir>/src/std/$1',
     },
+    transformIgnorePatterns: ['node_modules/(?!(svelte)/)'],
     transform: {
-        '^.+\\.tsx?$': [
+        '^.+\\.(t|j)sx?$': [
             'ts-jest',
             {
                 useESM: true,

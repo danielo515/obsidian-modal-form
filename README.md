@@ -222,6 +222,9 @@ const result = await modalForm.openForm({
 
 You can make it smaller by removing some of the optional fields like description or label, but I really encourage you to define them all.
 
+### Tips and tricks
+- [How to make opening the forms more convenient](docs/advanced-examples.md#making-calling-forms-more-convenient)
+
 ## Installing the plugin
 
 You can install the plugin directly from the Obsidian plugin store or through [BRAT](obsidian://show-plugin?id=obsidian42-brat)

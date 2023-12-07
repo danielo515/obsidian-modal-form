@@ -1,5 +1,4 @@
 import {
-    FieldTypeReadable,
     isDataViewSource,
     isInputNoteFromFolder,
     isInputSelectFixed,

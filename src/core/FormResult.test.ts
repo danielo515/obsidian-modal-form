@@ -67,7 +67,7 @@ isEmployed:: true`;
             const expectedOutput = `name:: John Doe
 age:: 30`;
             expect(
-                result.asDataviewProperties({ pick: ["name", "age"] })
+                result.asDataviewProperties({ pick: ["name", "age"] }),
             ).toEqual(expectedOutput);
         });
 
@@ -76,7 +76,9 @@ age:: 30`;
             const expectedOutput = `name:: John Doe
 age:: 30`;
             expect(
-                result.asDataviewProperties({ omit: ["hobbies", "isEmployed"] })
+                result.asDataviewProperties({
+                    omit: ["hobbies", "isEmployed"],
+                }),
             ).toEqual(expectedOutput);
         });
 
@@ -88,7 +90,7 @@ age:: 30`;
                 result.asDataviewProperties({
                     pick: ["name", "age"],
                     omit: ["hobbies", "isEmployed"],
-                })
+                }),
             ).toEqual(expectedOutput);
         });
 
@@ -100,7 +102,7 @@ age:: 30`;
                 result.asDataviewProperties({
                     omit: ["hobbies", "isEmployed"],
                     pick: ["name", "age"],
-                })
+                }),
             ).toEqual(expectedOutput);
         });
     });
@@ -110,7 +112,7 @@ age:: 30`;
             const expectedOutput = `name: John Doe
 age: 30`;
             expect(
-                result.asFrontmatterString({ pick: ["name", "age"] }).trim()
+                result.asFrontmatterString({ pick: ["name", "age"] }).trim(),
             ).toEqual(expectedOutput);
         });
 
@@ -121,7 +123,7 @@ age: 30`;
             expect(
                 result
                     .asFrontmatterString({ omit: ["hobbies", "isEmployed"] })
-                    .trim()
+                    .trim(),
             ).toEqual(expectedOutput);
         });
 
@@ -135,7 +137,7 @@ age: 30`;
                         pick: ["name", "age"],
                         omit: ["hobbies", "isEmployed"],
                     })
-                    .trim()
+                    .trim(),
             ).toEqual(expectedOutput);
         });
 
@@ -149,7 +151,7 @@ age: 30`;
                         omit: ["hobbies", "isEmployed"],
                         pick: ["name", "age"],
                     })
-                    .trim()
+                    .trim(),
             ).toEqual(expectedOutput);
         });
     });

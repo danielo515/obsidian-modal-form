@@ -1,39 +1,19 @@
 import { objectSelect } from './objectSelect';
 import { stringifyYaml } from "obsidian";
-import { log_error } from "../utils/Log";
-import { ModalFormError } from "../utils/ModalFormError";
 
 type ResultStatus = "ok" | "cancelled";
-
+export type Val = string | boolean | number | string[]
 // We don't use FormData because that is builtin browser API
-export type ModalFormData = { [key: string]: string | boolean | number | string[] };
+export type ModalFormData = { [key: string]: Val };
 
-function isPrimitive(value: unknown): value is string | boolean | number {
+export function isPrimitive(value: unknown): value is string | boolean | number {
     return typeof value === 'string' || typeof value === 'boolean' || typeof value === 'number';
 }
 
-function isPrimitiveArray(value: unknown): value is string[] {
+export function isPrimitiveArray(value: unknown): value is string[] {
     return Array.isArray(value) && value.every(isPrimitive)
 }
 
-
-export function formDataFromFormOptions(values: Record<string, unknown>) {
-    const result: ModalFormData = {};
-    const invalidKeys = []
-    for (const [key, value] of Object.entries(values)) {
-        if (Array.isArray(value) && isPrimitiveArray(value)) {
-            result[key] = value;
-        } else if (isPrimitive(value)) {
-            result[key] = value;
-        } else {
-            invalidKeys.push(key)
-        }
-    }
-    if (invalidKeys.length > 0) {
-        log_error(new ModalFormError(`Invalid keys in form options: ${invalidKeys.join(', ')}`))
-    }
-    return result;
-}
 
 export default class FormResult {
     constructor(private data: ModalFormData, public status: ResultStatus) { }
