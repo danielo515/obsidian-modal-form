@@ -21,8 +21,8 @@ import { FieldValue, FormEngine, makeFormEngine } from "./store/formStore";
 export type SubmitFn = (formResult: FormResult) => void;
 
 export class FormModal extends Modal {
-    formResult: ModalFormData;
     svelteComponents: SvelteComponent[] = [];
+    initialFormValues: ModalFormData
     subscriptions: (() => void)[] = [];
     formEngine: FormEngine<FieldValue>;
     constructor(
@@ -32,14 +32,11 @@ export class FormModal extends Modal {
         options?: FormOptions,
     ) {
         super(app);
-        this.formResult = {};
-        if (options?.values) {
-            this.formResult = formDataFromFormOptions(options.values);
-        }
+        this.initialFormValues = options?.values ? formDataFromFormOptions(options.values) : {};
         this.formEngine = makeFormEngine((result) => {
             this.onSubmit(new FormResult(result, "ok"));
             this.close();
-        });
+        }, this.initialFormValues);
     }
 
     // onOpen2() {
@@ -69,7 +66,7 @@ export class FormModal extends Modal {
             // and it is no specific enough when you use it in a switch statement.
             const fieldInput = definition.input;
             const type = fieldInput.type;
-            const initialValue = this.formResult[definition.name];
+            const initialValue = this.initialFormValues[definition.name];
             const fieldStore = this.formEngine.addField(definition);
             const subToErrors = (
                 input: HTMLInputElement | HTMLTextAreaElement,
@@ -164,8 +161,6 @@ export class FormModal extends Modal {
                         slider.onChange(fieldStore.value.set);
                     });
                 case "multiselect": {
-                    this.formResult[definition.name] =
-                        this.formResult[definition.name] || [];
                     const source = fieldInput.source;
                     const options =
                         source == "fixed"
@@ -190,9 +185,9 @@ export class FormModal extends Modal {
                         new MultiSelect({
                             target: fieldBase.controlEl,
                             props: {
-                                selectedVales: this.formResult[
+                                selectedVales: this.initialFormValues[
                                     definition.name
-                                ] as string[],
+                                ] as string[] ?? [],
                                 onChange: fieldStore.value.set,
                                 availableOptions: options,
                                 setting: fieldBase,
@@ -206,15 +201,13 @@ export class FormModal extends Modal {
                     const options = Object.keys(
                         this.app.metadataCache.getTags(),
                     ).map((tag) => tag.slice(1)); // remove the #
-                    this.formResult[definition.name] =
-                        this.formResult[definition.name] || [];
                     this.svelteComponents.push(
                         new MultiSelect({
                             target: fieldBase.controlEl,
                             props: {
-                                selectedVales: this.formResult[
+                                selectedVales: this.initialFormValues[
                                     definition.name
-                                ] as string[],
+                                ] as string[] ?? [],
                                 onChange: fieldStore.value.set,
                                 availableOptions: options,
                                 setting: fieldBase,
@@ -243,8 +236,7 @@ export class FormModal extends Modal {
                                             option.label,
                                         );
                                     });
-                                    this.formResult[definition.name] =
-                                        element.getValue();
+                                    fieldStore.value.set(element.getValue());
                                     element.onChange(fieldStore.value.set);
                                 });
 
@@ -277,8 +269,7 @@ export class FormModal extends Modal {
                                             element.addOptions(options);
                                         }),
                                     );
-                                    this.formResult[definition.name] =
-                                        element.getValue();
+                                    fieldStore.value.set(element.getValue());
                                     element.onChange(fieldStore.value.set);
                                 });
                             default:
@@ -313,6 +304,6 @@ export class FormModal extends Modal {
         this.svelteComponents.forEach((component) => component.$destroy());
         this.subscriptions.forEach((subscription) => subscription());
         contentEl.empty();
-        this.formResult = {};
+        this.initialFormValues = {}
     }
 }
