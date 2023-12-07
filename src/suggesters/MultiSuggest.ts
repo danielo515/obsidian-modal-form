@@ -22,8 +22,7 @@ export class MultiSuggest extends AbstractInputSuggest<string> {
     selectSuggestion(content: string, evt: MouseEvent | KeyboardEvent): void {
         this.onSelectCb(content);
         this.inputEl.value = "";
-        // this.inputEl.trigger("blur");
-        this.inputEl.blur()
         this.close();
+        this.inputEl.focus();
     }
 }
