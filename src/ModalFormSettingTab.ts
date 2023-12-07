@@ -13,6 +13,7 @@ export class ModalFormSettingTab extends PluginSettingTab {
     async display() {
         const { containerEl, plugin } = this;
         containerEl.empty();
+        containerEl.createEl('a', { text: 'Modal Form documentation', cls: 'nav-link', href: 'https://github.com/danielo515/obsidian-modal-form' })
 
         const settings = await plugin.getSettings();
 
@@ -25,7 +26,6 @@ export class ModalFormSettingTab extends PluginSettingTab {
                         left: "Left",
                         right: "Right",
                         mainView: "Main View",
-                        modal: "Modal",
                     })
                     .setValue(settings.editorPosition)
                     .onChange(async (value) => {
@@ -34,22 +34,5 @@ export class ModalFormSettingTab extends PluginSettingTab {
                         }
                     });
             })
-
-        // containerEl.createEl("h1", { text: "Form definitions" });
-        // settings.formDefinitions.forEach((formDefinition) => {
-        // 	new Setting(containerEl)
-        // 		.setName(formDefinition.title)
-        // 		.addButton((button) =>
-        // 			button.setButtonText("Delete").onClick(async () => {
-        // 				const index =
-        // 					settings.formDefinitions.indexOf(formDefinition);
-        // 				if (index > -1) {
-        // 					settings.formDefinitions.splice(index, 1);
-        // 				}
-        // 				await this.plugin.saveSettings();
-        // 				this.display()
-        // 			})
-        // 		);
-        // });
     }
 }
