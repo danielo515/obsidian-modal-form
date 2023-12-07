@@ -1,10 +1,11 @@
 <script lang="ts">
     import type { App, Setting } from "obsidian";
-    import { remove_inplace } from "../../utils/array";
     import { MultiSuggest } from "../../suggesters/MultiSuggest";
+    import { A, pipe } from "@std";
 
     export let selectedVales: string[] = [];
     export let availableOptions: string[] = [];
+    export let onChange: (values: string[]) => void;
     // We take the setting to make it consistent with the other input components
     export let setting: Setting;
     export let app: App;
@@ -20,16 +21,18 @@
             element,
             remainingOptions,
             (selected) => {
-                selectedVales.push(selected);
+                selectedVales = [...selectedVales, selected];
                 remainingOptions.delete(selected);
-                selectedVales = selectedVales;
+                onChange(selectedVales);
             },
-            app
+            app,
         );
     }
-    function reomoveValue(value: string) {
-        remove_inplace(selectedVales, value);
-        selectedVales = selectedVales;
+    function removeValue(value: string) {
+        selectedVales = pipe(
+            selectedVales,
+            A.filter((x) => x == value),
+        );
         remainingOptions.add(value);
     }
 </script>
@@ -45,7 +48,7 @@
         {#each selectedVales as value}
             <div class="badge">
                 <span>{value}</span>
-                <button on:click={() => reomoveValue(value)}>
+                <button on:click={() => removeValue(value)}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
