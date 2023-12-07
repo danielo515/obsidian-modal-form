@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.28.0](https://github.com/danielo515/obsidian-modal-form/compare/1.27.1...1.28.0) (2023-12-07)
+
+
+### Features
+
+* **API:** example form takes options ([d204786](https://github.com/danielo515/obsidian-modal-form/commit/d204786fb088924c6fbecb7ec8f2ffefc365267c))
+* **core:** throttle error messages ([60157bd](https://github.com/danielo515/obsidian-modal-form/commit/60157bd1a8b63eeaa8fdf7d02fc31d7fe6936af7))
+* document how to make more convenient opening forms ([0c70eae](https://github.com/danielo515/obsidian-modal-form/commit/0c70eaeb633ff9e16953819c252d8149428cafdd)), closes [#145](https://github.com/danielo515/obsidian-modal-form/issues/145)
+* **form-editor:** UI to set fields as required ([c77c340](https://github.com/danielo515/obsidian-modal-form/commit/c77c34017096368b9ab7f6448bb0576826545b35))
+* **form-runtime:** the form is now reactive ([ad82789](https://github.com/danielo515/obsidian-modal-form/commit/ad827897712376c1640ccd7cd0e4648c3d1b6f5c))
+* **validation:** better UI for notify errors of form ([2a609ae](https://github.com/danielo515/obsidian-modal-form/commit/2a609ae2b434e9db13b0d3f6909cae98fab380a4))
+
+
+### Bug Fixes
+
+* add a link to the docs in the settings ([704aa99](https://github.com/danielo515/obsidian-modal-form/commit/704aa99805c1dd36f7e5f16df8d12ec94e3a1022)), closes [#58](https://github.com/danielo515/obsidian-modal-form/issues/58)
+* functional form engine ([ab99b0e](https://github.com/danielo515/obsidian-modal-form/commit/ab99b0e1c211ad94683b6bafd19bf58edc946c74))
+* **input:** multi-select refocus on enter ([6f8d2ca](https://github.com/danielo515/obsidian-modal-form/commit/6f8d2cadfde5d1df6882e7f12bafd843a697ce94))
+* preettier invalid form view in form manager ([b256a1a](https://github.com/danielo515/obsidian-modal-form/commit/b256a1a9d831f935f7c3ea1b191eae49cd567416))
+
 ## [1.27.1](https://github.com/danielo515/obsidian-modal-form/compare/1.27.0...1.27.1) (2023-11-23)
 
 
