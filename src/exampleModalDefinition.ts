@@ -41,6 +41,11 @@ export const exampleModalDefinition: FormDefinition = {
             label: "Favorite book",
             description: "Pick one",
             input: { type: "note", folder: "Books" },
+        }, {
+            name: "folder",
+            label: "The destination folder",
+            description: "It offers auto-completion to existing folders",
+            input: { type: "folder" },
         },
         {
             name: "multi_example",

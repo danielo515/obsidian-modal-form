@@ -18,6 +18,7 @@ import { A, E, pipe, throttle } from "@std";
 import { log_error, log_notice } from "./utils/Log";
 import { FieldValue, FormEngine, makeFormEngine } from "./store/formStore";
 import { Writable } from "svelte/store";
+import { FolderSuggest } from "./suggesters/suggestFolder";
 
 export type SubmitFn = (formResult: FormResult) => void;
 
@@ -150,6 +151,15 @@ export class FormModal extends Modal {
                                 },
                             },
                             fieldInput.folder,
+                        );
+                        subToErrors(element.inputEl);
+                        element.onChange(fieldStore.value.set);
+                    });
+                case "folder":
+                    return fieldBase.addText((element) => {
+                        new FolderSuggest(
+                            element.inputEl,
+                            this.app,
                         );
                         subToErrors(element.inputEl);
                         element.onChange(fieldStore.value.set);

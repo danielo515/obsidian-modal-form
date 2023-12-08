@@ -64,6 +64,10 @@ export const InputNoteFromFolderSchema = object({
     type: literal("note"),
     folder: nonEmptyString("folder name"),
 });
+export const InputFolderSchema = object({
+    type: literal("folder"),
+    // TODO: allow exclude option
+});
 export const InputDataviewSourceSchema = object({
     type: literal("dataview"),
     query: nonEmptyString("dataview query"),
@@ -102,6 +106,7 @@ export const MultiselectSchema = union([
 export const InputTypeSchema = union([
     InputBasicSchema,
     InputNoteFromFolderSchema,
+    InputFolderSchema,
     InputSliderSchema,
     InputTagSchema,
     SelectFromNotesSchema,
@@ -123,6 +128,7 @@ export const InputTypeToParserMap: Record<
     textarea: parseC(InputBasicSchema),
     toggle: parseC(InputBasicSchema),
     note: parseC(InputNoteFromFolderSchema),
+    folder: parseC(InputFolderSchema),
     slider: parseC(InputSliderSchema),
     tag: parseC(InputTagSchema),
     select: trySchemas([SelectFromNotesSchema, InputSelectFixedSchema]),

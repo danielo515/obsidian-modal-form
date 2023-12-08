@@ -37,6 +37,7 @@ export const FieldTypeReadable: Record<AllFieldTypes, string> = {
     textarea: "Text area",
     toggle: "Toggle",
     note: "Note",
+    folder: "Folder",
     slider: "Slider",
     select: "Select",
     dataview: "Dataview",
