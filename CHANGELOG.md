@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.0](https://github.com/danielo515/obsidian-modal-form/compare/1.28.0...1.29.0) (2023-12-08)
+
+
+### Features
+
+* **input:** new input folder suggester ([2102619](https://github.com/danielo515/obsidian-modal-form/commit/2102619376c5e3483815f73bfbd5a78a2f3ed65b)), closes [#148](https://github.com/danielo515/obsidian-modal-form/issues/148)
+
 ## [1.28.0](https://github.com/danielo515/obsidian-modal-form/compare/1.27.1...1.28.0) (2023-12-07)
 
 
