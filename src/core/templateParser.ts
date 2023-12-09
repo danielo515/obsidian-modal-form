@@ -18,6 +18,11 @@ function TemplateVariable(value: string): TemplateVariable {
 
 // === Parsers ===
 type TokenParser = P.Parser<string, Token>
+// A parser that returns an empty string when it reaches the end of the input.
+// required to keep the same type as the other parsers.
+const EofStr = pipe(
+    P.eof<string>(),
+    P.map(() => ''))
 const open = S.fold([S.string('{{'), S.spaces])
 const close = P.expected(S.fold([S.spaces, S.string('}}')]), 'closing variable tag: "}}"')
 const identifier = S.many1(C.alphanum)
@@ -27,9 +32,6 @@ const templateIdentifier: TokenParser = pipe(
     P.map(TemplateVariable),
 )
 
-const EofStr = pipe(
-    P.eof<string>(),
-    P.map(() => ''))
 
 export const OpenOrEof = P.either(open, () => EofStr)
 export const anythingUntilOpenOrEOF = P.many1Till(P.item<string>(), P.lookAhead(OpenOrEof))
