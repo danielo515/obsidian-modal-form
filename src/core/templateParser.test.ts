@@ -1,4 +1,4 @@
-import { parseTemplate, test } from "./templateParser";
+import { parseTemplate, anythingUntilOpenOrEOF } from "./templateParser";
 import * as S from 'parser-ts/string'
 import * as E from "fp-ts/Either";
 import { pipe } from "@std";
@@ -12,7 +12,7 @@ const logError = E.mapLeft(console.log);
 describe("parseTemplate", () => {
     it.skip("test", () => {
         pipe(
-            S.run("al{nam{{e}}")(test),
+            S.run("al{nam{{e}}")(anythingUntilOpenOrEOF),
             inspect)
     });
     it("should parse a single identifier template", () => {
@@ -78,8 +78,8 @@ describe("parseTemplate", () => {
     it("should return a parse error for an invalid template", () => {
         const template = "Hey, {{name}!";
         const result = parseTemplate(template);
-        // inspect(result);
-        E.mapLeft(console.log)(result);
+        inspect(result);
+        logError(result);
         expect(E.isLeft(result)).toBe(true);
         if (E.isLeft(result)) {
             expect(result.left).toBeDefined();

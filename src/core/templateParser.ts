@@ -19,23 +19,23 @@ function TemplateVariable(value: string): TemplateVariable {
 // === Parsers ===
 type TokenParser = P.Parser<string, Token>
 const open = S.fold([S.string('{{'), S.spaces])
-const close = S.fold([S.spaces, S.string('}}')])
+const close = P.expected(S.fold([S.spaces, S.string('}}')]), 'closing variable tag: "}}"')
 const identifier = S.many1(C.alphanum)
 const templateIdentifier: TokenParser = pipe(
     identifier,
     P.between(open, close),
-    P.map(TemplateVariable)
+    P.map(TemplateVariable),
 )
 
 const EofStr = pipe(
     P.eof<string>(),
     P.map(() => ''))
 
-export const OpenorEof = P.either(open, () => EofStr)
-export const test = P.many1Till(P.item<string>(), P.lookAhead(OpenorEof))
+export const OpenOrEof = P.either(open, () => EofStr)
+export const anythingUntilOpenOrEOF = P.many1Till(P.item<string>(), P.lookAhead(OpenOrEof))
 
 const text: TokenParser = pipe(
-    test,
+    anythingUntilOpenOrEOF,
     P.map((value) => TemplateText(value.join(''))))
 // function parseTemplate(template: string): E.Either<ParseError, ParsedTemplate> {
 const TextOrVariable: TokenParser = P.either(templateIdentifier, () => text)
