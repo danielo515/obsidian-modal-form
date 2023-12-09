@@ -2,7 +2,12 @@
     "root": true,
     "parser": "@typescript-eslint/parser",
     "env": { "node": true },
-    "plugins": ["@typescript-eslint", "fp-ts", "@stylistic"],
+    "plugins": [
+        "@typescript-eslint",
+        "fp-ts",
+        "@stylistic",
+        "newline-function-call"
+    ],
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
@@ -20,6 +25,7 @@
         "@typescript-eslint/no-empty-function": "off",
         "arrow-parens": ["error", "always"],
         "fp-ts/no-lib-imports": "error",
-        "@stylistic/function-call-argument-newline": ["error", "consistent"]
+        "@stylistic/function-call-argument-newline": ["error", "consistent"],
+        "newline-function-call/function-call-argument-newline": ["error"]
     }
 }
