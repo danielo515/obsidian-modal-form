@@ -40,7 +40,10 @@ const text: TokenParser = pipe(
     anythingUntilOpenOrEOF,
     P.map((value) => TemplateText(value.join(''))))
 // function parseTemplate(template: string): E.Either<ParseError, ParsedTemplate> {
-const TextOrVariable: TokenParser = P.either(templateIdentifier, () => text)
+const TextOrVariable: TokenParser = pipe(
+    templateIdentifier,
+    P.alt(() => text),
+)
 
 const Template = pipe(
     P.many(TextOrVariable),
