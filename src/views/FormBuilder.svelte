@@ -127,7 +127,9 @@
     <Tabs bind:activeTab={currentTab} tabs={["form", "template"]} />
     <div class="body">
         {#if currentTab === "template"}
-            <TemplateEditor formName={definition.name} {fieldNames} />
+            <div class="template">
+                <TemplateEditor formName={definition.name} {fieldNames} />
+            </div>
         {:else}
             <form on:submit|preventDefault={handleSubmit}>
                 <fieldset class="flex column gap2 header">
@@ -429,6 +431,9 @@
             height: 100%;
             overflow: hidden;
         }
+    }
+    .template {
+        padding: 1rem;
     }
     .fields {
         overflow-y: auto;
