@@ -1,8 +1,9 @@
+import * as E from 'fp-ts/Either';
 import * as P from 'parser-ts/Parser'
 import { run } from 'parser-ts/code-frame'
 import * as C from 'parser-ts/char'
 import * as S from 'parser-ts/string'
-import { Either, pipe } from '@std';
+import { A, Either, O, pipe } from '@std';
 type TemplateText = { _tag: 'text', value: string }
 type TemplateVariable = { _tag: 'variable', value: string }
 type Token = TemplateText | TemplateVariable
@@ -58,4 +59,18 @@ const Template = pipe(
 export function parseTemplate(template: string): Either<string, ParsedTemplate> {
     return run((Template), template)
     // return S.run(template)(P.many(Template))
+}
+
+export function templateVariables(parsedTemplate: ReturnType<typeof parseTemplate>): string[] {
+    return pipe(
+        parsedTemplate,
+        E.fold(
+            () => [],
+            A.filterMap((token) => {
+                if (token._tag === 'variable') {
+                    return O.some(token.value)
+                }
+                return O.none
+            }))
+    )
 }

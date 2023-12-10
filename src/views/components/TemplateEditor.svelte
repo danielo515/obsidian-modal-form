@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { parseTemplate, templateVariables } from "src/core/templateParser";
     import Code from "./Code.svelte";
 
     let templateString = "";
@@ -6,6 +7,8 @@
     export let fieldNames: string[];
     const firstField = fieldNames[0];
     const exampleText = `Example text {{${firstField}}}`;
+    $: parsedTemplate = parseTemplate(templateString);
+    $: usedVariables = templateVariables(parsedTemplate);
 </script>
 
 <h6>
@@ -27,7 +30,10 @@
     Available fields:
     <ul>
         {#each fieldNames as field}
-            <li><code>{field}</code></li>
+            <li>
+                <code>{field}</code>
+                {usedVariables.includes(field) ? "✅" : ""}
+            </li>
         {/each}
     </ul>
 </div>
