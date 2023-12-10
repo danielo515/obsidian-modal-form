@@ -197,6 +197,12 @@ export default class ModalFormPlugin extends Plugin {
         this.addSettingTab(new ModalFormSettingTab(this.app, this));
     }
 
+    /**
+     * Finds a unique name for a note, given a name.
+     * It just adds a number at the end of the name if the name is already taken.
+     * @param name the name of the note, without the extension
+     * @returns a unique name for the note, full path including the extension
+     */
     getUniqueNoteName(name: string): string {
         const defaultNotesFolder = this.app.fileManager.getNewFileParent('', 'note.md')
         let destinationPath = `${defaultNotesFolder.path}/${name}.md`

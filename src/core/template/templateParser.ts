@@ -2,7 +2,6 @@ import * as E from 'fp-ts/Either';
 import * as St from 'fp-ts/String'
 import * as P from 'parser-ts/Parser'
 import { run } from 'parser-ts/code-frame'
-import * as J from 'fp-ts/Json'
 import * as C from 'parser-ts/char'
 import * as S from 'parser-ts/string'
 import * as A from 'fp-ts/Array'
