@@ -12,6 +12,6 @@ jobs:
               with:
                   cache: "npm"
 
-            - run: npm install
+            - run: npm ci
             - name: Build and Test
               run: npm run build && npm run test
