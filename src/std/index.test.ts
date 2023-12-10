@@ -98,9 +98,11 @@ describe("trySchemas", () => {
             isEmployed: true,
         };
         const result = trySchemas([schema1])(input);
-        pipe(result, E.bimap(
-            (x) => expect(x.message).toEqual('Invalid type'),
-            () => fail('expected a Left')
-        ))
+        pipe(
+            result,
+            E.bimap(
+                (x) => expect(x.message).toEqual('Invalid type'),
+                () => fail('expected a Left')
+            ))
     });
 });

@@ -5,11 +5,14 @@ import { ModalFormSettings, getDefaultSettings } from 'src/core/settings';
 import { writable, derived } from 'svelte/store';
 
 const settings = writable({ ...getDefaultSettings() });
-export const formsStore = derived(settings, ($settings) => pipe($settings.formDefinitions, A.filter((form): form is FormDefinition => !(form instanceof MigrationError))));
+export const formsStore = derived(settings, ($settings) => pipe(
+    $settings.formDefinitions,
+    A.filter((form): form is FormDefinition => !(form instanceof MigrationError))));
 const { subscribe, update, set } = settings
 
 export const invalidFormsStore = derived(settings, ($settings) => {
-    return pipe($settings.formDefinitions,
+    return pipe(
+        $settings.formDefinitions,
         A.filter((form): form is MigrationError => form instanceof MigrationError));
 })
 
