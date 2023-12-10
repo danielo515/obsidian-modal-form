@@ -1,5 +1,5 @@
 import * as E from 'fp-ts/Either';
-import * as St from 'fp-ts/String'
+import * as St from 'fp-ts/string'
 import * as P from 'parser-ts/Parser'
 import { run } from 'parser-ts/code-frame'
 import * as C from 'parser-ts/char'
