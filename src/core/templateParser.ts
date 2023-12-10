@@ -7,7 +7,7 @@ import { A, Either, O, pipe } from '@std';
 type TemplateText = { _tag: 'text', value: string }
 type TemplateVariable = { _tag: 'variable', value: string }
 type Token = TemplateText | TemplateVariable
-type ParsedTemplate = Token[];
+export type ParsedTemplate = Token[];
 
 function TemplateText(value: string): TemplateText {
     return { _tag: 'text', value }
@@ -72,5 +72,15 @@ export function templateVariables(parsedTemplate: ReturnType<typeof parseTemplat
                 }
                 return O.none
             }))
+    )
+}
+
+export function templateError(parsedTemplate: ReturnType<typeof parseTemplate>): string | undefined {
+    return pipe(
+        parsedTemplate,
+        E.fold(
+            (error) => error,
+            () => undefined
+        )
     )
 }

@@ -1,14 +1,25 @@
 <script lang="ts">
-    import { parseTemplate, templateVariables } from "src/core/templateParser";
+    import {
+        ParsedTemplate,
+        parseTemplate,
+        templateError,
+        templateVariables,
+    } from "src/core/templateParser";
     import Code from "./Code.svelte";
+    import { E, pipe } from "@std";
 
     let templateString = "";
     export let formName: string;
     export let fieldNames: string[];
+    export let saveTemplate: (template: ParsedTemplate) => void;
     const firstField = fieldNames[0];
     const exampleText = `Example text {{${firstField}}}`;
+    const handleSave = () => {
+        pipe(parsedTemplate, E.map(saveTemplate));
+    };
     $: parsedTemplate = parseTemplate(templateString);
     $: usedVariables = templateVariables(parsedTemplate);
+    $: templateErrorMessage = templateError(parsedTemplate);
 </script>
 
 <h6>
@@ -26,6 +37,11 @@
     <div>For example:</div>
     <Code>{exampleText}</Code>
 </div>
+<button
+    class="btn btn-primary"
+    disabled={!!templateErrorMessage}
+    on:click={handleSave}>Save template</button
+>
 <div class="fields-list">
     Available fields:
     <ul>
@@ -44,6 +60,12 @@
     class="form-control"
     placeholder="Enter template here"
 ></textarea>
+{#if templateErrorMessage}
+    <div class="error-wrapper">
+        <div class="invalid">The template is invalid:</div>
+        <Code>{templateErrorMessage}</Code>
+    </div>
+{/if}
 
 <style>
     .fields-list {
