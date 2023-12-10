@@ -2,12 +2,14 @@ import * as E from 'fp-ts/Either';
 import * as St from 'fp-ts/String'
 import * as P from 'parser-ts/Parser'
 import { run } from 'parser-ts/code-frame'
+import * as J from 'fp-ts/Json'
 import * as C from 'parser-ts/char'
 import * as S from 'parser-ts/string'
 import * as A from 'fp-ts/Array'
 import { Either, O, pipe } from '@std';
 import { TemplateText, TemplateVariable } from './templateSchema';
 import { absurd } from 'fp-ts/function';
+import { ModalFormData } from '../FormResult';
 type Token = TemplateText | TemplateVariable
 export type ParsedTemplate = Token[];
 
@@ -97,9 +99,38 @@ function tokenToString(token: Token): string {
     }
 }
 
+function matchToken<T>(onText: (value: string) => T, onVariable: (variable: string) => T) {
+    return (token: Token): T => {
+        switch (token._tag) {
+            case 'text': return onText(token.value)
+            case 'variable': return onVariable(token.value)
+            default:
+                return absurd(token)
+        }
+    }
+}
+
+/**
+ * Given a correctly parsed template, convert it back into a string
+ * with the right format: variables are surrounded by double curly braces, etc.
+ * If a template is correct you should be able to parse it and then convert it back
+ * to a string without losing any information.
+ * @param parsedTemplate the template in it's already parsed form
+ * @returns string
+ */
 export function parsedTemplateToString(parsedTemplate: ParsedTemplate): string {
     return pipe(
         parsedTemplate,
         A.foldMap(St.Monoid)(tokenToString)
+    )
+}
+
+export function executeTemplate(parsedTemplate: ParsedTemplate, formData: ModalFormData) {
+    return pipe(
+        parsedTemplate,
+        A.filterMap(
+            matchToken(O.some, (key) => O.fromNullable(formData[key]))
+        ),
+        A.foldMap(St.Monoid)(String)
     )
 }

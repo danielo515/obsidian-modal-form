@@ -6,7 +6,7 @@ import { API } from "src/API";
 import { EDIT_FORM_VIEW, EditFormView } from "src/views/EditFormView";
 import { MANAGE_FORMS_VIEW, ManageFormsView } from "src/views/ManageFormsView";
 import { ModalFormError } from "src/utils/ModalFormError";
-import { type FormDefinition } from "src/core/formDefinition";
+import { FormWithTemplate, type FormDefinition } from "src/core/formDefinition";
 import { formNeedsMigration, migrateToLatest, MigrationError, InvalidData } from "./core/formDefinitionSchema";
 import { parseSettings, type ModalFormSettings, type OpenPosition, getDefaultSettings } from "src/core/settings";
 import { log_notice } from "./utils/Log";
@@ -14,6 +14,9 @@ import * as E from "fp-ts/Either";
 import { pipe } from "fp-ts/function";
 import * as A from "fp-ts/Array"
 import { settingsStore } from "./store/store";
+import { FormPickerModal } from "./suggesters/FormPickerModal";
+import { O } from "@std";
+import { executeTemplate } from "./core/template/templateParser";
 
 type ViewType = typeof EDIT_FORM_VIEW | typeof MANAGE_FORMS_VIEW;
 
@@ -182,9 +185,54 @@ export default class ModalFormPlugin extends Plugin {
                 this.manageForms();
             },
         });
+        this.addCommand({
+            id: 'create-note-from-form',
+            name: 'Create new note from a form',
+            callback: () => {
+                this.createNoteFromForm();
+            }
+        })
 
         // This adds a settings tab so the user can configure various aspects of the plugin
         this.addSettingTab(new ModalFormSettingTab(this.app, this));
+    }
+
+    getUniqueNoteName(name: string): string {
+        const defaultNotesFolder = this.app.fileManager.getNewFileParent('', 'note.md')
+        let destinationPath = `${defaultNotesFolder.path}/${name}.md`
+        let i = 1;
+        while (this.app.vault.getAbstractFileByPath(destinationPath)) {
+            destinationPath = `${defaultNotesFolder.path}/${name}-${i}.md`
+            i++;
+        }
+        return destinationPath;
+    }
+
+    /**
+     * Checks if there are forms with templates, and presents a prompt
+     * to select a form, then opens the forms, and creates a new note
+     * with the template and the form values
+     */
+    createNoteFromForm() {
+        const formsWithTemplates = pipe(
+            this.settings!.formDefinitions,
+            A.filterMap((form) => {
+                if (form instanceof MigrationError) {
+                    return O.none;
+                }
+                if (form.template !== undefined) {
+                    return O.some(form as FormWithTemplate);
+                }
+                return O.none;
+            })
+        )
+        const onFormSelected = async (form: FormWithTemplate) => {
+            const formData = await this.api.openForm(form);
+            const newNoteFullPath = this.getUniqueNoteName(form.name);
+            this.app.vault.create(newNoteFullPath, executeTemplate(form.template, formData.getData()))
+        }
+        const picker = new FormPickerModal(this.app, formsWithTemplates, onFormSelected);
+        picker.open();
     }
 
 }

@@ -15,6 +15,7 @@ import {
     MigrationError,
 } from "./formDefinitionSchema";
 import { A, O, pipe } from "@std";
+import { ParsedTemplate } from "./template/templateParser";
 //=========== Types derived from schemas
 type selectFromNotes = Output<typeof SelectFromNotesSchema>;
 type inputSlider = Output<typeof InputSliderSchema>;
@@ -71,6 +72,7 @@ export type FieldDefinition = Output<typeof FieldDefinitionSchema>;
  * FormDefinition is an already valid form, ready to be used in the form modal.
  */
 export type FormDefinition = Output<typeof FormDefinitionLatestSchema>;
+export type FormWithTemplate = FormDefinition & { template: ParsedTemplate }
 
 export type FormOptions = {
     values?: Record<string, unknown>;
