@@ -44,6 +44,7 @@ describe("parseTemplate", () => {
     it("should parse a valid template with several variables", () => {
         const template = "Hello, {{name}}! You are {{age}} years old.";
         const result = parseTemplate(template);
+        logError(result);
         expect(result).toEqual(E.of(
             [
                 { _tag: "text", value: "Hello, " },
@@ -58,6 +59,7 @@ describe("parseTemplate", () => {
     it("should allow single braces in a template", () => {
         const template = "This is code {bla}";
         const result = parseTemplate(template);
+        logError(result);
         expect(result).toEqual(E.of(
             [
                 { _tag: "text", value: "This is code {bla}" },
@@ -67,6 +69,7 @@ describe("parseTemplate", () => {
     it("should allow single braces in a template even if it has variables", () => {
         const template = "This is code {bla} {{name}}";
         const result = parseTemplate(template);
+        logError(result);
         expect(result).toEqual(E.of(
             [
                 { _tag: "text", value: "This is code {bla} " },
@@ -91,6 +94,7 @@ describe("parseTemplate", () => {
     it("should allow spaces within open and close braces", () => {
         const template = "Hey, {{ name }}!";
         const result = parseTemplate(template);
+        logError(result);
         expect(result).toEqual(E.of(
             [
                 { _tag: "text", value: "Hey, " },
