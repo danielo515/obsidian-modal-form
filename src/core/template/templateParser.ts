@@ -1,11 +1,13 @@
 import * as E from 'fp-ts/Either';
+import * as St from 'fp-ts/String'
 import * as P from 'parser-ts/Parser'
 import { run } from 'parser-ts/code-frame'
 import * as C from 'parser-ts/char'
 import * as S from 'parser-ts/string'
-import { A, Either, O, pipe } from '@std';
-type TemplateText = { _tag: 'text', value: string }
-type TemplateVariable = { _tag: 'variable', value: string }
+import * as A from 'fp-ts/Array'
+import { Either, O, pipe } from '@std';
+import { TemplateText, TemplateVariable } from './templateSchema';
+import { absurd } from 'fp-ts/function';
 type Token = TemplateText | TemplateVariable
 export type ParsedTemplate = Token[];
 
@@ -82,5 +84,22 @@ export function templateError(parsedTemplate: ReturnType<typeof parseTemplate>):
             (error) => error,
             () => undefined
         )
+    )
+}
+
+function tokenToString(token: Token): string {
+    const tag = token._tag
+    switch (tag) {
+        case 'text': return token.value
+        case 'variable': return `{{${token.value}}}`
+        default:
+            return absurd(tag)
+    }
+}
+
+export function parsedTemplateToString(parsedTemplate: ParsedTemplate): string {
+    return pipe(
+        parsedTemplate,
+        A.foldMap(St.Monoid)(tokenToString)
     )
 }

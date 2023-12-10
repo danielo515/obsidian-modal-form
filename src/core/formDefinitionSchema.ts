@@ -22,6 +22,7 @@ import {
 } from "valibot";
 import { AllFieldTypes, FormDefinition } from "./formDefinition";
 import { findFieldErrors } from "./findInputDefinitionSchema";
+import { ParsedTemplateSchema } from "./template/templateSchema";
 
 /**
  * Here are the core logic around the main domain of the plugin,
@@ -176,6 +177,7 @@ const FormDefinitionV1Schema = merge([
     object({
         version: literal("1"),
         fields: FieldListSchema,
+        template: optional(ParsedTemplateSchema)
     }),
 ]);
 // This is the latest schema.

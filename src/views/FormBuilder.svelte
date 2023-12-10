@@ -18,6 +18,10 @@
     import { pipe } from "fp-ts/lib/function";
     import { A } from "@std";
     import Tabs from "./components/Tabs.svelte";
+    import {
+        ParsedTemplate,
+        parsedTemplateToString,
+    } from "src/core/template/templateParser";
 
     export let definition: EditableFormDefinition = {
         title: "",
@@ -116,6 +120,9 @@
         if (!isValidFormDefinition(definition)) return;
         onSubmit(definition);
     };
+    function saveTemplate(template: ParsedTemplate) {
+        onSubmit({ ...definition, template });
+    }
     const handlePreview = () => {
         if (!isValidFormDefinition(definition)) return;
         console.log("preview of", definition);
@@ -128,7 +135,14 @@
     <div class="body">
         {#if currentTab === "template"}
             <div class="template">
-                <TemplateEditor formName={definition.name} {fieldNames} />
+                <TemplateEditor
+                    formName={definition.name}
+                    {fieldNames}
+                    {saveTemplate}
+                    templateString={definition.template
+                        ? parsedTemplateToString(definition.template)
+                        : ""}
+                />
             </div>
         {:else}
             <form on:submit|preventDefault={handleSubmit}>

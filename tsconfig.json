@@ -47,17 +47,41 @@
                     "A": {
                         "importPath": "fp-ts/Array"
                     },
+                    "R": {
+                        "importPath": "fp-ts/Record"
+                    },
+                    "RA": {
+                        "importPath": "fp-ts/ReadonlyArray"
+                    },
+                    "RE": {
+                        "importPath": "fp-ts/ReaderEither"
+                    },
+                    "RIO": {
+                        "importPath": "fp-ts/ReaderIO"
+                    },
+                    "RNEA": {
+                        "importPath": "fp-ts/ReadonlyNonEmptyArray"
+                    },
+                    "RT": {
+                        "importPath": "fp-ts/ReaderTask"
+                    },
+                    "RTE": {
+                        "importPath": "fp-ts/ReaderTaskEither"
+                    },
+                    "S": {
+                        "importPath": "fp-ts/string"
+                    },
                     "T": {
                         "importPath": "fp-ts/Task"
                     },
                     "TE": {
                         "importPath": "fp-ts/TaskEither"
                     },
-                    "R": {
-                        "importPath": "fp-ts/Record"
+                    "TO": {
+                        "importPath": "fp-ts/TaskOption"
                     },
-                    "RA": {
-                        "importPath": "fp-ts/ReadonlyArray"
+                    "TU": {
+                        "importPath": "fp-ts/Tuple"
                     },
                 }
             }

@@ -4,11 +4,11 @@
         parseTemplate,
         templateError,
         templateVariables,
-    } from "src/core/templateParser";
+    } from "src/core/template/templateParser";
     import Code from "./Code.svelte";
     import { E, pipe } from "@std";
 
-    let templateString = "";
+    export let templateString: string;
     export let formName: string;
     export let fieldNames: string[];
     export let saveTemplate: (template: ParsedTemplate) => void;
