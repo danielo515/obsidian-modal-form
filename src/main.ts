@@ -14,9 +14,10 @@ import * as E from "fp-ts/Either";
 import { pipe } from "fp-ts/function";
 import * as A from "fp-ts/Array"
 import { settingsStore } from "./store/store";
-import { FormPickerModal } from "./suggesters/FormPickerModal";
 import { O } from "@std";
 import { executeTemplate } from "./core/template/templateParser";
+import { NewNoteModal } from "./suggesters/NewNoteModal";
+import { file_exists } from "./utils/files";
 
 type ViewType = typeof EDIT_FORM_VIEW | typeof MANAGE_FORMS_VIEW;
 
@@ -203,11 +204,11 @@ export default class ModalFormPlugin extends Plugin {
      * @param name the name of the note, without the extension
      * @returns a unique name for the note, full path including the extension
      */
-    getUniqueNoteName(name: string): string {
+    getUniqueNoteName(name: string, destinationFolder?: string): string {
         const defaultNotesFolder = this.app.fileManager.getNewFileParent('', 'note.md')
-        let destinationPath = `${defaultNotesFolder.path}/${name}.md`
+        let destinationPath = `${destinationFolder || defaultNotesFolder.path}/${name}.md`
         let i = 1;
-        while (this.app.vault.getAbstractFileByPath(destinationPath)) {
+        while (file_exists(destinationPath, this.app)) {
             destinationPath = `${defaultNotesFolder.path}/${name}-${i}.md`
             i++;
         }
@@ -232,12 +233,14 @@ export default class ModalFormPlugin extends Plugin {
                 return O.none;
             })
         )
-        const onFormSelected = async (form: FormWithTemplate) => {
+        const onFormSelected = async (form: FormWithTemplate, noteName: string, destinationFolder: string) => {
             const formData = await this.api.openForm(form);
-            const newNoteFullPath = this.getUniqueNoteName(form.name);
+            const newNoteFullPath = this.getUniqueNoteName(noteName, destinationFolder);
             this.app.vault.create(newNoteFullPath, executeTemplate(form.template, formData.getData()))
         }
-        const picker = new FormPickerModal(this.app, formsWithTemplates, onFormSelected);
+        const picker = new NewNoteModal(this.app, formsWithTemplates, ({ form, folder, noteName }) => {
+            onFormSelected(form, noteName, folder)
+        });
         picker.open();
     }
 

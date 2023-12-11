@@ -73,3 +73,11 @@ export function get_tfiles_from_folder(folder_str: string, app: App): Either<Fol
         }
         ))
 }
+
+export function file_exists(file_str: string, app: App): boolean {
+    return pipe(
+        normalizePath(file_str),
+        (path) => app.vault.getAbstractFileByPath(path),
+        (value) => value !== null
+    )
+}
