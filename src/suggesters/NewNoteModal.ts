@@ -28,6 +28,15 @@ const formSuggester = (app: App, input: HTMLInputElement, forms: FormWithTemplat
     }
 )
 
+/**
+ * A modal to select a form, a destination folder and a name 
+ * to create a new note from a form
+ * @param app the obsidian app
+ * @param forms the list of forms that have a template
+ * @param onSelected the callback to call when the user completes the selection
+ * @returns the modal instance
+ * @category UI
+ * */
 export class NewNoteModal extends Modal {
     constructor(app: App, private forms: FormWithTemplate[], protected onSelected: (args: OnSelectArgs) => void) {
         super(app);
