@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.30.0](https://github.com/danielo515/obsidian-modal-form/compare/1.29.0...1.30.0) (2023-12-15)
+
+
+### Features
+
+* tabs for the form builder interface ([1f0dbb5](https://github.com/danielo515/obsidian-modal-form/commit/1f0dbb54e0fb2bbcf047594143d325b517d4a663))
+
 ## [1.29.0](https://github.com/danielo515/obsidian-modal-form/compare/1.28.0...1.29.0) (2023-12-08)
 
 
