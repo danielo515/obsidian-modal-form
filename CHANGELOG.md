@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.30.0](https://github.com/danielo515/obsidian-modal-form/compare/1.29.0...1.30.0) (2023-12-15)
+
+
+### Features
+
+* create new notes from forms using templates ([2a5d1bc](https://github.com/danielo515/obsidian-modal-form/commit/2a5d1bcc26c7577313806865fe1f77d5c4cd5dcb))
+
 ## [1.29.0](https://github.com/danielo515/obsidian-modal-form/compare/1.28.0...1.29.0) (2023-12-08)
 
 
