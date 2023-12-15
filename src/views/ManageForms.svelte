@@ -63,6 +63,8 @@
                             <span
                                 >{Array.isArray(value)
                                     ? value.length
+                                    : typeof value === "object"
+                                    ? !!value
                                     : value}</span
                             >
                         </KeyValue>

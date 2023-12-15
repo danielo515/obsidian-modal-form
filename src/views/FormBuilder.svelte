@@ -6,7 +6,7 @@
         FieldTypeReadable,
         validateFields,
     } from "src/core/formDefinition";
-    import { setIcon, App } from "obsidian";
+    import { setIcon } from "obsidian";
     import InputBuilderDataview from "./components/inputBuilderDataview.svelte";
     import InputBuilderSelect from "./components/InputBuilderSelect.svelte";
     import InputFolder from "./components/InputFolder.svelte";
@@ -14,6 +14,14 @@
     import { ModalFormError } from "src/utils/ModalFormError";
     import FormRow from "./components/FormRow.svelte";
     import Toggle from "./components/Toggle.svelte";
+    import TemplateEditor from "./components/TemplateEditor.svelte";
+    import { pipe } from "fp-ts/lib/function";
+    import { A } from "@std";
+    import Tabs from "./components/Tabs.svelte";
+    import {
+        ParsedTemplate,
+        parsedTemplateToString,
+    } from "src/core/template/templateParser";
 
     export let definition: EditableFormDefinition = {
         title: "",
@@ -25,10 +33,15 @@
     export let onSubmit: (formDefinition: FormDefinition) => void;
     export let onCancel: () => void;
     export let onPreview: (formDefinition: FormDefinition) => void;
+    let currentTab: "form" | "template" = "form";
 
     $: isValid = isValidFormDefinition(definition);
     $: errors = validateFields(definition.fields);
     $: activeFieldIndex = 0;
+    $: fieldNames = pipe(
+        definition.fields,
+        A.map((f) => f.name),
+    );
 
     function scrollWhenActive(element: HTMLElement, isActive: boolean) {
         function update(isActive: boolean) {
@@ -107,6 +120,12 @@
         if (!isValidFormDefinition(definition)) return;
         onSubmit(definition);
     };
+    function saveTemplate(parsedTemplate: ParsedTemplate) {
+        onSubmit({
+            ...definition,
+            template: { parsedTemplate, createCommand: true },
+        });
+    }
     const handlePreview = () => {
         if (!isValidFormDefinition(definition)) return;
         console.log("preview of", definition);
@@ -114,269 +133,325 @@
     };
 </script>
 
-<div class="flex column gap2 wrapper modal-form">
-    <form on:submit|preventDefault={handleSubmit}>
-        <fieldset class="flex column gap2 header">
-            <label for="name">Form unique name</label>
-            <span class="hint"
-                >This name will identify this form uniquely, and will be the
-                value you need to provide when calling the method openForm</span
-            >
-            <input
-                type="text"
-                placeholder="Name"
-                id="name"
-                bind:value={definition.name}
-            />
-            <label for="title">Form title</label>
-            <span class="hint"
-                >This is the title that will be shown in the modal when the form
-                is visible</span
-            >
-            <input
-                type="text"
-                placeholder="Title"
-                id="title"
-                bind:value={definition.title}
-            />
-            <label for="customClassname">Custom class Name</label><span
-                class="hint"
-                >In case you want to add a class name to the modal form to
-                customize it</span
-            ><input
-                type="text"
-                id="customClassname"
-                bind:value={definition.customClassname}
-            />
-            <div class="flex row gap2">
-                <button
-                    type="button"
-                    on:click={() => {
-                        definition.fields = [
-                            ...definition.fields,
-                            {
-                                name: "",
-                                label: "",
-                                description: "",
-                                input: { type: "text" },
-                            },
-                        ];
-                        // onChange();
-                        activeFieldIndex = definition.fields.length - 1;
-                    }}>Add more fields</button
-                >
-                <button
-                    type="button"
-                    on:click={handlePreview}
-                    disabled={!isValid}>Preview</button
-                >
-                <button class="mod-cta" type="submit" disabled={!isValid}
-                    >Save and close</button
-                >
-                <button type="button" class="mod-warning" on:click={onCancel}
-                    >Cancel</button
-                >
+<div class=" wrapper modal-form">
+    <Tabs bind:activeTab={currentTab} tabs={["form", "template"]} />
+    <div class="body">
+        {#if currentTab === "template"}
+            <div class="template">
+                <TemplateEditor
+                    formName={definition.name}
+                    {fieldNames}
+                    {saveTemplate}
+                    templateString={definition.template
+                        ? parsedTemplateToString(
+                              definition.template.parsedTemplate,
+                          )
+                        : ""}
+                />
             </div>
-            {#if errors.length > 0}
-                <h3 style="margin: 0;">
-                    <span class="error">Form is invalid</span>, check the
-                    following:
-                </h3>
-                <ul style="margin: 0;">
-                    {#each errors as error}
-                        <li>
-                            {error.message}
-                            {#if error.path}
-                                at {error.path}
-                            {/if}
-                            <button
-                                type="button"
-                                on:click={() => {
-                                    activeFieldIndex = error.index;
-                                }}>Go to problem</button
-                            >
-                        </li>
-                    {/each}
-                </ul>
-            {/if}
-        </fieldset>
-
-        <fieldset class="flex column gap2 fields">
-            <h3>Fields</h3>
-            {#if definition.fields.length > 0}
-                {#each definition.fields as field, index}
-                    {@const desc_id = `desc_${index}`}
-                    {@const delete_id = `delete_${index}`}
-                    <div
-                        class="flex column md-row gap2"
-                        use:scrollWhenActive={index === activeFieldIndex}
+        {:else}
+            <form on:submit|preventDefault={handleSubmit}>
+                <fieldset class="flex column gap2 header">
+                    <label for="name">Form unique name</label>
+                    <span class="hint"
+                        >This name will identify this form uniquely, and will be
+                        the value you need to provide when calling the method
+                        openForm</span
                     >
-                        <div class="flex column gap1">
-                            <label for={`name_${index}`}>Name</label>
-                            <input
-                                type="text"
-                                placeholder="Name"
-                                bind:value={field.name}
-                                id={`name_${index}`}
-                            />
-                        </div>
-                        <div class="flex column gap1">
-                            <label for={`label_${index}`}>Label</label>
-                            <input
-                                type="text"
-                                placeholder="Label"
-                                bind:value={field.label}
-                                id={`label_${index}`}
-                            />
-                        </div>
-
-                        {#if ["text", "email", "tel", "number", "note", "tag", "dataview", "multiselect"].includes(field.input.type)}
-                            <FormRow
-                                label="Make required"
-                                id={`required_${index}`}
-                            >
-                                <Toggle
-                                    bind:checked={field.isRequired}
-                                    tabindex={index}
-                                />
-                            </FormRow>
-                        {/if}
-                        <div class="flex column gap1">
-                            <label
-                                for={delete_id}
-                                style:visibility={"hidden"}
-                                style:overflow={"hidden"}
-                                style:white-space={"nowrap"}
-                                >delete {index}</label
-                            >
-                        </div>
-                    </div>
-
-                    <div class="flex column md-row gap2">
-                        <div class="flex column gap1">
-                            <label for={desc_id}>Description</label>
-                            <input
-                                type="text"
-                                placeholder="Description"
-                                bind:value={field.description}
-                                id={desc_id}
-                            />
-                        </div>
-                        <div class="flex column gap1">
-                            <label for={`type_${index}`}>Type</label>
-                            <select
-                                bind:value={field.input.type}
-                                id={`type_${index}`}
-                            >
-                                {#each Object.entries(FieldTypeReadable) as type}
-                                    <option value={type[0]}>{type[1]}</option>
-                                {/each}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="flex gap1">
-                        {#if field.input.type === "select"}
-                            <InputBuilderSelect
-                                {index}
-                                bind:source={field.input.source}
-                                bind:options={field.input.options}
-                                bind:folder={field.input.folder}
-                                notifyChange={onChange}
-                                is_multi={false}
-                            />
-                        {:else if field.input.type === "multiselect"}
-                            <InputBuilderSelect
-                                {index}
-                                bind:source={field.input.source}
-                                bind:options={field.input.multi_select_options}
-                                bind:folder={field.input.folder}
-                                bind:query={field.input.query}
-                                notifyChange={onChange}
-                                is_multi={true}
-                            />
-                        {:else if field.input.type === "slider"}
-                            {@const min_id = `min_${index}`}
-                            {@const max_id = `max_${index}`}
-                            <div class="flex column gap1">
-                                <label for={min_id}>Min</label>
-                                <input
-                                    type="number"
-                                    bind:value={field.input.min}
-                                    placeholder="0"
-                                    id={min_id}
-                                />
-                            </div>
-                            <div class="flex column gap1">
-                                <label for={max_id}>Max</label>
-                                <input
-                                    type="number"
-                                    bind:value={field.input.max}
-                                    placeholder="10"
-                                    id={max_id}
-                                />
-                            </div>
-                        {:else if field.input.type === "note"}
-                            <InputFolder
-                                {index}
-                                bind:folder={field.input.folder}
-                                notifyChange={onChange}
-                            />
-                        {:else if field.input.type === "dataview"}
-                            <InputBuilderDataview
-                                {index}
-                                bind:value={field.input.query}
-                            />
-                        {/if}
-                    </div>
-                    <div class="flex gap1">
+                    <input
+                        type="text"
+                        placeholder="Name"
+                        id="name"
+                        bind:value={definition.name}
+                    />
+                    <label for="title">Form title</label>
+                    <span class="hint"
+                        >This is the title that will be shown in the modal when
+                        the form is visible</span
+                    >
+                    <input
+                        type="text"
+                        placeholder="Title"
+                        id="title"
+                        bind:value={definition.title}
+                    />
+                    <label for="customClassname">Custom class Name</label><span
+                        class="hint"
+                        >In case you want to add a class name to the modal form
+                        to customize it</span
+                    ><input
+                        type="text"
+                        id="customClassname"
+                        bind:value={definition.customClassname}
+                    />
+                    <div class="flex row gap2">
                         <button
                             type="button"
-                            disabled={index === 0}
-                            use:setIcon={"arrow-up"}
-                            on:click={() => moveField(index, "up")}
-                        />
-                        <button
-                            type="button"
-                            disabled={index === definition.fields.length - 1}
-                            use:setIcon={"arrow-down"}
-                            on:click={() => moveField(index, "down")}
-                        />
-                        <button
-                            type="button"
-                            on:click={() => duplicateField(index)}
-                            >Duplicate</button
+                            on:click={() => {
+                                definition.fields = [
+                                    ...definition.fields,
+                                    {
+                                        name: "",
+                                        label: "",
+                                        description: "",
+                                        input: { type: "text" },
+                                    },
+                                ];
+                                // onChange();
+                                activeFieldIndex = definition.fields.length - 1;
+                            }}>Add more fields</button
                         >
                         <button
-                            use:setIcon={"trash"}
                             type="button"
-                            id={delete_id}
-                            on:click={() => {
-                                definition.fields = definition.fields.filter(
-                                    (_, i) => i !== index,
-                                );
-                            }}
-                        />
+                            on:click={handlePreview}
+                            disabled={!isValid}>Preview</button
+                        >
+                        <button
+                            class="mod-cta"
+                            type="submit"
+                            disabled={!isValid}>Save and close</button
+                        >
+                        <button
+                            type="button"
+                            class="mod-warning"
+                            on:click={onCancel}>Cancel</button
+                        >
                     </div>
-                    <hr />
-                {/each}
-            {:else}
-                No fields yet
-            {/if}
-        </fieldset>
-    </form>
+                    {#if errors.length > 0}
+                        <h3 style="margin: 0;">
+                            <span class="error">Form is invalid</span>, check
+                            the following:
+                        </h3>
+                        <ul style="margin: 0;">
+                            {#each errors as error}
+                                <li>
+                                    {error.message}
+                                    {#if error.path}
+                                        at {error.path}
+                                    {/if}
+                                    <button
+                                        type="button"
+                                        on:click={() => {
+                                            activeFieldIndex = error.index;
+                                        }}>Go to problem</button
+                                    >
+                                </li>
+                            {/each}
+                        </ul>
+                    {/if}
+                </fieldset>
+
+                <fieldset class="flex column gap2 fields">
+                    <h3>Fields</h3>
+                    {#if definition.fields.length > 0}
+                        {#each definition.fields as field, index}
+                            {@const desc_id = `desc_${index}`}
+                            {@const delete_id = `delete_${index}`}
+                            <div
+                                class="flex column md-row gap2"
+                                use:scrollWhenActive={index ===
+                                    activeFieldIndex}
+                            >
+                                <div class="flex column gap1">
+                                    <label for={`name_${index}`}>Name</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Name"
+                                        bind:value={field.name}
+                                        id={`name_${index}`}
+                                    />
+                                </div>
+                                <div class="flex column gap1">
+                                    <label for={`label_${index}`}>Label</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Label"
+                                        bind:value={field.label}
+                                        id={`label_${index}`}
+                                    />
+                                </div>
+
+                                {#if ["text", "email", "tel", "number", "note", "tag", "dataview", "multiselect"].includes(field.input.type)}
+                                    <FormRow
+                                        label="Make required"
+                                        id={`required_${index}`}
+                                    >
+                                        <Toggle
+                                            bind:checked={field.isRequired}
+                                            tabindex={index}
+                                        />
+                                    </FormRow>
+                                {/if}
+                                <div class="flex column gap1">
+                                    <label
+                                        for={delete_id}
+                                        style:visibility={"hidden"}
+                                        style:overflow={"hidden"}
+                                        style:white-space={"nowrap"}
+                                        >delete {index}</label
+                                    >
+                                </div>
+                            </div>
+
+                            <div class="flex column md-row gap2">
+                                <div class="flex column gap1">
+                                    <label for={desc_id}>Description</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Description"
+                                        bind:value={field.description}
+                                        id={desc_id}
+                                    />
+                                </div>
+                                <div class="flex column gap1">
+                                    <label for={`type_${index}`}>Type</label>
+                                    <select
+                                        bind:value={field.input.type}
+                                        id={`type_${index}`}
+                                    >
+                                        {#each Object.entries(FieldTypeReadable) as type}
+                                            <option value={type[0]}
+                                                >{type[1]}</option
+                                            >
+                                        {/each}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex gap1">
+                                {#if field.input.type === "select"}
+                                    <InputBuilderSelect
+                                        {index}
+                                        bind:source={field.input.source}
+                                        bind:options={field.input.options}
+                                        bind:folder={field.input.folder}
+                                        notifyChange={onChange}
+                                        is_multi={false}
+                                    />
+                                {:else if field.input.type === "multiselect"}
+                                    <InputBuilderSelect
+                                        {index}
+                                        bind:source={field.input.source}
+                                        bind:options={field.input
+                                            .multi_select_options}
+                                        bind:folder={field.input.folder}
+                                        bind:query={field.input.query}
+                                        notifyChange={onChange}
+                                        is_multi={true}
+                                    />
+                                {:else if field.input.type === "slider"}
+                                    {@const min_id = `min_${index}`}
+                                    {@const max_id = `max_${index}`}
+                                    <div class="flex column gap1">
+                                        <label for={min_id}>Min</label>
+                                        <input
+                                            type="number"
+                                            bind:value={field.input.min}
+                                            placeholder="0"
+                                            id={min_id}
+                                        />
+                                    </div>
+                                    <div class="flex column gap1">
+                                        <label for={max_id}>Max</label>
+                                        <input
+                                            type="number"
+                                            bind:value={field.input.max}
+                                            placeholder="10"
+                                            id={max_id}
+                                        />
+                                    </div>
+                                {:else if field.input.type === "note"}
+                                    <InputFolder
+                                        {index}
+                                        bind:folder={field.input.folder}
+                                        notifyChange={onChange}
+                                    />
+                                {:else if field.input.type === "dataview"}
+                                    <InputBuilderDataview
+                                        {index}
+                                        bind:value={field.input.query}
+                                    />
+                                {/if}
+                            </div>
+                            <div class="flex gap1">
+                                <button
+                                    type="button"
+                                    disabled={index === 0}
+                                    use:setIcon={"arrow-up"}
+                                    on:click={() => moveField(index, "up")}
+                                />
+                                <button
+                                    type="button"
+                                    disabled={index ===
+                                        definition.fields.length - 1}
+                                    use:setIcon={"arrow-down"}
+                                    on:click={() => moveField(index, "down")}
+                                />
+                                <button
+                                    type="button"
+                                    on:click={() => duplicateField(index)}
+                                    >Duplicate</button
+                                >
+                                <button
+                                    use:setIcon={"trash"}
+                                    type="button"
+                                    id={delete_id}
+                                    on:click={() => {
+                                        definition.fields =
+                                            definition.fields.filter(
+                                                (_, i) => i !== index,
+                                            );
+                                    }}
+                                />
+                            </div>
+                            <hr />
+                        {/each}
+                    {:else}
+                        No fields yet
+                    {/if}
+                </fieldset>
+            </form>
+        {/if}
+    </div>
 </div>
 
 <style>
     .wrapper,
-    form {
-        max-height: 100%;
-        min-height: 100%;
-        height: 100%;
+    .body {
+        flex: 1;
         display: flex;
         flex-direction: column;
     }
+    .wrapper {
+        max-height: 100%;
+        min-height: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+    .body {
+        padding-top: 0.5rem;
+        overflow-y: scroll;
+    }
     .header {
         box-shadow: var(--shadow-bottom) var(--divider-color);
+        padding: 1rem;
+    }
+    /* on bigger screens make the headers stick */
+    @media (min-width: 58rem) {
+        .body {
+            overflow-y: hidden;
+        }
+        .fields {
+            flex: 1;
+            height: 100%;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+    }
+    .template {
         padding: 1rem;
     }
     .fields {

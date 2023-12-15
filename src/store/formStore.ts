@@ -205,7 +205,10 @@ export function makeFormEngine<T extends FieldValue>(
         ),
         triggerSubmit() {
             const formState = get(formStore);
-            pipe(formState.fields, parseForm, E.match(setErrors, onSubmit));
+            pipe(
+                formState.fields,
+                parseForm,
+                E.match(setErrors, onSubmit));
         },
         addField: (field) => {
             const { initField: setField, setValue } = setFormField(field.name);
@@ -242,7 +245,9 @@ export function makeFormEngine<T extends FieldValue>(
                             );
                             return form;
                         }
-                        const newValue = pipe(current.value, O.map(updater));
+                        const newValue = pipe(
+                            current.value,
+                            O.map(updater));
                         return {
                             ...form,
                             fields: {

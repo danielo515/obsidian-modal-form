@@ -27,6 +27,7 @@
         "esbuild": "0.17.3",
         "esbuild-svelte": "^0.8.0",
         "eslint-plugin-fp-ts": "^0.3.2",
+        "eslint-plugin-newline-function-call": "^1.0.0",
         "jest": "^29.7.0",
         "obsidian": "^1.4.11",
         "prettier": "^3.0.3",
@@ -43,6 +44,7 @@
     "dependencies": {
         "fp-ts": "^2.16.1",
         "fuse.js": "^6.6.2",
+        "parser-ts": "^0.7.0",
         "type-fest": "^4.6.0",
         "valibot": "^0.19.0"
     }
