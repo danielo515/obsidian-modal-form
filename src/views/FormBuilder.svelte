@@ -6,7 +6,7 @@
         FieldTypeReadable,
         validateFields,
     } from "src/core/formDefinition";
-    import { setIcon, App } from "obsidian";
+    import { setIcon } from "obsidian";
     import InputBuilderDataview from "./components/inputBuilderDataview.svelte";
     import InputBuilderSelect from "./components/InputBuilderSelect.svelte";
     import InputFolder from "./components/InputFolder.svelte";
@@ -120,8 +120,11 @@
         if (!isValidFormDefinition(definition)) return;
         onSubmit(definition);
     };
-    function saveTemplate(template: ParsedTemplate) {
-        onSubmit({ ...definition, template });
+    function saveTemplate(parsedTemplate: ParsedTemplate) {
+        onSubmit({
+            ...definition,
+            template: { parsedTemplate, createCommand: true },
+        });
     }
     const handlePreview = () => {
         if (!isValidFormDefinition(definition)) return;
@@ -140,7 +143,9 @@
                     {fieldNames}
                     {saveTemplate}
                     templateString={definition.template
-                        ? parsedTemplateToString(definition.template)
+                        ? parsedTemplateToString(
+                              definition.template.parsedTemplate,
+                          )
                         : ""}
                 />
             </div>

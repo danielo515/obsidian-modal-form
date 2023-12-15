@@ -73,7 +73,7 @@ export const InputDataviewSourceSchema = object({
     type: literal("dataview"),
     query: nonEmptyString("dataview query"),
 });
-export const InputBasicSchema = object({ type: InputBasicTypeSchema, });
+export const InputBasicSchema = object({ type: InputBasicTypeSchema });
 export const InputSelectFixedSchema = object({
     type: literal("select"),
     source: literal("fixed"),
@@ -177,7 +177,12 @@ const FormDefinitionV1Schema = merge([
     object({
         version: literal("1"),
         fields: FieldListSchema,
-        template: optional(ParsedTemplateSchema)
+        template: optional(
+            object({
+                createCommand: boolean(),
+                parsedTemplate: ParsedTemplateSchema,
+            }),
+        ),
     }),
 ]);
 // This is the latest schema.
@@ -223,7 +228,7 @@ export class InvalidData {
     constructor(
         public data: unknown,
         readonly error: ValiError,
-    ) { }
+    ) {}
     toString(): string {
         return `InvalidData: ${this.error.issues
             .map((issue) => issue.message)
