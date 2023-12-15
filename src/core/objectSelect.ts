@@ -14,13 +14,15 @@ const PickOmitSchema = object({
 
 function picKeys(obj: Record<string, unknown>) {
     return (keys: NonEmptyArray<string>) =>
-        pipe(obj,
+        pipe(
+            obj,
             filterWithIndex((k) => keys.includes(k))
         );
 }
 function omitKeys(obj: Record<string, unknown>) {
     return (keys: NonEmptyArray<string>) =>
-        pipe(obj,
+        pipe(
+            obj,
             filterWithIndex((k) => !keys.includes(k))
         );
 }

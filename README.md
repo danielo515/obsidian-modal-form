@@ -18,6 +18,8 @@ https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4
 - Define forms using a simple JSON format
 - Create and manage a collection of forms, each identified by a unique name
 - User interface for creating new forms
+- Create new notes directly from the form using templates
+  - Template editor has a nice UI for creating templates
 - Many input types 
   - number
   - date
@@ -33,6 +35,8 @@ https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4
     - list of notes from a folder
 
 ![example form](media/example.png)
+![templates](media/templates-v1.gif)
+
 ## Why this plugin?
 
 Obsidian is a great tool for taking notes, but it is also a nice for managing data.
