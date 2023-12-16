@@ -4,8 +4,9 @@
 name: sync versions
 
 on:
+    workflow_dispatch:
     pull_request:
-      types: [opened, reopened, labeled]
+        types: [opened, reopened, labeled]
 
 permissions:
     contents: write
