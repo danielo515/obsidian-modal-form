@@ -16,6 +16,7 @@ import {
 } from "./formDefinitionSchema";
 import { A, O, pipe } from "@std";
 import { ParsedTemplate } from "./template/templateParser";
+import { Simplify } from "type-fest";
 //=========== Types derived from schemas
 type selectFromNotes = Output<typeof SelectFromNotesSchema>;
 type inputSlider = Output<typeof InputSliderSchema>;
@@ -72,7 +73,9 @@ export type FieldDefinition = Output<typeof FieldDefinitionSchema>;
  * FormDefinition is an already valid form, ready to be used in the form modal.
  */
 export type FormDefinition = Output<typeof FormDefinitionLatestSchema>;
-export type FormWithTemplate = FormDefinition & { template: ParsedTemplate }
+export type FormWithTemplate = Simplify<
+    FormDefinition & Required<Pick<FormDefinition, "template">>
+>;
 
 export type FormOptions = {
     values?: Record<string, unknown>;
@@ -81,8 +84,8 @@ export type FormOptions = {
 type KeyOfUnion<T> = T extends unknown ? keyof T : never;
 type PickUnion<T, K extends KeyOfUnion<T>> = T extends unknown
     ? K & keyof T extends never
-    ? never
-    : Pick<T, K & keyof T>
+        ? never
+        : Pick<T, K & keyof T>
     : never;
 
 export type AllSources = PickUnion<inputType, "source">["source"];
