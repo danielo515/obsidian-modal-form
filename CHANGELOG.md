@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.30.1](https://github.com/danielo515/obsidian-modal-form/compare/1.30.0...1.30.1) (2023-12-16)
+
+
+### Bug Fixes
+
+* creation of unique note name ([b40b2c3](https://github.com/danielo515/obsidian-modal-form/commit/b40b2c355311a3bcb67ddf1c94ce15636cb74b95))
+* prevent chalk to be loaded in bundle ([37e4508](https://github.com/danielo515/obsidian-modal-form/commit/37e450895d30863b7f1aac33c071f1f5abd55cc9))
+
 ## [1.30.0](https://github.com/danielo515/obsidian-modal-form/compare/1.29.0...1.30.0) (2023-12-15)
 
 
