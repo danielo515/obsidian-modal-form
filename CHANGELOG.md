@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.32.0](https://github.com/danielo515/obsidian-modal-form/compare/1.31.0...1.32.0) (2023-12-17)
+
+
+### Features
+
+* **template:** add support for frontmatter command in templates ([059891c](https://github.com/danielo515/obsidian-modal-form/commit/059891c6ca80040a0e5a47c6d04cdb3bb8a7e220))
+
 ## [1.31.0](https://github.com/danielo515/obsidian-modal-form/compare/1.30.1...1.31.0) (2023-12-17)
 
 
