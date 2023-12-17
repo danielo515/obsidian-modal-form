@@ -7,32 +7,31 @@ This plugin for [Obsidian](https://obsidian.md) allows to define forms that can 
 
 https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4733-89ea-9c20ea11bee9
 
-
 ## Features
 
-- Forms open in a modal window and return you the values, so you can trigger it from:
-  - Templater templates
-  - QuickAdd captures
-  - DataviewJS queries
-  - Many other places...
-- Define forms using a simple JSON format
-- Create and manage a collection of forms, each identified by a unique name
-- User interface for creating new forms
-- Create new notes directly from the form using templates
-  - Template editor has a nice UI for creating templates
-- Many input types 
-  - number
-  - date
-  - time
-  - slider
-  - toggle (true/false)
-  - free text
-  - text with autocompletion for note names (from a folder or root)
-  - text with autocompletion from a dataview query (requires dataview plugin)
-  - multiple choice input
-  - select from a list 
-    - list of fixed values 
-    - list of notes from a folder
+-   Forms open in a modal window and return you the values, so you can trigger it from:
+    -   Templater templates
+    -   QuickAdd captures
+    -   DataviewJS queries
+    -   Many other places...
+-   Define forms using a simple JSON format
+-   Create and manage a collection of forms, each identified by a unique name
+-   User interface for creating new forms
+-   Create new notes directly from the form using templates
+    -   Template editor has a nice UI for creating templates
+-   Many input types
+    -   number
+    -   date
+    -   time
+    -   slider
+    -   toggle (true/false)
+    -   free text
+    -   text with autocompletion for note names (from a folder or root)
+    -   text with autocompletion from a dataview query (requires dataview plugin)
+    -   multiple choice input
+    -   select from a list
+        -   list of fixed values
+        -   list of notes from a folder
 
 ![example form](media/example.png)
 ![templates](media/templates-v1.gif)
@@ -41,20 +40,21 @@ https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4
 
 Obsidian is a great tool for taking notes, but it is also a nice for managing data.
 However, when it's time to capture structured data it doesn't offer many conveniences.
-Some plugins like [Templater](https://github.com/SilentVoid13/Templater) or [QuickAdd](https://github.com/chhoumann/quickadd) alleviate this problem with templates/automation that ease the creation of notes with a predefined structure, but then you have to fill the data manually. 
-The mentioned plugins (templater, quickAdd) have some little convenience inputs, but they have certain tradeoffs/problems: 
+Some plugins like [Templater](https://github.com/SilentVoid13/Templater) or [QuickAdd](https://github.com/chhoumann/quickadd) alleviate this problem with templates/automation that ease the creation of notes with a predefined structure, but then you have to fill the data manually.
+The mentioned plugins (templater, quickAdd) have some little convenience inputs, but they have certain tradeoffs/problems:
 
-- they are limited to input a single value at a time
-- they don't have labels, or detailed descriptions about the field you are filling
-- you can't skip fields, you will always be prompted for all of them one by one
+-   they are limited to input a single value at a time
+-   they don't have labels, or detailed descriptions about the field you are filling
+-   you can't skip fields, you will always be prompted for all of them one by one
 
 All of the mentioned tools are great at their job and unleash super convenient workflows.
 For that reason, rather than offering an alternative, this plugin is designed as a complement to them, offering some basic building blocks that you can integrate with your existing templates and workflows.
 
 ## Friends of modal form
-- [Templater](https://github.com/SilentVoid13/Templater) to open modals from templates
-- [QuickAdd](https://github.com/chhoumann/quickadd) to quickly capture data from a modal
-- [dataview](https://github.com/blacksmithgu/obsidian-dataview) to provide values for autocompletion
+
+-   [Templater](https://github.com/SilentVoid13/Templater) to open modals from templates
+-   [QuickAdd](https://github.com/chhoumann/quickadd) to quickly capture data from a modal
+-   [dataview](https://github.com/blacksmithgu/obsidian-dataview) to provide values for autocompletion
 
 ## Scope of this plugin
 
@@ -71,25 +71,24 @@ The plugin exposes an API that can be accessed from any JavaScript code that has
 
 ```javascript
 const modalForm = app.plugins.plugins.modalforms.api;
-````
+```
 
 From here you can call any of the main method of the API, `openForm` which allows you to open a form by name and get back the data. Let's see an example:
 
 ```javascript
 const modalForm = app.plugins.plugins.modalforms.api;
-const result = await modalForm.openForm('example-form');
+const result = await modalForm.openForm("example-form");
 ```
 
-The result is a special type of object that contains the data of the form. 
+The result is a special type of object that contains the data of the form.
 It also has somme convenience methods to help you process the returned data.
 One of them is `asFrontmatterString`, which returns the data as a string that can be used in a frontmatter block. Let's see an example using templater:
-
 
 #### Usage with Templater
 
 ```javascript
 ---
-<%* 
+<%*
 const modalForm = app.plugins.plugins.modalforms.api;
 const result = await modalForm.openForm('example-form');
 tR += result.asFrontmatterString();
@@ -102,13 +101,14 @@ When you insert this template in a note, it will open the form, and once you sub
 #### Usage with QuickAdd
 
 In order to open a form from QuickAdd capture, you need to create a capture and activate the capture format, then in the format text-area you must create a code block with the language defined as `js quickadd` and copy the code below:
-```javascript
-	```js quickadd
+
+`````javascript
+```js quickadd
 	const modalForm = app.plugins.plugins.modalforms.api;
 	const result = await modalForm.openForm('example-form');
 	return result.asDataviewProperties();
-	``` 
-````
+```
+`````
 
 Here you have an example screenshot of how it should look like:
 ![quick capture example](media/image.png)
@@ -121,13 +121,14 @@ Here's an example:
 
 ```typescript
 const values = {
-  title: 'My Default Title',
-  description: 'This is a default description.',
+    title: "My Default Title",
+    description: "This is a default description.",
 };
 
 const modalForm = app.plugins.plugins.modalforms.api;
-const result = await modalForm.openForm('example-form', { values: values });
+const result = await modalForm.openForm("example-form", { values: values });
 ```
+
 In this example, the form will open with the `title` field pre-filled with `My Default Title` and the `description` field pre-filled with `This is a default description.`.
 
 **Note**: If a field in the default values object does not exist in the form definition, it will be ignored.
@@ -147,14 +148,14 @@ This method returns the form data as a string of dataview properties. Each key-v
 
 #### getData()
 
-This method returns a copy of the form data. It can be used when you need to manipulate the form data without affecting the original data. 
+This method returns a copy of the form data. It can be used when you need to manipulate the form data without affecting the original data.
 
 #### asString(template: string)
 
 This method returns the form data formatted as a string matching the provided template. The template is a string that can contain placeholders in the format `{{key}}`, which will be replaced with the corresponding value from the form data. Here is an example of how to use it in a templater tempmlate:
 
 ```
-<%* 
+<%*
 const modalForm = app.plugins.plugins.modalforms.api;
 const result = await modalForm.openForm('example-form');
 tR += result.asString('{{Name}} is {{age}} years old and his/her favorite food is {{favorite_meal}}. Family status: {{is_family}}');
@@ -172,12 +173,12 @@ For more advanced usage of the `FormResult` methods please refer to the specific
 Creating a new form is easy, you just need to open the manage forms view, either by clicking in the ribbon icon or by using the command palette (`Obsidian modal form: New form`).
 Once there, click on the `+` button and you will be presented with a form to create a named form definition.
 The form is self-explanatory, but here is some key points you need to keep in mind:
-- The name must be unique, and it will be used to identify the form when you open it from JavaScript, case sensitive
-- The title is what you will see as header in the modal window when you open the form
-- You will not be able to save the form unless all the fields are valid (which means they have a name and a type)
+
+-   The name must be unique, and it will be used to identify the form when you open it from JavaScript, case sensitive
+-   The title is what you will see as header in the modal window when you open the form
+-   You will not be able to save the form unless all the fields are valid (which means they have a name and a type)
 
 ![form editor/creator](media/editor.png)
-
 
 #### Dataview integration
 
@@ -192,42 +193,43 @@ Here is an example of how to use it:
 ```javascript
 const modalForm = app.plugins.plugins.modalforms.api;
 const result = await modalForm.openForm({
-	title: 'Example form',
-	fields: [
-		{
-			name: 'name',
-			label: 'Name',
-			description: 'Your name',
-			input: { type: 'text'} ,
-		},
-		{
-			name: 'age',
-			label: 'Age',
-			description: 'Your age',
-			input: { type: 'number'} ,
-		},
-		{
-			name: 'favorite_meal',
-			label: 'Favorite meal',
-			description: 'Your favorite meal',
-			input: { type: 'text'} ,
-		},
-		{
-			name: 'is_family',
-			label: 'Is family',
-			type: 'toggle',
-			description: 'Are you family?',
-			required: true,
-			input: { type: 'toggle'} ,
-		},
-	],
+    title: "Example form",
+    fields: [
+        {
+            name: "name",
+            label: "Name",
+            description: "Your name",
+            input: { type: "text" },
+        },
+        {
+            name: "age",
+            label: "Age",
+            description: "Your age",
+            input: { type: "number" },
+        },
+        {
+            name: "favorite_meal",
+            label: "Favorite meal",
+            description: "Your favorite meal",
+            input: { type: "text" },
+        },
+        {
+            name: "is_family",
+            label: "Is family",
+            type: "toggle",
+            description: "Are you family?",
+            required: true,
+            input: { type: "toggle" },
+        },
+    ],
 });
 ```
 
 You can make it smaller by removing some of the optional fields like description or label, but I really encourage you to define them all.
 
 ### Tips and tricks
-- [How to make opening the forms more convenient](docs/advanced-examples.md#making-calling-forms-more-convenient)
+
+-   [How to make opening the forms more convenient](docs/advanced-examples.md#making-calling-forms-more-convenient)
 
 ## Installing the plugin
 
@@ -243,19 +245,19 @@ You can install the plugin directly from the Obsidian plugin store or through [B
 
 ## Manually installing the plugin
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/modalForm/`.
+-   Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/modalForm/`.
 
 ## How to develop
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+-   Clone this repo.
+-   Make sure your NodeJS is at least v16 (`node --version`).
+-   `npm i` or `yarn` to install dependencies.
+-   `npm run dev` to start compilation in watch mode.
 
 ### Releasing new releases
 
-- run `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+-   run `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
+-   Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
+-   Publish the release.
 
 > The command `npm version whatever` will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
