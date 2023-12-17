@@ -63,4 +63,21 @@ export default class FormResult {
         }
         return result;
     }
+    /* == Aliases ==*/
+    /**
+     * just an alias for `asFrontmatterString`
+     */
+    asFrontmatter = this.asFrontmatterString;
+    /**
+     * just an alias for `asFrontmatterString`
+     */
+    asYaml = this.asFrontmatterString;
+    /**
+     * just an alias for `asDataviewProperties`
+     */
+    asDataview = this.asDataviewProperties;
+    /**
+     * just an alias for `asDataviewProperties`
+     */
+    asDv = this.asDataviewProperties;
 }
