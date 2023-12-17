@@ -155,4 +155,27 @@ age: 30`;
             ).toEqual(expectedOutput);
         });
     });
+    describe("get a single value", () => {
+        it("should return the value of the specified key", () => {
+            const result = new FormResult(formData, "ok");
+            expect(result.get("name")).toEqual("John Doe");
+        });
+
+        it("should return the value of the specified key transformed by the provided function", () => {
+            const result = new FormResult(formData, "ok");
+            expect(
+                result.get("age", (value) => {
+                    if (typeof value !== "number") {
+                        return 0;
+                    }
+                    return value + 1;
+                }),
+            ).toEqual(31);
+        });
+
+        it("should return an empty string if the specified key doesn't exist", () => {
+            const result = new FormResult(formData, "ok");
+            expect(result.get("foo")).toEqual("");
+        });
+    });
 });
