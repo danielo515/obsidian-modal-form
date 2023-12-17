@@ -65,7 +65,7 @@ The only features that I will consider adding will be ones about improving the f
 
 ### Call the form from JavaScript
 
-Since the main usage of this plugin is opening forms and getting back their data let's start with that. If you want to lear how to create forms, skip to the next section [define a form](define-a-form).
+Since the main usage of this plugin is opening forms and getting back their data let's start with that. If you want to lear how to create forms, skip to the next section [define a form](#define-a-form).
 
 The plugin exposes an API that can be accessed from any JavaScript code that has access to the global `app` object. So, in order to get the API you can do:
 
