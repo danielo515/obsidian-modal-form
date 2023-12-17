@@ -1,6 +1,6 @@
 import { pipe as p, flow as f } from "fp-ts/function";
 import { partitionMap, findFirst, findFirstMap, partition, map as mapArr, filter, compact, filterMap } from "fp-ts/Array";
-import { map as mapO, getOrElse as getOrElseOpt, some, none, fromNullable as fromNullableOpt } from 'fp-ts/Option'
+import { map as mapO, getOrElse as getOrElseOpt, some, none, fromNullable as fromNullableOpt, fold as ofold } from 'fp-ts/Option'
 import { isLeft, isRight, tryCatchK, map, getOrElse, fromNullable, right, left, mapLeft, Either, bimap, tryCatch, flatMap } from "fp-ts/Either";
 import { BaseSchema, Output, ValiError, parse as parseV } from "valibot";
 import { Semigroup, concatAll } from "fp-ts/Semigroup";
@@ -45,6 +45,7 @@ export const O = {
     map: mapO,
     getOrElse: getOrElseOpt,
     some, none,
+    fold: ofold,
     fromNullable: fromNullableOpt,
 }
 
@@ -105,4 +106,11 @@ export function throttle(fn: (...args: unknown[]) => unknown, ms = 100) {
         lastCall = now;
         return fn(...args);
     };
+}
+
+export function tap(msg: string) {
+    return <T>(x: T) => {
+        console.log(msg, x)
+        return x
+    }
 }

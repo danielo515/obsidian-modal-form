@@ -1,7 +1,8 @@
-import { parseTemplate, anythingUntilOpenOrEOF } from "./templateParser";
+import { parseTemplate, anythingUntilOpenOrEOF, executeTemplate } from "./templateParser";
 import * as S from 'parser-ts/string'
 import * as E from "fp-ts/Either";
-import { pipe } from "@std";
+import { pipe, tap } from "@std";
+import { stringifyYaml } from "obsidian";
 
 const inspect = (val: unknown) => {
     console.dir(val, { depth: 10 });
@@ -102,5 +103,52 @@ describe("parseTemplate", () => {
                 { _tag: "text", value: "!" },
             ],
         ));
+    })
+    it("should parse a frontmatter command", () => {
+        const template = "{#frontmatter#}";
+        const result = parseTemplate(template);
+        expect(result).toEqual(E.of([{ _tag: "frontmatter-command", pick: [], omit: [] }]));
+    })
+
+    it("should parse a frontmatter command that includes spaces", () => {
+        const template = "{# frontmatter #}";
+        const result = parseTemplate(template);
+        expect(result).toEqual(E.of([{ _tag: "frontmatter-command", pick: [], omit: [] }]));
+    })
+    it("should parse a frontmatter command with pick values", () => {
+        const template = "{# frontmatter pick: name,age #}";
+        const result = parseTemplate(template);
+        expect(result).toEqual(E.of([{ _tag: "frontmatter-command", pick: ['name', 'age'], omit: [] }]));
+    })
+
+    it("should parse a frontmatter command with pick values that can be separated by spaces", () => {
+        const template = "{# frontmatter pick: name, age #}";
+        const result = parseTemplate(template);
+        expect(result).toEqual(E.of([{ _tag: "frontmatter-command", pick: ['name', 'age'], omit: [] }]));
+    })
+
+    it("Should properly execute a template with a frontmatter command", () => {
+        const template = "{# frontmatter #}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { name: 'John', age: 18 })
+            ),
+            E.map(tap('executed')),
+        )
+        expect(result).toEqual(E.of(stringifyYaml({ name: 'John', age: 18 })))
+    })
+    it("Should properly execute a template with a frontmatter command that specifies a pick", () => {
+        const template = "{# frontmatter pick: name #}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { name: 'John', age: 18 })
+            ),
+            E.map(tap('executed')),
+        )
+        expect(result).toEqual(E.of(stringifyYaml({ name: 'John' })))
     })
 });
