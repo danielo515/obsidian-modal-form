@@ -8,21 +8,28 @@ Transforms the current data into a frontmatter string, which is expected to be e
 
 ### Parameters
 
-- `options` (optional): An options object describing what options to pick or omit.
+-   `options` (optional): An options object describing what options to pick or omit.
 
-  - `pick` (optional): An array of key names to pick from the data.
-  - `omit` (optional): An array of key names to omit from the data.
+    -   `pick` (optional): An array of key names to pick from the data.
+    -   `omit` (optional): An array of key names to omit from the data.
 
 ### Returns
 
-- `string`: The data formatted as a frontmatter string.
+-   `string`: The data formatted as a frontmatter string.
 
 ### Example
 
 ```typescript
-const result = await form.openForm('my-form')
-tR += result.asFrontmatterString({ pick: ['title'] });
+const result = await form.openForm("my-form");
+tR += result.asFrontmatterString({ pick: ["title"] });
 ```
+
+### Aliases
+
+this method has the following aliases:
+
+-   `asFrontmatter`
+-   `asYaml`
 
 ## `asDataviewProperties(options?: unknown): string`
 
@@ -30,18 +37,55 @@ Returns the current data as a block of dataview properties.
 
 ### Parameters
 
-- `options` (optional): An options object describing what options to pick or omit.
+-   `options` (optional): An options object describing what options to pick or omit.
 
-    - `pick` (optional): An array of key names to pick from the data.
-    - `omit` (optional): An array of key names to omit from the data.
+    -   `pick` (optional): An array of key names to pick from the data.
+    -   `omit` (optional): An array of key names to omit from the data.
 
 ### Returns
 
-- `string`: The data formatted as a block of dataview properties.
+-   `string`: The data formatted as a block of dataview properties.
 
 ### Example
 
 ```typescript
 const result = await form.openForm('my-form')
 tR += result.asDataviewProperties({ pick: ['title'] });`
+```
+
+### Aliases
+
+This method has the following aliases:
+
+-   `asDataview`
+-   `asDv`
+
+## `get(key: string, mapFn?: (value: any) => any): any`
+
+Returns the value of the given key.
+If the key does not exist, returns the empty string `""`.
+It takes an optional map function that can be used to transform the value.
+If the key does not exist, the map function is not called.
+
+### Parameters
+
+-   `key`: The key to get the value of.
+-   `mapFn` (optional): A function that takes the value and returns a new value.
+
+### Returns
+
+-   `any`: The value of the given key.
+
+### Example
+
+```typescript
+const result = await form.openForm("my-form");
+tR += result.get("title");
+```
+
+Or with a map function:
+
+```typescript
+const result = await form.openForm("my-form");
+tR += result.get("title", (value) => value.toUpperCase());
 ```
