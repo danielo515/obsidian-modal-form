@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.31.0](https://github.com/danielo515/obsidian-modal-form/compare/1.30.1...1.31.0) (2023-12-17)
+
+
+### Features
+
+* added a get method for result data fixes [#129](https://github.com/danielo515/obsidian-modal-form/issues/129) ([ddee8a8](https://github.com/danielo515/obsidian-modal-form/commit/ddee8a84b255f2193a9267786a80611382bdd046))
+
+
+### Bug Fixes
+
+* add aliases for Result methods fixes [#122](https://github.com/danielo515/obsidian-modal-form/issues/122) ([d6f755c](https://github.com/danielo515/obsidian-modal-form/commit/d6f755cea44195b3bfb77d1996ededc8356334bc))
+
 ## [1.30.1](https://github.com/danielo515/obsidian-modal-form/compare/1.30.0...1.30.1) (2023-12-16)
 
 
