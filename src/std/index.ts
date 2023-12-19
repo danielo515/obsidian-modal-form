@@ -159,3 +159,31 @@ export function tap(msg: string) {
         return x;
     };
 }
+
+function ensureError(e: unknown): Error {
+    return e instanceof Error ? e : new Error(String(e));
+}
+
+/**
+ * Creates a function from a string that is supposed to be a function body.
+ * It ensures the "use strict" directive is present and returns the function.
+ * Because the parsing can fail, it returns an Either.
+ * The reason why the type arguments are reversed is because
+ * we often know what the function input types should be, but
+ * we can't trust the function body to return the correct type, so by default1t it will be unknown
+ */
+export function parseFunctionBody<Args extends unknown[], T>(
+    body: string,
+    ...args: string[]
+) {
+    const fnBody = `"use strict";
+${body}`;
+    try {
+        return right(new Function(...args, fnBody)) as Either<
+            Error,
+            (...args: Args) => T
+        >;
+    } catch (e) {
+        return left(ensureError(e));
+    }
+}

@@ -1,4 +1,4 @@
-import { E, pipe, trySchemas } from "./index";
+import { E, parseFunctionBody, pipe, trySchemas } from "./index";
 import { string, number, array, boolean, object } from "valibot";
 
 describe("trySchemas", () => {
@@ -29,7 +29,7 @@ describe("trySchemas", () => {
             hobbies: ["reading", "swimming"],
             isEmployed: true,
         };
-        console.log(' ====== 1 =====')
+        console.log(" ====== 1 =====");
         const result = trySchemas([schema1, schema2, schema3])(input);
         expect(result).toEqual({
             _tag: "Right",
@@ -49,7 +49,7 @@ describe("trySchemas", () => {
             age: 25,
             isStudent: true,
         };
-        console.log(' ====== 2 =====')
+        console.log(" ====== 2 =====");
         const result = trySchemas([schema1, schema2, schema3])(input);
         expect(result).toEqual({
             _tag: "Right",
@@ -69,12 +69,12 @@ describe("trySchemas", () => {
             hobbies: ["reading", "swimming"],
             isEmployed: true,
         };
-        console.log(' ====== 3 =====')
+        console.log(" ====== 3 =====");
         const result = trySchemas([schema1, schema2, schema3])(input);
         if (E.isLeft(result)) {
-            expect(result.left.message).toEqual('Invalid type');
+            expect(result.left.message).toEqual("Invalid type");
         } else {
-            fail('expected a Left')
+            fail("expected a Left");
         }
     });
 
@@ -85,7 +85,7 @@ describe("trySchemas", () => {
             hobbies: ["reading", "swimming"],
             isEmployed: true,
         };
-        console.log(' ====== 4 =====')
+        console.log(" ====== 4 =====");
         const result = trySchemas([schema1])(input);
         expect(result).toEqual(E.right(input));
     });
@@ -101,8 +101,42 @@ describe("trySchemas", () => {
         pipe(
             result,
             E.bimap(
-                (x) => expect(x.message).toEqual('Invalid type'),
-                () => fail('expected a Left')
-            ))
+                (x) => expect(x.message).toEqual("Invalid type"),
+                () => fail("expected a Left"),
+            ),
+        );
+    });
+});
+
+describe("parseFunctionBody", () => {
+    it("should parse a function body", () => {
+        const input = "return x + 1;";
+        const result = parseFunctionBody(input);
+        pipe(
+            result,
+            E.match(
+                (err) => fail("Expected a right"),
+                (result) => expect(result.toString()).toMatch(input),
+            ),
+        );
+    });
+    it("should fail to parse a function body when it is incorrect", () => {
+        const input = "{ return x + 1; ";
+        const result = parseFunctionBody(input);
+        expect(result).toEqual(E.left(new SyntaxError("Unexpected token ')'")));
+    });
+    it("should parse a function body with arguments", () => {
+        const input = "return x + 1;";
+        const result = parseFunctionBody<[number], number>(input, "x");
+        pipe(
+            result,
+            E.match(
+                () => fail("Expected a right"),
+                (result) => {
+                    expect(result.toString()).toMatch(input);
+                    expect(result(1)).toEqual(2);
+                },
+            ),
+        );
     });
 });
