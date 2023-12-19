@@ -1,3 +1,4 @@
+import { MultiselectSchema } from "./InputDefinitionSchema";
 import {
     isDataViewSource,
     isInputNoteFromFolder,
@@ -5,7 +6,6 @@ import {
     isInputSlider,
     isSelectFromNotes,
 } from "./formDefinition";
-import { MultiselectSchema } from "./formDefinitionSchema";
 import { parse } from "valibot";
 
 describe("isDataViewSource", () => {
