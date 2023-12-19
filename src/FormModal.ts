@@ -1,9 +1,8 @@
 import { App, Modal, Platform, Setting } from "obsidian";
+import * as R from "fp-ts/Record";
 import MultiSelect from "./views/components/MultiSelect.svelte";
-import FormResult, {
-    type ModalFormData,
-} from "./core/FormResult";
-import { formDataFromFormDefaults } from './core/formDataFromFormDefaults';
+import FormResult, { type ModalFormData } from "./core/FormResult";
+import { formDataFromFormDefaults } from "./core/formDataFromFormDefaults";
 import { exhaustiveGuard } from "./safety";
 import { get_tfiles_from_folder } from "./utils/files";
 import type { FormDefinition, FormOptions } from "./core/formDefinition";
@@ -19,12 +18,24 @@ import { log_error, log_notice } from "./utils/Log";
 import { FieldValue, FormEngine, makeFormEngine } from "./store/formStore";
 import { Writable } from "svelte/store";
 import { FolderSuggest } from "./suggesters/suggestFolder";
+import { tryCatchK } from "fp-ts/Either";
 
 export type SubmitFn = (formResult: FormResult) => void;
 
+const notify = throttle(
+    (msg: string) =>
+        log_notice("⚠️  The form has errors ⚠️", msg, "notice-warning"),
+    2000,
+);
+const notifyError = (title: string) =>
+    throttle(
+        (msg: string) => log_notice(`🚨 ${title} 🚨`, msg, "notice-error"),
+        2000,
+    );
+
 export class FormModal extends Modal {
     svelteComponents: SvelteComponent[] = [];
-    initialFormValues: ModalFormData
+    initialFormValues: ModalFormData;
     subscriptions: (() => void)[] = [];
     formEngine: FormEngine<FieldValue>;
     constructor(
@@ -34,29 +45,21 @@ export class FormModal extends Modal {
         options?: FormOptions,
     ) {
         super(app);
-        this.initialFormValues = formDataFromFormDefaults(modalDefinition.fields, options?.values ?? {})
+        this.initialFormValues = formDataFromFormDefaults(
+            modalDefinition.fields,
+            options?.values ?? {},
+        );
         this.formEngine = makeFormEngine((result) => {
             this.onSubmit(new FormResult(result, "ok"));
             this.close();
         }, this.initialFormValues);
-        this.formEngine.subscribe(console.log)
+        // this.formEngine.subscribe(console.log);
     }
 
-    // onOpen2() {
-    //     const { contentEl } = this;
-    //     const component = new FormModalComponent({
-    //         target: contentEl,
-    //         props: {
-    //             onSubmit: this.onSubmit,
-    //             formDefinition: this.modalDefinition,
-    //         },
-    //     });
-    //     this.svelteComponents.push(component);
-    // }
     onOpen() {
         const { contentEl } = this;
         // This class is very important for scoped styles
-        contentEl.addClass('modal-form');
+        contentEl.addClass("modal-form");
         if (this.modalDefinition.customClassname)
             contentEl.addClass(this.modalDefinition.customClassname);
         contentEl.createEl("h1", { text: this.modalDefinition.title });
@@ -74,11 +77,10 @@ export class FormModal extends Modal {
             const subToErrors = (
                 input: HTMLInputElement | HTMLTextAreaElement,
             ) => {
-                const notify = throttle((msg: string) => log_notice('⚠️ The form has errors ⚠️', msg, 'notice-warning'), 2000)
                 this.subscriptions.push(
                     fieldStore.errors.subscribe((errs) => {
-                        console.log('errors', errs)
-                        errs.forEach(notify)
+                        console.log("errors", errs);
+                        errs.forEach(notify);
                         input.setCustomValidity(errs.join("\n"));
                     }),
                 );
@@ -157,10 +159,7 @@ export class FormModal extends Modal {
                     });
                 case "folder":
                     return fieldBase.addText((element) => {
-                        new FolderSuggest(
-                            element.inputEl,
-                            this.app,
-                        );
+                        new FolderSuggest(element.inputEl, this.app);
                         subToErrors(element.inputEl);
                         element.onChange(fieldStore.value.set);
                     });
@@ -181,22 +180,22 @@ export class FormModal extends Modal {
                         source == "fixed"
                             ? fieldInput.multi_select_options
                             : source == "notes"
-                                ? pipe(
-                                    get_tfiles_from_folder(
-                                        fieldInput.folder,
-                                        this.app,
-                                    ),
-                                    E.map(A.map((file) => file.basename)),
-                                    E.getOrElse((err) => {
-                                        log_error(err);
-                                        return [] as string[];
-                                    }),
-                                )
-                                : executeSandboxedDvQuery(
-                                    sandboxedDvQuery(fieldInput.query),
-                                    this.app,
-                                );
-                    fieldStore.value.set(initialValue ?? [])
+                            ? pipe(
+                                  get_tfiles_from_folder(
+                                      fieldInput.folder,
+                                      this.app,
+                                  ),
+                                  E.map(A.map((file) => file.basename)),
+                                  E.getOrElse((err) => {
+                                      log_error(err);
+                                      return [] as string[];
+                                  }),
+                              )
+                            : executeSandboxedDvQuery(
+                                  sandboxedDvQuery(fieldInput.query),
+                                  this.app,
+                              );
+                    fieldStore.value.set(initialValue ?? []);
                     this.svelteComponents.push(
                         new MultiSelect({
                             target: fieldBase.controlEl,
@@ -215,7 +214,7 @@ export class FormModal extends Modal {
                     const options = Object.keys(
                         this.app.metadataCache.getTags(),
                     ).map((tag) => tag.slice(1)); // remove the #
-                    fieldStore.value.set(initialValue ?? [])
+                    fieldStore.value.set(initialValue ?? []);
                     this.svelteComponents.push(
                         new MultiSelect({
                             target: fieldBase.controlEl,
@@ -238,59 +237,83 @@ export class FormModal extends Modal {
                         subToErrors(element.inputEl);
                     });
                 }
-                case "select":
-                    {
-                        const source = fieldInput.source;
-                        switch (source) {
-                            case "fixed":
-                                return fieldBase.addDropdown((element) => {
-                                    fieldInput.options.forEach((option) => {
-                                        element.addOption(
-                                            option.value,
-                                            option.label,
-                                        );
-                                    });
-                                    fieldStore.value.set(element.getValue());
-                                    element.onChange(fieldStore.value.set);
+                case "select": {
+                    const source = fieldInput.source;
+                    switch (source) {
+                        case "fixed":
+                            return fieldBase.addDropdown((element) => {
+                                fieldInput.options.forEach((option) => {
+                                    element.addOption(
+                                        option.value,
+                                        option.label,
+                                    );
                                 });
+                                fieldStore.value.set(element.getValue());
+                                element.onChange(fieldStore.value.set);
+                            });
 
-                            case "notes":
-                                return fieldBase.addDropdown((element) => {
-                                    const files = get_tfiles_from_folder(
-                                        fieldInput.folder,
-                                        this.app,
-                                    );
-                                    pipe(
-                                        files,
-                                        E.map((files) =>
-                                            files.reduce(
-                                                (
-                                                    acc: Record<string, string>,
-                                                    option,
-                                                ) => {
-                                                    acc[option.basename] =
-                                                        option.basename;
-                                                    return acc;
-                                                },
-                                                {},
-                                            ),
+                        case "notes":
+                            return fieldBase.addDropdown((element) => {
+                                const files = get_tfiles_from_folder(
+                                    fieldInput.folder,
+                                    this.app,
+                                );
+                                pipe(
+                                    files,
+                                    E.map((files) =>
+                                        files.reduce(
+                                            (
+                                                acc: Record<string, string>,
+                                                option,
+                                            ) => {
+                                                acc[option.basename] =
+                                                    option.basename;
+                                                return acc;
+                                            },
+                                            {},
                                         ),
-                                        E.mapLeft((err) => {
-                                            log_error(err);
-                                            return err;
-                                        }),
-                                        E.map((options) => {
-                                            element.addOptions(options);
-                                        }),
-                                    );
-                                    fieldStore.value.set(element.getValue());
-                                    element.onChange(fieldStore.value.set);
-                                });
-                            default:
-                                exhaustiveGuard(source);
-                        }
+                                    ),
+                                    E.mapLeft((err) => {
+                                        log_error(err);
+                                        return err;
+                                    }),
+                                    E.map((options) => {
+                                        element.addOptions(options);
+                                    }),
+                                );
+                                fieldStore.value.set(element.getValue());
+                                element.onChange(fieldStore.value.set);
+                            });
+                        default:
+                            exhaustiveGuard(source);
                     }
                     break;
+                }
+                case "document_block": {
+                    console.log("Hey, document block", fieldInput);
+                    const functionBody = fieldInput.body;
+                    const functionParsed = new Function(
+                        "form",
+                        functionBody,
+                    ) as (form: Record<string, FieldValue>) => string;
+                    const domNode = fieldBase.infoEl.createDiv();
+                    const sub = this.formEngine.subscribe((form) => {
+                        console.log("form in block", form);
+                        pipe(
+                            form.fields,
+                            R.filterMap((field) => field.value),
+                            tryCatchK(functionParsed, (err) =>
+                                JSON.stringify(err),
+                            ),
+                            E.match(
+                                notifyError("Error in document block"),
+                                (newText) => domNode.setText(newText),
+                            ),
+                        );
+                    });
+                    return this.subscriptions.push(sub);
+                }
+
                 default:
                     return exhaustiveGuard(type);
             }
@@ -318,6 +341,6 @@ export class FormModal extends Modal {
         this.svelteComponents.forEach((component) => component.$destroy());
         this.subscriptions.forEach((subscription) => subscription());
         contentEl.empty();
-        this.initialFormValues = {}
+        this.initialFormValues = {};
     }
 }

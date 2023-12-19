@@ -3,8 +3,8 @@
         type EditableFormDefinition,
         type FormDefinition,
         isValidFormDefinition,
-        FieldTypeReadable,
         validateFields,
+        InputTypeReadable,
     } from "src/core/formDefinition";
     import { setIcon } from "obsidian";
     import InputBuilderDataview from "./components/inputBuilderDataview.svelte";
@@ -309,7 +309,7 @@
                                         bind:value={field.input.type}
                                         id={`type_${index}`}
                                     >
-                                        {#each Object.entries(FieldTypeReadable) as type}
+                                        {#each Object.entries(InputTypeReadable) as type}
                                             <option value={type[0]}
                                                 >{type[1]}</option
                                             >

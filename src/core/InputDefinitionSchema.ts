@@ -98,6 +98,15 @@ export const MultiselectSchema = union([
     MultiSelectFixedSchema,
     MultiSelectQuerySchema,
 ]);
+
+// This is a special type of input that lets you render a string
+// based on the values of other fields.
+const DocumentBlock = object({
+    type: literal("document_block"),
+    body: string(),
+});
+
+// Codec for all the input types
 export const InputTypeSchema = union([
     InputBasicSchema,
     InputNoteFromFolderSchema,
@@ -108,7 +117,9 @@ export const InputTypeSchema = union([
     InputDataviewSourceSchema,
     InputSelectFixedSchema,
     MultiselectSchema,
+    DocumentBlock,
 ]);
+
 export const InputTypeToParserMap: Record<
     AllFieldTypes,
     ParsingFn<BaseSchema>
@@ -129,6 +140,7 @@ export const InputTypeToParserMap: Record<
     select: trySchemas([SelectFromNotesSchema, InputSelectFixedSchema]),
     dataview: parseC(InputDataviewSourceSchema),
     multiselect: parseC(MultiselectSchema),
+    document_block: parseC(DocumentBlock),
 };
 
 //=========== Types derived from schemas

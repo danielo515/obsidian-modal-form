@@ -27,7 +27,7 @@ import {
     selectFromNotes,
 } from "./InputDefinitionSchema";
 
-export const FieldTypeReadable: Record<AllFieldTypes, string> = {
+export const InputTypeReadable: Record<AllFieldTypes, string> = {
     text: "Text",
     number: "Number",
     tag: "Tags",
@@ -44,6 +44,7 @@ export const FieldTypeReadable: Record<AllFieldTypes, string> = {
     select: "Select",
     dataview: "Dataview",
     multiselect: "Multiselect",
+    document_block: "Document block",
 } as const;
 
 export function isDataViewSource(input: unknown): input is inputDataviewSource {
