@@ -31,6 +31,9 @@ import {
     bimap,
     tryCatch,
     flatMap,
+    ap,
+    flap,
+    chainW,
     match,
 } from "fp-ts/Either";
 import { BaseSchema, Output, ValiError, parse as parseV } from "valibot";
@@ -71,6 +74,9 @@ export const E = {
     flatMap,
     fromNullable,
     match,
+    ap,
+    flap,
+    chainW,
 };
 
 export const O = {
@@ -96,20 +102,13 @@ type ParseOpts = Parameters<typeof parse>[2];
 export function parseC<S extends BaseSchema>(schema: S, options?: ParseOpts) {
     return (input: unknown) => parse(schema, input, options);
 }
-export type ParsingFn<S extends BaseSchema> = (
-    input: unknown,
-) => Either<ValiError, Output<S>>;
+export type ParsingFn<S extends BaseSchema> = (input: unknown) => Either<ValiError, Output<S>>;
 /**
  * Concatenates two parsing functions that return Either<ValiError, B> into one.
  * If the first function returns a Right, the second function is not called.
  */
-class _EFunSemigroup<A extends BaseSchema, B extends BaseSchema>
-    implements Semigroup<ParsingFn<A>>
-{
-    concat(
-        f: ParsingFn<A>,
-        g: ParsingFn<B>,
-    ): (i: unknown) => Either<ValiError, unknown> {
+class _EFunSemigroup<A extends BaseSchema, B extends BaseSchema> implements Semigroup<ParsingFn<A>> {
+    concat(f: ParsingFn<A>, g: ParsingFn<B>): (i: unknown) => Either<ValiError, unknown> {
         return (i) => {
             const fRes = f(i);
             if (isRight(fRes)) return fRes;
@@ -124,10 +123,7 @@ export const EFunSemigroup = new _EFunSemigroup();
  * Takes an array of schemas and returns a function
  * that tries to parse the input with each schema.
  */
-export function trySchemas<S extends BaseSchema>(
-    schemas: NonEmptyArray<S>,
-    options?: ParseOpts,
-) {
+export function trySchemas<S extends BaseSchema>(schemas: NonEmptyArray<S>, options?: ParseOpts) {
     const [first, ...rest] = schemas;
     return pipe(
         rest,
@@ -172,17 +168,12 @@ function ensureError(e: unknown): Error {
  * we often know what the function input types should be, but
  * we can't trust the function body to return the correct type, so by default1t it will be unknown
  */
-export function parseFunctionBody<Args extends unknown[], T>(
-    body: string,
-    ...args: string[]
-) {
+export function parseFunctionBody<Args extends unknown[], T>(body: string, ...args: string[]) {
     const fnBody = `"use strict";
 ${body}`;
     try {
-        return right(new Function(...args, fnBody)) as Either<
-            Error,
-            (...args: Args) => T
-        >;
+        const fn = new Function(...args, fnBody) as (...args: Args) => T;
+        return right(tryCatchK(fn, ensureError));
     } catch (e) {
         return left(ensureError(e));
     }

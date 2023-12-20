@@ -9,29 +9,18 @@ import type { FormDefinition, FormOptions } from "./core/formDefinition";
 import { FileSuggest } from "./suggesters/suggestFile";
 import { DataviewSuggest } from "./suggesters/suggestFromDataview";
 import { SvelteComponent } from "svelte";
-import {
-    executeSandboxedDvQuery,
-    sandboxedDvQuery,
-} from "./suggesters/SafeDataviewQuery";
-import { A, E, pipe, throttle } from "@std";
+import { executeSandboxedDvQuery, sandboxedDvQuery } from "./suggesters/SafeDataviewQuery";
+import { A, E, flow, parseFunctionBody, pipe, throttle } from "@std";
 import { log_error, log_notice } from "./utils/Log";
 import { FieldValue, FormEngine, makeFormEngine } from "./store/formStore";
 import { Writable } from "svelte/store";
 import { FolderSuggest } from "./suggesters/suggestFolder";
-import { tryCatchK } from "fp-ts/Either";
 
 export type SubmitFn = (formResult: FormResult) => void;
 
-const notify = throttle(
-    (msg: string) =>
-        log_notice("⚠️  The form has errors ⚠️", msg, "notice-warning"),
-    2000,
-);
+const notify = throttle((msg: string) => log_notice("⚠️  The form has errors ⚠️", msg, "notice-warning"), 2000);
 const notifyError = (title: string) =>
-    throttle(
-        (msg: string) => log_notice(`🚨 ${title} 🚨`, msg, "notice-error"),
-        2000,
-    );
+    throttle((msg: string) => log_notice(`🚨 ${title} 🚨`, msg, "notice-error"), 2000);
 
 export class FormModal extends Modal {
     svelteComponents: SvelteComponent[] = [];
@@ -45,10 +34,7 @@ export class FormModal extends Modal {
         options?: FormOptions,
     ) {
         super(app);
-        this.initialFormValues = formDataFromFormDefaults(
-            modalDefinition.fields,
-            options?.values ?? {},
-        );
+        this.initialFormValues = formDataFromFormDefaults(modalDefinition.fields, options?.values ?? {});
         this.formEngine = makeFormEngine((result) => {
             this.onSubmit(new FormResult(result, "ok"));
             this.close();
@@ -60,8 +46,7 @@ export class FormModal extends Modal {
         const { contentEl } = this;
         // This class is very important for scoped styles
         contentEl.addClass("modal-form");
-        if (this.modalDefinition.customClassname)
-            contentEl.addClass(this.modalDefinition.customClassname);
+        if (this.modalDefinition.customClassname) contentEl.addClass(this.modalDefinition.customClassname);
         contentEl.createEl("h1", { text: this.modalDefinition.title });
         this.modalDefinition.fields.forEach((definition) => {
             const fieldBase = new Setting(contentEl)
@@ -74,12 +59,10 @@ export class FormModal extends Modal {
             const type = fieldInput.type;
             const initialValue = this.initialFormValues[definition.name];
             const fieldStore = this.formEngine.addField(definition);
-            const subToErrors = (
-                input: HTMLInputElement | HTMLTextAreaElement,
-            ) => {
+            const subToErrors = (input: HTMLInputElement | HTMLTextAreaElement) => {
                 this.subscriptions.push(
                     fieldStore.errors.subscribe((errs) => {
-                        console.log("errors", errs);
+                        errs.length > 0 ? console.log("errors", errs) : void 0;
                         errs.forEach(notify);
                         input.setCustomValidity(errs.join("\n"));
                     }),
@@ -95,8 +78,7 @@ export class FormModal extends Modal {
                             textEl.setValue(initialValue);
                         }
                         textEl.inputEl.rows = 6;
-                        if (Platform.isIosApp)
-                            textEl.inputEl.style.width = "100%";
+                        if (Platform.isIosApp) textEl.inputEl.style.width = "100%";
                         else if (Platform.isDesktopApp) {
                             textEl.inputEl.rows = 10;
                         }
@@ -111,8 +93,7 @@ export class FormModal extends Modal {
                         text.inputEl.type = type;
                         subToErrors(text.inputEl);
                         text.onChange(fieldStore.value.set);
-                        initialValue !== undefined &&
-                            text.setValue(String(initialValue));
+                        initialValue !== undefined && text.setValue(String(initialValue));
                     });
                 case "number":
                     return fieldBase.addText((text) => {
@@ -123,14 +104,12 @@ export class FormModal extends Modal {
                                 fieldStore.value.set(Number(val) + "");
                             }
                         });
-                        initialValue !== undefined &&
-                            text.setValue(String(initialValue));
+                        initialValue !== undefined && text.setValue(String(initialValue));
                     });
                 case "datetime":
                     return fieldBase.addText((text) => {
                         text.inputEl.type = "datetime-local";
-                        initialValue !== undefined &&
-                            text.setValue(String(initialValue));
+                        initialValue !== undefined && text.setValue(String(initialValue));
                         subToErrors(text.inputEl);
                         text.onChange(fieldStore.value.set);
                     });
@@ -180,21 +159,15 @@ export class FormModal extends Modal {
                         source == "fixed"
                             ? fieldInput.multi_select_options
                             : source == "notes"
-                            ? pipe(
-                                  get_tfiles_from_folder(
-                                      fieldInput.folder,
-                                      this.app,
-                                  ),
-                                  E.map(A.map((file) => file.basename)),
-                                  E.getOrElse((err) => {
-                                      log_error(err);
-                                      return [] as string[];
-                                  }),
-                              )
-                            : executeSandboxedDvQuery(
-                                  sandboxedDvQuery(fieldInput.query),
-                                  this.app,
-                              );
+                              ? pipe(
+                                    get_tfiles_from_folder(fieldInput.folder, this.app),
+                                    E.map(A.map((file) => file.basename)),
+                                    E.getOrElse((err) => {
+                                        log_error(err);
+                                        return [] as string[];
+                                    }),
+                                )
+                              : executeSandboxedDvQuery(sandboxedDvQuery(fieldInput.query), this.app);
                     fieldStore.value.set(initialValue ?? []);
                     this.svelteComponents.push(
                         new MultiSelect({
@@ -211,9 +184,7 @@ export class FormModal extends Modal {
                     return;
                 }
                 case "tag": {
-                    const options = Object.keys(
-                        this.app.metadataCache.getTags(),
-                    ).map((tag) => tag.slice(1)); // remove the #
+                    const options = Object.keys(this.app.metadataCache.getTags()).map((tag) => tag.slice(1)); // remove the #
                     fieldStore.value.set(initialValue ?? []);
                     this.svelteComponents.push(
                         new MultiSelect({
@@ -243,10 +214,7 @@ export class FormModal extends Modal {
                         case "fixed":
                             return fieldBase.addDropdown((element) => {
                                 fieldInput.options.forEach((option) => {
-                                    element.addOption(
-                                        option.value,
-                                        option.label,
-                                    );
+                                    element.addOption(option.value, option.label);
                                 });
                                 fieldStore.value.set(element.getValue());
                                 element.onChange(fieldStore.value.set);
@@ -254,24 +222,14 @@ export class FormModal extends Modal {
 
                         case "notes":
                             return fieldBase.addDropdown((element) => {
-                                const files = get_tfiles_from_folder(
-                                    fieldInput.folder,
-                                    this.app,
-                                );
+                                const files = get_tfiles_from_folder(fieldInput.folder, this.app);
                                 pipe(
                                     files,
                                     E.map((files) =>
-                                        files.reduce(
-                                            (
-                                                acc: Record<string, string>,
-                                                option,
-                                            ) => {
-                                                acc[option.basename] =
-                                                    option.basename;
-                                                return acc;
-                                            },
-                                            {},
-                                        ),
+                                        files.reduce((acc: Record<string, string>, option) => {
+                                            acc[option.basename] = option.basename;
+                                            return acc;
+                                        }, {}),
                                     ),
                                     E.mapLeft((err) => {
                                         log_error(err);
@@ -290,23 +248,27 @@ export class FormModal extends Modal {
                     break;
                 }
                 case "document_block": {
-                    console.log("Hey, document block", fieldInput);
                     const functionBody = fieldInput.body;
-                    const functionParsed = new Function(
-                        "form",
+                    const functionParsed = parseFunctionBody<[Record<string, FieldValue>], string>(
                         functionBody,
-                    ) as (form: Record<string, FieldValue>) => string;
+                        "form",
+                    );
                     const domNode = fieldBase.infoEl.createDiv();
                     const sub = this.formEngine.subscribe((form) => {
-                        console.log("form in block", form);
                         pipe(
-                            form.fields,
-                            R.filterMap((field) => field.value),
-                            tryCatchK(functionParsed, (err) =>
-                                JSON.stringify(err),
+                            functionParsed,
+                            E.chainW((fn) =>
+                                pipe(
+                                    form.fields,
+                                    R.filterMap((field) => field.value),
+                                    fn,
+                                ),
                             ),
                             E.match(
-                                notifyError("Error in document block"),
+                                (error) => {
+                                    console.error(error);
+                                    notifyError("Error in document block")(String(error));
+                                },
                                 (newText) => domNode.setText(newText),
                             ),
                         );
@@ -320,10 +282,7 @@ export class FormModal extends Modal {
         });
 
         new Setting(contentEl).addButton((btn) =>
-            btn
-                .setButtonText("Submit")
-                .setCta()
-                .onClick(this.formEngine.triggerSubmit),
+            btn.setButtonText("Submit").setCta().onClick(this.formEngine.triggerSubmit),
         );
 
         const submitEnterCallback = (evt: KeyboardEvent) => {
