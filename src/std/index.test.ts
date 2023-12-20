@@ -1,4 +1,3 @@
-import { right } from "fp-ts/Separated";
 import { E, parseFunctionBody, pipe, trySchemas } from "./index";
 import { string, number, array, boolean, object } from "valibot";
 

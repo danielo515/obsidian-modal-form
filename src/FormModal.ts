@@ -10,7 +10,7 @@ import { FileSuggest } from "./suggesters/suggestFile";
 import { DataviewSuggest } from "./suggesters/suggestFromDataview";
 import { SvelteComponent } from "svelte";
 import { executeSandboxedDvQuery, sandboxedDvQuery } from "./suggesters/SafeDataviewQuery";
-import { A, E, flow, parseFunctionBody, pipe, throttle } from "@std";
+import { A, E, parseFunctionBody, pipe, throttle } from "@std";
 import { log_error, log_notice } from "./utils/Log";
 import { FieldValue, FormEngine, makeFormEngine } from "./store/formStore";
 import { Writable } from "svelte/store";
