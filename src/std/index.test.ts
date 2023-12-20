@@ -1,3 +1,4 @@
+import { right } from "fp-ts/Separated";
 import { E, parseFunctionBody, pipe, trySchemas } from "./index";
 import { string, number, array, boolean, object } from "valibot";
 
@@ -116,7 +117,7 @@ describe("parseFunctionBody", () => {
             result,
             E.match(
                 (err) => fail("Expected a right"),
-                (result) => expect(result.toString()).toMatch(input),
+                (result) => expect(result).toBeInstanceOf(Function),
             ),
         );
     });
@@ -125,7 +126,7 @@ describe("parseFunctionBody", () => {
         const result = parseFunctionBody(input);
         expect(result).toEqual(E.left(new SyntaxError("Unexpected token ')'")));
     });
-    it("should parse a function body with arguments", () => {
+    it("should parse a function body with arguments and be able to execute it", () => {
         const input = "return x + 1;";
         const result = parseFunctionBody<[number], number>(input, "x");
         pipe(
@@ -133,8 +134,7 @@ describe("parseFunctionBody", () => {
             E.match(
                 () => fail("Expected a right"),
                 (result) => {
-                    expect(result.toString()).toMatch(input);
-                    expect(result(1)).toEqual(2);
+                    expect(result(1)).toEqual(E.right(2));
                 },
             ),
         );
