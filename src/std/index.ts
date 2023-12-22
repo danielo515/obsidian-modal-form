@@ -167,6 +167,7 @@ function ensureError(e: unknown): Error {
  * The reason why the type arguments are reversed is because
  * we often know what the function input types should be, but
  * we can't trust the function body to return the correct type, so by default1t it will be unknown
+ * The returned function is also wrapped to never throw and return an Either instead
  */
 export function parseFunctionBody<Args extends unknown[], T>(body: string, ...args: string[]) {
     const fnBody = `"use strict";
