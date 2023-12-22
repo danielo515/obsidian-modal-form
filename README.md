@@ -1,3 +1,5 @@
+
+![GitHub all releases](https://img.shields.io/github/downloads/danielo515/obsidian-modal-form/total?color=573E7A&logo=github&style=for-the-badge) 
 <a href="https://www.buymeacoffee.com/danielo515" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/H2H7Q0U9G)
 
