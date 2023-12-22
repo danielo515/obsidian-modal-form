@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.32.1](https://github.com/danielo515/obsidian-modal-form/compare/1.32.0...1.32.1) (2023-12-22)
+
+
+### Bug Fixes
+
+* inline help for dataview ([d7e0630](https://github.com/danielo515/obsidian-modal-form/commit/d7e06304aca1c0b9b9a9a7b5540d58289493266b))
+
 ## [1.32.0](https://github.com/danielo515/obsidian-modal-form/compare/1.31.0...1.32.0) (2023-12-17)
 
 
