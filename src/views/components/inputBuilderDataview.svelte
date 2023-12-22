@@ -22,8 +22,7 @@
             >Swizzling</a
         >
         to write shorter queries:
-        <pre class="language-js"><code>dv.pages.tag('#tag').file.name</code
-            ></pre>
+        <pre class="language-js"><code>dv.pages('#tag').file.name</code></pre>
     </span>
     <textarea
         {id}
