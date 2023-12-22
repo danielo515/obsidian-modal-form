@@ -23,8 +23,7 @@ snippet in a templater template, substituting the name of your form:
   app.fileManager.processFrontMatter(
     tp.config.target_file,
     frontmatter => {
-      frontmatter = Object.assign(frontmatter, data);
-      return frontmatter;
+      Object.assign(frontmatter, data);
     },
   );
 %>
