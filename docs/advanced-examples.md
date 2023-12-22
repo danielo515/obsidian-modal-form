@@ -11,13 +11,26 @@ snippet in a templater template, substituting the name of your form:
 
 ```js
 <%*
-const modalForm = app.plugins.plugins.modalforms.api; 
-app.fileManager.processFrontMatter(tp.config.target_file,
-  async (frontmatter) => { 
-      const result = await modalForm.openForm('example-form', { values: {...frontmatter}});
-      Object.assign(frontmatter, result.getData()); 
-  })}, 200)
+  const run = async (frontmatter) => {
+    const result = await tp.user.openForm('frontmatter', {
+      values: { ...frontmatter },
+    });
+    return result.getData();
+  };
+  //first we get the data from the form
+  const data = await run(tp.frontmatter);
+ // Then we update the frontmatter with the new data
+  app.fileManager.processFrontMatter(
+    tp.config.target_file,
+    frontmatter => {
+      frontmatter = Object.assign(frontmatter, data);
+      return frontmatter;
+    },
+  );
 %>
+
+Please be aware that this is not atomic, so if if something edits the frontmatter while you are editing it within the form,
+the form values will not reflect this change and you may be overwriting some changes. Although this is unlikely to happen, it is better to be aware of it.
 ```
 
 The values the form understand and that are pressent in the frontmatter, will be populated with the values on the frontmatter.
@@ -33,7 +46,6 @@ module.exports = (formName, options) => modalForm.openForm(formName, options);
 ```
 
 If you save this snippet as `openForm.js` in your templater snippets folder, then you can then call it like this from templater:
-
 
 ```js
 <%*
