@@ -22,6 +22,7 @@
         ParsedTemplate,
         parsedTemplateToString,
     } from "src/core/template/templateParser";
+    import InputBuilderDocumentBlock from "./components/InputBuilderDocumentBlock.svelte";
 
     export let definition: EditableFormDefinition = {
         title: "",
@@ -369,6 +370,11 @@
                                     <InputBuilderDataview
                                         {index}
                                         bind:value={field.input.query}
+                                    />
+                                    {:else if field.input.type === "document_block"}
+                                    <InputBuilderDocumentBlock
+                                        {index}
+                                        bind:body={field.input.body}
                                     />
                                 {/if}
                             </div>

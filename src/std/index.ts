@@ -77,6 +77,7 @@ export const E = {
     ap,
     flap,
     chainW,
+    fold: match,
 };
 
 export const O = {

@@ -1,9 +1,19 @@
 <script lang="ts">
+    import { E, pipe, parseFunctionBody } from "@std";
     import FormRow from "./FormRow.svelte";
 
-    let text = "";
-    const id = "document_block";
+    export let body = "";
+    export let index: number;
+    $: id = "document_block_" + index;
     const placeholder = "return `Hello ${form.name}!`";
+    $: errors = pipe(
+        parseFunctionBody(body),
+        E.fold(
+            (e) => e.message,
+            () => "",
+        ),
+    );
+    $: console.log(errors);
 </script>
 
 <FormRow label="Document block" {id}>
@@ -15,11 +25,15 @@
         variable. For example:
         <pre class="language-js">{placeholder}</pre>
         <textarea
-            bind:value={text}
+            bind:value={body}
             name="document_block"
             class="form-control"
             rows="3"
             {placeholder}
         />
+        {#if errors}
+            Your function body has errors:
+            <div class="modal-form-error-message">{errors}</div>
+        {/if}
     </span></FormRow
 >
