@@ -1,13 +1,5 @@
 import { type Output, is, safeParse } from "valibot";
 import {
-    SelectFromNotesSchema,
-    InputSliderSchema,
-    InputNoteFromFolderSchema,
-    InputDataviewSourceSchema,
-    InputSelectFixedSchema,
-    InputBasicSchema,
-    MultiselectSchema,
-    InputTypeSchema,
     FieldDefinitionSchema,
     FormDefinitionLatestSchema,
     FieldListSchema,
@@ -16,17 +8,26 @@ import {
 } from "./formDefinitionSchema";
 import { A, O, pipe } from "@std";
 import { Simplify } from "type-fest";
-//=========== Types derived from schemas
-type selectFromNotes = Output<typeof SelectFromNotesSchema>;
-type inputSlider = Output<typeof InputSliderSchema>;
-type inputNoteFromFolder = Output<typeof InputNoteFromFolderSchema>;
-type inputDataviewSource = Output<typeof InputDataviewSourceSchema>;
-type inputSelectFixed = Output<typeof InputSelectFixedSchema>;
-type basicInput = Output<typeof InputBasicSchema>;
-type multiselect = Output<typeof MultiselectSchema>;
-type inputType = Output<typeof InputTypeSchema>;
+import {
+    InputBasicSchema,
+    InputDataviewSourceSchema,
+    InputNoteFromFolderSchema,
+    InputSelectFixedSchema,
+    InputSliderSchema,
+    InputTypeSchema,
+    MultiselectSchema,
+    SelectFromNotesSchema,
+    basicInput,
+    inputDataviewSource,
+    inputNoteFromFolder,
+    inputSelectFixed,
+    inputSlider,
+    inputType,
+    multiselect,
+    selectFromNotes,
+} from "./InputDefinitionSchema";
 
-export const FieldTypeReadable: Record<AllFieldTypes, string> = {
+export const InputTypeReadable: Record<AllFieldTypes, string> = {
     text: "Text",
     number: "Number",
     tag: "Tags",
@@ -43,6 +44,7 @@ export const FieldTypeReadable: Record<AllFieldTypes, string> = {
     select: "Select",
     dataview: "Dataview",
     multiselect: "Multiselect",
+    document_block: "Document block",
 } as const;
 
 export function isDataViewSource(input: unknown): input is inputDataviewSource {

@@ -6,17 +6,18 @@ export const exampleModalDefinition: FormDefinition = {
     version: "1",
     fields: [
         {
-            name: "Name",
+            name: "name",
+            label: "Name",
             description: "It is named how?",
             isRequired: true,
-            input: { type: "text", },
+            input: { type: "text" },
         },
         {
             name: "age",
             label: "Age",
             description: "How old",
             isRequired: true,
-            input: { type: "number", },
+            input: { type: "number" },
         },
         {
             name: "dateOfBirth",
@@ -41,7 +42,8 @@ export const exampleModalDefinition: FormDefinition = {
             label: "Favorite book",
             description: "Pick one",
             input: { type: "note", folder: "Books" },
-        }, {
+        },
+        {
             name: "folder",
             label: "The destination folder",
             description: "It offers auto-completion to existing folders",
@@ -144,6 +146,14 @@ export const exampleModalDefinition: FormDefinition = {
             name: "Tags",
             description: "Tags input example",
             input: { type: "tag" },
+        },
+        {
+            name: "document",
+            description: "Document block example",
+            input: {
+                type: "document_block",
+                body: "return `Hello ${form.name}!\n Your best friend is ${form.best_fried}`",
+            },
         },
     ],
 };

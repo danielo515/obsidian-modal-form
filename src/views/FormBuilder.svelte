@@ -3,8 +3,8 @@
         type EditableFormDefinition,
         type FormDefinition,
         isValidFormDefinition,
-        FieldTypeReadable,
         validateFields,
+        InputTypeReadable,
     } from "src/core/formDefinition";
     import { setIcon } from "obsidian";
     import InputBuilderDataview from "./components/inputBuilderDataview.svelte";
@@ -22,6 +22,7 @@
         ParsedTemplate,
         parsedTemplateToString,
     } from "src/core/template/templateParser";
+    import InputBuilderDocumentBlock from "./components/InputBuilderDocumentBlock.svelte";
 
     export let definition: EditableFormDefinition = {
         title: "",
@@ -309,7 +310,7 @@
                                         bind:value={field.input.type}
                                         id={`type_${index}`}
                                     >
-                                        {#each Object.entries(FieldTypeReadable) as type}
+                                        {#each Object.entries(InputTypeReadable) as type}
                                             <option value={type[0]}
                                                 >{type[1]}</option
                                             >
@@ -369,6 +370,11 @@
                                     <InputBuilderDataview
                                         {index}
                                         bind:value={field.input.query}
+                                    />
+                                    {:else if field.input.type === "document_block"}
+                                    <InputBuilderDocumentBlock
+                                        {index}
+                                        bind:body={field.input.body}
                                     />
                                 {/if}
                             </div>

@@ -1,9 +1,8 @@
 {
-    "plugins": [
-        "prettier-plugin-svelte"
-    ],
+    "plugins": ["prettier-plugin-svelte"],
     "arrowParens": "always",
     "editorconfig": true,
     "svelteAllowShorthand": true,
-    "trailingComma": "all"
+    "trailingComma": "all",
+    "printWidth": 120
 }

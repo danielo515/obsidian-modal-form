@@ -1,49 +1,66 @@
 import { A, NonEmptyArray, ParsingFn, parse, pipe } from "@std";
 import * as E from "fp-ts/Either";
 import { ValiError, BaseSchema } from "valibot";
-import { FieldMinimal, FieldMinimalSchema, InputTypeToParserMap } from "./formDefinitionSchema";
+import { FieldMinimal, FieldMinimalSchema } from "./formDefinitionSchema";
 import { AllFieldTypes } from "./formDefinition";
+import { InputTypeToParserMap } from "./InputDefinitionSchema";
 
 function stringifyIssues(error: ValiError): NonEmptyArray<string> {
-    return error.issues.map((issue) => `${issue.path?.map((i) => i.key)}: ${issue.message} got ${issue.input}`) as NonEmptyArray<string>;
+    return error.issues.map(
+        (issue) =>
+            `${issue.path?.map((i) => i.key)}: ${issue.message} got ${
+                issue.input
+            }`,
+    ) as NonEmptyArray<string>;
 }
 export class InvalidInputTypeError {
     static readonly _tag = "InvalidInputTypeError" as const;
-    readonly path: string = 'input.type';
-    constructor(readonly field: FieldMinimal, readonly inputType: unknown) { }
+    readonly path: string = "input.type";
+    constructor(
+        readonly field: FieldMinimal,
+        readonly inputType: unknown,
+    ) {}
     toString(): string {
         return `InvalidInputTypeError: ${this.getFieldErrors()[0]}`;
     }
     getFieldErrors(): NonEmptyArray<string> {
-        return [`"input.type" is invalid, got: ${JSON.stringify(this.inputType)}`]
+        return [
+            `"input.type" is invalid, got: ${JSON.stringify(this.inputType)}`,
+        ];
     }
 }
 export class InvalidInputError {
     static readonly _tag = "InvalidInputError" as const;
     readonly path: string;
-    constructor(readonly field: FieldMinimal, readonly error: ValiError) {
-        this.path = error.issues[0].path?.map((i) => i.key).join('.') ?? '';
+    constructor(
+        readonly field: FieldMinimal,
+        readonly error: ValiError,
+    ) {
+        this.path = error.issues[0].path?.map((i) => i.key).join(".") ?? "";
     }
     toString(): string {
-        return `InvalidInputError: ${stringifyIssues(this.error).join(', ')}`;
+        return `InvalidInputError: ${stringifyIssues(this.error).join(", ")}`;
     }
 
     getFieldErrors(): NonEmptyArray<string> {
-        return stringifyIssues(this.error)
+        return stringifyIssues(this.error);
     }
 }
 
 export class InvalidFieldError {
     static readonly _tag = "InvalidFieldError" as const;
     readonly path: string;
-    constructor(public field: unknown, readonly error: ValiError) {
-        this.path = error.issues[0].path?.map((i) => i.key).join('.') ?? '';
+    constructor(
+        public field: unknown,
+        readonly error: ValiError,
+    ) {
+        this.path = error.issues[0].path?.map((i) => i.key).join(".") ?? "";
     }
     toString(): string {
-        return `InvalidFieldError: ${stringifyIssues(this.error).join(', ')}`;
+        return `InvalidFieldError: ${stringifyIssues(this.error).join(", ")}`;
     }
     getFieldErrors(): string[] {
-        return stringifyIssues(this.error)
+        return stringifyIssues(this.error);
     }
     static of(field: unknown) {
         return (error: ValiError) => new InvalidFieldError(field, error);
@@ -51,7 +68,7 @@ export class InvalidFieldError {
 }
 
 function isValidInputType(input: unknown): input is AllFieldTypes {
-    return 'string' === typeof input && input in InputTypeToParserMap;
+    return "string" === typeof input && input in InputTypeToParserMap;
 }
 /**
  * Finds the corresponding schema to the provided unparsed field.
@@ -63,15 +80,21 @@ function isValidInputType(input: unknown): input is AllFieldTypes {
  * @param fieldDefinition a field definition to find the input schema for
  * @returns a tuple of the basic field definition and the input schema
  */
-export function findInputDefinitionSchema(fieldDefinition: unknown): E.Either<InvalidFieldError | InvalidInputTypeError, [FieldMinimal, ParsingFn<BaseSchema>]> {
+export function findInputDefinitionSchema(
+    fieldDefinition: unknown,
+): E.Either<
+    InvalidFieldError | InvalidInputTypeError,
+    [FieldMinimal, ParsingFn<BaseSchema>]
+> {
     return pipe(
         parse(FieldMinimalSchema, fieldDefinition),
         E.mapLeft(InvalidFieldError.of(fieldDefinition)),
         E.chainW((field) => {
             const type = field.input.type;
-            if (isValidInputType(type)) return E.right([field, InputTypeToParserMap[type]]);
+            if (isValidInputType(type))
+                return E.right([field, InputTypeToParserMap[type]]);
             else return E.left(new InvalidInputTypeError(field, type));
-        })
+        }),
     );
 }
 /**
@@ -87,16 +110,18 @@ export function findFieldErrors(fields: unknown[]) {
         A.map((fieldUnparsed) => {
             return pipe(
                 findInputDefinitionSchema(fieldUnparsed),
-                E.chainW(([field, parser]) => pipe(
-                    parser(field.input),
-                    E.bimap(
-                        (error) => new InvalidInputError(field, error),
-                        () => field
-                    )),
-                ))
+                E.chainW(([field, parser]) =>
+                    pipe(
+                        parser(field.input),
+                        E.bimap(
+                            (error) => new InvalidInputError(field, error),
+                            () => field,
+                        ),
+                    ),
+                ),
+            );
         }),
         // A.partition(E.isLeft),
         // Separated.right,
     );
-
 }

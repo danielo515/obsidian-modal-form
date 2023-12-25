@@ -1,141 +1,29 @@
 import * as E from "fp-ts/Either";
-import { pipe, parse, trySchemas, ParsingFn, parseC } from "@std";
+import { pipe, parse } from "@std";
 import {
     object,
-    number,
     literal,
     type Output,
     is,
     array,
     string,
-    union,
     optional,
-    minLength,
-    toTrimmed,
     merge,
     unknown,
     ValiError,
-    BaseSchema,
-    enumType,
     passthrough,
     boolean,
 } from "valibot";
-import { AllFieldTypes, FormDefinition } from "./formDefinition";
+import { FormDefinition } from "./formDefinition";
 import { findFieldErrors } from "./findInputDefinitionSchema";
 import { ParsedTemplateSchema } from "./template/templateSchema";
+import { InputTypeSchema, nonEmptyString } from "./InputDefinitionSchema";
 
 /**
  * Here are the core logic around the main domain of the plugin,
  * which is the form definition.
  * Here are the types, validators, rules etc.
  */
-function nonEmptyString(name: string) {
-    return string(`${name} should be a string`, [
-        toTrimmed(),
-        minLength(1, `${name} should not be empty`),
-    ]);
-}
-const InputBasicTypeSchema = enumType([
-    "text",
-    "number",
-    "date",
-    "time",
-    "datetime",
-    "textarea",
-    "toggle",
-    "email",
-    "tel",
-]);
-//=========== Schema definitions
-export const SelectFromNotesSchema = object({
-    type: literal("select"),
-    source: literal("notes"),
-    folder: nonEmptyString("folder name"),
-});
-export const InputTagSchema = object({
-    type: literal("tag"),
-    exclude: optional(string()), // This should be a regex string
-});
-export const InputSliderSchema = object({
-    type: literal("slider"),
-    min: number(),
-    max: number(),
-});
-export const InputNoteFromFolderSchema = object({
-    type: literal("note"),
-    folder: nonEmptyString("folder name"),
-});
-export const InputFolderSchema = object({
-    type: literal("folder"),
-    // TODO: allow exclude option
-});
-export const InputDataviewSourceSchema = object({
-    type: literal("dataview"),
-    query: nonEmptyString("dataview query"),
-});
-export const InputBasicSchema = object({ type: InputBasicTypeSchema });
-export const InputSelectFixedSchema = object({
-    type: literal("select"),
-    source: literal("fixed"),
-    options: array(
-        object({
-            value: string([toTrimmed()]),
-            label: string(),
-        }),
-    ),
-});
-const MultiSelectNotesSchema = object({
-    type: literal("multiselect"),
-    source: literal("notes"),
-    folder: nonEmptyString("multi select source folder"),
-});
-const MultiSelectFixedSchema = object({
-    type: literal("multiselect"),
-    source: literal("fixed"),
-    multi_select_options: array(string()),
-});
-const MultiSelectQuerySchema = object({
-    type: literal("multiselect"),
-    source: literal("dataview"),
-    query: nonEmptyString("dataview query"),
-});
-export const MultiselectSchema = union([
-    MultiSelectNotesSchema,
-    MultiSelectFixedSchema,
-    MultiSelectQuerySchema,
-]);
-export const InputTypeSchema = union([
-    InputBasicSchema,
-    InputNoteFromFolderSchema,
-    InputFolderSchema,
-    InputSliderSchema,
-    InputTagSchema,
-    SelectFromNotesSchema,
-    InputDataviewSourceSchema,
-    InputSelectFixedSchema,
-    MultiselectSchema,
-]);
-export const InputTypeToParserMap: Record<
-    AllFieldTypes,
-    ParsingFn<BaseSchema>
-> = {
-    number: parseC(InputBasicSchema),
-    text: parseC(InputBasicSchema),
-    email: parseC(InputBasicSchema),
-    tel: parseC(InputBasicSchema),
-    date: parseC(InputBasicSchema),
-    time: parseC(InputBasicSchema),
-    datetime: parseC(InputBasicSchema),
-    textarea: parseC(InputBasicSchema),
-    toggle: parseC(InputBasicSchema),
-    note: parseC(InputNoteFromFolderSchema),
-    folder: parseC(InputFolderSchema),
-    slider: parseC(InputSliderSchema),
-    tag: parseC(InputTagSchema),
-    select: trySchemas([SelectFromNotesSchema, InputSelectFixedSchema]),
-    dataview: parseC(InputDataviewSourceSchema),
-    multiselect: parseC(MultiselectSchema),
-};
 
 export const FieldDefinitionSchema = object({
     name: nonEmptyString("field name"),

@@ -85,3 +85,7 @@ If your plugin does not need CSS, delete this file.
 .notice-error {
     color: var(--text-error);
 }
+.modal-form-error-message {
+    color: var(--text-error);
+    font-weight: bold;
+}
