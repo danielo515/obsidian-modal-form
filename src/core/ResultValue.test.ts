@@ -90,9 +90,11 @@ describe("ResultValue", () => {
 
             // Act
             const bulletList = resultValue.toBulletList();
+            const shortHand = resultValue.bullets;
 
             // Assert
             expect(bulletList).toEqual("- 1\n- 2\n- 3");
+            expect(shortHand).toEqual("- 1\n- 2\n- 3");
         });
 
         it("should return a bullet list item for object values", () => {
