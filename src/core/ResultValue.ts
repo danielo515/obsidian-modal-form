@@ -18,19 +18,19 @@ function isRecord(value: unknown): value is Record<string, unknown> {
  * It has some convenience methods to render the value in a way
  * that works well with templates.
  */
-export class FormValue<T = unknown> {
+export class ResultValue<T = unknown> {
     constructor(
         protected value: T,
         protected name: string,
-    ) {}
+    ) { }
     static from<U = unknown>(value: U, name: string) {
-        return new FormValue(value, name);
+        return new ResultValue(value, name);
     }
     /**
      * Returns the value as a string.
      * If the value is an array, it will be joined with a comma.
      * If the value is an object, it will be stringified.
-     * This is convenient because it is the default method called auotmatically
+     * This is convenient because it is the default method called automatically
      * when the value needs to be rendered as a string, so you can just drop
      * the value directly into a template without having to call this method.
      * @returns string
@@ -101,9 +101,9 @@ export class FormValue<T = unknown> {
      * @param {function} fn the function to transform the values
      * @returns a new FormValue with the transformed value
      **/
-    map<U>(fn: (value: unknown) => U): FormValue<T | U> {
+    map<U>(fn: (value: unknown) => U): ResultValue<T | U> {
         const safeFn = E.tryCatchK(fn, ensureError);
-        const unchanged = () => this as FormValue<T | U>;
+        const unchanged = () => this as ResultValue<T | U>;
         return pipe(
             this.value,
             O.fromNullable,
@@ -117,7 +117,7 @@ export class FormValue<T = unknown> {
                             return unchanged();
                         },
 
-                        (v: U) => FormValue.from(v, this.name),
+                        (v: U) => ResultValue.from(v, this.name),
                     ),
                 ),
             ),

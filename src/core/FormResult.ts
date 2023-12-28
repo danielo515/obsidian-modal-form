@@ -1,4 +1,4 @@
-import { FormValue } from "./FormValue";
+import { ResultValue } from "./ResultValue";
 import { objectSelect } from "./objectSelect";
 import { stringifyYaml } from "obsidian";
 
@@ -19,7 +19,7 @@ export default class FormResult {
     constructor(
         private data: ModalFormData,
         public status: ResultStatus,
-    ) {}
+    ) { }
     /**
      * Transform  the current data into a frontmatter string, which is expected
      * to be enclosed in `---` when used in a markdown file.
@@ -86,8 +86,8 @@ export default class FormResult {
         }
         return value;
     }
-    getValue(key: string): FormValue {
-        return FormValue.from(this.data[key], key);
+    getValue(key: string): ResultValue {
+        return ResultValue.from(this.data[key], key);
     }
     // alias
     getV = this.getValue;
