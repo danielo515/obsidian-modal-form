@@ -1,6 +1,16 @@
 # Managing Results
 
-The `FormResult` class provides methods for managing form results.
+The `FormResult` class provides methods for accessing and formatting form results.
+
+>[!TIP]
+> From version `1.33.0` onwards, the `FormResult` class allows accessing the values of the form fields 
+> using directly `property accessors`, like `result.title` or `result.listField`.
+> The property accessors are equivalent to calling the `get` method, so `result.title` is equivalent to `result.get('title')`, but it's shorter and more convenient.
+> All the examples in this page continue to use the more explicit ways to access the values, but you can use the property accessors if you prefer.
+
+> [!IMPORTANT]
+> Accessing the values using `property accessors` or the `getValue` method is considered the safer and preferred way to access the values.
+> This is because the returned values are wrapped in a [`ResultValue`](ResultValue.md) object that provides a safer and more convenient interface to render the values in various formats.
 
 ## `asFrontmatterString(options?: unknown): string`
 
@@ -108,6 +118,14 @@ If the key field doesn't exist or is empty, returns an empty [`ResultValue`](Res
 const result = await form.openForm("my-form");
 tR += result.getValue("title");
 tR += result.getValue("listField").bullets;
+```
+
+Thanks to `property accessors`, you can also write the above code in a more convenient way like this:
+
+```typescript
+const result = await form.openForm("my-form");
+tR += result.title;
+tR += result.listField.bullets;
 ```
 
 For more details and examples, see the [`ResultValue`](ResultValue.md) documentation.
