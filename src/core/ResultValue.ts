@@ -12,6 +12,8 @@ function _toBulletList(value: Record<string, unknown> | unknown[]) {
 function isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === "object" && value !== null && !Array.isArray(value);
 }
+
+type Reporter = (title: string) => (message: string) => void;
 /**
  * class representing a single form value.
  * It is usually returned when you call `result.getValue(name)`.
@@ -22,9 +24,10 @@ export class ResultValue<T = unknown> {
     constructor(
         protected value: T,
         protected name: string,
+        private notify: Reporter = notify,
     ) { }
-    static from<U = unknown>(value: U, name: string) {
-        return new ResultValue(value, name);
+    static from<U = unknown>(value: U, name: string, notify = notifyError) {
+        return new ResultValue(value, name, notify);
     }
     /**
      * Returns the value as a string.
@@ -67,6 +70,7 @@ export class ResultValue<T = unknown> {
                 return `- ${this.value}`;
             case "object": {
                 const value = this.value;
+                if (value === null) return "";
                 if (Array.isArray(value)) {
                     return _toBulletList(value);
                 }
@@ -101,7 +105,7 @@ export class ResultValue<T = unknown> {
      * @param {function} fn the function to transform the values
      * @returns a new FormValue with the transformed value
      **/
-    map<U>(fn: (value: unknown) => U): ResultValue<T | U> {
+    map<U>(fn: (value: T) => U): ResultValue<T | U> {
         const safeFn = E.tryCatchK(fn, ensureError);
         const unchanged = () => this as ResultValue<T | U>;
         return pipe(
@@ -113,11 +117,11 @@ export class ResultValue<T = unknown> {
                     v,
                     E.fold(
                         (e) => {
-                            notifyError("Error in map of " + this.name)(e.message);
+                            this.notify("Error in map of " + this.name)(e.message);
                             return unchanged();
                         },
 
-                        (v: U) => ResultValue.from(v, this.name),
+                        (v: U) => ResultValue.from(v, this.name, this.notify),
                     ),
                 ),
             ),

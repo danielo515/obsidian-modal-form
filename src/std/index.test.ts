@@ -29,7 +29,7 @@ describe("trySchemas", () => {
             hobbies: ["reading", "swimming"],
             isEmployed: true,
         };
-        console.log(" ====== 1 =====");
+        // console.log(" ====== 1 =====");
         const result = trySchemas([schema1, schema2, schema3])(input);
         expect(result).toEqual({
             _tag: "Right",
@@ -49,7 +49,7 @@ describe("trySchemas", () => {
             age: 25,
             isStudent: true,
         };
-        console.log(" ====== 2 =====");
+        // console.log(" ====== 2 =====");
         const result = trySchemas([schema1, schema2, schema3])(input);
         expect(result).toEqual({
             _tag: "Right",
@@ -69,7 +69,7 @@ describe("trySchemas", () => {
             hobbies: ["reading", "swimming"],
             isEmployed: true,
         };
-        console.log(" ====== 3 =====");
+        // console.log(" ====== 3 =====");
         const result = trySchemas([schema1, schema2, schema3])(input);
         if (E.isLeft(result)) {
             expect(result.left.message).toEqual("Invalid type");
@@ -85,7 +85,7 @@ describe("trySchemas", () => {
             hobbies: ["reading", "swimming"],
             isEmployed: true,
         };
-        console.log(" ====== 4 =====");
+        // console.log(" ====== 4 =====");
         const result = trySchemas([schema1])(input);
         expect(result).toEqual(E.right(input));
     });
