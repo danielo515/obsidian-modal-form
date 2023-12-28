@@ -75,3 +75,17 @@ If the value were a primitive, like the string "Hello World", the above code wou
 ```markdown
 [listField:: Hello World]
 ```
+
+
+### `map(fn: (value: any) => any): ResultValue` method
+
+The map method is a powerful one that allows you to transform the value contained in the ResultValue object without extracting it, allowing you to chain multiple transformations.
+
+```typescript
+<% result.getValue('listField').map((value) => value.toUpperCase()).bullets %>
+```
+
+The above code will print the list field as a bullet list, but all the values will be uppercased.
+
+The map method takes a function that takes the value and returns a new value.
+It can be used when none of the provided printing are enough for your use case, or when one of them is almost what you need but you need to transform the value a bit more.

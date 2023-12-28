@@ -16,6 +16,33 @@ describe("ResultValue", () => {
             expect(mappedResultValue.toString()).toEqual('84');
         });
 
+        it("should be possible to chain multiple maps", () => {
+            // Arrange
+            const value = 42;
+            const resultValue = ResultValue.from(value, "Test", notifyMock);
+
+            // Act
+            const mappedResultValue = resultValue
+                .map((v) => v * 2)
+                .map((v) => v + 1);
+
+            // Assert
+            expect(mappedResultValue.toString()).toEqual('85');
+        });
+        it("should be possible to map and then format the value", () => {
+            // Arrange
+            const value = ['foo', 'bar'];
+            const resultValue = ResultValue.from(value, "Test", notifyMock);
+
+            // Act
+            const mappedResultValue = resultValue
+                .map((v) => v.map((it) => it.toUpperCase()))
+                .bullets;
+
+            // Assert
+            expect(mappedResultValue.toString()).toEqual('- FOO\n- BAR');
+        });
+
         it("should handle errors thrown by the provided function and return an unchanged ResultValue", () => {
             // Arrange
             const value = 42;
