@@ -87,7 +87,7 @@ export default class FormResult {
         return value;
     }
     getValue(key: string): FormValue {
-        return FormValue.from(this.data[key]);
+        return FormValue.from(this.data[key], key);
     }
     // alias
     getV = this.getValue;

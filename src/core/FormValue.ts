@@ -1,3 +1,6 @@
+import { E, O, ensureError, pipe } from "@std";
+import { notifyError } from "src/utils/Log";
+
 function _toBulletList(value: Record<string, unknown> | unknown[]) {
     if (Array.isArray(value)) {
         return value.map((v) => `- ${v}`).join("\n");
@@ -15,10 +18,13 @@ function isRecord(value: unknown): value is Record<string, unknown> {
  * It has some convenience methods to render the value in a way
  * that works well with templates.
  */
-export class FormValue {
-    constructor(protected value: unknown) {}
-    static from(value: unknown) {
-        return new FormValue(value);
+export class FormValue<T = unknown> {
+    constructor(
+        protected value: T,
+        protected name: string,
+    ) {}
+    static from<U = unknown>(value: U, name: string) {
+        return new FormValue(value, name);
     }
     /**
      * Returns the value as a string.
@@ -34,7 +40,6 @@ export class FormValue {
             case "string":
                 return this.value;
             case "number":
-                return this.value.toString();
             case "boolean":
                 return this.value.toString();
             case "object":
@@ -76,7 +81,60 @@ export class FormValue {
         }
     }
     /**
-     * Alias for `toBulletList`
+     * Converts the value to a dataview property using the field name as the key.
+     * If the value is empty or undefined, it will return an empty string and not render anything.
      */
+    toDataview() {
+        const value = this.value;
+        if (value === undefined) return "";
+        if (Array.isArray(value)) {
+            return `[${this.name}:: ${JSON.stringify(value).slice(1, -1)}]`;
+        }
+        return `[${this.name}:: ${this.toString()}]`;
+    }
+    /**
+     * Transforms the containerd value using the provided function.
+     * If the value is undefined or null the function will not be called
+     * and the result will be the same as the original.
+     * This is useful if you want to apply somme modifications to the value
+     * before rendering it, for example if none of the existing format methods suit your needs.
+     * @param {function} fn the function to transform the values
+     * @returns a new FormValue with the transformed value
+     **/
+    map<U>(fn: (value: unknown) => U): FormValue<T | U> {
+        const safeFn = E.tryCatchK(fn, ensureError);
+        const unchanged = () => this as FormValue<T | U>;
+        return pipe(
+            this.value,
+            O.fromNullable,
+            O.map(safeFn),
+            O.fold(unchanged, (v) =>
+                pipe(
+                    v,
+                    E.fold(
+                        (e) => {
+                            notifyError("Error in map of " + this.name)(e.message);
+                            return unchanged();
+                        },
+
+                        (v: U) => FormValue.from(v, this.name),
+                    ),
+                ),
+            ),
+        );
+    }
+    /** Alias for `toDataview` */
+    toDv = this.toDataview;
+    /** Alias for `toBulletList` */
     toBullets = this.toBulletList;
+    /**
+     * Convenient getter to get the value as bullets, so you don't need to call `toBulletList` manually.
+     * example:
+     * ```ts
+     *  result.getValue("myField").bullets;
+     * ```
+     */
+    get bullets() {
+        return this.toBulletList();
+    }
 }

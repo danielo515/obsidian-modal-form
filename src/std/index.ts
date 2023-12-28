@@ -16,6 +16,7 @@ import {
     none,
     fromNullable as fromNullableOpt,
     fold as ofold,
+    chain as ochain,
 } from "fp-ts/Option";
 import {
     isLeft,
@@ -87,6 +88,7 @@ export const O = {
     none,
     fold: ofold,
     fromNullable: fromNullableOpt,
+    chain: ochain,
 };
 
 export const parse = tryCatchK(parseV, (e: unknown) => e as ValiError);
@@ -157,7 +159,7 @@ export function tap(msg: string) {
     };
 }
 
-function ensureError(e: unknown): Error {
+export function ensureError(e: unknown): Error {
     return e instanceof Error ? e : new Error(String(e));
 }
 
