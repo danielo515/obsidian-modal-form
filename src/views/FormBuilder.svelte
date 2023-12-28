@@ -6,7 +6,7 @@
         validateFields,
         InputTypeReadable,
     } from "src/core/formDefinition";
-    import { setIcon } from "obsidian";
+    import { App, setIcon } from "obsidian";
     import InputBuilderDataview from "./components/inputBuilderDataview.svelte";
     import InputBuilderSelect from "./components/InputBuilderSelect.svelte";
     import InputFolder from "./components/InputFolder.svelte";
@@ -34,6 +34,7 @@
     export let onSubmit: (formDefinition: FormDefinition) => void;
     export let onCancel: () => void;
     export let onPreview: (formDefinition: FormDefinition) => void;
+    export let app: App;
     let currentTab: "form" | "template" = "form";
 
     $: isValid = isValidFormDefinition(definition);
@@ -327,6 +328,7 @@
                                         bind:folder={field.input.folder}
                                         notifyChange={onChange}
                                         is_multi={false}
+                                        {app}
                                     />
                                 {:else if field.input.type === "multiselect"}
                                     <InputBuilderSelect
@@ -338,6 +340,7 @@
                                         bind:query={field.input.query}
                                         notifyChange={onChange}
                                         is_multi={true}
+                                        {app}
                                     />
                                 {:else if field.input.type === "slider"}
                                     {@const min_id = `min_${index}`}
@@ -370,6 +373,7 @@
                                     <InputBuilderDataview
                                         {index}
                                         bind:value={field.input.query}
+                                        {app}
                                     />
                                     {:else if field.input.type === "document_block"}
                                     <InputBuilderDocumentBlock

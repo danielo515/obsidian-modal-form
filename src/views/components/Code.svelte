@@ -1,5 +1,8 @@
+<script lang="ts">
+    export let allowWrap: boolean = false;
+</script>
 <div>
-    <pre><code><slot /></code></pre>
+    <pre><code class:allowWrap><slot /></code></pre>
 </div>
 
 <style>
@@ -10,6 +13,9 @@
     }
     code {
         font-family: var(--font-family-monospace);
+    }
+    code.allowWrap {
+        white-space: pre-wrap;
     }
     div {
         display: flex;

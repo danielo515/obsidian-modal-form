@@ -1,9 +1,9 @@
-import { E, Either, flow, pipe } from "@std";
+import { E, Either, flow, parseFunctionBody, pipe } from "@std";
 import { App } from "obsidian";
 import { ModalFormError } from "src/utils/ModalFormError";
 import { log_error } from "src/utils/Log";
 
-type DataviewQuery = (dv: unknown, pages: unknown) => unknown;
+//type DataviewQuery = (dv: unknown, pages: unknown) => unknown;
 export type SafeDataviewQuery = (dv: unknown, pages: unknown) => Either<ModalFormError, string[]>;
 /**
  * From a string representing a dataview query, it returns the safest possible 
@@ -17,9 +17,14 @@ export function sandboxedDvQuery(query: string): SafeDataviewQuery {
     if (!query.startsWith('return')) {
         query = 'return ' + query;
     }
-    const run = new Function('dv', 'pages', query) as DataviewQuery;
+    // const run = new Function('dv', 'pages', query) as DataviewQuery;
+    const run2 = parseFunctionBody(query, 'dv', 'pages');
+    const run3 = (value: unknown) => pipe(
+        run2,
+        E.flatMap((f) => f(value)))
     return flow(
-        E.tryCatchK(run, () => new ModalFormError('Error evaluating the dataview query')),
+        run3,
+        E.mapLeft(() => new ModalFormError('Error evaluating the dataview query')),
         E.flatMap((result) => {
             if (!Array.isArray(result)) {
                 return E.left(new ModalFormError('The dataview query did not return an array'));
