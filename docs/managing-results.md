@@ -89,3 +89,25 @@ Or with a map function:
 const result = await form.openForm("my-form");
 tR += result.get("title", (value) => value.toUpperCase());
 ```
+
+## `getValue(key: string): ResultValue` or `getV(key: string): ResultValue`
+
+Returns the value of the given key as a [`ResultValue`](ResultValue.md) object.
+
+### Parameters
+-  `key`: The key to get the value of.
+
+### Returns
+-  `ResultValue`: The value of the given key as a [`ResultValue`](ResultValue.md) object. 
+If the key field doesn't exist or is empty, returns an empty [`ResultValue`](ResultValue.md) object. Thanks to this, you don't need to check if the field exists or is empty because the [`ResultValue`](ResultValue.md) object will handle it for you.
+
+
+### Example
+
+```typescript
+const result = await form.openForm("my-form");
+tR += result.getValue("title");
+tR += result.getValue("listField").bullets;
+```
+
+For more details and examples, see the [`ResultValue`](ResultValue.md) documentation.

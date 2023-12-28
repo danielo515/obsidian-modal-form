@@ -1,3 +1,4 @@
+import { ResultValue } from "./ResultValue";
 import { objectSelect } from "./objectSelect";
 import { stringifyYaml } from "obsidian";
 
@@ -6,14 +7,8 @@ export type Val = string | boolean | number | string[];
 // We don't use FormData because that is builtin browser API
 export type ModalFormData = { [key: string]: Val };
 
-export function isPrimitive(
-    value: unknown,
-): value is string | boolean | number {
-    return (
-        typeof value === "string" ||
-        typeof value === "boolean" ||
-        typeof value === "number"
-    );
+export function isPrimitive(value: unknown): value is string | boolean | number {
+    return typeof value === "string" || typeof value === "boolean" || typeof value === "number";
 }
 
 export function isPrimitiveArray(value: unknown): value is string[] {
@@ -24,7 +19,7 @@ export default class FormResult {
     constructor(
         private data: ModalFormData,
         public status: ResultStatus,
-    ) {}
+    ) { }
     /**
      * Transform  the current data into a frontmatter string, which is expected
      * to be enclosed in `---` when used in a markdown file.
@@ -50,14 +45,7 @@ export default class FormResult {
     asDataviewProperties(options?: unknown): string {
         const data = objectSelect(this.data, options);
         return Object.entries(data)
-            .map(
-                ([key, value]) =>
-                    `${key}:: ${
-                        Array.isArray(value)
-                            ? value.map((v) => JSON.stringify(v))
-                            : value
-                    }`,
-            )
+            .map(([key, value]) => `${key}:: ${Array.isArray(value) ? value.map((v) => JSON.stringify(v)) : value}`)
             .join("\n");
     }
     /**
@@ -98,6 +86,11 @@ export default class FormResult {
         }
         return value;
     }
+    getValue(key: string): ResultValue {
+        return ResultValue.from(this.data[key], key);
+    }
+    // alias
+    getV = this.getValue;
     /* == Aliases ==*/
     /**
      * just an alias for `asFrontmatterString`
