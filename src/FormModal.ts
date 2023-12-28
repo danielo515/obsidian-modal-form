@@ -36,7 +36,7 @@ export class FormModal extends Modal {
         super(app);
         this.initialFormValues = formDataFromFormDefaults(modalDefinition.fields, options?.values ?? {});
         this.formEngine = makeFormEngine((result) => {
-            this.onSubmit(new FormResult(result, "ok"));
+            this.onSubmit(FormResult.make(result, "ok"));
             this.close();
         }, this.initialFormValues);
         // this.formEngine.subscribe(console.log);
@@ -159,7 +159,7 @@ export class FormModal extends Modal {
                         source == "fixed"
                             ? fieldInput.multi_select_options
                             : source == "notes"
-                              ? pipe(
+                                ? pipe(
                                     get_tfiles_from_folder(fieldInput.folder, this.app),
                                     E.map(A.map((file) => file.basename)),
                                     E.getOrElse((err) => {
@@ -167,7 +167,7 @@ export class FormModal extends Modal {
                                         return [] as string[];
                                     }),
                                 )
-                              : executeSandboxedDvQuery(sandboxedDvQuery(fieldInput.query), this.app);
+                                : executeSandboxedDvQuery(sandboxedDvQuery(fieldInput.query), this.app);
                     fieldStore.value.set(initialValue ?? []);
                     this.svelteComponents.push(
                         new MultiSelect({

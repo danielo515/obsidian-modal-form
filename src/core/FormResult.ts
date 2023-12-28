@@ -16,10 +16,23 @@ export function isPrimitiveArray(value: unknown): value is string[] {
 }
 
 export default class FormResult {
-    constructor(
+    private constructor(
         private data: ModalFormData,
         public status: ResultStatus,
     ) { }
+
+    static make(data: ModalFormData, status: ResultStatus) {
+        return new Proxy(new FormResult(data, status), {
+            get(target, key, receiver) {
+                // Forward everything that is an own property or not a string key
+                if (key in target || typeof key !== 'string') {
+                    return Reflect.get(target, key, receiver)
+                }
+                // Any other access, will be forwarded to the getValue and wrapped in a ResultValue
+                return target.getValue(key)
+            }
+        })
+    }
     /**
      * Transform  the current data into a frontmatter string, which is expected
      * to be enclosed in `---` when used in a markdown file.
@@ -92,20 +105,12 @@ export default class FormResult {
     // alias
     getV = this.getValue;
     /* == Aliases ==*/
-    /**
-     * just an alias for `asFrontmatterString`
-     */
+    /** just an alias for `asFrontmatterString` */
     asFrontmatter = this.asFrontmatterString;
-    /**
-     * just an alias for `asFrontmatterString`
-     */
+    /** just an alias for `asFrontmatterString` */
     asYaml = this.asFrontmatterString;
-    /**
-     * just an alias for `asDataviewProperties`
-     */
+    /** just an alias for `asDataviewProperties` */
     asDataview = this.asDataviewProperties;
-    /**
-     * just an alias for `asDataviewProperties`
-     */
+    /** just an alias for `asDataviewProperties` */
     asDv = this.asDataviewProperties;
 }
