@@ -42,6 +42,7 @@
         rows="3"
         placeholder="dv.pages('#tag').map(p => p.file.name)"
     />
+    <h6>Results preview</h6>
     <Code allowWrap>{preview}</Code>
 </FormRow>
 
