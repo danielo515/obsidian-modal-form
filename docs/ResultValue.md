@@ -89,3 +89,28 @@ The above code will print the list field as a bullet list, but all the values wi
 
 The map method takes a function that takes the value and returns a new value.
 It can be used when none of the provided printing are enough for your use case, or when one of them is almost what you need but you need to transform the value a bit more.
+
+
+### `trimmed`,`lower`,`upper` shortcuts
+
+The ResultValue class provides some shortcuts to common transformations of the value.
+They are:
+ - `trimmed`: Trims the value, removing any leading or trailing whitespace.
+ - `lower`: Converts the value to lowercase.
+ - `upper`: Converts the value to uppercase.
+
+All of these shortcuts return a new ResultValue object, so you can chain them with other methods.
+
+```typescript
+<% result.getValue('listField').trimmed.upper.bullets %>
+```
+
+The above code will print the list field as a bullet list, but all the values will be uppercased and trimmed.
+You can chain as many or as little as you want.
+The most common use is probably just to use one of them, like `trimmed` or `upper`.
+
+```typescript
+<% result.getValue('myField').trimmed %>
+```
+
+All of this shortcuts are able to handle single values and lists, so you can use them with any value.

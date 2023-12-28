@@ -13,6 +13,18 @@ function isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+function deepMap(value: unknown, fn: (value: unknown) => unknown): unknown {
+    if (Array.isArray(value)) {
+        return value.map((v) => deepMap(v, fn));
+    }
+    if (isRecord(value)) {
+        return Object.fromEntries(
+            Object.entries(value).map(([key, value]) => [key, deepMap(value, fn)]),
+        );
+    }
+    return fn(value);
+}
+
 type Reporter = (title: string) => (message: string) => void;
 /**
  * class representing a single form value.
@@ -141,4 +153,28 @@ export class ResultValue<T = unknown> {
     get bullets() {
         return this.toBulletList();
     }
+
+    /**
+     * getter that returns all the string values uppercased.
+     * If the value is an array, it will return an array with all the strings uppercased.
+     */
+    get upper() {
+        return this.map((v) => deepMap(v, (it) => typeof it === "string" ? it.toLocaleUpperCase() : it));
+    }
+    /**
+     * getter that returns all the string values lowercased.
+     * If the value is an array, it will return an array with all the strings lowercased.
+     * If the value is an object, it will return an object with all the string values lowercased.
+     * @returns FormValue
+     */
+    get lower() {
+        return this.map((v) => deepMap(v, (it) => typeof it === "string" ? it.toLocaleLowerCase() : it));
+    }
+    /**
+     * getter that returns all the string values trimmed.
+     * */
+    get trimmed() {
+        return this.map((v) => deepMap(v, (it) => typeof it === "string" ? it.trim() : it));
+    }
+
 }
