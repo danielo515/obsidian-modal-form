@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.33.0](https://github.com/danielo515/obsidian-modal-form/compare/1.32.1...1.33.0) (2023-12-28)
+
+
+### Features
+
+* dataview rendering method for FormValue ([86839ce](https://github.com/danielo515/obsidian-modal-form/commit/86839ce89f31def1dac365e175dc30b38d0dcaeb))
+* result value helpers for better user experience ([57f2c1b](https://github.com/danielo515/obsidian-modal-form/commit/57f2c1b1ef7b4f6376c5a8b5e15dcdae6ff68626))
+* shortcut methods for the ResultValue helper ([00ba405](https://github.com/danielo515/obsidian-modal-form/commit/00ba405744cdb91d31d091f05018244e125bbdb4))
+
 ## [1.32.1](https://github.com/danielo515/obsidian-modal-form/compare/1.32.0...1.32.1) (2023-12-22)
 
 
