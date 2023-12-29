@@ -2,7 +2,7 @@
 
 The `FormResult` class provides methods for accessing and formatting form results.
 
->[!TIP]
+> [!TIP]
 > From version `1.33.0` onwards, the `FormResult` class allows accessing the values of the form fields 
 > using directly `property accessors`, like `result.title` or `result.listField`.
 > The property accessors are equivalent to calling the `get` method, so `result.title` is equivalent to `result.get('title')`, but it's shorter and more convenient.

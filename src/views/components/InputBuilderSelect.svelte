@@ -5,7 +5,7 @@
      */
     type option = { label: string; value: string } | string;
 
-    import { setIcon } from "obsidian";
+    import { App, setIcon } from "obsidian";
     import FormRow from "./FormRow.svelte";
     import InputFolder from "./InputFolder.svelte";
     import { AllSources } from "src/core/formDefinition";
@@ -16,6 +16,7 @@
     export let query: string = "";
     export let folder: string | undefined;
     export let options: option[] = [];
+    export let app: App;
     export let notifyChange: () => void;
     export let is_multi: boolean;
     $: id = `builder_select_${index}`;
@@ -133,7 +134,7 @@
 {:else if source === "notes"}
     <InputFolder {index} bind:folder {notifyChange} />
 {:else if source === "dataview"}
-    <InputBuilderDataview {index} bind:value={query} />
+    <InputBuilderDataview {index} bind:value={query} {app} />
 {/if}
 
 <style>
