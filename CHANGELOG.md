@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.34.0](https://github.com/danielo515/obsidian-modal-form/compare/1.33.0...1.34.0) (2023-12-29)
+
+
+### Features
+
+* dataview query preview in FormBuilder ([0a5b4cd](https://github.com/danielo515/obsidian-modal-form/commit/0a5b4cd69ec740a25b3d61a85325fb6297c9ed45))
+* real time query preview with errors ([41a7dec](https://github.com/danielo515/obsidian-modal-form/commit/41a7dec8d9abccb761d48f878c38e55614002b3a))
+
 ## [1.33.0](https://github.com/danielo515/obsidian-modal-form/compare/1.32.1...1.33.0) (2023-12-28)
 
 
