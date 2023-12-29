@@ -33,6 +33,8 @@ export function sandboxedDvQuery(query: string): SafeDataviewQuery {
     );
 }
 
+type logger = typeof log_error;
+
 /**
  * Executes and unwraps the result of a SafeDataviewQuery.
  * Use this function if you want a convenient way to execute the query.
@@ -41,18 +43,18 @@ export function sandboxedDvQuery(query: string): SafeDataviewQuery {
  * @param app the global obsidian app
  * @returns string[] if the query was executed successfully, otherwise an empty array
  */
-export function executeSandboxedDvQuery(query: SafeDataviewQuery, app: App): string[] {
+export function executeSandboxedDvQuery(query: SafeDataviewQuery, app: App, logger: logger = log_error): string[] {
     const dv = app.plugins.plugins.dataview?.api;
 
     if (!dv) {
-        log_error(new ModalFormError("Dataview plugin is not enabled"))
+        logger(new ModalFormError("Dataview plugin is not enabled"))
         return [] as string[];
     }
     const pages = dv.pages;
     return pipe(
         query(dv, pages),
         E.getOrElse((e) => {
-            log_error(e);
+            logger(e);
             return [] as string[];
         })
     )

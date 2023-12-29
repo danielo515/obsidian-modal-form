@@ -141,14 +141,14 @@ export function throttle<T extends unknown[], V>(
 ): (...args: [...T]) => V | undefined;
 export function throttle(fn: (...args: unknown[]) => unknown, ms = 100) {
     let lastCall = 0;
+    let lastResult: unknown;
     return function (...args: unknown[]) {
         const now = Date.now();
-        if (now - lastCall < ms) {
-            lastCall = now; //reset the last call time,so it needs cooldown time
-            return;
+        if (now - lastCall > ms) {
+            lastResult = fn(...args);
         }
         lastCall = now;
-        return fn(...args);
+        return lastResult;
     };
 }
 
