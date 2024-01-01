@@ -37,7 +37,7 @@ export class ModalFormSettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName("Attach Modal-Form Shortcut to Global Window")
-            .setDesc("Enable or disable the possibility of attaching a modal-form shortcut to the global window. If you enable this you will be able to access the API using the global variable `MF`.")
+            .setDesc("Enable or disable attaching a modal-form shortcut to the global window. If you enable this you will be able to access the API using the global variable `MF`. Enabling is immediate, disabling requires a restart.")
             .addToggle((component) => {
                 component
                     .setValue(settings.attachShortcutToGlobalWindow)

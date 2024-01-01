@@ -186,6 +186,7 @@ export default class ModalFormPlugin extends Plugin {
 
     async setAttachShortcutToGlobalWindow(value: boolean) {
         this.settings!.attachShortcutToGlobalWindow = value;
+        this.attachShortcutToGlobalWindow();
         await this.saveSettings();
     }
 
@@ -201,6 +202,7 @@ export default class ModalFormPlugin extends Plugin {
             this.saveSettings(s);
         });
         this.api = new API(this.app, this);
+        this.attachShortcutToGlobalWindow();
         this.registerView(
             EDIT_FORM_VIEW,
             (leaf) => new EditFormView(leaf, this),
