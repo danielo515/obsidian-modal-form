@@ -19,7 +19,7 @@ import {
     type OpenPosition,
     getDefaultSettings,
 } from "src/core/settings";
-import { log_notice } from "./utils/Log";
+import { log_error, log_notice } from "./utils/Log";
 import * as E from "fp-ts/Either";
 import { pipe } from "fp-ts/function";
 import * as A from "fp-ts/Array";
@@ -32,7 +32,7 @@ import { file_exists } from "./utils/files";
 type ViewType = typeof EDIT_FORM_VIEW | typeof MANAGE_FORMS_VIEW;
 
 // Define functions and properties you want to make available to other plugins, or templater templates, etc
-interface PublicAPI {
+export interface PublicAPI {
     exampleForm(): Promise<FormResult>;
     openForm(formReference: string | FormDefinition): Promise<FormResult>;
 }
@@ -61,7 +61,7 @@ function notifyMigrationErrors(errors: MigrationError[]) {
 // This is the plugin entrypoint
 export default class ModalFormPlugin extends Plugin {
     public settings: ModalFormSettings | undefined;
-    private unsubscribeSettingsStore: () => void = () => {};
+    private unsubscribeSettingsStore: () => void = () => { };
     // This things will be setup in the onload function rather than constructor
     public api!: PublicAPI;
 
@@ -173,6 +173,23 @@ export default class ModalFormPlugin extends Plugin {
         await this.saveSettings();
     }
 
+    attachShortcutToGlobalWindow() {
+        if (!this.settings) {
+            log_error(new ModalFormError("Settings not loaded yet"))
+            return
+        }
+        const globalNamespace = this.settings.globalNamespace;
+        if (this.settings?.attachShortcutToGlobalWindow) {
+            window[globalNamespace] = this.api;
+        }
+    }
+
+    async setAttachShortcutToGlobalWindow(value: boolean) {
+        this.settings!.attachShortcutToGlobalWindow = value;
+        this.attachShortcutToGlobalWindow();
+        await this.saveSettings();
+    }
+
     async onload() {
         const settings = await this.getSettings();
         if (settings.formDefinitions.length === 0) {
@@ -185,6 +202,7 @@ export default class ModalFormPlugin extends Plugin {
             this.saveSettings(s);
         });
         this.api = new API(this.app, this);
+        this.attachShortcutToGlobalWindow();
         this.registerView(
             EDIT_FORM_VIEW,
             (leaf) => new EditFormView(leaf, this),
@@ -237,9 +255,8 @@ export default class ModalFormPlugin extends Plugin {
             "note.md",
         );
         function makePath(name: string, folder?: string, suffix?: number) {
-            return `${folder || defaultNotesFolder.path}/${name}${
-                suffix ? "-" + suffix : ""
-            }.md`;
+            return `${folder || defaultNotesFolder.path}/${name}${suffix ? "-" + suffix : ""
+                }.md`;
         }
         let destinationPath = makePath(name, destinationFolder);
         let i = 1;

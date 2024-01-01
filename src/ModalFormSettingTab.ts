@@ -33,6 +33,17 @@ export class ModalFormSettingTab extends PluginSettingTab {
                             await this.plugin.setEditorPosition(value)
                         }
                     });
-            })
+            });
+
+        new Setting(containerEl)
+            .setName("Attach Modal-Form Shortcut to Global Window")
+            .setDesc("Enable or disable attaching a modal-form shortcut to the global window. If you enable this you will be able to access the API using the global variable `MF`. Enabling is immediate, disabling requires a restart.")
+            .addToggle((component) => {
+                component
+                    .setValue(settings.attachShortcutToGlobalWindow)
+                    .onChange(async (value) => {
+                        await this.plugin.setAttachShortcutToGlobalWindow(value);
+                    });
+            });
     }
 }
