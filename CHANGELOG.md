@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.35.0](https://github.com/danielo515/obsidian-modal-form/compare/1.34.0...1.35.0) (2024-01-01)
+
+
+### Features
+
+* option to have a global shortcut to modal form ([d262a0e](https://github.com/danielo515/obsidian-modal-form/commit/d262a0e2bb6a5173611226fe284afeb090ce8695))
+
 ## [1.34.0](https://github.com/danielo515/obsidian-modal-form/compare/1.33.0...1.34.0) (2023-12-29)
 
 
