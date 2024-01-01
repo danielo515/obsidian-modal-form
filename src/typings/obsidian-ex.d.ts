@@ -1,6 +1,7 @@
 // https://github.com/blacksmithgu/obsidian-dataview/blob/bb594a27ba1eed130d7c2ab7eff0990578e93f62/src/typings/obsidian-ex.d.ts
 import type { DataviewApi } from "api/plugin-api";
 import "obsidian";
+import { PublicAPI } from "src/main";
 
 declare module "obsidian" {
     interface MetadataCache {
@@ -34,5 +35,7 @@ declare module "obsidian" {
 declare global {
     interface Window {
         DataviewAPI?: DataviewApi;
+        MF?: PublicAPI;
+        ModalForm?: PublicAPI;
     }
 }

@@ -1,4 +1,4 @@
-import { Output, ValiError, array, enumType, is, object, optional, unknown } from "valibot";
+import { Output, ValiError, array, boolean, enumType, is, object, optional, unknown } from "valibot";
 import type { FormDefinition } from "./formDefinition";
 import type { MigrationError } from "./formDefinitionSchema";
 import * as E from 'fp-ts/Either';
@@ -24,13 +24,20 @@ export function isValidOpenPosition(position: string): position is OpenPosition 
 // This is due to a valibot limitation.
 const ModalFormSettingsSchema = object({
     editorPosition: optional(OpenPositionSchema, 'right'),
+    attachShortcutToGlobalWindow: optional(boolean(), false),
+    globalNamespace: optional(enumType(['MF', 'ModalForm']), 'MF'),
     formDefinitions: array(unknown()),
 });
 
 type ModalFormSettingsPartial = Output<typeof ModalFormSettingsSchema>;
 
 export function getDefaultSettings(): ModalFormSettings {
-    return { editorPosition: 'right', formDefinitions: [] };
+    return {
+        editorPosition: 'right',
+        attachShortcutToGlobalWindow: false,
+        globalNamespace: 'MF',
+        formDefinitions: [],
+    };
 }
 
 export class NullSettingsError {
@@ -53,5 +60,7 @@ export function parseSettings(maybeSettings: unknown): E.Either<ValiError | Null
 
 export interface ModalFormSettings {
     editorPosition: OpenPosition;
+    attachShortcutToGlobalWindow: boolean;
     formDefinitions: (MigrationError | FormDefinition)[];
+    globalNamespace: 'MF' | 'ModalForm';
 }
