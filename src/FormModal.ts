@@ -195,6 +195,7 @@ export class FormModal extends Modal {
                                 setting: fieldBase,
                                 errors: fieldStore.errors,
                                 app: this.app,
+                                allowUnknownValues: true,
                             },
                         }),
                     );
