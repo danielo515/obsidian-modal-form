@@ -62,6 +62,7 @@ export const exampleModalDefinition: FormDefinition = {
             input: {
                 type: "multiselect",
                 source: "fixed",
+                allowUnknownValues: false,
                 multi_select_options: [
                     "Android",
                     "iOS",

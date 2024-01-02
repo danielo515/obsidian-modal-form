@@ -10,6 +10,7 @@
     import InputFolder from "./InputFolder.svelte";
     import { AllSources } from "src/core/formDefinition";
     import InputBuilderDataview from "./inputBuilderDataview.svelte";
+    import { canAllowUnknownValues } from "src/core/InputDefinitionSchema";
 
     export let index: number;
     export let source: AllSources = "fixed";
@@ -22,7 +23,7 @@
     export let is_multi: boolean;
     $: id = `builder_select_${index}`;
     $: options_id = `builder_select_options_btn_${index}`;
-    $: canAllowUnknownValues = source === "dataview" && is_multi;
+    $: showAllowUnknownValuesOption = is_multi && canAllowUnknownValues("multiselect", source);
 
     function moveOption(from: number, direction: "up" | "down") {
         const to = direction === "up" ? from - 1 : from + 1;
@@ -46,7 +47,7 @@
             <option value="dataview">Dataview</option>
         {/if}
     </select>
-    {#if canAllowUnknownValues}
+    {#if showAllowUnknownValuesOption}
         <label class="unknown-checkbox">
             <span>
                 <input type="checkbox" bind:checked={allowUnknownValues} />

@@ -1,5 +1,5 @@
 import { trySchemas, ParsingFn, parseC } from "@std";
-import { AllFieldTypes } from "./formDefinition";
+import { AllFieldTypes, AllSources } from "./formDefinition";
 import {
     object,
     number,
@@ -88,6 +88,7 @@ const MultiSelectFixedSchema = object({
     type: literal("multiselect"),
     source: literal("fixed"),
     multi_select_options: array(string()),
+    allowUnknownValues: optional(boolean(), false),
 });
 const MultiSelectQuerySchema = object({
     type: literal("multiselect"),
@@ -95,6 +96,18 @@ const MultiSelectQuerySchema = object({
     query: nonEmptyString("dataview query"),
     allowUnknownValues: optional(boolean(), false),
 });
+
+export function canAllowUnknownValues(
+    type: "multiselect",
+    source: AllSources,
+): source is "dataview" | "fixed" {
+    return type === "multiselect" && (source === "dataview" || source === "fixed");
+}
+
+export function allowsUnknownValues(input: multiselect): boolean {
+    if (input.source === "notes") return false;
+    return input.allowUnknownValues;
+}
 
 export const MultiselectSchema = union([
     MultiSelectNotesSchema,

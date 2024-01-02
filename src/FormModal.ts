@@ -15,6 +15,7 @@ import { log_error, log_notice } from "./utils/Log";
 import { FieldValue, FormEngine, makeFormEngine } from "./store/formStore";
 import { Writable } from "svelte/store";
 import { FolderSuggest } from "./suggesters/suggestFolder";
+import { allowsUnknownValues } from "./core/InputDefinitionSchema";
 
 export type SubmitFn = (formResult: FormResult) => void;
 
@@ -162,8 +163,7 @@ export class FormModal extends Modal {
                     });
                 case "multiselect": {
                     const source = fieldInput.source;
-                    const allowUnknownValues =
-                        source === "dataview" ? fieldInput.allowUnknownValues : false;
+                    const allowUnknownValues = allowsUnknownValues(fieldInput);
                     const options =
                         source == "fixed"
                             ? fieldInput.multi_select_options
