@@ -81,12 +81,13 @@ export const exampleModalDefinition: FormDefinition = {
                 type: "multiselect",
                 source: "dataview",
                 query: 'dv.pages("#person").map(p => p.file.name)',
+                allowUnknownValues: true,
             },
         },
         {
             name: "best_fried",
             label: "Best friend",
-            description: "Pick one",
+            description: "Select of type note from a folder",
             input: {
                 type: "select",
                 source: "notes",
@@ -96,8 +97,7 @@ export const exampleModalDefinition: FormDefinition = {
         {
             name: "dataview_example",
             label: "Dataview example",
-            description:
-                "Only people matching the dataview query will be shown",
+            description: "Only people matching the dataview query will be shown",
             input: {
                 type: "dataview",
                 query: 'dv.pages("#person").filter(p => p.age < 30).map(p => p.file.name)',

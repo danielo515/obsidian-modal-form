@@ -18,7 +18,10 @@ import { FolderSuggest } from "./suggesters/suggestFolder";
 
 export type SubmitFn = (formResult: FormResult) => void;
 
-const notify = throttle((msg: string) => log_notice("⚠️  The form has errors ⚠️", msg, "notice-warning"), 2000);
+const notify = throttle(
+    (msg: string) => log_notice("⚠️  The form has errors ⚠️", msg, "notice-warning"),
+    2000,
+);
 const notifyError = (title: string) =>
     throttle((msg: string) => log_notice(`🚨 ${title} 🚨`, msg, "notice-error"), 2000);
 
@@ -34,7 +37,10 @@ export class FormModal extends Modal {
         options?: FormOptions,
     ) {
         super(app);
-        this.initialFormValues = formDataFromFormDefaults(modalDefinition.fields, options?.values ?? {});
+        this.initialFormValues = formDataFromFormDefaults(
+            modalDefinition.fields,
+            options?.values ?? {},
+        );
         this.formEngine = makeFormEngine((result) => {
             this.onSubmit(FormResult.make(result, "ok"));
             this.close();
@@ -46,7 +52,8 @@ export class FormModal extends Modal {
         const { contentEl } = this;
         // This class is very important for scoped styles
         contentEl.addClass("modal-form");
-        if (this.modalDefinition.customClassname) contentEl.addClass(this.modalDefinition.customClassname);
+        if (this.modalDefinition.customClassname)
+            contentEl.addClass(this.modalDefinition.customClassname);
         contentEl.createEl("h1", { text: this.modalDefinition.title });
         this.modalDefinition.fields.forEach((definition) => {
             const fieldBase = new Setting(contentEl)
@@ -155,11 +162,13 @@ export class FormModal extends Modal {
                     });
                 case "multiselect": {
                     const source = fieldInput.source;
+                    const allowUnknownValues =
+                        source === "dataview" ? fieldInput.allowUnknownValues : false;
                     const options =
                         source == "fixed"
                             ? fieldInput.multi_select_options
                             : source == "notes"
-                                ? pipe(
+                              ? pipe(
                                     get_tfiles_from_folder(fieldInput.folder, this.app),
                                     E.map(A.map((file) => file.basename)),
                                     E.getOrElse((err) => {
@@ -167,7 +176,10 @@ export class FormModal extends Modal {
                                         return [] as string[];
                                     }),
                                 )
-                                : executeSandboxedDvQuery(sandboxedDvQuery(fieldInput.query), this.app);
+                              : executeSandboxedDvQuery(
+                                    sandboxedDvQuery(fieldInput.query),
+                                    this.app,
+                                );
                     fieldStore.value.set(initialValue ?? []);
                     this.svelteComponents.push(
                         new MultiSelect({
@@ -178,13 +190,16 @@ export class FormModal extends Modal {
                                 errors: fieldStore.errors,
                                 setting: fieldBase,
                                 app: this.app,
+                                allowUnknownValues,
                             },
                         }),
                     );
                     return;
                 }
                 case "tag": {
-                    const options = Object.keys(this.app.metadataCache.getTags()).map((tag) => tag.slice(1)); // remove the #
+                    const options = Object.keys(this.app.metadataCache.getTags()).map((tag) =>
+                        tag.slice(1),
+                    ); // remove the #
                     fieldStore.value.set(initialValue ?? []);
                     this.svelteComponents.push(
                         new MultiSelect({

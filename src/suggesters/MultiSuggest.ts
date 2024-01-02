@@ -30,7 +30,6 @@ export class MultiSuggest extends AbstractInputSuggest<string> {
     }
 
     selectSuggestion(content: string, evt: MouseEvent | KeyboardEvent): void {
-        console.log("selectSuggestion", content);
         this.onSelectCb(content);
         this.inputEl.value = "";
         this.close();

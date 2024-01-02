@@ -13,6 +13,7 @@ import {
     BaseSchema,
     enumType,
     Output,
+    boolean,
 } from "valibot";
 
 /**
@@ -92,7 +93,9 @@ const MultiSelectQuerySchema = object({
     type: literal("multiselect"),
     source: literal("dataview"),
     query: nonEmptyString("dataview query"),
+    allowUnknownValues: optional(boolean(), false),
 });
+
 export const MultiselectSchema = union([
     MultiSelectNotesSchema,
     MultiSelectFixedSchema,
@@ -120,10 +123,7 @@ export const InputTypeSchema = union([
     DocumentBlock,
 ]);
 
-export const InputTypeToParserMap: Record<
-    AllFieldTypes,
-    ParsingFn<BaseSchema>
-> = {
+export const InputTypeToParserMap: Record<AllFieldTypes, ParsingFn<BaseSchema>> = {
     number: parseC(InputBasicSchema),
     text: parseC(InputBasicSchema),
     email: parseC(InputBasicSchema),
