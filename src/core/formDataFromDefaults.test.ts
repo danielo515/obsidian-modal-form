@@ -16,6 +16,7 @@ describe("formDataFromFormOptions", () => {
             input: {
                 type: "multiselect",
                 source: "fixed",
+                allowUnknownValues: false,
                 multi_select_options: ["reading", "swimming", "running"],
             },
         },
@@ -61,7 +62,7 @@ describe("formDataFromFormOptions", () => {
         expect(result).toEqual(expectedFormData);
     });
 
-    it("should ensure toggles always have avalue even when no values are provided", () => {
+    it("should ensure toggles always have a value even when no values are provided", () => {
         const values = {};
 
         const expectedFormData = { isEmployed: false };

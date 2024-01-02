@@ -18,10 +18,7 @@
     import { pipe } from "fp-ts/lib/function";
     import { A } from "@std";
     import Tabs from "./components/Tabs.svelte";
-    import {
-        ParsedTemplate,
-        parsedTemplateToString,
-    } from "src/core/template/templateParser";
+    import { ParsedTemplate, parsedTemplateToString } from "src/core/template/templateParser";
     import InputBuilderDocumentBlock from "./components/InputBuilderDocumentBlock.svelte";
 
     export let definition: EditableFormDefinition = {
@@ -145,9 +142,7 @@
                     {fieldNames}
                     {saveTemplate}
                     templateString={definition.template
-                        ? parsedTemplateToString(
-                              definition.template.parsedTemplate,
-                          )
+                        ? parsedTemplateToString(definition.template.parsedTemplate)
                         : ""}
                 />
             </div>
@@ -156,20 +151,13 @@
                 <fieldset class="flex column gap2 header">
                     <label for="name">Form unique name</label>
                     <span class="hint"
-                        >This name will identify this form uniquely, and will be
-                        the value you need to provide when calling the method
-                        openForm</span
+                        >This name will identify this form uniquely, and will be the value you need
+                        to provide when calling the method openForm</span
                     >
-                    <input
-                        type="text"
-                        placeholder="Name"
-                        id="name"
-                        bind:value={definition.name}
-                    />
+                    <input type="text" placeholder="Name" id="name" bind:value={definition.name} />
                     <label for="title">Form title</label>
                     <span class="hint"
-                        >This is the title that will be shown in the modal when
-                        the form is visible</span
+                        >This is the title that will be shown in the modal when the form is visible</span
                     >
                     <input
                         type="text"
@@ -177,10 +165,8 @@
                         id="title"
                         bind:value={definition.title}
                     />
-                    <label for="customClassname">Custom class Name</label><span
-                        class="hint"
-                        >In case you want to add a class name to the modal form
-                        to customize it</span
+                    <label for="customClassname">Custom class Name</label><span class="hint"
+                        >In case you want to add a class name to the modal form to customize it</span
                     ><input
                         type="text"
                         id="customClassname"
@@ -196,33 +182,25 @@
                                         name: "",
                                         label: "",
                                         description: "",
-                                        input: { type: "text" },
+                                        input: { type: "text", allowUnknownValues: false },
                                     },
                                 ];
                                 // onChange();
                                 activeFieldIndex = definition.fields.length - 1;
                             }}>Add more fields</button
                         >
-                        <button
-                            type="button"
-                            on:click={handlePreview}
-                            disabled={!isValid}>Preview</button
+                        <button type="button" on:click={handlePreview} disabled={!isValid}
+                            >Preview</button
                         >
-                        <button
-                            class="mod-cta"
-                            type="submit"
-                            disabled={!isValid}>Save and close</button
+                        <button class="mod-cta" type="submit" disabled={!isValid}
+                            >Save and close</button
                         >
-                        <button
-                            type="button"
-                            class="mod-warning"
-                            on:click={onCancel}>Cancel</button
+                        <button type="button" class="mod-warning" on:click={onCancel}>Cancel</button
                         >
                     </div>
                     {#if errors.length > 0}
                         <h3 style="margin: 0;">
-                            <span class="error">Form is invalid</span>, check
-                            the following:
+                            <span class="error">Form is invalid</span>, check the following:
                         </h3>
                         <ul style="margin: 0;">
                             {#each errors as error}
@@ -251,8 +229,7 @@
                             {@const delete_id = `delete_${index}`}
                             <div
                                 class="flex column md-row gap2"
-                                use:scrollWhenActive={index ===
-                                    activeFieldIndex}
+                                use:scrollWhenActive={index === activeFieldIndex}
                             >
                                 <div class="flex column gap1">
                                     <label for={`name_${index}`}>Name</label>
@@ -274,14 +251,8 @@
                                 </div>
 
                                 {#if ["text", "email", "tel", "number", "note", "tag", "dataview", "multiselect"].includes(field.input.type)}
-                                    <FormRow
-                                        label="Make required"
-                                        id={`required_${index}`}
-                                    >
-                                        <Toggle
-                                            bind:checked={field.isRequired}
-                                            tabindex={index}
-                                        />
+                                    <FormRow label="Make required" id={`required_${index}`}>
+                                        <Toggle bind:checked={field.isRequired} tabindex={index} />
                                     </FormRow>
                                 {/if}
                                 <div class="flex column gap1">
@@ -289,8 +260,7 @@
                                         for={delete_id}
                                         style:visibility={"hidden"}
                                         style:overflow={"hidden"}
-                                        style:white-space={"nowrap"}
-                                        >delete {index}</label
+                                        style:white-space={"nowrap"}>delete {index}</label
                                     >
                                 </div>
                             </div>
@@ -307,14 +277,9 @@
                                 </div>
                                 <div class="flex column gap1">
                                     <label for={`type_${index}`}>Type</label>
-                                    <select
-                                        bind:value={field.input.type}
-                                        id={`type_${index}`}
-                                    >
+                                    <select bind:value={field.input.type} id={`type_${index}`}>
                                         {#each Object.entries(InputTypeReadable) as type}
-                                            <option value={type[0]}
-                                                >{type[1]}</option
-                                            >
+                                            <option value={type[0]}>{type[1]}</option>
                                         {/each}
                                     </select>
                                 </div>
@@ -328,16 +293,17 @@
                                         bind:folder={field.input.folder}
                                         notifyChange={onChange}
                                         is_multi={false}
+                                        allowUnknownValues={false}
                                         {app}
                                     />
                                 {:else if field.input.type === "multiselect"}
                                     <InputBuilderSelect
                                         {index}
                                         bind:source={field.input.source}
-                                        bind:options={field.input
-                                            .multi_select_options}
+                                        bind:options={field.input.multi_select_options}
                                         bind:folder={field.input.folder}
                                         bind:query={field.input.query}
+                                        bind:allowUnknownValues={field.input.allowUnknownValues}
                                         notifyChange={onChange}
                                         is_multi={true}
                                         {app}
@@ -375,7 +341,7 @@
                                         bind:value={field.input.query}
                                         {app}
                                     />
-                                    {:else if field.input.type === "document_block"}
+                                {:else if field.input.type === "document_block"}
                                     <InputBuilderDocumentBlock
                                         {index}
                                         bind:body={field.input.body}
@@ -391,14 +357,11 @@
                                 />
                                 <button
                                     type="button"
-                                    disabled={index ===
-                                        definition.fields.length - 1}
+                                    disabled={index === definition.fields.length - 1}
                                     use:setIcon={"arrow-down"}
                                     on:click={() => moveField(index, "down")}
                                 />
-                                <button
-                                    type="button"
-                                    on:click={() => duplicateField(index)}
+                                <button type="button" on:click={() => duplicateField(index)}
                                     >Duplicate</button
                                 >
                                 <button
@@ -406,10 +369,9 @@
                                     type="button"
                                     id={delete_id}
                                     on:click={() => {
-                                        definition.fields =
-                                            definition.fields.filter(
-                                                (_, i) => i !== index,
-                                            );
+                                        definition.fields = definition.fields.filter(
+                                            (_, i) => i !== index,
+                                        );
                                     }}
                                 />
                             </div>

@@ -10,17 +10,20 @@
     import InputFolder from "./InputFolder.svelte";
     import { AllSources } from "src/core/formDefinition";
     import InputBuilderDataview from "./inputBuilderDataview.svelte";
+    import { canAllowUnknownValues } from "src/core/InputDefinitionSchema";
 
     export let index: number;
     export let source: AllSources = "fixed";
     export let query: string = "";
     export let folder: string | undefined;
+    export let allowUnknownValues: boolean = false;
     export let options: option[] = [];
     export let app: App;
     export let notifyChange: () => void;
     export let is_multi: boolean;
     $: id = `builder_select_${index}`;
     $: options_id = `builder_select_options_btn_${index}`;
+    $: showAllowUnknownValuesOption = is_multi && canAllowUnknownValues("multiselect", source);
 
     function moveOption(from: number, direction: "up" | "down") {
         const to = direction === "up" ? from - 1 : from + 1;
@@ -44,6 +47,18 @@
             <option value="dataview">Dataview</option>
         {/if}
     </select>
+    {#if showAllowUnknownValuesOption}
+        <label class="unknown-checkbox">
+            <span>
+                <input type="checkbox" bind:checked={allowUnknownValues} />
+                Allow unknown values.
+            </span>
+            <span class="modal-form-hint">
+                If checked, the user will be able to type any value in the input even if it is not
+                in the list of options.
+            </span>
+        </label>
+    {/if}
 </FormRow>
 {#if source === "fixed"}
     <FormRow label="Options" id={options_id}>
@@ -62,11 +77,7 @@
         {#each options || [] as option, idx}
             {@const value_id = `${options_id}_option_${idx}`}
             <div class="modal-form flex row gap1">
-                <FormRow
-                    label="Button"
-                    id={"button-up" + value_id}
-                    hideLabel={true}
-                >
+                <FormRow label="Button" id={"button-up" + value_id} hideLabel={true}>
                     <button
                         type="button"
                         disabled={idx === 0}
@@ -74,11 +85,7 @@
                         on:click={() => moveOption(idx, "up")}
                     /></FormRow
                 >
-                <FormRow
-                    label="Button"
-                    id={"button-down" + value_id}
-                    hideLabel={true}
-                >
+                <FormRow label="Button" id={"button-down" + value_id} hideLabel={true}>
                     <button
                         type="button"
                         disabled={idx === options?.length - 1}
@@ -113,11 +120,7 @@
                         /></FormRow
                     >
                 {/if}
-                <FormRow
-                    label="Delete"
-                    id={"button" + value_id}
-                    hideLabel={true}
-                >
+                <FormRow label="Delete" id={"button" + value_id} hideLabel={true}>
                     <button
                         id={"button" + value_id}
                         use:setIcon={"trash"}
@@ -141,5 +144,10 @@
     button:disabled {
         opacity: 0.5;
         cursor: forbidden;
+    }
+    .unknown-checkbox {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
     }
 </style>

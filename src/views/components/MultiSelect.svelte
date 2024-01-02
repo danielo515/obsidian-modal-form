@@ -7,6 +7,7 @@
     export let availableOptions: string[] = [];
     export let errors: Readable<string[]>;
     export let values: Writable<string[]>;
+    export let allowUnknownValues: boolean = false;
     // We take the setting to make it consistent with the other input components
     export let setting: Setting;
     export let app: App;
@@ -27,6 +28,7 @@
                 values.update((x) => [...x, selected]);
             },
             app,
+            allowUnknownValues,
         );
     }
     function removeValue(value: string) {

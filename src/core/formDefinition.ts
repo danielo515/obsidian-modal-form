@@ -58,9 +58,7 @@ export function isSelectFromNotes(input: unknown): input is selectFromNotes {
     return is(SelectFromNotesSchema, input);
 }
 
-export function isInputNoteFromFolder(
-    input: unknown,
-): input is inputNoteFromFolder {
+export function isInputNoteFromFolder(input: unknown): input is inputNoteFromFolder {
     return is(InputNoteFromFolderSchema, input);
 }
 export function isInputSelectFixed(input: unknown): input is inputSelectFixed {
@@ -103,6 +101,7 @@ export type EditableInput = {
     options?: { value: string; label: string }[];
     multi_select_options?: string[];
     query?: string;
+    allowUnknownValues?: boolean;
 };
 
 export type EditableFormDefinition = FormDefinition & {
@@ -157,10 +156,7 @@ export function isValidFormDefinition(input: unknown): input is FormDefinition {
     return true;
 }
 
-export function duplicateForm(
-    formName: string,
-    forms: (FormDefinition | MigrationError)[],
-) {
+export function duplicateForm(formName: string, forms: (FormDefinition | MigrationError)[]) {
     return pipe(
         forms,
         A.findFirstMap((f) => {
