@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.36.0](https://github.com/danielo515/obsidian-modal-form/compare/1.35.0...1.36.0) (2024-01-02)
+
+
+### Features
+
+* allow any value in multi-select dataview ([fa9da3d](https://github.com/danielo515/obsidian-modal-form/commit/fa9da3d5197a13a14a9ed5be819f1f611736677b)), closes [#54](https://github.com/danielo515/obsidian-modal-form/issues/54)
+* multi-select fixed can allow unknown values ([dcefe7c](https://github.com/danielo515/obsidian-modal-form/commit/dcefe7c44c2ea97726c1e779ba47a2c511b54feb))
+* tags input allow any value to be selected, even if it does not exist yet ([1834bf5](https://github.com/danielo515/obsidian-modal-form/commit/1834bf5f6cdb4833d8a332abeda721deabfd5bf6))
+
 ## [1.35.0](https://github.com/danielo515/obsidian-modal-form/compare/1.34.0...1.35.0) (2024-01-01)
 
 
