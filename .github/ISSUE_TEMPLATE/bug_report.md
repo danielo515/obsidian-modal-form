@@ -2,7 +2,7 @@
 name: Bug report
 about: What is the problem?
 title: "[BUG]"
-labels: bug, enhancement
+labels: bug, needs-review
 assignees: danielo515
 
 ---
