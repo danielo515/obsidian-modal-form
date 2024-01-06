@@ -57,8 +57,10 @@ export class FormModal extends Modal {
             contentEl.addClass(this.modalDefinition.customClassname);
         contentEl.createEl("h1", { text: this.modalDefinition.title });
         this.modalDefinition.fields.forEach((definition) => {
+            const name = definition.label || definition.name;
+            const required = definition.isRequired ?? false;
             const fieldBase = new Setting(contentEl)
-                .setName(definition.label || definition.name)
+                .setName(`${name} ${required ? "*" : ""}`)
                 .setDesc(definition.description);
             // This intermediary constants are necessary so typescript can narrow down the proper types.
             // without them, you will have to use the whole access path (definition.input.folder),
