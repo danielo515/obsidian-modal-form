@@ -60,7 +60,7 @@ export class FormModal extends Modal {
             const name = definition.label || definition.name;
             const required = definition.isRequired ?? false;
             const fieldBase = new Setting(contentEl)
-                .setName(`${name} ${required ? "*" : ""}`)
+                .setName(`${name} ${required ? "*" : ""}`.trim())
                 .setDesc(definition.description);
             // This intermediary constants are necessary so typescript can narrow down the proper types.
             // without them, you will have to use the whole access path (definition.input.folder),
