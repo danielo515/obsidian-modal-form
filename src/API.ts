@@ -8,6 +8,7 @@ import ModalFormPlugin from "./main";
 import { ModalFormError } from "./utils/ModalFormError";
 import { FormModal } from "./FormModal";
 import { log_error, log_notice } from "./utils/Log";
+import * as std from "@std";
 
 type pickOption = { pick: string[] };
 type omitOption = { omit: string[] };
@@ -21,6 +22,7 @@ function isOmitOption(opts: limitOptions): opts is omitOption {
 }
 
 export class API {
+    std = std;
     /**
      * Constructor for the API class
      * @param {App} app - The application instance
@@ -29,17 +31,14 @@ export class API {
     constructor(
         private app: App,
         private plugin: ModalFormPlugin,
-    ) { }
+    ) {}
 
     /**
      * Opens a modal form with the provided form definition
      * @param {FormDefinition} formDefinition - The form definition to use
      * @returns {Promise<FormResult>} - A promise that resolves with the form result
      */
-    openModalForm(
-        formDefinition: FormDefinition,
-        options?: FormOptions,
-    ): Promise<FormResult> {
+    openModalForm(formDefinition: FormDefinition, options?: FormOptions): Promise<FormResult> {
         return new Promise((resolve) => {
             new FormModal(this.app, formDefinition, resolve, options).open();
         });
@@ -49,14 +48,12 @@ export class API {
     }
 
     private getFormByName(name: string): FormDefinition | undefined {
-        const form = this.plugin.settings?.formDefinitions.find(
-            (form) => form.name === name,
-        );
+        const form = this.plugin.settings?.formDefinitions.find((form) => form.name === name);
         if (form instanceof MigrationError) {
             log_notice(
                 "🚫 The form you tried to load has an invalid format",
                 `The form "${name}" has an invalid format.` +
-                `We tried to automatically convert it but it failed, please fix it manually in the forms manager.
+                    `We tried to automatically convert it but it failed, please fix it manually in the forms manager.
             `,
             );
             return undefined;
@@ -76,9 +73,7 @@ export class API {
         if (formDefinition) {
             return this.openModalForm(formDefinition, options);
         } else {
-            const error = new ModalFormError(
-                `Form definition ${name} not found`,
-            );
+            const error = new ModalFormError(`Form definition ${name} not found`);
             log_error(error);
             return Promise.reject(error);
         }
@@ -92,16 +87,12 @@ export class API {
                 const omit = opts.omit;
                 newFormDefinition = {
                     ...formDefinition,
-                    fields: formDefinition.fields.filter(
-                        (field) => !omit.includes(field.name),
-                    ),
+                    fields: formDefinition.fields.filter((field) => !omit.includes(field.name)),
                 };
             } else if (isPickOption(opts)) {
                 newFormDefinition = {
                     ...formDefinition,
-                    fields: formDefinition.fields.filter((field) =>
-                        opts.pick.includes(field.name),
-                    ),
+                    fields: formDefinition.fields.filter((field) => opts.pick.includes(field.name)),
                 };
             } else {
                 throw new ModalFormError(
@@ -111,9 +102,7 @@ export class API {
             }
             return this.openModalForm(newFormDefinition);
         } else {
-            const error = new ModalFormError(
-                `Form definition ${name} not found`,
-            );
+            const error = new ModalFormError(`Form definition ${name} not found`);
             log_error(error);
             return Promise.reject(error);
         }
