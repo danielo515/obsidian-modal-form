@@ -20,11 +20,8 @@ import {
     getDefaultSettings,
 } from "src/core/settings";
 import { log_error, log_notice } from "./utils/Log";
-import * as E from "fp-ts/Either";
-import { pipe } from "fp-ts/function";
-import * as A from "fp-ts/Array";
 import { settingsStore } from "./store/store";
-import { O } from "@std";
+import { O, pipe, E, A } from "@std";
 import { executeTemplate } from "./core/template/templateParser";
 import { NewNoteModal } from "./suggesters/NewNoteModal";
 import { file_exists } from "./utils/files";
