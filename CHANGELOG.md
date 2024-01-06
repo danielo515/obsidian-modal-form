@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.37.0](https://github.com/danielo515/obsidian-modal-form/compare/1.36.1...1.37.0) (2024-01-06)
+
+
+### Features
+
+* command to directly edit a form ([47d4d8c](https://github.com/danielo515/obsidian-modal-form/commit/47d4d8cc6bebb1bf638c4dccf24fe4cc73094c36))
+
 ## [1.36.1](https://github.com/danielo515/obsidian-modal-form/compare/1.36.0...1.36.1) (2024-01-06)
 
 
