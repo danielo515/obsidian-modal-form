@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.36.1](https://github.com/danielo515/obsidian-modal-form/compare/1.36.0...1.36.1) (2024-01-06)
+
+
+### Bug Fixes
+
+* **form-runtime:** show an asterisk when fields are required ([b578ace](https://github.com/danielo515/obsidian-modal-form/commit/b578ace00564c99f2dcbddee81047b98f4f097f9)), closes [#198](https://github.com/danielo515/obsidian-modal-form/issues/198)
+
 ## [1.36.0](https://github.com/danielo515/obsidian-modal-form/compare/1.35.0...1.36.0) (2024-01-02)
 
 
