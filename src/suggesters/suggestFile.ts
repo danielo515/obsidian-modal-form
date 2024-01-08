@@ -1,15 +1,15 @@
-import { AbstractInputSuggest, App, TAbstractFile, TFile } from "obsidian";
-import { get_tfiles_from_folder } from "../utils/files";
-import { E } from "@std";
+import { AbstractInputSuggest, App, TFile } from "obsidian";
+import { enrich_tfile, get_tfiles_from_folder } from "../utils/files";
+import { E, pipe, A } from "@std";
+import Fuse from "fuse.js";
 
 // Instead of hardcoding the logic in separate and almost identical classes,
 // we move this little logic parts into an interface and we can use the samme
 // input type and configure it to render file-like, note-like, or whatever we want.
 export interface FileStrategy {
-    renderSuggestion(file: TFile): string;
+    renderSuggestion(file: TFile): string | DocumentFragment;
     selectSuggestion(file: TFile): string;
 }
-
 
 export class FileSuggest extends AbstractInputSuggest<TFile> {
     constructor(
@@ -22,24 +22,52 @@ export class FileSuggest extends AbstractInputSuggest<TFile> {
     }
 
     getSuggestions(input_str: string): TFile[] {
-        const all_files = get_tfiles_from_folder(this.folder, this.app)
+        const all_files = pipe(
+            get_tfiles_from_folder(this.folder, this.app),
+            E.map(A.map((file) => enrich_tfile(file, this.app))),
+        );
         if (E.isLeft(all_files)) {
             return [];
         }
 
         const lower_input_str = input_str.toLowerCase();
-
-        return all_files.right.filter((file: TAbstractFile) => {
-            return (
-                file instanceof TFile &&
-                file.extension === "md" &&
-                file.path.toLowerCase().contains(lower_input_str)
-            );
+        if (input_str === "") return all_files.right;
+        const fuse = new Fuse(all_files.right, {
+            keys: ["path", "tags", "frontmatter"],
         });
+        return fuse.search(lower_input_str).map((result) => result.item);
     }
 
+    /* This is an example structure of how a obsidian suggestion looks like in the dom
+        <div class="suggestion">
+            <div class="suggestion-item mod-complex is-selected">
+                <div class="suggestion-content">
+                    <div class="suggestion-title">
+                        <span class="suggestion-highlight">Fátima</span>
+                    </div>
+                    <div class="suggestion-note">Fátima</div>
+                </div>
+                <div class="suggestion-aux">
+                    <span class="suggestion-flair" aria-label="Alias">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-forward">
+                            <polyline points="15 17 20 12 15 7"></polyline>
+                            <path d="M4 18v-2a4 4 0 0 1 4-4h12"></path>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+In the renderSuggestion the `el` is the suggestion-item div
+*/
     renderSuggestion(file: TFile, el: HTMLElement): void {
-        el.setText(this.strategy.renderSuggestion(file));
+        const text = this.strategy.renderSuggestion(file);
+        el.addClasses(["mod-complex"]);
+        const title = el.createDiv({ cls: "suggestion-title", text: text });
+        const note = el.createDiv({ cls: "suggestion-note", text: file.parent?.path });
+        const body = el.createDiv({ cls: "suggestion-content" });
+        body.appendChild(title);
+        body.appendChild(note);
+        el.appendChild(body);
     }
 
     selectSuggestion(file: TFile): void {
@@ -48,4 +76,3 @@ export class FileSuggest extends AbstractInputSuggest<TFile> {
         this.close();
     }
 }
-
