@@ -8,6 +8,7 @@ import {
     filter,
     compact,
     filterMap,
+    flatten,
 } from "fp-ts/Array";
 import {
     map as mapO,
@@ -17,6 +18,8 @@ import {
     fromNullable as fromNullableOpt,
     fold as ofold,
     chain as ochain,
+    alt as OAlt,
+    fromPredicate,
 } from "fp-ts/Option";
 import {
     isLeft,
@@ -53,6 +56,7 @@ export const A = {
     map: mapArr,
     filter,
     filterMap,
+    flatten,
 };
 /**
  * Non empty array
@@ -89,6 +93,8 @@ export const O = {
     fold: ofold,
     fromNullable: fromNullableOpt,
     chain: ochain,
+    fromPredicate: fromPredicate,
+    alt: OAlt,
 };
 
 export const parse = tryCatchK(parseV, (e: unknown) => e as ValiError);
@@ -110,7 +116,9 @@ export type ParsingFn<S extends BaseSchema> = (input: unknown) => Either<ValiErr
  * Concatenates two parsing functions that return Either<ValiError, B> into one.
  * If the first function returns a Right, the second function is not called.
  */
-class _EFunSemigroup<A extends BaseSchema, B extends BaseSchema> implements Semigroup<ParsingFn<A>> {
+class _EFunSemigroup<A extends BaseSchema, B extends BaseSchema>
+    implements Semigroup<ParsingFn<A>>
+{
     concat(f: ParsingFn<A>, g: ParsingFn<B>): (i: unknown) => Either<ValiError, unknown> {
         return (i) => {
             const fRes = f(i);
