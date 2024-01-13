@@ -89,3 +89,9 @@ If your plugin does not need CSS, delete this file.
     color: var(--text-error);
     font-weight: bold;
 }
+.modal-form-suggestion {
+    display: flex;
+    gap: 8px;
+    padding: 4px 0;
+    align-items: center;
+}

@@ -1,4 +1,4 @@
-import { AbstractInputSuggest, App, TFile } from "obsidian";
+import { AbstractInputSuggest, App, TFile, setIcon } from "obsidian";
 import { enrich_tfile, get_tfiles_from_folder } from "../utils/files";
 import { E, pipe, A } from "@std";
 import Fuse from "fuse.js";
@@ -33,9 +33,19 @@ export class FileSuggest extends AbstractInputSuggest<TFile> {
         const lower_input_str = input_str.toLowerCase();
         if (input_str === "") return all_files.right;
         const fuse = new Fuse(all_files.right, {
-            keys: ["path", "tags", "frontmatter"],
+            includeMatches: false,
+            includeScore: true,
+            shouldSort: true,
+            keys: [
+                { name: "path", weight: 2 },
+                { name: "tags", weight: 1 },
+                { name: "frontmatter.aliases", weight: 2 },
+            ],
         });
-        return fuse.search(lower_input_str).map((result) => result.item);
+        return fuse.search(lower_input_str).map((result) => {
+            //console.log(result);
+            return result.item;
+        });
     }
 
     /* This is an example structure of how a obsidian suggestion looks like in the dom
@@ -63,10 +73,16 @@ In the renderSuggestion the `el` is the suggestion-item div
         const text = this.strategy.renderSuggestion(file);
         el.addClasses(["mod-complex"]);
         const title = el.createDiv({ cls: "suggestion-title", text: text });
-        const note = el.createDiv({ cls: "suggestion-note", text: file.parent?.path });
+        const subtitle = el.createDiv({
+            cls: "suggestion-note modal-form-suggestion",
+            text: file.parent?.path,
+        });
+        const icon = el.createSpan({ cls: "suggestion-icon" });
+        setIcon(icon, "folder");
+        subtitle.prepend(icon);
         const body = el.createDiv({ cls: "suggestion-content" });
         body.appendChild(title);
-        body.appendChild(note);
+        body.appendChild(subtitle);
         el.appendChild(body);
     }
 
