@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.38.0](https://github.com/danielo515/obsidian-modal-form/compare/1.37.0...1.38.0) (2024-01-13)
+
+
+### Features
+
+* **core:** enrich_tfile utility function ([1cf4508](https://github.com/danielo515/obsidian-modal-form/commit/1cf4508be2ee6ac52d22a8e7c17fb5728ddafbf0))
+* **form:** the input file is now fuzzy over path and tags. It shows a nicer UI that includes the path ([38dc4b3](https://github.com/danielo515/obsidian-modal-form/commit/38dc4b3060b089bc8829bde2f34ff198830a283e))
+* **input:** note suggest shows the parent folder of the note ([6409ebf](https://github.com/danielo515/obsidian-modal-form/commit/6409ebf217730f33b223e7e6b03d5f7a70abe8ac))
+
 ## [1.37.0](https://github.com/danielo515/obsidian-modal-form/compare/1.36.1...1.37.0) (2024-01-06)
 
 
