@@ -154,7 +154,7 @@ This method returns a copy of the form data. It can be used when you need to man
 
 #### asString(template: string)
 
-This method returns the form data formatted as a string matching the provided template. The template is a string that can contain placeholders in the format `{{key}}`, which will be replaced with the corresponding value from the form data. Here is an example of how to use it in a templater tempmlate:
+This method returns the form data formatted as a string matching the provided template. The template is a string that can contain placeholders in the format `{{key}}`, which will be replaced with the corresponding value from the form data. Here is an example of how to use it in a templater template:
 
 ```
 <%*
