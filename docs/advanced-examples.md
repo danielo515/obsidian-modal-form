@@ -51,3 +51,15 @@ If you save this snippet as `openForm.js` in your templater snippets folder, the
 const result = await tp.user.openForm('example-form', { values: { size: 'large' }});
 %>
 ```
+
+## Exclude subfolders when selecting notes from a folder
+
+Instead of using the `note` type or the `note` source (in case of multi-select) in your form, which doesn't support exclusions yet, we will use `dataview` (either type or as a multi-select source) to get the notes we want.
+Then use the following query to exclude subfolders:
+
+```js
+dv.pages('"Data" AND -"Data/Nested"').file.name
+```
+
+Here `Data` is the folder we want to get notes from and `Data/Nested` is the subfolder we want to exclude.
+Please keep in mind that `dataview` is very sensitive to spaces and quotes. Removing the nested `"` will not work, or adding a space after the `-` will not work either.
