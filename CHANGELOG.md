@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.39.0](https://github.com/danielo515/obsidian-modal-form/compare/1.38.0...1.39.0) (2024-01-14)
+
+
+### Features
+
+* multi select notes uses the new notes input (better UI and search) ([6c3e1e5](https://github.com/danielo515/obsidian-modal-form/commit/6c3e1e5b068573826e564d8648f6cf2714f61b1a))
+
 ## [1.38.0](https://github.com/danielo515/obsidian-modal-form/compare/1.37.0...1.38.0) (2024-01-13)
 
 
