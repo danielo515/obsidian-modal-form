@@ -164,4 +164,5 @@ export type inputDataviewSource = Output<typeof InputDataviewSourceSchema>;
 export type inputSelectFixed = Output<typeof InputSelectFixedSchema>;
 export type basicInput = Output<typeof InputBasicSchema>;
 export type multiselect = Output<typeof MultiselectSchema>;
+export type inputTag = Output<typeof InputTagSchema>;
 export type inputType = Output<typeof InputTypeSchema>;

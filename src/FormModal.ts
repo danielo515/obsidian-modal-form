@@ -9,13 +9,12 @@ import type { FormDefinition, FormOptions } from "./core/formDefinition";
 import { FileSuggest } from "./suggesters/suggestFile";
 import { DataviewSuggest } from "./suggesters/suggestFromDataview";
 import { SvelteComponent } from "svelte";
-import { executeSandboxedDvQuery, sandboxedDvQuery } from "./suggesters/SafeDataviewQuery";
-import { A, E, parseFunctionBody, pipe, throttle } from "@std";
+import { E, parseFunctionBody, pipe, throttle } from "@std";
 import { log_error, log_notice } from "./utils/Log";
 import { FieldValue, FormEngine, makeFormEngine } from "./store/formStore";
 import { Writable } from "svelte/store";
 import { FolderSuggest } from "./suggesters/suggestFolder";
-import { allowsUnknownValues } from "./core/InputDefinitionSchema";
+import { MultiSelectModel, MultiSelectTags } from "./views/components/MultiSelectModel";
 
 export type SubmitFn = (formResult: FormResult) => void;
 
@@ -164,55 +163,38 @@ export class FormModal extends Modal {
                         slider.onChange(fieldStore.value.set);
                     });
                 case "multiselect": {
-                    const source = fieldInput.source;
-                    const allowUnknownValues = allowsUnknownValues(fieldInput);
-                    const options =
-                        source == "fixed"
-                            ? fieldInput.multi_select_options
-                            : source == "notes"
-                              ? pipe(
-                                    get_tfiles_from_folder(fieldInput.folder, this.app),
-                                    E.map(A.map((file) => file.basename)),
-                                    E.getOrElse((err) => {
-                                        log_error(err);
-                                        return [] as string[];
-                                    }),
-                                )
-                              : executeSandboxedDvQuery(
-                                    sandboxedDvQuery(fieldInput.query),
-                                    this.app,
-                                );
                     fieldStore.value.set(initialValue ?? []);
                     this.svelteComponents.push(
                         new MultiSelect({
                             target: fieldBase.controlEl,
                             props: {
+                                model: MultiSelectModel(
+                                    fieldInput,
+                                    this.app,
+                                    fieldStore.value as Writable<string[]>,
+                                ),
                                 values: fieldStore.value as Writable<string[]>,
-                                availableOptions: options,
                                 errors: fieldStore.errors,
                                 setting: fieldBase,
-                                app: this.app,
-                                allowUnknownValues,
                             },
                         }),
                     );
                     return;
                 }
                 case "tag": {
-                    const options = Object.keys(this.app.metadataCache.getTags()).map((tag) =>
-                        tag.slice(1),
-                    ); // remove the #
                     fieldStore.value.set(initialValue ?? []);
                     this.svelteComponents.push(
                         new MultiSelect({
                             target: fieldBase.controlEl,
                             props: {
                                 values: fieldStore.value as Writable<string[]>,
-                                availableOptions: options,
                                 setting: fieldBase,
                                 errors: fieldStore.errors,
-                                app: this.app,
-                                allowUnknownValues: true,
+                                model: MultiSelectTags(
+                                    fieldInput,
+                                    this.app,
+                                    fieldStore.value as Writable<string[]>,
+                                ),
                             },
                         }),
                     );
