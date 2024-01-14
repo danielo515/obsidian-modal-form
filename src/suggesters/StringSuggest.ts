@@ -1,6 +1,6 @@
 import { AbstractInputSuggest, App } from "obsidian";
 
-export class MultiSuggest extends AbstractInputSuggest<string> {
+export class StringSuggest extends AbstractInputSuggest<string> {
     content: Set<string>;
 
     constructor(

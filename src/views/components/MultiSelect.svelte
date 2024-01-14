@@ -1,46 +1,21 @@
 <script lang="ts">
     import type { App, Setting } from "obsidian";
-    import { MultiSuggest } from "../../suggesters/MultiSuggest";
+    import { StringSuggest } from "../../suggesters/StringSuggest";
     import { A, pipe } from "@std";
     import { Readable, Writable } from "svelte/store";
+    import { MultiSelectModel } from "./MultiSelectModel";
 
-    export let availableOptions: string[] = [];
+    export let model: MultiSelectModel;
     export let errors: Readable<string[]>;
     export let values: Writable<string[]>;
-    export let allowUnknownValues: boolean = false;
     // We take the setting to make it consistent with the other input components
     export let setting: Setting;
-    export let app: App;
 
     setting.settingEl.setCssStyles({
         alignItems: "baseline",
     });
 
-    $: remainingOptions = new Set(availableOptions);
-
-    function createInput(element: HTMLInputElement) {
-        new MultiSuggest(
-            element,
-            remainingOptions,
-            (selected) => {
-                remainingOptions.delete(selected);
-                remainingOptions = remainingOptions;
-                values.update((x) => [...x, selected]);
-            },
-            app,
-            allowUnknownValues,
-        );
-    }
-    function removeValue(value: string) {
-        remainingOptions.add(value);
-        remainingOptions = remainingOptions;
-        values.update((xs) =>
-            pipe(
-                xs,
-                A.filter((x) => x !== value),
-            ),
-        );
-    }
+    const { createInput, removeValue } = model;
 </script>
 
 <div class="multi-select-root">
