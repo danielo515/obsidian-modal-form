@@ -9,13 +9,11 @@ import type { FormDefinition, FormOptions } from "./core/formDefinition";
 import { FileSuggest } from "./suggesters/suggestFile";
 import { DataviewSuggest } from "./suggesters/suggestFromDataview";
 import { SvelteComponent } from "svelte";
-import { executeSandboxedDvQuery, sandboxedDvQuery } from "./suggesters/SafeDataviewQuery";
-import { A, E, parseFunctionBody, pipe, throttle } from "@std";
+import { E, parseFunctionBody, pipe, throttle } from "@std";
 import { log_error, log_notice } from "./utils/Log";
 import { FieldValue, FormEngine, makeFormEngine } from "./store/formStore";
 import { Writable } from "svelte/store";
 import { FolderSuggest } from "./suggesters/suggestFolder";
-import { allowsUnknownValues } from "./core/InputDefinitionSchema";
 import { MultiSelectModel, MultiSelectTags } from "./views/components/MultiSelectModel";
 
 export type SubmitFn = (formResult: FormResult) => void;
