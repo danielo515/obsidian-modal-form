@@ -5,7 +5,7 @@
 
 # Obsidian Modal Form Plugin
 
-This plugin for [Obsidian](https://obsidian.md) allows to define forms that can be opened from anywhere you can run JavaScript, so you can combine it with other plugins like [Templater](https://github.com/SilentVoid13/Templater) or [QuickAdd](https://github.com/chhoumann/quickadd).
+This plugin for [Obsidian](https://obsidian.md) allows you to define forms that can be opened from anywhere you can run JavaScript, so you can combine it with other plugins like [Templater](https://github.com/SilentVoid13/Templater) or [QuickAdd](https://github.com/chhoumann/quickadd).
 
 https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4733-89ea-9c20ea11bee9
 
@@ -43,10 +43,10 @@ https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4
 Obsidian is a great tool for taking notes, but it is also a nice for managing data.
 However, when it's time to capture structured data it doesn't offer many conveniences.
 Some plugins like [Templater](https://github.com/SilentVoid13/Templater) or [QuickAdd](https://github.com/chhoumann/quickadd) alleviate this problem with templates/automation that ease the creation of notes with a predefined structure, but then you have to fill the data manually.
-The mentioned plugins (templater, quickAdd) have some little convenience inputs, but they have certain tradeoffs/problems:
+The mentioned plugins (Templater, QuickAdd) have some little convenience inputs, but they have certain tradeoffs/problems:
 
--   they are limited to input a single value at a time
--   they don't have labels, or detailed descriptions about the field you are filling
+-   they are limited to inputting a single value at a time
+-   they don't have labels or detailed descriptions about the field you are filling
 -   you can't skip fields, you will always be prompted for all of them one by one
 
 All of the mentioned tools are great at their job and unleash super convenient workflows.
@@ -56,18 +56,18 @@ For that reason, rather than offering an alternative, this plugin is designed as
 
 -   [Templater](https://github.com/SilentVoid13/Templater) to open modals from templates
 -   [QuickAdd](https://github.com/chhoumann/quickadd) to quickly capture data from a modal
--   [dataview](https://github.com/blacksmithgu/obsidian-dataview) to provide values for autocompletion
+-   [dataview](https://github.com/blacksmithgu/obsidian-dataview) to provide values for auto-completion
 
 ## Scope of this plugin
 
-This plugin is intentionally narrow in scope. As it's mentioned in the previous section, it is designed as a building block, so you can integrate it with other plugins and workflows.
+This plugin is intentionally narrow in scope. As mentioned in the previous section, it is designed as a building block, so you can integrate it with other plugins and workflows.
 The only features that I will consider adding will be ones about improving the form itself.
 
 ## Usage
 
 ### Call the form from JavaScript
 
-Since the main usage of this plugin is opening forms and getting back their data let's start with that. If you want to lear how to create forms, skip to the next section [define a form](#define-a-form).
+Since the main usage of this plugin is opening forms and getting back their data let's start with that. If you want to learn how to create forms, skip to the next section [define a form](#define-a-form).
 
 The plugin exposes an API that can be accessed from any JavaScript code that has access to the global `app` object. So, in order to get the API you can do:
 
@@ -75,7 +75,7 @@ The plugin exposes an API that can be accessed from any JavaScript code that has
 const modalForm = app.plugins.plugins.modalforms.api;
 ```
 
-From here you can call any of the main method of the API, `openForm` which allows you to open a form by name and get back the data. Let's see an example:
+From here you can call any of the main methods of the API, `openForm` which allows you to open a form by name and get back the data. Let's see an example:
 
 ```javascript
 const modalForm = app.plugins.plugins.modalforms.api;
@@ -83,8 +83,8 @@ const result = await modalForm.openForm("example-form");
 ```
 
 The result is a special type of object that contains the data of the form.
-It also has somme convenience methods to help you process the returned data.
-One of them is `asFrontmatterString`, which returns the data as a string that can be used in a frontmatter block. Let's see an example using templater:
+It also has some convenient methods to help you process the returned data.
+One of them is `asFrontmatterString`, which returns the data as a string that can be used in a frontmatter block. Let's see an example using Templater:
 
 #### Usage with Templater
 
@@ -154,7 +154,7 @@ This method returns a copy of the form data. It can be used when you need to man
 
 #### asString(template: string)
 
-This method returns the form data formatted as a string matching the provided template. The template is a string that can contain placeholders in the format `{{key}}`, which will be replaced with the corresponding value from the form data. Here is an example of how to use it in a templater tempmlate:
+This method returns the form data formatted as a string matching the provided template. The template is a string that can contain placeholders in the format `{{key}}`, which will be replaced with the corresponding value from the form data. Here is an example of how to use it in a templater template:
 
 ```
 <%*
@@ -172,12 +172,12 @@ For more advanced usage of the `FormResult` methods please refer to the specific
 
 #### Create a new form
 
-Creating a new form is easy, you just need to open the manage forms view, either by clicking in the ribbon icon or by using the command palette (`Obsidian modal form: New form`).
+Creating a new form is easy, you just need to open the manage forms view, either by clicking on the ribbon icon or by using the command palette (`Obsidian modal form: New form`).
 Once there, click on the `+` button and you will be presented with a form to create a named form definition.
-The form is self-explanatory, but here is some key points you need to keep in mind:
+The form is self-explanatory, but here are some key points you need to keep in mind:
 
--   The name must be unique, and it will be used to identify the form when you open it from JavaScript, case sensitive
--   The title is what you will see as header in the modal window when you open the form
+-   The name must be unique, and it will be used to identify the form when you open it from JavaScript, case-sensitive
+-   The title is what you will see as a header in the modal window when you open the form
 -   You will not be able to save the form unless all the fields are valid (which means they have a name and a type)
 
 ![form editor/creator](media/editor.png)
@@ -188,7 +188,7 @@ The form is self-explanatory, but here is some key points you need to keep in mi
 
 #### Inline forms
 
-The plugin also supports inline forms, which are forms that are defined when you call the openForm method. This is useful when you want to create a form that is only used in one place and it is simple enough. However, note the format is a bit verbose for typing it manually and it is error prone, so unless it is a very small form, you will most likely prefer to use a named form.
+The plugin also supports inline forms, which are forms that are defined when you call the openForm method. This is useful when you want to create a form that is only used in one place and it is simple enough. However, note the format is a bit verbose for typing it manually and it is error-prone, so unless it is a very small form, you will most likely prefer to use a named form.
 
 Here is an example of how to use it:
 
@@ -240,9 +240,9 @@ You can install the plugin directly from the Obsidian plugin store or through [B
 ### Installing with BRAT
 
 1. Install the [BRAT](obsidian://show-plugin?id=obsidian42-brat) plugin (GitHub page) and enable it.
-2. Open command palette and run the command BRAT: Add a beta plugin for testing.
+2. Open the command palette and run the command BRAT: Add a beta plugin for testing.
 3. Enter `https://github.com/danielo515/obsidian-modal-form` into the modal and press the Add Plugin button.
-4. Return to the settings and navigate to Community plugins tab.
+4. Return to the settings and navigate to the Community plugins tab.
 5. Enable the plugin.
 
 ## Manually installing the plugin
@@ -258,7 +258,7 @@ You can install the plugin directly from the Obsidian plugin store or through [B
 
 ### Releasing new releases
 
--   run `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
+-   run `npm version patch`, `npm version minor`, or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
 -   Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
 -   Publish the release.
 
