@@ -1,0 +1,859 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Danielo Rodriguez">
+      
+      
+      
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.4">
+    
+    
+      
+        <title>Obsidian Modal Form docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.50c56a3b.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#obsidian-modal-form-plugin" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="Obsidian Modal Form docs" class="md-header__button md-logo" aria-label="Obsidian Modal Form docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Obsidian Modal Form docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Home
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/danielo515/obsidian-modal-form" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="Obsidian Modal Form docs" class="md-nav__button md-logo" aria-label="Obsidian Modal Form docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Obsidian Modal Form docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/danielo515/obsidian-modal-form" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../README.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ResultValue/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ResultValue
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="advanced-examples/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Advanced
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="managing-results/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Manging results
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Features
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why this plugin?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#friends-of-modal-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      Friends of modal form
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scope-of-this-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scope of this plugin
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#call-the-form-from-javascript" class="md-nav__link">
+    <span class="md-ellipsis">
+      Call the form from JavaScript
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Call the form from JavaScript">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usage-with-templater" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage with Templater
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage-with-quickadd" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage with QuickAdd
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#providing-default-values-when-opening-a-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      Providing Default Values When Opening a Form
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#formresult-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      FormResult Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FormResult Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#asfrontmatterstring" class="md-nav__link">
+    <span class="md-ellipsis">
+      asFrontmatterString()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asdataviewproperties" class="md-nav__link">
+    <span class="md-ellipsis">
+      asDataviewProperties()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#getdata" class="md-nav__link">
+    <span class="md-ellipsis">
+      getData()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asstringtemplate-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      asString(template: string)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced usage
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-a-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      Define a form
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Define a form">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-a-new-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a new form
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dataview-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dataview integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inline-forms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inline forms
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tips-and-tricks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tips and tricks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installing-the-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installing the plugin
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installing the plugin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installing-with-brat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installing with BRAT
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manually-installing-the-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manually installing the plugin
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-develop" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to develop
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How to develop">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#releasing-new-releases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Releasing new releases
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<p><img alt="GitHub all releases" src="https://img.shields.io/github/downloads/danielo515/obsidian-modal-form/total?color=573E7A&amp;logo=github&amp;style=for-the-badge" /> 
+<a href="https://www.buymeacoffee.com/danielo515" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+<a href="https://ko-fi.com/H2H7Q0U9G"><img alt="ko-fi" src="https://ko-fi.com/img/githubbutton_sm.svg" /></a></p>
+<h1 id="obsidian-modal-form-plugin">Obsidian Modal Form Plugin</h1>
+<p>This plugin for <a href="https://obsidian.md">Obsidian</a> allows you to define forms that can be opened from anywhere you can run JavaScript, so you can combine it with other plugins like <a href="https://github.com/SilentVoid13/Templater">Templater</a> or <a href="https://github.com/chhoumann/quickadd">QuickAdd</a>.</p>
+<p>https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4733-89ea-9c20ea11bee9</p>
+<h2 id="features">Features</h2>
+<ul>
+<li>Forms open in a modal window and return you the values, so you can trigger it from:<ul>
+<li>Templater templates</li>
+<li>QuickAdd captures</li>
+<li>DataviewJS queries</li>
+<li>Many other places...</li>
+</ul>
+</li>
+<li>Define forms using a simple JSON format</li>
+<li>Create and manage a collection of forms, each identified by a unique name</li>
+<li>User interface for creating new forms</li>
+<li>Create new notes directly from the form using templates<ul>
+<li>Template editor has a nice UI for creating templates</li>
+</ul>
+</li>
+<li>Many input types<ul>
+<li>number</li>
+<li>date</li>
+<li>time</li>
+<li>slider</li>
+<li>toggle (true/false)</li>
+<li>free text</li>
+<li>text with autocompletion for note names (from a folder or root)</li>
+<li>text with autocompletion from a dataview query (requires dataview plugin)</li>
+<li>multiple choice input</li>
+<li>select from a list<ul>
+<li>list of fixed values</li>
+<li>list of notes from a folder</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img alt="example form" src="media/example.png" />
+<img alt="templates" src="media/templates-v1.gif" /></p>
+<h2 id="why-this-plugin">Why this plugin?</h2>
+<p>Obsidian is a great tool for taking notes, but it is also a nice for managing data.
+However, when it's time to capture structured data it doesn't offer many conveniences.
+Some plugins like <a href="https://github.com/SilentVoid13/Templater">Templater</a> or <a href="https://github.com/chhoumann/quickadd">QuickAdd</a> alleviate this problem with templates/automation that ease the creation of notes with a predefined structure, but then you have to fill the data manually.
+The mentioned plugins (Templater, QuickAdd) have some little convenience inputs, but they have certain tradeoffs/problems:</p>
+<ul>
+<li>they are limited to inputting a single value at a time</li>
+<li>they don't have labels or detailed descriptions about the field you are filling</li>
+<li>you can't skip fields, you will always be prompted for all of them one by one</li>
+</ul>
+<p>All of the mentioned tools are great at their job and unleash super convenient workflows.
+For that reason, rather than offering an alternative, this plugin is designed as a complement to them, offering some basic building blocks that you can integrate with your existing templates and workflows.</p>
+<h2 id="friends-of-modal-form">Friends of modal form</h2>
+<ul>
+<li><a href="https://github.com/SilentVoid13/Templater">Templater</a> to open modals from templates</li>
+<li><a href="https://github.com/chhoumann/quickadd">QuickAdd</a> to quickly capture data from a modal</li>
+<li><a href="https://github.com/blacksmithgu/obsidian-dataview">dataview</a> to provide values for auto-completion</li>
+</ul>
+<h2 id="scope-of-this-plugin">Scope of this plugin</h2>
+<p>This plugin is intentionally narrow in scope. As mentioned in the previous section, it is designed as a building block, so you can integrate it with other plugins and workflows.
+The only features that I will consider adding will be ones about improving the form itself.</p>
+<h2 id="usage">Usage</h2>
+<h3 id="call-the-form-from-javascript">Call the form from JavaScript</h3>
+<p>Since the main usage of this plugin is opening forms and getting back their data let's start with that. If you want to learn how to create forms, skip to the next section <a href="#define-a-form">define a form</a>.</p>
+<p>The plugin exposes an API that can be accessed from any JavaScript code that has access to the global <code>app</code> object. So, in order to get the API you can do:</p>
+<pre><code class="language-javascript">const modalForm = app.plugins.plugins.modalforms.api;
+</code></pre>
+<p>From here you can call any of the main methods of the API, <code>openForm</code> which allows you to open a form by name and get back the data. Let's see an example:</p>
+<pre><code class="language-javascript">const modalForm = app.plugins.plugins.modalforms.api;
+const result = await modalForm.openForm(&quot;example-form&quot;);
+</code></pre>
+<p>The result is a special type of object that contains the data of the form.
+It also has some convenient methods to help you process the returned data.
+One of them is <code>asFrontmatterString</code>, which returns the data as a string that can be used in a frontmatter block. Let's see an example using Templater:</p>
+<h4 id="usage-with-templater">Usage with Templater</h4>
+<pre><code class="language-javascript">---
+&lt;%*
+const modalForm = app.plugins.plugins.modalforms.api;
+const result = await modalForm.openForm('example-form');
+tR += result.asFrontmatterString();
+-%&gt;
+---
+</code></pre>
+<p>When you insert this template in a note, it will open the form, and once you submit it, it will insert the data in the note as a frontmatter block.</p>
+<h4 id="usage-with-quickadd">Usage with QuickAdd</h4>
+<p>In order to open a form from QuickAdd capture, you need to create a capture and activate the capture format, then in the format text-area you must create a code block with the language defined as <code>js quickadd</code> and copy the code below:</p>
+<pre><code class="language-javascript">```js quickadd
+    const modalForm = app.plugins.plugins.modalforms.api;
+    const result = await modalForm.openForm('example-form');
+    return result.asDataviewProperties();
+```
+</code></pre>
+<p>Here you have an example screenshot of how it should look like:
+<img alt="quick capture example" src="media/image.png" /></p>
+<h3 id="providing-default-values-when-opening-a-form">Providing Default Values When Opening a Form</h3>
+<p>When opening a form you can provide default values for the form fields. This can be done by passing an object to the <code>openForm</code> or <code>limitedForm</code> methods as part of the <code>FormOptions</code> parameter. This object should have the same structure as the form definition, with each key corresponding to a field name and its value being the default value for that field.</p>
+<p>Here's an example:</p>
+<pre><code class="language-typescript">const values = {
+    title: &quot;My Default Title&quot;,
+    description: &quot;This is a default description.&quot;,
+};
+
+const modalForm = app.plugins.plugins.modalforms.api;
+const result = await modalForm.openForm(&quot;example-form&quot;, { values: values });
+</code></pre>
+<p>In this example, the form will open with the <code>title</code> field pre-filled with <code>My Default Title</code> and the <code>description</code> field pre-filled with <code>This is a default description.</code>.</p>
+<p><strong>Note</strong>: If a field in the default values object does not exist in the form definition, it will be ignored.</p>
+<h3 id="formresult-methods">FormResult Methods</h3>
+<p>When you open a form, you get back a <code>FormResult</code> object. This object contains the data of the form and some methods to help you process it.
+This <code>FormResult</code> object returned by the <code>openForm</code> method has several methods that can be used to process the form data. Here is a brief description of each method:</p>
+<h4 id="asfrontmatterstring">asFrontmatterString()</h4>
+<p>This method returns the form data as a string that can be used in a frontmatter block. It formats the data in YAML syntax. Here is an example of how to use it:</p>
+<h4 id="asdataviewproperties">asDataviewProperties()</h4>
+<p>This method returns the form data as a string of dataview properties. Each key-value pair in the form data is converted into a string in the format <code>key:: value</code>. Here is an example of how to use it:</p>
+<h4 id="getdata">getData()</h4>
+<p>This method returns a copy of the form data. It can be used when you need to manipulate the form data without affecting the original data.</p>
+<h4 id="asstringtemplate-string">asString(template: string)</h4>
+<p>This method returns the form data formatted as a string matching the provided template. The template is a string that can contain placeholders in the format <code>{{key}}</code>, which will be replaced with the corresponding value from the form data. Here is an example of how to use it in a templater template:</p>
+<pre><code>&lt;%*
+const modalForm = app.plugins.plugins.modalforms.api;
+const result = await modalForm.openForm('example-form');
+tR += result.asString('{{Name}} is {{age}} years old and his/her favorite food is {{favorite_meal}}. Family status: {{is_family}}');
+-%&gt;
+</code></pre>
+<h4 id="advanced-usage">Advanced usage</h4>
+<p>For more advanced usage of the <code>FormResult</code> methods please refer to the specific documentation of FormResult <a href="docs/managing-results.md">here</a></p>
+<h3 id="define-a-form">Define a form</h3>
+<h4 id="create-a-new-form">Create a new form</h4>
+<p>Creating a new form is easy, you just need to open the manage forms view, either by clicking on the ribbon icon or by using the command palette (<code>Obsidian modal form: New form</code>).
+Once there, click on the <code>+</code> button and you will be presented with a form to create a named form definition.
+The form is self-explanatory, but here are some key points you need to keep in mind:</p>
+<ul>
+<li>The name must be unique, and it will be used to identify the form when you open it from JavaScript, case-sensitive</li>
+<li>The title is what you will see as a header in the modal window when you open the form</li>
+<li>You will not be able to save the form unless all the fields are valid (which means they have a name and a type)</li>
+</ul>
+<p><img alt="form editor/creator" src="media/editor.png" /></p>
+<h4 id="dataview-integration">Dataview integration</h4>
+<p><img alt="dataview" src="media/dataview.png" /></p>
+<h4 id="inline-forms">Inline forms</h4>
+<p>The plugin also supports inline forms, which are forms that are defined when you call the openForm method. This is useful when you want to create a form that is only used in one place and it is simple enough. However, note the format is a bit verbose for typing it manually and it is error-prone, so unless it is a very small form, you will most likely prefer to use a named form.</p>
+<p>Here is an example of how to use it:</p>
+<pre><code class="language-javascript">const modalForm = app.plugins.plugins.modalforms.api;
+const result = await modalForm.openForm({
+    title: &quot;Example form&quot;,
+    fields: [
+        {
+            name: &quot;name&quot;,
+            label: &quot;Name&quot;,
+            description: &quot;Your name&quot;,
+            input: { type: &quot;text&quot; },
+        },
+        {
+            name: &quot;age&quot;,
+            label: &quot;Age&quot;,
+            description: &quot;Your age&quot;,
+            input: { type: &quot;number&quot; },
+        },
+        {
+            name: &quot;favorite_meal&quot;,
+            label: &quot;Favorite meal&quot;,
+            description: &quot;Your favorite meal&quot;,
+            input: { type: &quot;text&quot; },
+        },
+        {
+            name: &quot;is_family&quot;,
+            label: &quot;Is family&quot;,
+            type: &quot;toggle&quot;,
+            description: &quot;Are you family?&quot;,
+            required: true,
+            input: { type: &quot;toggle&quot; },
+        },
+    ],
+});
+</code></pre>
+<p>You can make it smaller by removing some of the optional fields like description or label, but I really encourage you to define them all.</p>
+<h3 id="tips-and-tricks">Tips and tricks</h3>
+<ul>
+<li><a href="docs/advanced-examples.md#making-calling-forms-more-convenient">How to make opening the forms more convenient</a></li>
+</ul>
+<h2 id="installing-the-plugin">Installing the plugin</h2>
+<p>You can install the plugin directly from the Obsidian plugin store or through <a href="obsidian://show-plugin?id=obsidian42-brat">BRAT</a></p>
+<h3 id="installing-with-brat">Installing with BRAT</h3>
+<ol>
+<li>Install the <a href="obsidian://show-plugin?id=obsidian42-brat">BRAT</a> plugin (GitHub page) and enable it.</li>
+<li>Open the command palette and run the command BRAT: Add a beta plugin for testing.</li>
+<li>Enter <code>https://github.com/danielo515/obsidian-modal-form</code> into the modal and press the Add Plugin button.</li>
+<li>Return to the settings and navigate to the Community plugins tab.</li>
+<li>Enable the plugin.</li>
+</ol>
+<h2 id="manually-installing-the-plugin">Manually installing the plugin</h2>
+<ul>
+<li>Copy over <code>main.js</code>, <code>styles.css</code>, <code>manifest.json</code> to your vault <code>VaultFolder/.obsidian/plugins/modalForm/</code>.</li>
+</ul>
+<h2 id="how-to-develop">How to develop</h2>
+<ul>
+<li>Clone this repo.</li>
+<li>Make sure your NodeJS is at least v16 (<code>node --version</code>).</li>
+<li><code>npm i</code> or <code>yarn</code> to install dependencies.</li>
+<li><code>npm run dev</code> to start compilation in watch mode.</li>
+</ul>
+<h3 id="releasing-new-releases">Releasing new releases</h3>
+<ul>
+<li>run <code>npm version patch</code>, <code>npm version minor</code>, or <code>npm version major</code> after updating <code>minAppVersion</code> manually in <code>manifest.json</code>.</li>
+<li>Upload the files <code>manifest.json</code>, <code>main.js</code>, <code>styles.css</code> as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.</li>
+<li>Publish the release.</li>
+</ul>
+<blockquote>
+<p>The command <code>npm version whatever</code> will bump version in <code>manifest.json</code> and <code>package.json</code>, and add the entry for the new version to <code>versions.json</code></p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.c011b7c0.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="assets/javascripts/bundle.7389ff0e.min.js"></script>
+      
+    
+  </body>
+</html>
