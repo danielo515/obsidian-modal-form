@@ -12,6 +12,8 @@
       
       
       
+        <link rel="next" href="ResultValue/">
+      
       
       <link rel="icon" href="assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.4">
@@ -210,18 +212,328 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../README.md" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    /
+    Home
   </span>
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Features
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why this plugin?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#friends-of-modal-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      Friends of modal form
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scope-of-this-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scope of this plugin
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#call-the-form-from-javascript" class="md-nav__link">
+    <span class="md-ellipsis">
+      Call the form from JavaScript
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Call the form from JavaScript">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usage-with-templater" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage with Templater
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage-with-quickadd" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage with QuickAdd
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#providing-default-values-when-opening-a-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      Providing Default Values When Opening a Form
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#formresult-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      FormResult Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FormResult Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#asfrontmatterstring" class="md-nav__link">
+    <span class="md-ellipsis">
+      asFrontmatterString()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asdataviewproperties" class="md-nav__link">
+    <span class="md-ellipsis">
+      asDataviewProperties()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#getdata" class="md-nav__link">
+    <span class="md-ellipsis">
+      getData()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asstringtemplate-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      asString(template: string)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced usage
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-a-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      Define a form
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Define a form">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-a-new-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a new form
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dataview-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dataview integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inline-forms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inline forms
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tips-and-tricks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tips and tricks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installing-the-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installing the plugin
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installing the plugin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installing-with-brat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installing with BRAT
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manually-installing-the-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manually installing the plugin
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-develop" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to develop
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How to develop">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#releasing-new-releases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Releasing new releases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#publish-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Publish docs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -727,7 +1039,7 @@ tR += result.asString('{{Name}} is {{age}} years old and his/her favorite food i
 -%&gt;
 </code></pre>
 <h4 id="advanced-usage">Advanced usage</h4>
-<p>For more advanced usage of the <code>FormResult</code> methods please refer to the specific documentation of FormResult <a href="docs/managing-results.md">here</a></p>
+<p>For more advanced usage of the <code>FormResult</code> methods please refer to the specific documentation of FormResult <a href="managing-results/">here</a></p>
 <h3 id="define-a-form">Define a form</h3>
 <h4 id="create-a-new-form">Create a new form</h4>
 <p>Creating a new form is easy, you just need to open the manage forms view, either by clicking on the ribbon icon or by using the command palette (<code>Obsidian modal form: New form</code>).
@@ -780,7 +1092,7 @@ const result = await modalForm.openForm({
 <p>You can make it smaller by removing some of the optional fields like description or label, but I really encourage you to define them all.</p>
 <h3 id="tips-and-tricks">Tips and tricks</h3>
 <ul>
-<li><a href="docs/advanced-examples.md#making-calling-forms-more-convenient">How to make opening the forms more convenient</a></li>
+<li><a href="advanced-examples/#making-calling-forms-more-convenient">How to make opening the forms more convenient</a></li>
 </ul>
 <h2 id="installing-the-plugin">Installing the plugin</h2>
 <p>You can install the plugin directly from the Obsidian plugin store or through <a href="obsidian://show-plugin?id=obsidian42-brat">BRAT</a></p>
@@ -815,8 +1127,7 @@ const result = await modalForm.openForm({
 <h3 id="publish-docs">Publish docs</h3>
 <p>We use <a href="https://www.mkdocs.org/">mkdocs</a> to generate the documentation.
 To publish the docs, run:</p>
-<pre><code class="language-bash">mkdocs build
-mkdocs gh-deploy
+<pre><code class="language-bash">./build-docs.sh
 </code></pre>
 
 
