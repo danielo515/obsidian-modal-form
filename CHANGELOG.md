@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.39.1](https://github.com/danielo515/obsidian-modal-form/compare/1.39.0...1.39.1) (2024-01-17)
+
+
+### Bug Fixes
+
+* tag should allow unknown values ([4dec090](https://github.com/danielo515/obsidian-modal-form/commit/4dec09018f27c637c4f3c59f44f54dc968f15df8))
+
 ## [1.39.0](https://github.com/danielo515/obsidian-modal-form/compare/1.38.0...1.39.0) (2024-01-14)
 
 
