@@ -9,7 +9,7 @@ In this section of the docs you will find some advanced usage examples of modal-
 If you want to modify the content of a notes frontmatter with one of your existing forms, put the following
 snippet in a templater template, substituting the name of your form:
 
-```js
+```javascript
 <%*
   const run = async (frontmatter) => {
     const result = await tp.user.openForm('frontmatter', {
@@ -27,10 +27,10 @@ snippet in a templater template, substituting the name of your form:
     },
   );
 %>
+```
 
 Please be aware that this is not atomic, so if if something edits the frontmatter while you are editing it within the form,
 the form values will not reflect this change and you may be overwriting some changes. Although this is unlikely to happen, it is better to be aware of it.
-```
 
 The values the form understand and that are pressent in the frontmatter, will be populated with the values on the frontmatter.
 Then, when you submit the form, the new values will overwrite the old ones, leaving the rest untouched.
@@ -58,7 +58,7 @@ Instead of using the `note` type or the `note` source (in case of multi-select) 
 Then use the following query to exclude subfolders:
 
 ```js
-dv.pages('"Data" AND -"Data/Nested"').file.name
+dv.pages('"Data" AND -"Data/Nested"').file.name;
 ```
 
 Here `Data` is the folder we want to get notes from and `Data/Nested` is the subfolder we want to exclude.
