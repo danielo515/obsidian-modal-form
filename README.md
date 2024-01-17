@@ -263,3 +263,13 @@ You can install the plugin directly from the Obsidian plugin store or through [B
 -   Publish the release.
 
 > The command `npm version whatever` will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+
+### Publish docs
+
+We use [mkdocs](https://www.mkdocs.org/) to generate the documentation.
+To publish the docs, run:
+
+```bash
+mkdocs build
+mkdocs gh-deploy
+```
