@@ -35,8 +35,8 @@ https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4
         -   list of fixed values
         -   list of notes from a folder
 
-![example form](media/example.png)
-![templates](media/templates-v1.gif)
+![example form](docs/media/example.png)
+![templates](docs/media/templates-v1.gif)
 
 ## Why this plugin?
 
@@ -113,7 +113,7 @@ In order to open a form from QuickAdd capture, you need to create a capture and 
 `````
 
 Here you have an example screenshot of how it should look like:
-![quick capture example](media/image.png)
+![quick capture example](docs/media/image.png)
 
 ### Providing Default Values When Opening a Form
 
@@ -180,11 +180,11 @@ The form is self-explanatory, but here are some key points you need to keep in m
 -   The title is what you will see as a header in the modal window when you open the form
 -   You will not be able to save the form unless all the fields are valid (which means they have a name and a type)
 
-![form editor/creator](media/editor.png)
+![form editor/creator](docs/media/editor.png)
 
 #### Dataview integration
 
-![dataview](media/dataview.png)
+![dataview](docs/media/dataview.png)
 
 #### Inline forms
 
@@ -270,6 +270,5 @@ We use [mkdocs](https://www.mkdocs.org/) to generate the documentation.
 To publish the docs, run:
 
 ```bash
-mkdocs build
-mkdocs gh-deploy
+./build-docs.sh
 ```

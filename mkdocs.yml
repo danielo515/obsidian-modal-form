@@ -3,7 +3,7 @@ repo_url: https://github.com/danielo515/obsidian-modal-form
 site_author: Danielo Rodriguez
 
 nav:
-    - "/": ../README.md
+    - Home: index.md
     - ResultValue: ResultValue.md
     - Advanced: advanced-examples.md
     - Manging results: managing-results.md
