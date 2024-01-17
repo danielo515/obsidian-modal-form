@@ -568,6 +568,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#publish-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Publish docs
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -803,6 +812,12 @@ const result = await modalForm.openForm({
 <blockquote>
 <p>The command <code>npm version whatever</code> will bump version in <code>manifest.json</code> and <code>package.json</code>, and add the entry for the new version to <code>versions.json</code></p>
 </blockquote>
+<h3 id="publish-docs">Publish docs</h3>
+<p>We use <a href="https://www.mkdocs.org/">mkdocs</a> to generate the documentation.
+To publish the docs, run:</p>
+<pre><code class="language-bash">mkdocs build
+mkdocs gh-deploy
+</code></pre>
 
 
 
