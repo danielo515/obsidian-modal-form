@@ -98,7 +98,7 @@ export function MultiSelectTags(
                     values.update((x) => [...x, selected]);
                 },
                 app,
-                false,
+                true,
             );
         },
         removeValue(value: string) {
