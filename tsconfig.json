@@ -15,21 +15,10 @@
         "verbatimModuleSyntax": false,
         "strict": true,
         "noUncheckedIndexedAccess": true,
-        "types": [
-            "jest",
-            "node",
-            "svelte",
-        ],
-        "lib": [
-            "DOM",
-            "ES5",
-            "ES6",
-            "ES7"
-        ],
+        "types": ["jest", "node", "svelte"],
+        "lib": ["DOM", "ES5", "ES6", "ES7"],
         "paths": {
-            "@std": [
-                "src/std"
-            ]
+            "@std": ["src/std"]
         },
         "plugins": [
             {
@@ -37,6 +26,9 @@
                 "namespaces": {
                     "O": {
                         "importPath": "fp-ts/Option"
+                    },
+                    "J": {
+                        "importPath": "fp-ts/Json"
                     },
                     "NEA": {
                         "importPath": "fp-ts/NonEmptyArray"
@@ -82,12 +74,10 @@
                     },
                     "TU": {
                         "importPath": "fp-ts/Tuple"
-                    },
+                    }
                 }
             }
         ]
     },
-    "include": [
-        "src/**/*"
-    ],
+    "include": ["src/**/*"]
 }
