@@ -1,16 +1,14 @@
 import { A, NonEmptyArray, ParsingFn, parse, pipe } from "@std";
+import * as Separated from "fp-ts/Separated";
 import * as E from "fp-ts/Either";
 import { ValiError, BaseSchema } from "valibot";
 import { FieldMinimal, FieldMinimalSchema } from "./formDefinitionSchema";
 import { AllFieldTypes } from "./formDefinition";
 import { InputTypeToParserMap } from "./InputDefinitionSchema";
 
-function stringifyIssues(error: ValiError): NonEmptyArray<string> {
+export function stringifyIssues(error: ValiError): NonEmptyArray<string> {
     return error.issues.map(
-        (issue) =>
-            `${issue.path?.map((i) => i.key)}: ${issue.message} got ${
-                issue.input
-            }`,
+        (issue) => `${issue.path?.map((i) => i.key)}: ${issue.message} got ${issue.input}`,
     ) as NonEmptyArray<string>;
 }
 export class InvalidInputTypeError {
@@ -24,9 +22,7 @@ export class InvalidInputTypeError {
         return `InvalidInputTypeError: ${this.getFieldErrors()[0]}`;
     }
     getFieldErrors(): NonEmptyArray<string> {
-        return [
-            `"input.type" is invalid, got: ${JSON.stringify(this.inputType)}`,
-        ];
+        return [`"input.type" is invalid, got: ${JSON.stringify(this.inputType)}`];
     }
 }
 export class InvalidInputError {
@@ -59,6 +55,9 @@ export class InvalidFieldError {
     toString(): string {
         return `InvalidFieldError: ${stringifyIssues(this.error).join(", ")}`;
     }
+    toArrayOfStrings(): string[] {
+        return this.getFieldErrors();
+    }
     getFieldErrors(): string[] {
         return stringifyIssues(this.error);
     }
@@ -82,17 +81,13 @@ function isValidInputType(input: unknown): input is AllFieldTypes {
  */
 export function findInputDefinitionSchema(
     fieldDefinition: unknown,
-): E.Either<
-    InvalidFieldError | InvalidInputTypeError,
-    [FieldMinimal, ParsingFn<BaseSchema>]
-> {
+): E.Either<InvalidFieldError | InvalidInputTypeError, [FieldMinimal, ParsingFn<BaseSchema>]> {
     return pipe(
         parse(FieldMinimalSchema, fieldDefinition),
         E.mapLeft(InvalidFieldError.of(fieldDefinition)),
         E.chainW((field) => {
             const type = field.input.type;
-            if (isValidInputType(type))
-                return E.right([field, InputTypeToParserMap[type]]);
+            if (isValidInputType(type)) return E.right([field, InputTypeToParserMap[type]]);
             else return E.left(new InvalidInputTypeError(field, type));
         }),
     );
@@ -107,7 +102,7 @@ export function findInputDefinitionSchema(
 export function findFieldErrors(fields: unknown[]) {
     return pipe(
         fields,
-        A.map((fieldUnparsed) => {
+        A.partitionMap((fieldUnparsed) => {
             return pipe(
                 findInputDefinitionSchema(fieldUnparsed),
                 E.chainW(([field, parser]) =>
@@ -121,7 +116,6 @@ export function findFieldErrors(fields: unknown[]) {
                 ),
             );
         }),
-        // A.partition(E.isLeft),
-        // Separated.right,
+        Separated.left,
     );
 }

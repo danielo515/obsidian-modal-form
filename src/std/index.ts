@@ -109,9 +109,13 @@ type ParseOpts = Parameters<typeof parse>[2];
  * and returns the result of parsing the input with the schema and options.
  */
 export function parseC<S extends BaseSchema>(schema: S, options?: ParseOpts) {
-    return (input: unknown) => parse(schema, input, options);
+    return (input: unknown, moreOptions?: ParseOpts) =>
+        parse(schema, input, { ...options, ...moreOptions });
 }
-export type ParsingFn<S extends BaseSchema> = (input: unknown) => Either<ValiError, Output<S>>;
+export type ParsingFn<S extends BaseSchema> = (
+    input: unknown,
+    options?: ParseOpts,
+) => Either<ValiError, Output<S>>;
 /**
  * Concatenates two parsing functions that return Either<ValiError, B> into one.
  * If the first function returns a Right, the second function is not called.

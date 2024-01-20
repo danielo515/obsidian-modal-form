@@ -9,6 +9,7 @@ function _toBulletList(value: Record<string, unknown> | unknown[]) {
         .map(([key, value]) => `- ${key}: ${value}`)
         .join("\n");
 }
+
 function isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -37,7 +38,7 @@ export class ResultValue<T = unknown> {
         protected value: T,
         protected name: string,
         private notify: Reporter = notify,
-    ) { }
+    ) {}
     static from<U = unknown>(value: U, name: string, notify = notifyError) {
         return new ResultValue(value, name, notify);
     }
@@ -159,7 +160,9 @@ export class ResultValue<T = unknown> {
      * If the value is an array, it will return an array with all the strings uppercased.
      */
     get upper() {
-        return this.map((v) => deepMap(v, (it) => typeof it === "string" ? it.toLocaleUpperCase() : it));
+        return this.map((v) =>
+            deepMap(v, (it) => (typeof it === "string" ? it.toLocaleUpperCase() : it)),
+        );
     }
     /**
      * getter that returns all the string values lowercased.
@@ -168,13 +171,14 @@ export class ResultValue<T = unknown> {
      * @returns FormValue
      */
     get lower() {
-        return this.map((v) => deepMap(v, (it) => typeof it === "string" ? it.toLocaleLowerCase() : it));
+        return this.map((v) =>
+            deepMap(v, (it) => (typeof it === "string" ? it.toLocaleLowerCase() : it)),
+        );
     }
     /**
      * getter that returns all the string values trimmed.
      * */
     get trimmed() {
-        return this.map((v) => deepMap(v, (it) => typeof it === "string" ? it.trim() : it));
+        return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? it.trim() : it)));
     }
-
 }

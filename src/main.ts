@@ -26,6 +26,7 @@ import { executeTemplate } from "./core/template/templateParser";
 import { NewNoteModal } from "./suggesters/NewNoteModal";
 import { file_exists } from "./utils/files";
 import { FormPickerModal } from "./suggesters/FormPickerModal";
+import { FormImportModal } from "./views/FormImportView";
 
 type ViewType = typeof EDIT_FORM_VIEW | typeof MANAGE_FORMS_VIEW;
 
@@ -238,6 +239,15 @@ export default class ModalFormPlugin extends Plugin {
                 new FormPickerModal(this.app, this.validFormDefinitions, (formToEdit) => {
                     this.activateView(EDIT_FORM_VIEW, formToEdit);
                 }).open();
+            },
+        });
+
+        this.addCommand({
+            id: "import-form",
+            name: "Import form",
+            callback: () => {
+                const importModal = new FormImportModal(this.app);
+                importModal.open();
             },
         });
 
