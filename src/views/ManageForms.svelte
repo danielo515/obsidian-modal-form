@@ -3,7 +3,7 @@
     import KeyValue from "./components/KeyValue.svelte";
     import Button from "./components/Button.svelte";
     import { MigrationError } from "src/core/formDefinitionSchema";
-    import { E } from "@std";
+    import * as Separated from "fp-ts/Separated";
     import { Readable } from "svelte/store";
 
     export let createNewForm: () => void;
@@ -102,9 +102,8 @@
             {#each $invalidForms as form}
                 <div class="form-row">
                     <h4 class="form-name">{form.name}</h4>
-                    {#each form.fieldErrors as error}
+                    {#each Separated.left(form.fieldErrors) as error}
                         <div class="flex-row">
-                            <!-- {#if E.isLeft(error)} -->
                             <pre class="invalid-field-json"><code>
                                     {"\n" + JSON.stringify(error.field, null, 1)}
                                 </code></pre>
@@ -114,12 +113,12 @@
                                 {/each}
                             </KeyValue>
                             <hr />
-                            <!-- {:else} -->
-                            <!--     <KeyValue key="field"> -->
-                            <!--         <span>{error.right.name} ✅</span> -->
-                            <!--     </KeyValue> -->
-                            <!-- {/if} -->
                         </div>
+                    {/each}
+                    {#each Separated.right(form.fieldErrors) as error}
+                        <KeyValue key="field">
+                            <span>{error.name} ✅</span>
+                        </KeyValue>
                     {/each}
                 </div>
             {/each}

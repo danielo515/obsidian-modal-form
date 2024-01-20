@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type { FormInputModel } from "./FormInputModel";
-    export let model: FormInputModel;
+    import { type FormImportModel } from "./FormImport";
+    export let model: FormImportModel;
     const { errors, validate } = model;
     let value: string = "";
     $: isValid = $errors.length === 0;

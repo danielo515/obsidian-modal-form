@@ -93,10 +93,10 @@ export function findInputDefinitionSchema(
     );
 }
 /**
- * Given an array of fields that have failed to parse,
+ * Given an array of fields where some of them (or all) have failed to parse,
  * this function tries to find the corresponding input schema
  * and then parses the input with that schema to get the specific errors.
- * The result is an array of field errors.
+ * The result is a Separated of fields and field errors.
  * This is needed because valibot doesn't provide a way to get the specific error of union types
  */
 export function findFieldErrors(fields: unknown[]) {
@@ -116,6 +116,6 @@ export function findFieldErrors(fields: unknown[]) {
                 ),
             );
         }),
-        Separated.left,
+        // Separated.left,
     );
 }

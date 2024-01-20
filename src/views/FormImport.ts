@@ -4,12 +4,12 @@ import * as E from "fp-ts/Either";
 import { InvalidData, MigrationError, migrateToLatest } from "src/core/formDefinitionSchema";
 import { Readable, writable } from "svelte/store";
 
-export interface FormInputModel {
+export interface FormImportModel {
     readonly errors: Readable<string[]>;
     readonly validate: (value: string) => void;
 }
 
-export function makeFormInputModel(): FormInputModel {
+export function makeFormInputModel(): FormImportModel {
     const errors = writable<string[]>([]);
     return {
         errors,
