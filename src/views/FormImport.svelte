@@ -67,4 +67,7 @@
         padding: 1rem;
         min-height: 50vh;
     }
+    p {
+        margin: 0;
+    }
 </style>

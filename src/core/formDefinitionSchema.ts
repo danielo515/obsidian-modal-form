@@ -96,10 +96,7 @@ export class MigrationError {
             ${this.error.issues.map((issue) => issue.message).join(", ")}`;
     }
     toArrayOfStrings(): string[] {
-        return [
-            ...stringifyIssues(this.error),
-            ...this.fieldErrors.map((issue) => issue.toString()),
-        ];
+        return stringifyIssues(this.error);
     }
     // This allows to store the error in the settings, along with the rest of the forms and
     // have save all the data in one go transparently.

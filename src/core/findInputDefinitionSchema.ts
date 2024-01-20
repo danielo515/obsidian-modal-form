@@ -1,5 +1,4 @@
 import { A, NonEmptyArray, ParsingFn, parse, pipe } from "@std";
-import * as Separated from "fp-ts/Separated";
 import * as E from "fp-ts/Either";
 import { ValiError, BaseSchema } from "valibot";
 import { FieldMinimal, FieldMinimalSchema } from "./formDefinitionSchema";
@@ -8,7 +7,8 @@ import { InputTypeToParserMap } from "./InputDefinitionSchema";
 
 export function stringifyIssues(error: ValiError): NonEmptyArray<string> {
     return error.issues.map(
-        (issue) => `${issue.path?.map((i) => i.key)}: ${issue.message} got ${issue.input}`,
+        (issue) =>
+            `${issue.path?.map((i) => i.key).join(".")}: ${issue.message} got ${issue.input}`,
     ) as NonEmptyArray<string>;
 }
 export class InvalidInputTypeError {
