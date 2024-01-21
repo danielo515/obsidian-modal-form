@@ -246,7 +246,12 @@ export default class ModalFormPlugin extends Plugin {
             id: "import-form",
             name: "Import form",
             callback: () => {
-                const importModal = new FormImportModal(this.app);
+                const importModal = new FormImportModal(this.app, {
+                    createForm: (form) => {
+                        importModal.close();
+                        this.activateView(EDIT_FORM_VIEW, form);
+                    },
+                });
                 importModal.open();
             },
         });

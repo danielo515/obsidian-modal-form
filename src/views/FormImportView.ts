@@ -1,11 +1,17 @@
 import { App, Modal } from "obsidian";
 import FormImport from "./FormImport.svelte";
-import { makeFormInputModel } from "./FormImport";
-
+import { FormImportDeps, makeFormInputModel } from "./FormImport";
+/**
+ * This class is just the minimum glue code to bind our core logic
+ * with the  svelte UI and obsidian API modal.
+ */
 export class FormImportModal extends Modal {
     _component!: FormImport;
 
-    constructor(app: App) {
+    constructor(
+        app: App,
+        private deps: FormImportDeps,
+    ) {
         super(app);
     }
 
@@ -17,7 +23,7 @@ export class FormImportModal extends Modal {
         const { contentEl } = this;
         this._component = new FormImport({
             target: contentEl,
-            props: { model: makeFormInputModel() },
+            props: { model: makeFormInputModel(this.deps) },
         });
     }
 }

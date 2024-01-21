@@ -1,9 +1,9 @@
 <script lang="ts">
     import { type FormImportModel } from "./FormImport";
     export let model: FormImportModel;
-    const { errors, validate } = model;
+    const { state, validate } = model;
     let value: string = "";
-    $: isValid = $errors.length === 0;
+    $: ui = model.uiState($state);
 </script>
 
 <div class="vertical mainView">
@@ -23,14 +23,14 @@
         />
 
         <div class="vertical">
-            {#if $errors.length > 0}
+            {#if ui.errors.length > 0}
                 <div class="vertical">
                     <p class="modal-form-danger">
                         We found the following errors in the form definition:
                     </p>
                     <div>
                         <ul>
-                            {#each $errors as error}
+                            {#each ui.errors as error}
                                 <li>{error}</li>
                             {/each}
                         </ul>
@@ -38,12 +38,8 @@
                 </div>
             {/if}
 
-            <button
-                class="btn btn-primary"
-                on:click={() => model.import(value)}
-                disabled={!isValid}
-            >
-                Import {isValid ? "✅" : " (fix errors first)"}
+            <button class="btn btn-primary" on:click={ui.onSubmit} disabled={!ui.canSubmit}>
+                Import {ui.buttonHint}
             </button>
         </div>
     </div>

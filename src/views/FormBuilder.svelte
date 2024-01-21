@@ -15,8 +15,7 @@
     import FormRow from "./components/FormRow.svelte";
     import Toggle from "./components/Toggle.svelte";
     import TemplateEditor from "./components/TemplateEditor.svelte";
-    import { pipe } from "fp-ts/lib/function";
-    import { A } from "@std";
+    import { A, pipe } from "@std";
     import Tabs from "./components/Tabs.svelte";
     import { ParsedTemplate, parsedTemplateToString } from "src/core/template/templateParser";
     import InputBuilderDocumentBlock from "./components/InputBuilderDocumentBlock.svelte";

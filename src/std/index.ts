@@ -10,17 +10,7 @@ import {
     filterMap,
     flatten,
 } from "fp-ts/Array";
-import {
-    map as mapO,
-    getOrElse as getOrElseOpt,
-    some,
-    none,
-    fromNullable as fromNullableOpt,
-    fold as ofold,
-    chain as ochain,
-    alt as OAlt,
-    fromPredicate,
-} from "fp-ts/Option";
+import * as _O from "fp-ts/Option";
 import {
     isLeft,
     isRight,
@@ -40,6 +30,7 @@ import {
     chainW,
     match,
 } from "fp-ts/Either";
+export type Option<T> = _O.Option<T>;
 import { BaseSchema, Output, ValiError, parse as parseV } from "valibot";
 import { Semigroup, concatAll } from "fp-ts/Semigroup";
 import { NonEmptyArray, concatAll as concatAllNea } from "fp-ts/NonEmptyArray";
@@ -86,15 +77,18 @@ export const E = {
 };
 
 export const O = {
-    map: mapO,
-    getOrElse: getOrElseOpt,
-    some,
-    none,
-    fold: ofold,
-    fromNullable: fromNullableOpt,
-    chain: ochain,
-    fromPredicate: fromPredicate,
-    alt: OAlt,
+    map: _O.map,
+    getOrElse: _O.getOrElse,
+    some: _O.some,
+    none: _O.none,
+    fold: _O.fold,
+    fromNullable: _O.fromNullable,
+    chain: _O.chain,
+    fromPredicate: _O.fromPredicate,
+    isNone: _O.isNone,
+    isSome: _O.isSome,
+    alt: _O.alt,
+    match: _O.match,
 };
 
 export const parse = tryCatchK(parseV, (e: unknown) => e as ValiError);

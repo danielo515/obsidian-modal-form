@@ -1,4 +1,4 @@
-import * as R from 'fp-ts/Record';
+import * as R from "fp-ts/Record";
 import * as E from "fp-ts/Either";
 import * as St from "fp-ts/string";
 import * as P from "parser-ts/Parser";
@@ -20,10 +20,7 @@ function TemplateVariable(value: string): TemplateVariable {
     return { _tag: "variable", value };
 }
 
-function FrontmatterCommand(
-    pick: string[] = [],
-    omit: string[] = [],
-): FrontmatterCommand {
+function FrontmatterCommand(pick: string[] = [], omit: string[] = []): FrontmatterCommand {
     return { _tag: "frontmatter-command", pick, omit };
 }
 
@@ -37,10 +34,7 @@ const EofStr = pipe(
 );
 // === Variable Parser ===
 const open = S.fold([S.string("{{"), S.spaces]);
-const close = P.expected(
-    S.fold([S.spaces, S.string("}}")]),
-    'closing variable tag: "}}"',
-);
+const close = P.expected(S.fold([S.spaces, S.string("}}")]), 'closing variable tag: "}}"');
 const identifier = S.many1(C.alphanum);
 const templateIdentifier: TokenParser = pipe(
     identifier,
@@ -50,22 +44,21 @@ const templateIdentifier: TokenParser = pipe(
 
 // === Command Parser ===
 const commandOpen = S.fold([S.string("{#"), S.spaces]);
-const commandClose = P.expected(
-    S.fold([S.spaces, S.string("#}")]),
-    'a closing command tag: "#}"',
-);
-const sepByComma = P.sepBy(S.fold([C.char(','), S.spaces]), identifier);
-const commandOptionParser = (option: string) => pipe(
-    S.fold([S.string(option), S.spaces]),
-    P.apSecond(sepByComma),
-)
+const commandClose = P.expected(S.fold([S.spaces, S.string("#}")]), 'a closing command tag: "#}"');
+const sepByComma = P.sepBy(S.fold([C.char(","), S.spaces]), identifier);
+const commandOptionParser = (option: string) =>
+    pipe(
+        S.fold([S.string(option), S.spaces]),
+        // dam prettier
+        P.apSecond(sepByComma),
+    );
 
 const frontmatterCommandParser = pipe(
     S.fold([S.string("frontmatter"), S.spaces]),
     P.apSecond(P.optional(commandOptionParser("pick:"))),
     //P.apFirst(S.spaces),
     // P.chain(commandOptionParser("pick:")),
-)
+);
 
 // the frontmatter command looks like this:
 // {# frontmatter pick: name, age, omit: id #}
@@ -76,19 +69,17 @@ const commandParser = pipe(
         return pipe(
             value,
             O.fold(() => [], identity),
-            FrontmatterCommand
-        )
+            FrontmatterCommand,
+        );
     }),
-)
+);
 
 export const OpenOrEof = pipe(
     open,
     P.alt(() => commandOpen),
-    P.alt(() => EofStr));
-export const anythingUntilOpenOrEOF = P.many1Till(
-    P.item<string>(),
-    P.lookAhead(OpenOrEof),
+    P.alt(() => EofStr),
 );
+export const anythingUntilOpenOrEOF = P.many1Till(P.item<string>(), P.lookAhead(OpenOrEof));
 
 const text: TokenParser = pipe(
     anythingUntilOpenOrEOF,
@@ -103,16 +94,16 @@ const TextOrVariable: TokenParser = pipe(
 
 const Template = pipe(
     P.many(TextOrVariable),
-    P.apFirst(P.eof()));
+    // dam prettier
+    P.apFirst(P.eof()),
+);
 /**
  * Given a template string, parse it into an array of tokens.
  * Templates look like this:
  * "Hello {{name}}! You are {{age}} years old."
  * @param template a template string to convert into an array of tokens or an error
  */
-export function parseTemplate(
-    template: string,
-): Either<string, ParsedTemplate> {
+export function parseTemplate(template: string): Either<string, ParsedTemplate> {
     return pipe(
         Template,
         S.run(template),
@@ -124,9 +115,7 @@ export function parseTemplate(
     // return S.run(template)(P.many(Template))
 }
 
-export function templateVariables(
-    parsedTemplate: ReturnType<typeof parseTemplate>,
-): string[] {
+export function templateVariables(parsedTemplate: ReturnType<typeof parseTemplate>): string[] {
     return pipe(
         parsedTemplate,
         E.fold(
@@ -161,7 +150,9 @@ function tokenToString(token: Token): string {
         case "variable":
             return `{{${token.value}}}`;
         case "frontmatter-command":
-            return `{{# frontmatter pick: ${token.pick.join(", ")}, omit: ${token.omit.join(", ")} #}}`;
+            return `{{# frontmatter pick: ${token.pick.join(", ")}, omit: ${token.omit.join(
+                ", ",
+            )} #}}`;
         default:
             return absurd(tag);
     }
@@ -196,37 +187,42 @@ function matchToken<T>(
  */
 export function parsedTemplateToString(parsedTemplate: ParsedTemplate): string {
     return pipe(
+        // prettier shut up
         parsedTemplate,
-        A.foldMap(St.Monoid)(tokenToString));
+        A.foldMap(St.Monoid)(tokenToString),
+    );
 }
 
 function asFrontmatterString(data: Record<string, unknown>) {
-    return ({ pick, omit }: { pick: string[], omit: string[] }): string => pipe(
-        data,
-        R.filterMapWithIndex((key, value) => {
-            if (pick.length === 0) return O.some(value);
-            return pick.includes(key) ? O.some(value) : O.none;
-        }),
-        R.filterMapWithIndex((key, value) => !omit.includes(key) ? O.some(value) : O.none),
-        stringifyYaml,
-    )
+    return ({ pick, omit }: { pick: string[]; omit: string[] }): string =>
+        pipe(
+            data,
+            R.filterMapWithIndex((key, value) => {
+                if (pick.length === 0) return O.some(value);
+                return pick.includes(key) ? O.some(value) : O.none;
+            }),
+            R.filterMapWithIndex((key, value) => (!omit.includes(key) ? O.some(value) : O.none)),
+            stringifyYaml,
+        );
 }
 
-export function executeTemplate(
-    parsedTemplate: ParsedTemplate,
-    formData: ModalFormData,
-) {
+export function executeTemplate(parsedTemplate: ParsedTemplate, formData: ModalFormData) {
     const toFrontmatter = asFrontmatterString(formData); // Build it upfront rater than on every call
     return pipe(
         parsedTemplate,
-        A.filterMap(matchToken(
-            O.some,
-            (key) => O.fromNullable(formData[key]),
-            (command) => pipe(
-                command,
-                toFrontmatter,
-                O.some)
-        )),
+        A.filterMap(
+            matchToken(
+                O.some,
+                (key) => O.fromNullable(formData[key]),
+                (command) =>
+                    pipe(
+                        //prettier
+                        command,
+                        toFrontmatter,
+                        O.some,
+                    ),
+            ),
+        ),
         A.foldMap(St.Monoid)(String),
     );
 }
