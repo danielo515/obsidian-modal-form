@@ -7,18 +7,17 @@
 </script>
 
 <div class="vertical mainView">
-    <p>
+    <h1>Import a form</h1>
+    <div>
         Import a form by pasting the JSON definition into the box below. You can export a form from
         the Form Builder. Any errors in the JSON will be displayed below. You will only be able to
         import the form if there are no errors.
-    </p>
-    <div class="horizontal">
+    </div>
+    <div class="horizontal full-height">
         <textarea
             bind:value
             class="form-input"
             placeholder="Paste your form JSON here"
-            rows={10}
-            cols={100}
             on:input={() => validate(value)}
         />
 
@@ -49,21 +48,34 @@
     .vertical {
         display: flex;
         flex-direction: column;
+        height: 100%;
+        gap: 1rem;
+    }
+    .full-height {
+        height: 100%;
+        flex: 1;
     }
     .horizontal {
         display: flex;
         flex-direction: row;
-        gap: 1rem;
+        height: 100%;
+        gap: 0.5rem;
     }
     button:disabled {
         opacity: 0.5;
         cursor: not-allowed;
     }
     .mainView {
-        padding: 1rem;
+        padding: 0.8rem;
         min-height: 50vh;
     }
     p {
         margin: 0;
+    }
+    textarea {
+        font-family: monospace;
+        flex-grow: 1;
+        flex-shrink: 0;
+        flex-basis: 50%;
     }
 </style>
