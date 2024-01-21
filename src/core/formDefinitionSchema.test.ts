@@ -1,4 +1,4 @@
-import { E, pipe } from "@std";
+import { A, pipe } from "@std";
 import { findFieldErrors } from "./findInputDefinitionSchema";
 import { separated } from "fp-ts";
 
@@ -10,30 +10,24 @@ describe("findFieldErrors", () => {
             { name: "fieldName", description: "", input: { type: "" } },
             {},
         ];
-        const errors = pipe(
+        const result = pipe(
             // multi line prettier
             findFieldErrors(fields),
-            separated.mapLeft((e) => e.toString()),
-            separated.left,
+            separated.mapLeft(A.map((e) => e.toString())),
         );
-        expect(errors).toHaveLength(4);
-        expect(errors[0]).toEqual(
-            E.right({
-                name: "fieldName",
-                description: "field description",
-                input: { type: "text" },
-            }),
+        expect(result.left).toHaveLength(3);
+        expect(result.right).toHaveLength(1);
+        expect(result.right[0]).toEqual({
+            name: "fieldName",
+            description: "field description",
+            input: { type: "text" },
+        });
+        expect(result.left[0]).toEqual(
+            "InvalidFieldError: description: Invalid type got undefined",
         );
-        expect(errors[1]).toEqual(
-            E.left("InvalidFieldError: description: Invalid type got undefined"),
-        );
-        expect(errors[2]).toEqual(
-            E.left('InvalidInputTypeError: "input.type" is invalid, got: ""'),
-        );
-        expect(errors[3]).toEqual(
-            E.left(
-                "InvalidFieldError: name: field name should be a string got undefined, description: Invalid type got undefined, input: Invalid type got undefined",
-            ),
+        expect(result.left[1]).toEqual('InvalidInputTypeError: "input.type" is invalid, got: ""');
+        expect(result.left[2]).toEqual(
+            "InvalidFieldError: name: field name should be a string got undefined, description: Invalid type got undefined, input: Invalid type got undefined",
         );
     });
 });
