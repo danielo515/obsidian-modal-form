@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.40.0](https://github.com/danielo515/obsidian-modal-form/compare/1.39.1...1.40.0) (2024-01-21)
+
+
+### Features
+
+* **API:** expose some utils ([eb54365](https://github.com/danielo515/obsidian-modal-form/commit/eb54365e38c6f3313dae09dde42c39d5b4bce5b4))
+* import form modal ([a844983](https://github.com/danielo515/obsidian-modal-form/commit/a8449837a850f15cf6c5e9aff0529f8dad24686e))
+* **import:** ability to edit forms imported from JSON ([6cdb104](https://github.com/danielo515/obsidian-modal-form/commit/6cdb1041114ac10e1ec5c580ce02b90d6568a745))
+
 ## [1.39.1](https://github.com/danielo515/obsidian-modal-form/compare/1.39.0...1.39.1) (2024-01-17)
 
 
