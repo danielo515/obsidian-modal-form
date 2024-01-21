@@ -41,7 +41,7 @@ function notifyParsingErrors(errors: InvalidData[]) {
         return;
     }
     log_notice(
-        "Some forms could not be parsed",
+        "⚠️ Some forms could not be parsed ⚠️",
         `We found some invalid data while parsing the form settings, please take a look at the following errors: 
             ${errors.join("\n")}`,
     );
@@ -92,6 +92,16 @@ export default class ModalFormPlugin extends Plugin {
             return;
         }
         await this.activateView(EDIT_FORM_VIEW, formDefinition);
+    }
+
+    openImportFormModal() {
+        const importModal = new FormImportModal(this.app, {
+            createForm: (form) => {
+                importModal.close();
+                this.activateView(EDIT_FORM_VIEW, form);
+            },
+        });
+        importModal.open();
     }
 
     closeEditForm() {
@@ -245,15 +255,7 @@ export default class ModalFormPlugin extends Plugin {
         this.addCommand({
             id: "import-form",
             name: "Import form",
-            callback: () => {
-                const importModal = new FormImportModal(this.app, {
-                    createForm: (form) => {
-                        importModal.close();
-                        this.activateView(EDIT_FORM_VIEW, form);
-                    },
-                });
-                importModal.open();
-            },
+            callback: () => this.openImportFormModal,
         });
 
         // This adds a settings tab so the user can configure various aspects of the plugin

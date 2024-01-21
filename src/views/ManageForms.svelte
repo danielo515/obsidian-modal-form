@@ -11,6 +11,7 @@
     export let duplicateForm: (formName: string) => void;
     export let editForm: (formName: string) => void;
     export let copyFormToClipboard: (form: FormDefinition) => void;
+    export let openImportFormModal: () => void;
 
     export let forms: Readable<FormDefinition[]>;
     export let invalidForms: Readable<MigrationError[]>;
@@ -37,7 +38,10 @@
 
 <div class="header">
     <h1>Manage forms</h1>
-    <Button onClick={createNewForm} text="Create new form" variant="primary"></Button>
+    <div class="flex gap-1">
+        <Button onClick={createNewForm} text="Create new form" variant="primary"></Button>
+        <Button onClick={openImportFormModal} text="Import form" variant="regular"></Button>
+    </div>
     {#if $invalidForms.length}
         <h5 class="modal-form-danger">
             There are {$invalidForms.length} invalid forms.
