@@ -8,6 +8,7 @@ nav:
     - Advanced: advanced-examples.md
     - Manging results: managing-results.md
     - Change log: changelog.md
+    - Importing a form: import-forms.md
 
 theme:
     name: material
