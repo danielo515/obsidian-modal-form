@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.40.1](https://github.com/danielo515/obsidian-modal-form/compare/1.40.0...1.40.1) (2024-01-21)
+
+
+### Bug Fixes
+
+* a bit better import UI ([024b513](https://github.com/danielo515/obsidian-modal-form/commit/024b5131bb1a6814863a28fdb7791a5cb7be3445))
+* button to open import modal from form manager ([1cc834e](https://github.com/danielo515/obsidian-modal-form/commit/1cc834e24a64bd05c3a487f03aaf4ad154b0a69f))
+
 ## [1.40.0](https://github.com/danielo515/obsidian-modal-form/compare/1.39.1...1.40.0) (2024-01-21)
 
 
