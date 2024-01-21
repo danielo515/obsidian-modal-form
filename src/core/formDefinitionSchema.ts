@@ -15,7 +15,7 @@ import {
     boolean,
 } from "valibot";
 import { FormDefinition } from "./formDefinition";
-import { findFieldErrors } from "./findInputDefinitionSchema";
+import { findFieldErrors, stringifyIssues } from "./findInputDefinitionSchema";
 import { ParsedTemplateSchema } from "./template/templateSchema";
 import { InputTypeSchema, nonEmptyString } from "./InputDefinitionSchema";
 
@@ -36,10 +36,7 @@ export const FieldDefinitionSchema = object({
  * Only for error reporting purposes
  */
 export const FieldMinimalSchema = passthrough(
-    merge([
-        FieldDefinitionSchema,
-        object({ input: passthrough(object({ type: string() })) }),
-    ]),
+    merge([FieldDefinitionSchema, object({ input: passthrough(object({ type: string() })) })]),
 );
 
 export type FieldMinimal = Output<typeof FieldMinimalSchema>;
@@ -98,6 +95,9 @@ export class MigrationError {
             ${this.error.message}
             ${this.error.issues.map((issue) => issue.message).join(", ")}`;
     }
+    toArrayOfStrings(): string[] {
+        return stringifyIssues(this.error);
+    }
     // This allows to store the error in the settings, along with the rest of the forms and
     // have save all the data in one go transparently.
     // This is required so we don't lose the form, even if it is invalid
@@ -118,25 +118,24 @@ export class InvalidData {
         readonly error: ValiError,
     ) {}
     toString(): string {
-        return `InvalidData: ${this.error.issues
-            .map((issue) => issue.message)
-            .join(", ")}`;
+        return `InvalidData: ${stringifyIssues(this.error).join(", ")}`;
+    }
+    toArrayOfStrings(): string[] {
+        return stringifyIssues(this.error);
     }
 }
 //=========== Migration logic
-function fromV0toV1(
-    data: FormDefinitionBasic,
-): MigrationError | FormDefinitionV1 {
+function fromV0toV1(data: FormDefinitionBasic): MigrationError | FormDefinitionV1 {
     return pipe(
         parse(FormDefinitionV1Schema, { ...data, version: "1" }),
         E.getOrElseW((error) => new MigrationError(data, error)),
     );
 }
+
 /**
  *
  * Parses the form definition and migrates it to the latest version in one operation.
  */
-
 export function migrateToLatest(
     data: unknown,
 ): E.Either<InvalidData, MigrationError | FormDefinition> {
@@ -145,7 +144,7 @@ export function migrateToLatest(
         parse(FormDefinitionLatestSchema, data, { abortEarly: true }),
         E.orElse(() =>
             pipe(
-                parse(FormDefinitionBasicSchema, data),
+                parse(FormDefinitionBasicSchema, data, { abortEarly: false }),
                 E.mapLeft((error) => new InvalidData(data, error)),
                 E.map(fromV0toV1),
             ),

@@ -5,12 +5,10 @@ import { FieldMinimal, FieldMinimalSchema } from "./formDefinitionSchema";
 import { AllFieldTypes } from "./formDefinition";
 import { InputTypeToParserMap } from "./InputDefinitionSchema";
 
-function stringifyIssues(error: ValiError): NonEmptyArray<string> {
+export function stringifyIssues(error: ValiError): NonEmptyArray<string> {
     return error.issues.map(
         (issue) =>
-            `${issue.path?.map((i) => i.key)}: ${issue.message} got ${
-                issue.input
-            }`,
+            `${issue.path?.map((i) => i.key).join(".")}: ${issue.message} got ${issue.input}`,
     ) as NonEmptyArray<string>;
 }
 export class InvalidInputTypeError {
@@ -24,9 +22,7 @@ export class InvalidInputTypeError {
         return `InvalidInputTypeError: ${this.getFieldErrors()[0]}`;
     }
     getFieldErrors(): NonEmptyArray<string> {
-        return [
-            `"input.type" is invalid, got: ${JSON.stringify(this.inputType)}`,
-        ];
+        return [`"input.type" is invalid, got: ${JSON.stringify(this.inputType)}`];
     }
 }
 export class InvalidInputError {
@@ -59,6 +55,9 @@ export class InvalidFieldError {
     toString(): string {
         return `InvalidFieldError: ${stringifyIssues(this.error).join(", ")}`;
     }
+    toArrayOfStrings(): string[] {
+        return this.getFieldErrors();
+    }
     getFieldErrors(): string[] {
         return stringifyIssues(this.error);
     }
@@ -82,32 +81,28 @@ function isValidInputType(input: unknown): input is AllFieldTypes {
  */
 export function findInputDefinitionSchema(
     fieldDefinition: unknown,
-): E.Either<
-    InvalidFieldError | InvalidInputTypeError,
-    [FieldMinimal, ParsingFn<BaseSchema>]
-> {
+): E.Either<InvalidFieldError | InvalidInputTypeError, [FieldMinimal, ParsingFn<BaseSchema>]> {
     return pipe(
         parse(FieldMinimalSchema, fieldDefinition),
         E.mapLeft(InvalidFieldError.of(fieldDefinition)),
         E.chainW((field) => {
             const type = field.input.type;
-            if (isValidInputType(type))
-                return E.right([field, InputTypeToParserMap[type]]);
+            if (isValidInputType(type)) return E.right([field, InputTypeToParserMap[type]]);
             else return E.left(new InvalidInputTypeError(field, type));
         }),
     );
 }
 /**
- * Given an array of fields that have failed to parse,
+ * Given an array of fields where some of them (or all) have failed to parse,
  * this function tries to find the corresponding input schema
  * and then parses the input with that schema to get the specific errors.
- * The result is an array of field errors.
+ * The result is a Separated of fields and field errors.
  * This is needed because valibot doesn't provide a way to get the specific error of union types
  */
 export function findFieldErrors(fields: unknown[]) {
     return pipe(
         fields,
-        A.map((fieldUnparsed) => {
+        A.partitionMap((fieldUnparsed) => {
             return pipe(
                 findInputDefinitionSchema(fieldUnparsed),
                 E.chainW(([field, parser]) =>
@@ -121,7 +116,6 @@ export function findFieldErrors(fields: unknown[]) {
                 ),
             );
         }),
-        // A.partition(E.isLeft),
-        // Separated.right,
+        // Separated.left,
     );
 }

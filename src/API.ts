@@ -1,4 +1,4 @@
-import { App } from "obsidian";
+import { App, parseFrontMatterAliases } from "obsidian";
 
 import { type FormDefinition, type FormOptions } from "./core/formDefinition";
 import { MigrationError } from "./core/formDefinitionSchema";
@@ -9,6 +9,8 @@ import { ModalFormError } from "./utils/ModalFormError";
 import { FormModal } from "./FormModal";
 import { log_error, log_notice } from "./utils/Log";
 import * as std from "@std";
+import { enrich_tfile, resolve_tfile } from "./utils/files";
+import { E, flow } from "@std";
 
 type pickOption = { pick: string[] };
 type omitOption = { omit: string[] };
@@ -22,7 +24,28 @@ function isOmitOption(opts: limitOptions): opts is omitOption {
 }
 
 export class API {
+    /**
+     * What this plugin considers its standard library
+     * Because it is bundled with the plugin anyway, I think
+     * it makes sense to expose it to the user
+     */
     std = std;
+    util = {
+        getAliases: flow(
+            (name: string) => resolve_tfile(name, this.app),
+            E.map((f) => this.app.metadataCache.getCache(f.path)),
+            E.chainW(E.fromNullable(new Error("No cache found"))),
+            E.map((tf) => parseFrontMatterAliases(tf.frontmatter)),
+            E.match(
+                () => [],
+                (aliases) => aliases,
+            ),
+        ),
+        getFile: std.flow(
+            resolve_tfile,
+            E.map((f) => enrich_tfile(f, this.app)),
+        ),
+    };
     /**
      * Constructor for the API class
      * @param {App} app - The application instance

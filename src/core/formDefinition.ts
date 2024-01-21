@@ -147,12 +147,12 @@ export function isValidFormDefinition(input: unknown): input is FormDefinition {
     if (!is(FormDefinitionBasicSchema, input)) {
         return false;
     }
-    console.log("basic is valid");
+    // console.log("basic is valid");
     const fieldsAreValid = is(FieldListSchema, input.fields);
     if (!fieldsAreValid) {
         return false;
     }
-    console.log("fields are valid");
+    // console.log("fields are valid");
     return true;
 }
 
