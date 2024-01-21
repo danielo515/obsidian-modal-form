@@ -7,6 +7,7 @@ nav:
     - ResultValue: ResultValue.md
     - Advanced: advanced-examples.md
     - Manging results: managing-results.md
+    - Change log: changelog.md
 
 theme:
     name: material
