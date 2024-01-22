@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.40.2](https://github.com/danielo515/obsidian-modal-form/compare/1.40.1...1.40.2) (2024-01-22)
+
+
+### Bug Fixes
+
+* support html in the document_block ([1717937](https://github.com/danielo515/obsidian-modal-form/commit/171793791d66e818b166a90d4701632d232218b0))
+
 ## [1.40.1](https://github.com/danielo515/obsidian-modal-form/compare/1.40.0...1.40.1) (2024-01-21)
 
 
