@@ -153,7 +153,7 @@ export const exampleModalDefinition: FormDefinition = {
             description: "Document block example",
             input: {
                 type: "document_block",
-                body: "return `Hello ${form.name}!\n Your best friend is ${form.best_fried}`",
+                body: "return `Hello ${form.name}!<br> Your best friend is <b>${form.best_fried}</b>`",
             },
         },
     ],

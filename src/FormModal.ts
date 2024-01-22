@@ -1,4 +1,4 @@
-import { App, Modal, Platform, Setting } from "obsidian";
+import { App, Modal, Platform, Setting, sanitizeHTMLToDom } from "obsidian";
 import * as R from "fp-ts/Record";
 import MultiSelect from "./views/components/MultiSelect.svelte";
 import FormResult, { type ModalFormData } from "./core/FormResult";
@@ -269,7 +269,7 @@ export class FormModal extends Modal {
                                     console.error(error);
                                     notifyError("Error in document block")(String(error));
                                 },
-                                (newText) => domNode.setText(newText),
+                                (newText) => domNode.setText(sanitizeHTMLToDom(newText)),
                             ),
                         );
                     });
