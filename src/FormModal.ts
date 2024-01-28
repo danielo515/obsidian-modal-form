@@ -3,13 +3,12 @@ import * as R from "fp-ts/Record";
 import MultiSelect from "./views/components/MultiSelect.svelte";
 import FormResult, { type ModalFormData } from "./core/FormResult";
 import { formDataFromFormDefaults } from "./core/formDataFromFormDefaults";
-import { exhaustiveGuard } from "./safety";
 import { get_tfiles_from_folder } from "./utils/files";
 import type { FormDefinition, FormOptions } from "./core/formDefinition";
 import { FileSuggest } from "./suggesters/suggestFile";
 import { DataviewSuggest } from "./suggesters/suggestFromDataview";
 import { SvelteComponent } from "svelte";
-import { E, parseFunctionBody, pipe, throttle } from "@std";
+import { E, parseFunctionBody, pipe, throttle, absurd } from "@std";
 import { log_error, log_notice } from "./utils/Log";
 import { FieldValue, FormEngine, makeFormEngine } from "./store/formStore";
 import { Writable } from "svelte/store";
@@ -243,7 +242,7 @@ export class FormModal extends Modal {
                                 element.onChange(fieldStore.value.set);
                             });
                         default:
-                            exhaustiveGuard(source);
+                            absurd(source);
                     }
                     break;
                 }
@@ -277,7 +276,7 @@ export class FormModal extends Modal {
                 }
 
                 default:
-                    return exhaustiveGuard(type);
+                    return absurd(type);
             }
         });
 
