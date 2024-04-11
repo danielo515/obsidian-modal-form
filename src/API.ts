@@ -123,7 +123,7 @@ export class API {
             } else if (isPickOption(limitOpts)) {
                 newFormDefinition = {
                     ...formDefinition,
-                    fields: formDefinition.fields.filter((field) => opts.pick.includes(field.name)),
+                    fields: formDefinition.fields.filter((field) => limitOpts.pick.includes(field.name)),
                 };
             } else {
                 throw new ModalFormError(
