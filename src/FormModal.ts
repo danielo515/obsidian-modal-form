@@ -107,6 +107,7 @@ export class FormModal extends Modal {
                 case "number":
                     return fieldBase.addText((text) => {
                         text.inputEl.type = "number";
+                        text.inputEl.step = "any";
                         subToErrors(text.inputEl);
                         text.onChange((val) => {
                             if (val !== "") {
