@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.40.4](https://github.com/danielo515/obsidian-modal-form/compare/1.40.3...1.40.4) (2024-04-25)
+
+
+### Bug Fixes
+
+* make the editor headers stick only on big screens ([4193246](https://github.com/danielo515/obsidian-modal-form/commit/4193246f14b2f7165c58ff2829b9fbf0b550dfe4))
+
 ## [1.40.3](https://github.com/danielo515/obsidian-modal-form/compare/1.40.2...1.40.3) (2024-04-20)
 
 
