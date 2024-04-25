@@ -398,6 +398,7 @@
         height: 100%;
         overflow: hidden;
     }
+    .is-mobile .body,
     .body {
         padding-top: 0.5rem;
         overflow-y: scroll;
@@ -407,7 +408,7 @@
         padding: 1rem;
     }
     /* on bigger screens make the headers stick */
-    @media (min-width: 58rem) {
+    @media (min-width: 100rem) {
         .body {
             overflow-y: hidden;
         }
