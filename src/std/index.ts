@@ -1,4 +1,4 @@
-import { pipe as p, flow as f } from "fp-ts/function";
+import { pipe as p, flow as f, absurd as _absurd } from "fp-ts/function";
 import {
     partitionMap,
     findFirst,
@@ -38,6 +38,7 @@ export type { NonEmptyArray } from "fp-ts/NonEmptyArray";
 export type { Either, Left, Right } from "fp-ts/Either";
 export const flow = f;
 export const pipe = p;
+export const absurd = _absurd;
 export const A = {
     partitionMap,
     partition,
