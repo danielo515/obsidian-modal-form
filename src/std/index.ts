@@ -191,7 +191,7 @@ ${body}`;
 }
 
 /**
- * Creates an function from a string that is supposed to be a function body.
+ * Creates an async function from a string that is supposed to be a function body.
  * It ensures the "use strict" directive is present and returns the function.
  * Because the parsing can fail, it returns an Either.
  * The reason why the type arguments are reversed is because
