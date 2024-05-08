@@ -63,3 +63,21 @@ dv.pages('"Data" AND -"Data/Nested"').file.name;
 
 Here `Data` is the folder we want to get notes from and `Data/Nested` is the subfolder we want to exclude.
 Please keep in mind that `dataview` is very sensitive to spaces and quotes. Removing the nested `"` will not work, or adding a space after the `-` will not work either.
+
+## Adding additional items to a Dataview Input
+
+The `dataview` field it is just some expression that gets evaluated, and the values are what are shown in the input form.
+It can be a single `dataview` command, or it can be more things, like concatenation of results like this:
+
+```ts
+['1','2', ...dv.pages('#programming').title]
+```
+
+Which will look like this in the form:
+
+![demo modal](Screenshot 2024-05-08 at 15.08.02.png)
+
+
+You can take advantage of the preview to experiment a bit with what you will get in the input
+
+!(preview)[Screenshot 2024-05-08 at 15.07.15.png]
