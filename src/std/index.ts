@@ -189,3 +189,24 @@ ${body}`;
         return left(ensureError(e));
     }
 }
+
+/**
+ * Creates an function from a string that is supposed to be a function body.
+ * It ensures the "use strict" directive is present and returns the function.
+ * Because the parsing can fail, it returns an Either.
+ * The reason why the type arguments are reversed is because
+ * we often know what the function input types should be, but
+ * we can't trust the function body to return the correct type, so by default1t it will be unknown
+ * The returned function is also wrapped to never throw and return an Either instead
+ */
+export function parseAsyncFunctionBody<Args extends unknown[], T>(body: string, ...args: string[]) {
+    const fnBody = `"use strict";
+${body}`;
+    try {
+        const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
+        const fn = new AsyncFunction(...args, fnBody) as (...args: Args) => Promise<T>;
+        return right(fn);
+    } catch (e) {
+        return left(ensureError(e));
+    }
+}

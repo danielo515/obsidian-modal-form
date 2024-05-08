@@ -4,20 +4,24 @@
     import { pipe } from "@std";
     import { App } from "obsidian";
     import Code from "./Code.svelte";
+    import { onMount } from "svelte";
 
     export let index: number;
     export let value: string = "";
     export let app: App;
     let error = "";
-    const logger = (err: { message: string }) => (error = err.message);
-    const makePreview = function (query: string) {
-        error = "";
-        return pipe(query, sandboxedDvQuery, (query) =>
-            executeSandboxedDvQuery(query, app, logger),
-        );
-    };
+    let preview: string | string[] = "";
+    async function updatePreview() {
+        try {
+            const queryFn = sandboxedDvQuery(value);
+            preview = await executeSandboxedDvQuery(queryFn, app, (err) => (error = err.message));
+        } catch (err: any) {
+            error = err.message;
+        }
+    }
+    onMount(updatePreview);
     $: id = `dataview_${index}`;
-    $: preview = makePreview(value);
+    $: value, updatePreview();
 </script>
 
 <FormRow label="Dataview Query" {id}>

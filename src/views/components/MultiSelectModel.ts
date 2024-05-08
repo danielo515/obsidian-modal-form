@@ -5,7 +5,7 @@ import { multiselect, inputTag } from "src/core/InputDefinitionSchema";
 import { executeSandboxedDvQuery, sandboxedDvQuery } from "src/suggesters/SafeDataviewQuery";
 import { StringSuggest } from "src/suggesters/StringSuggest";
 import { FileSuggest } from "src/suggesters/suggestFile";
-import { Writable } from "svelte/store";
+import { Writable, writable } from "svelte/store";
 
 export interface MultiSelectModel {
     createInput(element: HTMLInputElement): void;
@@ -18,37 +18,55 @@ export function MultiSelectModel(
     values: Writable<string[]>,
 ): MultiSelectModel {
     const source = fieldInput.source;
-    const removeValue = (value: string) =>
+    const removeValue = (value: string) => {
         values.update((xs) =>
             pipe(
                 xs,
                 A.filter((x) => x !== value),
             ),
         );
+    };
+    const remainingOptions = writable(new Set<string>());
+    async function updateRemainingOptions() {
+        if (source === "fixed") {
+            remainingOptions.set(new Set(fieldInput.multi_select_options));
+            return;
+        }
+        if (source === "dataview") {
+            remainingOptions.set(
+                new Set(await executeSandboxedDvQuery(sandboxedDvQuery(fieldInput.query), app)),
+            );
+        }
+    }
+    updateRemainingOptions();
     switch (source) {
         case "dataview":
         case "fixed": {
-            const remainingOptions = new Set(
-                source === "fixed"
-                    ? fieldInput.multi_select_options
-                    : executeSandboxedDvQuery(sandboxedDvQuery(fieldInput.query), app),
-            );
             return {
                 createInput(element: HTMLInputElement) {
-                    new StringSuggest(
-                        element,
-                        remainingOptions,
-                        (selected) => {
-                            remainingOptions.delete(selected);
-                            values.update((x) => [...x, selected]);
-                        },
-                        app,
-                        fieldInput.allowUnknownValues,
-                    );
+                    const unsubscribe = remainingOptions.subscribe((options) => {
+                        new StringSuggest(
+                            element,
+                            options,
+                            (selected) => {
+                                remainingOptions.update((opts) => {
+                                    opts.delete(selected);
+                                    return opts;
+                                });
+                                values.update((x) => [...x, selected]);
+                            },
+                            app,
+                            fieldInput.allowUnknownValues,
+                        );
+                    });
+                    return () => unsubscribe();
                 },
                 removeValue(value: string) {
-                    remainingOptions.add(value);
-                    removeValue(value);
+                    remainingOptions.update((opts) => {
+                        opts.add(value);
+                        return opts;
+                    });
+                    values.update((currentValues) => currentValues.filter((v) => v !== value));
                 },
             };
         }

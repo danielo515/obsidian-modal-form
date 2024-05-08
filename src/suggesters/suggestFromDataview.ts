@@ -8,7 +8,7 @@ import { createRegexFromInput } from "./createRegexFromInput";
  * For now, we are not very strict with the checks and just throw errors
  */
 export class DataviewSuggest extends AbstractInputSuggest<string> {
-    sandboxedQuery: SafeDataviewQuery
+    sandboxedQuery: SafeDataviewQuery;
 
     constructor(
         public inputEl: HTMLInputElement,
@@ -16,14 +16,16 @@ export class DataviewSuggest extends AbstractInputSuggest<string> {
         public app: App,
     ) {
         super(app, inputEl);
-        this.sandboxedQuery = sandboxedDvQuery(dvQuery)
+        this.sandboxedQuery = sandboxedDvQuery(dvQuery);
     }
 
-    getSuggestions(inputStr: string): string[] {
-        const result = executeSandboxedDvQuery(this.sandboxedQuery, this.app)
-        if (!inputStr) { return result }
-        const regex = createRegexFromInput(inputStr)
-        return result.filter((r) => regex.test(r))
+    async getSuggestions(inputStr: string): Promise<string[]> {
+        const result = await executeSandboxedDvQuery(this.sandboxedQuery, this.app);
+        if (!inputStr) {
+            return result;
+        }
+        const regex = createRegexFromInput(inputStr);
+        return result.filter((r) => regex.test(r));
     }
 
     renderSuggestion(option: string, el: HTMLElement): void {
