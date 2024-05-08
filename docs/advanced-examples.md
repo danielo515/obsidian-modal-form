@@ -80,4 +80,4 @@ Which will look like this in the form:
 
 You can take advantage of the preview to experiment a bit with what you will get in the input
 
-!(preview)[Screenshot 2024-05-08 at 15.07.15.png]
+![preview](Screenshot 2024-05-08 at 15.07.15.png)
