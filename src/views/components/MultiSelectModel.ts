@@ -38,10 +38,10 @@ export function MultiSelectModel(
             );
         }
     }
-    updateRemainingOptions();
     switch (source) {
         case "dataview":
         case "fixed": {
+            updateRemainingOptions();
             return {
                 createInput(element: HTMLInputElement) {
                     const unsubscribe = remainingOptions.subscribe((options) => {
