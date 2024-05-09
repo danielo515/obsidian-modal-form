@@ -191,10 +191,12 @@ export class FormModal extends Modal {
                                 values: fieldStore.value as Writable<string[]>,
                                 setting: fieldBase,
                                 errors: fieldStore.errors,
-                                model: MultiSelectTags(
-                                    fieldInput,
-                                    this.app,
-                                    fieldStore.value as Writable<string[]>,
+                                model: Promise.resolve(
+                                    MultiSelectTags(
+                                        fieldInput,
+                                        this.app,
+                                        fieldStore.value as Writable<string[]>,
+                                    ),
                                 ),
                             },
                         }),

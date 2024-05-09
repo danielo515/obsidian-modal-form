@@ -1,11 +1,9 @@
 <script lang="ts">
-    import type { App, Setting } from "obsidian";
-    import { StringSuggest } from "../../suggesters/StringSuggest";
-    import { A, pipe } from "@std";
+    import type { Setting } from "obsidian";
     import { Readable, Writable } from "svelte/store";
     import { MultiSelectModel } from "./MultiSelectModel";
 
-    export let model: MultiSelectModel;
+    export let model: Promise<MultiSelectModel>;
     export let errors: Readable<string[]>;
     export let values: Writable<string[]>;
     // We take the setting to make it consistent with the other input components
@@ -14,52 +12,56 @@
     setting.settingEl.setCssStyles({
         alignItems: "baseline",
     });
-
-    const { createInput, removeValue } = model;
 </script>
 
 <div class="multi-select-root">
-    <input
-        use:createInput
-        type="text"
-        class="form-control"
-        placeholder="Select"
-        class:invalid={$errors.length > 0}
-    />
-    {#each $errors as error}
-        <span class="invalid">{error}</span>
-    {/each}
-    <div class="badges">
-        {#each $values as value}
-            <div class="badge">
-                <span>{value}</span>
-                <button on:click={() => removeValue(value)}>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="svg-icon lucide-x"
-                        ><line x1="18" y1="6" x2="6" y2="18" /><line
-                            x1="6"
-                            y1="6"
-                            x2="18"
-                            y2="18"
-                        /></svg
-                    ></button
-                >
-            </div>
-        {:else}
-            <div class="badge hidden">
-                <span>Nothing selected</span>
-            </div>
+    {#await model then model}
+        {@const { createInput, removeValue } = model}
+        <input
+            use:createInput
+            type="text"
+            class="form-control"
+            placeholder="Select"
+            class:invalid={$errors.length > 0}
+        />
+        {#each $errors as error}
+            <span class="invalid">{error}</span>
         {/each}
-    </div>
+        <div class="badges">
+            {#each $values as value}
+                <div class="badge">
+                    <span>{value}</span>
+                    <button on:click={() => removeValue(value)}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="svg-icon lucide-x"
+                            ><line x1="18" y1="6" x2="6" y2="18" /><line
+                                x1="6"
+                                y1="6"
+                                x2="18"
+                                y2="18"
+                            /></svg
+                        ></button
+                    >
+                </div>
+            {:else}
+                <div class="badge hidden">
+                    <span>Nothing selected</span>
+                </div>
+            {/each}
+        </div>
+    {:catch error}
+        Failure obtaining the options to display
+        <span>{error.message}</span>
+    {/await}
 </div>
 
 <style>
