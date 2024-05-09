@@ -1,41 +1,42 @@
-import { pipe as p, flow as f, absurd as _absurd } from "fp-ts/function";
 import {
-    partitionMap,
+    compact,
+    filter,
+    filterMap,
     findFirst,
     findFirstMap,
-    partition,
-    map as mapArr,
-    filter,
-    compact,
-    filterMap,
     flatten,
+    map as mapArr,
+    partition,
+    partitionMap,
 } from "fp-ts/Array";
-import * as _O from "fp-ts/Option";
 import {
+    Either,
+    ap,
+    bimap,
+    chainW,
+    flap,
+    flatMap,
+    fromNullable,
+    getOrElse,
     isLeft,
     isRight,
-    tryCatchK,
-    map,
-    getOrElse,
-    fromNullable,
-    right,
     left,
+    map,
     mapLeft,
-    Either,
-    bimap,
-    tryCatch,
-    flatMap,
-    ap,
-    flap,
-    chainW,
     match,
+    right,
+    tryCatch,
+    tryCatchK,
 } from "fp-ts/Either";
-export type Option<T> = _O.Option<T>;
-import { BaseSchema, Output, ValiError, parse as parseV } from "valibot";
-import { Semigroup, concatAll } from "fp-ts/Semigroup";
 import { NonEmptyArray, concatAll as concatAllNea } from "fp-ts/NonEmptyArray";
-export type { NonEmptyArray } from "fp-ts/NonEmptyArray";
+import * as _O from "fp-ts/Option";
+import { Semigroup, concatAll } from "fp-ts/Semigroup";
+import * as TE from "fp-ts/TaskEither";
+import { absurd as _absurd, flow as f, pipe as p } from "fp-ts/function";
+import { BaseSchema, Output, ValiError, parse as parseV } from "valibot";
+export type Option<T> = _O.Option<T>;
 export type { Either, Left, Right } from "fp-ts/Either";
+export type { NonEmptyArray } from "fp-ts/NonEmptyArray";
 export const flow = f;
 export const pipe = p;
 export const absurd = _absurd;
@@ -170,10 +171,12 @@ export function ensureError(e: unknown): Error {
     return e instanceof Error ? e : new Error(String(e));
 }
 
+// There is no way to access the constructor of an async function than the prototype chain
+const AsyncFunction = new Function("return async () => {}")().constructor;
 /**
  * Creates a function from a string that is supposed to be a function body.
  * It ensures the "use strict" directive is present and returns the function.
- * Because the parsing can fail, it returns an Either.
+ * Because the parsing can fail, it returns an TaskEither.
  * The reason why the type arguments are reversed is because
  * we often know what the function input types should be, but
  * we can't trust the function body to return the correct type, so by default1t it will be unknown
@@ -183,8 +186,8 @@ export function parseFunctionBody<Args extends unknown[], T>(body: string, ...ar
     const fnBody = `"use strict";
 ${body}`;
     try {
-        const fn = new Function(...args, fnBody) as (...args: Args) => T;
-        return right(tryCatchK(fn, ensureError));
+        const fn = AsyncFunction(...args, fnBody) as (...args: Args) => Promise<T>;
+        return right(TE.tryCatchK(fn, ensureError));
     } catch (e) {
         return left(ensureError(e));
     }
