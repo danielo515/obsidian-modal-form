@@ -1,18 +1,19 @@
-import { App, Modal, Platform, Setting, sanitizeHTMLToDom } from "obsidian";
+import { E, absurd, parseFunctionBody, pipe, throttle } from "@std";
 import * as R from "fp-ts/Record";
-import MultiSelect from "./views/components/MultiSelect.svelte";
+import * as TE from "fp-ts/TaskEither";
+import { App, Modal, Platform, Setting, sanitizeHTMLToDom } from "obsidian";
+import { SvelteComponent } from "svelte";
+import { Writable } from "svelte/store";
 import FormResult, { type ModalFormData } from "./core/FormResult";
 import { formDataFromFormDefaults } from "./core/formDataFromFormDefaults";
-import { get_tfiles_from_folder } from "./utils/files";
 import type { FormDefinition, FormOptions } from "./core/formDefinition";
-import { FileSuggest } from "./suggesters/suggestFile";
-import { DataviewSuggest } from "./suggesters/suggestFromDataview";
-import { SvelteComponent } from "svelte";
-import { E, parseFunctionBody, pipe, throttle, absurd } from "@std";
-import { log_error, log_notice } from "./utils/Log";
 import { FieldValue, FormEngine, makeFormEngine } from "./store/formStore";
-import { Writable } from "svelte/store";
+import { FileSuggest } from "./suggesters/suggestFile";
 import { FolderSuggest } from "./suggesters/suggestFolder";
+import { DataviewSuggest } from "./suggesters/suggestFromDataview";
+import { log_error, log_notice } from "./utils/Log";
+import { get_tfiles_from_folder } from "./utils/files";
+import MultiSelect from "./views/components/MultiSelect.svelte";
 import { MultiSelectModel, MultiSelectTags } from "./views/components/MultiSelectModel";
 
 export type SubmitFn = (formResult: FormResult) => void;
@@ -190,10 +191,12 @@ export class FormModal extends Modal {
                                 values: fieldStore.value as Writable<string[]>,
                                 setting: fieldBase,
                                 errors: fieldStore.errors,
-                                model: MultiSelectTags(
-                                    fieldInput,
-                                    this.app,
-                                    fieldStore.value as Writable<string[]>,
+                                model: Promise.resolve(
+                                    MultiSelectTags(
+                                        fieldInput,
+                                        this.app,
+                                        fieldStore.value as Writable<string[]>,
+                                    ),
                                 ),
                             },
                         }),
@@ -257,21 +260,22 @@ export class FormModal extends Modal {
                     const sub = this.formEngine.subscribe((form) => {
                         pipe(
                             functionParsed,
-                            E.chainW((fn) =>
+                            TE.fromEither,
+                            TE.chainW((fn) =>
                                 pipe(
                                     form.fields,
                                     R.filterMap((field) => field.value),
                                     fn,
                                 ),
                             ),
-                            E.match(
+                            TE.match(
                                 (error) => {
                                     console.error(error);
                                     notifyError("Error in document block")(String(error));
                                 },
                                 (newText) => domNode.setText(sanitizeHTMLToDom(newText)),
                             ),
-                        );
+                        )();
                     });
                     return this.subscriptions.push(sub);
                 }

@@ -1,5 +1,6 @@
+import * as TE from "fp-ts/TaskEither";
+import { array, boolean, number, object, string } from "valibot";
 import { E, parseFunctionBody, pipe, trySchemas } from "./index";
-import { string, number, array, boolean, object } from "valibot";
 
 describe("trySchemas", () => {
     const schema1 = object({
@@ -121,21 +122,37 @@ describe("parseFunctionBody", () => {
         );
     });
     it("should fail to parse a function body when it is incorrect", () => {
-        const input = "{ return x + 1; ";
+        const input = "% return x + 1; ";
         const result = parseFunctionBody(input);
-        expect(result).toEqual(E.left(new SyntaxError("Unexpected token ')'")));
+        expect(result).toEqual(E.left(new SyntaxError("Unexpected token '%'")));
     });
-    it("should parse a function body with arguments and be able to execute it", () => {
+    it("should parse a function body with arguments and be able to execute it", (done) => {
         const input = "return x + 1;";
         const result = parseFunctionBody<[number], number>(input, "x");
-        pipe(
+        const fn = pipe(
             result,
             E.match(
-                () => fail("Expected a right"),
-                (result) => {
-                    expect(result(1)).toEqual(E.right(2));
+                () => {
+                    throw new Error("Expected a right");
+                },
+                (parsedFn) => {
+                    console.log(parsedFn.toString());
+                    return pipe(
+                        parsedFn(1),
+                        TE.match(
+                            (error) => {
+                                console.error({ error });
+                                throw new Error("Expected a right");
+                            },
+                            (result) => {
+                                console.log({ result });
+                                return expect(result).toEqual(2);
+                            },
+                        ),
+                    );
                 },
             ),
         );
+        fn().then(done, done);
     });
 });

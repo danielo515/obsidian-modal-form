@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { executeSandboxedDvQuery, sandboxedDvQuery } from "src/suggesters/SafeDataviewQuery";
-    import FormRow from "./FormRow.svelte";
     import { pipe } from "@std";
     import { App } from "obsidian";
+    import { executeSandboxedDvQuery, sandboxedDvQuery } from "src/suggesters/SafeDataviewQuery";
     import Code from "./Code.svelte";
+    import FormRow from "./FormRow.svelte";
 
     export let index: number;
     export let value: string = "";
@@ -46,7 +46,13 @@
     {#if error}
         <div class="modal-form-error-message">{error}</div>
     {/if}
-    <Code allowWrap>{preview}</Code>
+    {#await preview()}
+        --
+    {:then previewResult}
+        <Code allowWrap>{previewResult}</Code>
+    {:catch error}
+        <div class="modal-form-error-message">{error}</div>
+    {/await}
 </FormRow>
 
 <style>
