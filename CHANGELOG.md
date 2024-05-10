@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.41.0](https://github.com/danielo515/obsidian-modal-form/compare/1.40.4...1.41.0) (2024-05-10)
+
+
+### Features
+
+* **input:** dataview input can be fully async ([cac23bb](https://github.com/danielo515/obsidian-modal-form/commit/cac23bb10aeb74b31b060f261948226cff854d63))
+* **input:** document block is async ([1e23a1b](https://github.com/danielo515/obsidian-modal-form/commit/1e23a1b3992ccc7e8f54365cea9cd63a1fe7f23c))
+* **std:** make the function evaluator async and handle TE ([239a4d5](https://github.com/danielo515/obsidian-modal-form/commit/239a4d5be2d16e4d76baa0ae218fae746ea7649a))
+* **suggesters:** DataviewSuggest is now async ([dae4a25](https://github.com/danielo515/obsidian-modal-form/commit/dae4a251664d2e98118222400588dc1a4f7010bc))
+* **suggesters:** make SafeDataviewQuery async ([239a4d5](https://github.com/danielo515/obsidian-modal-form/commit/239a4d5be2d16e4d76baa0ae218fae746ea7649a))
+
 ## [1.40.4](https://github.com/danielo515/obsidian-modal-form/compare/1.40.3...1.40.4) (2024-04-25)
 
 
