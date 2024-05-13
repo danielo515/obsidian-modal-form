@@ -30,7 +30,10 @@ type FieldFailed<T extends FieldValue> = {
 function FieldFailed<T extends FieldValue>(field: Field<T>, failedRule: Rule): FieldFailed<T> {
     return { ...field, rules: failedRule, errors: [failedRule.message] };
 }
-type FormStore<T extends FieldValue> = { fields: Record<string, Field<T>> };
+type FormStore<T extends FieldValue> = {
+    fields: Record<string, Field<T>>;
+    status: "submitted" | "cancelled" | "draft";
+};
 
 // TODO: instead of making the whole engine generic, make just the addField method generic extending the type of the field value
 // Then, the whole formEngine can be typed as FormEngine<FieldValue>
@@ -60,6 +63,12 @@ export interface FormEngine<T extends FieldValue> {
      * If the form is invalid, the errors are updated and the onSubmit function is not called.
      */
     triggerSubmit: () => void;
+    /**
+     * Cancels the form and calls the onCancel function.
+     * In the future we may add a confirmation dialog before calling the onCancel function.
+     * or even persist the form state to allow the user to resume later.
+     */
+    triggerCancel: () => void;
 }
 function nonEmptyValue(s: FieldValue): Option<FieldValue> {
     switch (typeof s) {
@@ -128,17 +137,19 @@ function parseForm<T extends FieldValue>(
 }
 
 export type OnFormSubmit<T> = (values: Record<string, T>) => void;
+
 type makeFormEngineArgs<T> = {
     onSubmit: OnFormSubmit<T>;
-    onCancel?: () => void;
+    onCancel: () => void;
     defaultValues?: Record<string, T>;
 };
 
 export function makeFormEngine<T extends FieldValue>({
     onSubmit,
+    onCancel,
     defaultValues = {},
 }: makeFormEngineArgs<T>): FormEngine<T> {
-    const formStore: Writable<FormStore<T>> = writable({ fields: {} });
+    const formStore: Writable<FormStore<T>> = writable({ fields: {}, status: "draft" });
     // Creates helper functions to modify the store immutably
     function setFormField(name: string) {
         // Set the initial value of the field
@@ -198,6 +209,7 @@ export function makeFormEngine<T extends FieldValue>({
             ),
         ),
         triggerSubmit() {
+            formStore.update((form) => ({ ...form, status: "submitted" }));
             const formState = get(formStore);
             // prettier-ignore
             pipe(
@@ -205,6 +217,10 @@ export function makeFormEngine<T extends FieldValue>({
                 parseForm, 
                 E.match(setErrors, onSubmit)
             );
+        },
+        triggerCancel() {
+            formStore.update((form) => ({ ...form, status: "cancelled" }));
+            onCancel?.();
         },
         addField: (field) => {
             const { initField: setField, setValue } = setFormField(field.name);

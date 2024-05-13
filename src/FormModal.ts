@@ -292,7 +292,11 @@ export class FormModal extends Modal {
             }
         });
 
-        new Setting(contentEl).addButton((btn) =>
+        const buttons = new Setting(contentEl).addButton((btn) =>
+            btn.setButtonText("Cancel").onClick(this.formEngine.triggerCancel),
+        );
+
+        buttons.addButton((btn) =>
             btn.setButtonText("Submit").setCta().onClick(this.formEngine.triggerSubmit),
         );
 
@@ -303,7 +307,16 @@ export class FormModal extends Modal {
             }
         };
 
+        const cancelEscapeCallback = (evt: KeyboardEvent) => {
+            // We  don't want to hande it if any modfier is pressed
+            if (!(evt.ctrlKey || evt.metaKey) && evt.key === "Escape") {
+                evt.preventDefault();
+                this.formEngine.triggerCancel();
+            }
+        };
+
         contentEl.addEventListener("keydown", submitEnterCallback);
+        contentEl.addEventListener("keydown", cancelEscapeCallback);
     }
 
     onClose() {
