@@ -2,13 +2,13 @@
 // and the errors that are present in the form. It is used by the Form component to render the form and to update the
 
 import { NonEmptyArray, pipe } from "@std";
-import * as E from "fp-ts/Either";
-import { absurd } from "fp-ts/function";
-import * as O from "fp-ts/Option";
 import * as A from "fp-ts/Array";
-import { Writable, derived, writable, Readable, get } from "svelte/store";
-import { fromEntries, toEntries } from "fp-ts/Record";
+import * as E from "fp-ts/Either";
+import * as O from "fp-ts/Option";
 import { Option } from "fp-ts/Option";
+import { fromEntries, toEntries } from "fp-ts/Record";
+import { absurd } from "fp-ts/function";
+import { Readable, Writable, derived, get, writable } from "svelte/store";
 
 type Rule = { tag: "required"; message: string }; //| { tag: 'minLength', length: number, message: string } | { tag: 'maxLength', length: number, message: string } | { tag: 'pattern', pattern: RegExp, message: string };
 function requiredRule(fieldName: string, message?: string): Rule {
@@ -27,13 +27,13 @@ type FieldFailed<T extends FieldValue> = {
     rules: Rule;
     errors: NonEmptyArray<string>;
 };
-function FieldFailed<T extends FieldValue>(
-    field: Field<T>,
-    failedRule: Rule,
-): FieldFailed<T> {
+function FieldFailed<T extends FieldValue>(field: Field<T>, failedRule: Rule): FieldFailed<T> {
     return { ...field, rules: failedRule, errors: [failedRule.message] };
 }
-type FormStore<T extends FieldValue> = { fields: Record<string, Field<T>> };
+type FormStore<T extends FieldValue> = {
+    fields: Record<string, Field<T>>;
+    status: "submitted" | "cancelled" | "draft";
+};
 
 // TODO: instead of making the whole engine generic, make just the addField method generic extending the type of the field value
 // Then, the whole formEngine can be typed as FormEngine<FieldValue>
@@ -45,11 +45,10 @@ export interface FormEngine<T extends FieldValue> {
      * Use them to bind the field to the form and be notified of errors.
      * @param field a field definition to start tracking
      */
-    addField: (field: {
-        name: string;
-        label?: string;
-        isRequired?: boolean;
-    }) => { value: Writable<T>; errors: Readable<string[]> };
+    addField: (field: { name: string; label?: string; isRequired?: boolean }) => {
+        value: Writable<T>;
+        errors: Readable<string[]>;
+    };
     /**
      * Subscribes to the form store. This method is required to conform to the svelte store interface.
      */
@@ -64,6 +63,12 @@ export interface FormEngine<T extends FieldValue> {
      * If the form is invalid, the errors are updated and the onSubmit function is not called.
      */
     triggerSubmit: () => void;
+    /**
+     * Cancels the form and calls the onCancel function.
+     * In the future we may add a confirmation dialog before calling the onCancel function.
+     * or even persist the form state to allow the user to resume later.
+     */
+    triggerCancel: () => void;
 }
 function nonEmptyValue(s: FieldValue): Option<FieldValue> {
     switch (typeof s) {
@@ -73,11 +78,7 @@ function nonEmptyValue(s: FieldValue): Option<FieldValue> {
         case "boolean":
             return O.some(s);
         case "object":
-            return Array.isArray(s)
-                ? s.length > 0
-                    ? O.some(s)
-                    : O.none
-                : O.none;
+            return Array.isArray(s) ? (s.length > 0 ? O.some(s) : O.none) : O.none;
         default:
             return absurd(s);
     }
@@ -88,9 +89,7 @@ function nonEmptyValue(s: FieldValue): Option<FieldValue> {
  * If the field meets the requirements, the field is returned as is in a right.
  * If the field does not meet the requirements, the field is returned with the errors in a left.
  */
-function parseField<T extends FieldValue>(
-    field: Field<T>,
-): E.Either<FieldFailed<T>, Field<T>> {
+function parseField<T extends FieldValue>(field: Field<T>): E.Either<FieldFailed<T>, Field<T>> {
     if (!field.rules) return E.right(field);
     const rule = field.rules;
     switch (rule.tag) {
@@ -100,8 +99,7 @@ function parseField<T extends FieldValue>(
                 O.chain(nonEmptyValue),
                 O.match(
                     () => E.left(FieldFailed(field, rule)),
-                    (value) =>
-                        E.right(field)
+                    (value) => E.right(field),
                 ),
             );
         default:
@@ -140,11 +138,18 @@ function parseForm<T extends FieldValue>(
 
 export type OnFormSubmit<T> = (values: Record<string, T>) => void;
 
-export function makeFormEngine<T extends FieldValue>(
-    onSubmit: OnFormSubmit<T>,
-    defaultValues: Record<string, T> = {},
-): FormEngine<T> {
-    const formStore: Writable<FormStore<T>> = writable({ fields: {} });
+type makeFormEngineArgs<T> = {
+    onSubmit: OnFormSubmit<T>;
+    onCancel: () => void;
+    defaultValues?: Record<string, T>;
+};
+
+export function makeFormEngine<T extends FieldValue>({
+    onSubmit,
+    onCancel,
+    defaultValues = {},
+}: makeFormEngineArgs<T>): FormEngine<T> {
+    const formStore: Writable<FormStore<T>> = writable({ fields: {}, status: "draft" });
     // Creates helper functions to modify the store immutably
     function setFormField(name: string) {
         // Set the initial value of the field
@@ -204,24 +209,23 @@ export function makeFormEngine<T extends FieldValue>(
             ),
         ),
         triggerSubmit() {
+            formStore.update((form) => ({ ...form, status: "submitted" }));
             const formState = get(formStore);
+            // prettier-ignore
             pipe(
-                formState.fields,
-                parseForm,
-                E.match(setErrors, onSubmit));
+                formState.fields, 
+                parseForm, 
+                E.match(setErrors, onSubmit)
+            );
+        },
+        triggerCancel() {
+            formStore.update((form) => ({ ...form, status: "cancelled" }));
+            onCancel?.();
         },
         addField: (field) => {
             const { initField: setField, setValue } = setFormField(field.name);
-            setField(
-                [],
-                field.isRequired
-                    ? requiredRule(field.label || field.name)
-                    : undefined,
-            );
-            const fieldStore = derived(
-                formStore,
-                ({ fields }) => fields[field.name],
-            );
+            setField([], field.isRequired ? requiredRule(field.label || field.name) : undefined);
+            const fieldStore = derived(formStore, ({ fields }) => fields[field.name]);
             const fieldValueStore: Writable<T> = {
                 subscribe(cb) {
                     return fieldStore.subscribe((x) =>
@@ -240,14 +244,14 @@ export function makeFormEngine<T extends FieldValue>(
                     formStore.update((form) => {
                         const current = form.fields[field.name];
                         if (!current) {
-                            console.error(
-                                new Error(`Field ${field.name} does not exist`),
-                            );
+                            console.error(new Error(`Field ${field.name} does not exist`));
                             return form;
                         }
                         const newValue = pipe(
+                            // fuck prettier
                             current.value,
-                            O.map(updater));
+                            O.map(updater),
+                        );
                         return {
                             ...form,
                             fields: {
@@ -264,10 +268,7 @@ export function makeFormEngine<T extends FieldValue>(
             };
             return {
                 value: fieldValueStore,
-                errors: derived(
-                    formStore,
-                    ({ fields }) => fields[field.name]?.errors ?? [],
-                ),
+                errors: derived(formStore, ({ fields }) => fields[field.name]?.errors ?? []),
             };
         },
     };

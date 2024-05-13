@@ -4,7 +4,7 @@ import { makeFormEngine } from "./formStore";
 describe("Form Engine", () => {
     it("should update form fields correctly", () => {
         const onSubmitMock = jest.fn();
-        const formEngine = makeFormEngine(onSubmitMock);
+        const formEngine = makeFormEngine({ onSubmit: onSubmitMock, onCancel: console.log });
 
         // Add fields to the form
         const field1 = formEngine.addField({ name: "fieldName1" });
@@ -24,7 +24,7 @@ describe("Form Engine", () => {
 
     it("should handle field errors correctly", () => {
         const onSubmitMock = jest.fn();
-        const formEngine = makeFormEngine(onSubmitMock);
+        const formEngine = makeFormEngine({ onSubmit: onSubmitMock, onCancel: console.log });
         // Add a field to the form
         const field1 = formEngine.addField({
             name: "fieldName1",
@@ -43,7 +43,7 @@ describe("Form Engine", () => {
     });
     it("field errors should prefer field label over field name", () => {
         const onSubmitMock = jest.fn();
-        const formEngine = makeFormEngine(onSubmitMock);
+        const formEngine = makeFormEngine({ onSubmit: onSubmitMock, onCancel: console.log });
         // Add a field to the form
         const field1 = formEngine.addField({
             name: "fieldName1",
@@ -63,7 +63,7 @@ describe("Form Engine", () => {
     });
     it("Clears the errors when a value is set", () => {
         const onSubmitMock = jest.fn();
-        const formEngine = makeFormEngine(onSubmitMock);
+        const formEngine = makeFormEngine({ onSubmit: onSubmitMock, onCancel: console.log });
         // Add a field to the form
         const field1 = formEngine.addField({
             name: "fieldName1",
@@ -92,7 +92,11 @@ describe("Form Engine", () => {
             fieldName1: "default1",
             fieldName2: "default2",
         };
-        const formEngine = makeFormEngine(onSubmitMock, defaultValues);
+        const formEngine = makeFormEngine({
+            onSubmit: onSubmitMock,
+            defaultValues,
+            onCancel: console.log,
+        });
 
         // Add fields to the form
         const field1 = formEngine.addField({ name: "fieldName1" });
@@ -114,7 +118,11 @@ describe("Form Engine", () => {
         const defaultValues = {
             fieldName1: "default1",
         };
-        const formEngine = makeFormEngine(onSubmitMock, defaultValues);
+        const formEngine = makeFormEngine({
+            onSubmit: onSubmitMock,
+            defaultValues,
+            onCancel: console.log,
+        });
 
         // Add fields to the form
         const field1 = formEngine.addField({ name: "fieldName1" });
@@ -127,5 +135,19 @@ describe("Form Engine", () => {
         expect(onSubmitMock).toHaveBeenCalledWith({
             fieldName1: "default1",
         });
+    });
+    it("should flag the form as cancelled and call the onCancel callback when the cancel button is clicked", () => {
+        const onCancelMock = jest.fn();
+        const formEngine = makeFormEngine({ onSubmit: console.log, onCancel: onCancelMock });
+        // Add a field to the form
+        const field1 = formEngine.addField({ name: "fieldName1" });
+        // Update field value with an empty string
+        field1.value.set("");
+        // Trigger form submission
+        formEngine.triggerCancel();
+        // Assert that the onCancel callback is called
+        expect(onCancelMock).toHaveBeenCalled();
+        // Assert that the form is not valid
+        // expect(get(formEngine.isValid)).toBe(false); // is it worth checking this?
     });
 });

@@ -56,8 +56,7 @@ isEmployed:: true`;
         it("should return the data formatted as a string matching the provided template", () => {
             const result = FormResult.make(formData, "ok");
             const template = "My name is {{name}}, and I am {{age}} years old.";
-            const expectedOutput =
-                "My name is John Doe, and I am 30 years old.";
+            const expectedOutput = "My name is John Doe, and I am 30 years old.";
             expect(result.asString(template)).toEqual(expectedOutput);
         });
     });
@@ -66,9 +65,7 @@ isEmployed:: true`;
             const result = FormResult.make(formData, "ok");
             const expectedOutput = `name:: John Doe
 age:: 30`;
-            expect(
-                result.asDataviewProperties({ pick: ["name", "age"] }),
-            ).toEqual(expectedOutput);
+            expect(result.asDataviewProperties({ pick: ["name", "age"] })).toEqual(expectedOutput);
         });
 
         it("should return the data as a string of dataview properties with all keys except the specified ones using options.omit", () => {
@@ -111,20 +108,18 @@ age:: 30`;
             const result = FormResult.make(formData, "ok");
             const expectedOutput = `name: John Doe
 age: 30`;
-            expect(
-                result.asFrontmatterString({ pick: ["name", "age"] }).trim(),
-            ).toEqual(expectedOutput);
+            expect(result.asFrontmatterString({ pick: ["name", "age"] }).trim()).toEqual(
+                expectedOutput,
+            );
         });
 
         it("should return the data as a YAML frontmatter string with all keys except the specified ones using options.omit", () => {
             const result = FormResult.make(formData, "ok");
             const expectedOutput = `name: John Doe
 age: 30`;
-            expect(
-                result
-                    .asFrontmatterString({ omit: ["hobbies", "isEmployed"] })
-                    .trim(),
-            ).toEqual(expectedOutput);
+            expect(result.asFrontmatterString({ omit: ["hobbies", "isEmployed"] }).trim()).toEqual(
+                expectedOutput,
+            );
         });
 
         it("should return the data as a YAML frontmatter string with only the specified keys using options.pick and ignoring options.omit", () => {
@@ -178,30 +173,26 @@ age: 30`;
             expect(result.get("foo")).toEqual("");
         });
     });
-    describe('Shorthand proxied accessors', () => {
-        it('Should allow access to a value in the data directly using dot notation',
-            () => {
-                const result = FormResult.make(formData, "ok");
-                // @ts-ignore
-                expect(result.name.toString()).toEqual("John Doe");
-            })
-        it('Should allow access to a value in the data directly and allow to use shorthand methods on the returned value',
-            () => {
-                const result = FormResult.make(formData, "ok");
-                // @ts-ignore
-                expect(result.name.upper.toString()).toEqual("JOHN DOE");
-            }
-        )
-        it('proxied access to bullet list should return a bullet list', () => {
+    describe("Shorthand proxied accessors", () => {
+        it("Should allow access to a value in the data directly using dot notation", () => {
+            const result = FormResult.make(formData, "ok");
+            // @ts-ignore
+            expect(result.name.toString()).toEqual("John Doe");
+        });
+        it("Should allow access to a value in the data directly and allow to use shorthand methods on the returned value", () => {
+            const result = FormResult.make(formData, "ok");
+            // @ts-ignore
+            expect(result.name.upper.toString()).toEqual("JOHN DOE");
+        });
+        it("proxied access to bullet list should return a bullet list", () => {
             const result = FormResult.make(formData, "ok");
             // @ts-ignore
             expect(result.hobbies.bullets).toEqual("- reading\n- swimming");
-        })
-        it('accessing a non existing key should return a safe ResultValue, letting chain without issues', () => {
+        });
+        it("accessing a non existing key should return a safe ResultValue, letting chain without issues", () => {
             const result = FormResult.make(formData, "ok");
             // @ts-ignore
             expect(result.foo.upper.lower.toString()).toEqual("");
-        })
-    })
-
+        });
+    });
 });
