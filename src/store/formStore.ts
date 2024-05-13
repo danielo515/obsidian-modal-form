@@ -131,12 +131,12 @@ export type OnFormSubmit<T> = (values: Record<string, T>) => void;
 type makeFormEngineArgs<T> = {
     onSubmit: OnFormSubmit<T>;
     onCancel?: () => void;
-    defaultValues: Record<string, T>;
+    defaultValues?: Record<string, T>;
 };
 
 export function makeFormEngine<T extends FieldValue>({
     onSubmit,
-    defaultValues,
+    defaultValues = {},
 }: makeFormEngineArgs<T>): FormEngine<T> {
     const formStore: Writable<FormStore<T>> = writable({ fields: {} });
     // Creates helper functions to modify the store immutably
