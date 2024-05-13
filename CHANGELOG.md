@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.42.0](https://github.com/danielo515/obsidian-modal-form/compare/1.41.0...1.42.0) (2024-05-13)
+
+
+### Features
+
+* cancel esc button for cancel the form ([ea350bf](https://github.com/danielo515/obsidian-modal-form/commit/ea350bf0db7fc2f9c084cfede229401d9223e57b))
+
+
+### Bug Fixes
+
+* **formEngine:** gracefully handle the close of the form ([a398882](https://github.com/danielo515/obsidian-modal-form/commit/a398882e13cd1c837718af8d09a83f63c5ec5ca1))
+
 ## [1.41.0](https://github.com/danielo515/obsidian-modal-form/compare/1.40.4...1.41.0) (2024-05-10)
 
 
