@@ -41,10 +41,17 @@ export class FormModal extends Modal {
             modalDefinition.fields,
             options?.values ?? {},
         );
-        this.formEngine = makeFormEngine((result) => {
-            this.onSubmit(FormResult.make(result, "ok"));
-            this.close();
-        }, this.initialFormValues);
+        this.formEngine = makeFormEngine({
+            onSubmit: (result) => {
+                this.onSubmit(FormResult.make(result, "ok"));
+                this.close();
+            },
+            onCancel: () => {
+                this.onSubmit(FormResult.make({}, "cancelled"));
+                this.close();
+            },
+            defaultValues: this.initialFormValues,
+        });
         // this.formEngine.subscribe(console.log);
     }
 
