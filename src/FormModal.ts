@@ -226,6 +226,7 @@ export class FormModal extends Modal {
                                 fieldInput.options.forEach((option) => {
                                     element.addOption(option.value, option.label);
                                 });
+                                initialValue !== undefined && element.setValue(String(initialValue));
                                 fieldStore.value.set(element.getValue());
                                 element.onChange(fieldStore.value.set);
                             });
