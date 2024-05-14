@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.42.1](https://github.com/danielo515/obsidian-modal-form/compare/1.42.0...1.42.1) (2024-05-14)
+
+
+### Bug Fixes
+
+* set initial value of fixed-source select fields, if provided ([8864226](https://github.com/danielo515/obsidian-modal-form/commit/88642268b78f7f6e01e7716e178d3c20ce2652fe))
+
 ## [1.42.0](https://github.com/danielo515/obsidian-modal-form/compare/1.41.0...1.42.0) (2024-05-13)
 
 
