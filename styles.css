@@ -113,4 +113,7 @@ If your plugin does not need CSS, delete this file.
     .gap1 {
         gap: 0.5rem;
     }
+    .flex-1 {
+        flex: 1;
+    }
 }

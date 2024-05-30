@@ -39,20 +39,39 @@ function compileFrontmatter(fields: FieldOption[]) {
     return `tR + = result.asFrontmatterString({ pick: ${JSON.stringify(
         frontmatterFields,
         null,
-        2,
-    )} });`;
+        16,
+    )} \t});`;
+}
+
+function compileOpenForm(formName: string, fieldsToOmit: string[], usesGlobal: boolean = false) {
+    const omitOptions =
+        fieldsToOmit.length > 0 ? `, ${JSON.stringify({ omit: fieldsToOmit }, null, 8)}` : "";
+    const args = `"${formName}"${omitOptions}`;
+    console.log({ args });
+    if (usesGlobal) {
+        return `const result = await MF.openForm(${args});`;
+    }
+    return `
+    const modalForm = app.plugins.plugins.modalforms.api;
+    const result = await modalForm.openForm(${args});`;
 }
 
 function compileTemplaterTemplate(formName: string) {
     return (fields: Field[]) => {
         const fieldsToInclude = fields.filter((field): field is FieldOption => !field.omit);
+        const fieldsToOmit = fields.filter((field): field is OmitedFieldOption => field.omit);
 
-        return `
-    <% "--- "%>
-    const result = MF.openForm("${formName}");
-    ${compileFrontmatter(fieldsToInclude)}
-    <% "--- "%>
-    `;
+        return [
+            `<% "---" %>`,
+            `<%*`,
+            `${compileOpenForm(
+                formName,
+                fieldsToOmit.map((x) => x.name),
+            )}`,
+            ` ${compileFrontmatter(fieldsToInclude)} `,
+            `%>`,
+            `<% "---" %>`,
+        ].join("\n");
     };
 }
 
@@ -63,7 +82,8 @@ export const makeModel = (formDefinition: FormDefinition) => {
 
     const code = derived(fields, compileTemplaterTemplate(formDefinition.name));
 
-    function setField(name: string, newValues: Partial<FieldOption>) {
+    function setField(name: string, newValues: Partial<Field>) {
+        console.log({ name, newValues });
         fields.update(($fields) =>
             pipe(
                 $fields,
@@ -76,7 +96,10 @@ export const makeModel = (formDefinition: FormDefinition) => {
             ),
         );
     }
-    return { fields, setField, code };
+    function omitField(name: string, value: boolean) {
+        setField(name, { omit: value } as Field);
+    }
+    return { fields, setField, code, omitField };
 };
 
 export type TemplateBuilderModel = ReturnType<typeof makeModel>;
