@@ -34,9 +34,9 @@ function compileFrontmatter(fields: FieldOption[]) {
         return "";
     }
     if (frontmatterFields.length === fields.length) {
-        return `tR + = result.asFrontmatterString();`;
+        return `tR += result.asFrontmatterString();`;
     }
-    return `tR + = result.asFrontmatterString({ pick: ${JSON.stringify(
+    return `tR += result.asFrontmatterString({ pick: ${JSON.stringify(
         frontmatterFields,
         null,
         16,
@@ -69,8 +69,8 @@ function compileTemplaterTemplate(formName: string) {
                 fieldsToOmit.map((x) => x.name),
             )}`,
             ` ${compileFrontmatter(fieldsToInclude)} `,
-            `%>`,
-            `<% "---" %>`,
+            `-%>`,
+            `<% "---" -%>`,
         ].join("\n");
     };
 }
