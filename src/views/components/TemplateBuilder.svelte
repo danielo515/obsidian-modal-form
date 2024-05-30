@@ -4,6 +4,7 @@
     export let model: TemplateBuilderModel;
 
     $: fields = model.fields;
+    $: code = model.code;
 </script>
 
 <div class="modal-form flex gap-2">
@@ -22,7 +23,7 @@
     </div>
     <div>
         <pre> 
-            code here
+            {$code}
         </pre>
     </div>
 </div>

@@ -1,6 +1,6 @@
 import { A, pipe } from "@std";
 import { FormDefinition } from "src/core/formDefinition";
-import { writable } from "svelte/store";
+import { derived, writable } from "svelte/store";
 
 // type FieldDefinition = FormDefinition["fields"][number];
 
@@ -26,18 +26,29 @@ const Field = (name: string): FieldOption => ({
     omit: false,
 });
 
+function compileTemplaterTemplate(fields: Field[]) {
+    const fieldsToInclude = fields.filter((field): field is FieldOption => !field.omit);
+    const frontmatterFields = fieldsToInclude.filter((field) => field.onFrontmatter);
+    const frontmatterCode =
+        frontmatterFields.length === fieldsToInclude.length
+            ? `tR + = result.asFrontmatterString();`
+            : `tR + = result.asFrontmatterString({${frontmatterFields
+                  .map((field) => field.name)
+                  .join(", ")}});`;
+
+    return `
+    <% "--- "%>
+    ${frontmatterCode}
+    <% "--- "%>
+    `;
+}
+
 export const makeModel = (formDefinition: FormDefinition) => {
     const fields = writable(
         formDefinition.fields.reduce((acc, { name }) => [...acc, Field(name)], [] as Field[]),
     );
 
-    // function setField(name: string, newValues: Partial<FieldOption>) {
-    //     fields.update((f) => {
-    //         const field = f[name] ?? { name, onFrontmatter: false, onBody: false };
-    //         f[name] = { ...field, ...newValues };
-    //         return f;
-    //     });
-    // }
+    const code = derived(fields, compileTemplaterTemplate);
 
     function setField(name: string, newValues: Partial<FieldOption>) {
         fields.update(($fields) =>
@@ -52,7 +63,7 @@ export const makeModel = (formDefinition: FormDefinition) => {
             ),
         );
     }
-    return { fields, setField };
+    return { fields, setField, code };
 };
 
 export type TemplateBuilderModel = ReturnType<typeof makeModel>;
