@@ -1,3 +1,4 @@
+import * as A from "fp-ts/Array";
 import {
     Either,
     ap,
@@ -26,10 +27,10 @@ import { BaseSchema, Output, ValiError, parse as parseV } from "valibot";
 export type Option<T> = _O.Option<T>;
 export type { Either, Left, Right } from "fp-ts/Either";
 export type { NonEmptyArray } from "fp-ts/NonEmptyArray";
+export * as A from "./Array";
 export const flow = f;
 export const pipe = p;
 export const absurd = _absurd;
-export * as A from "./Array";
 /**
  * Non empty array
  */
