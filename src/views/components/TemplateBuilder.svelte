@@ -55,8 +55,8 @@
             <button type="button" on:click={() => copyToClipboard($code)}>
                 Copy to clipboard
             </button>
-            <button type="button"> Copy frontmatter to clipboard </button>
-            <button type="button" disabled> Save as template </button>
+            <!-- <button type="button"> Copy frontmatter to clipboard </button>
+            <button type="button" disabled> Save as template </button> -->
         </div>
         <Code allowWrap>
             {$code}
