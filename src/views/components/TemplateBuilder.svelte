@@ -10,19 +10,19 @@
 </script>
 
 <div class="modal-form flex flex-col gap-2">
-    <div class="flex">
+    <div class="flex gap-2">
         <div class="flex gap-1 flex-col">
             <h3>Fields to exclude</h3>
             {#each $fields as field}
                 <div>
-                    <label
-                        >{field.name}
+                    <label class="flex gap-1">
                         <input
                             type="checkbox"
                             value={field.omit}
                             on:input={(v) =>
                                 model.setField(field.name, { omit: v.currentTarget.checked })}
                         />
+                        <span>{field.name}</span>
                     </label>
                 </div>
             {/each}
@@ -33,8 +33,7 @@
             {#each $fields as field}
                 {#if field.omit === false}
                     <div>
-                        <label
-                            >{field.name}
+                        <label class="flex gap-1">
                             <input
                                 type="checkbox"
                                 value={field.onFrontmatter}
@@ -43,6 +42,7 @@
                                         onFrontmatter: v.currentTarget.checked,
                                     })}
                             />
+                            <span>{field.name}</span>
                         </label>
                     </div>
                 {/if}

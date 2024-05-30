@@ -49,26 +49,31 @@ function compileOpenForm(formName: string, fieldsToOmit: string[], usesGlobal: b
     const args = `"${formName}"${omitOptions}`;
     console.log({ args });
     if (usesGlobal) {
-        return `const result = await MF.openForm(${args});`;
+        return [`const result = await MF.openForm(${args});`];
     }
     return `
     const modalForm = app.plugins.plugins.modalforms.api;
-    const result = await modalForm.openForm(${args});`;
+    const result = await modalForm.openForm(${args});`
+        .trim()
+        .split("\n")
+        .map((x) => x.trim());
 }
 
 function compileTemplaterTemplate(formName: string) {
     return (fields: Field[]) => {
         const fieldsToInclude = fields.filter((field): field is FieldOption => !field.omit);
         const fieldsToOmit = fields.filter((field): field is OmitedFieldOption => field.omit);
+        const openTheform = compileOpenForm(
+            formName,
+            fieldsToOmit.map((x) => x.name),
+        ).join("\n  ");
+        console.log(openTheform);
 
         return [
             `<% "---" %>`,
             `<%*`,
-            `${compileOpenForm(
-                formName,
-                fieldsToOmit.map((x) => x.name),
-            )}`,
-            ` ${compileFrontmatter(fieldsToInclude)} `,
+            `  ${openTheform}`,
+            `  ${compileFrontmatter(fieldsToInclude)}`,
             `-%>`,
             `<% "---" -%>`,
         ].join("\n");
