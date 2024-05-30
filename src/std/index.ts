@@ -1,15 +1,4 @@
 import {
-    compact,
-    filter,
-    filterMap,
-    findFirst,
-    findFirstMap,
-    flatten,
-    map as mapArr,
-    partition,
-    partitionMap,
-} from "fp-ts/Array";
-import {
     Either,
     ap,
     bimap,
@@ -40,17 +29,7 @@ export type { NonEmptyArray } from "fp-ts/NonEmptyArray";
 export const flow = f;
 export const pipe = p;
 export const absurd = _absurd;
-export const A = {
-    partitionMap,
-    partition,
-    compact,
-    findFirst,
-    findFirstMap,
-    map: mapArr,
-    filter,
-    filterMap,
-    flatten,
-};
+export * as A from "./Array";
 /**
  * Non empty array
  */
