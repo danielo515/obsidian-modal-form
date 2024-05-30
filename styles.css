@@ -69,12 +69,6 @@ If your plugin does not need CSS, delete this file.
 .modal-form.column {
     flex-direction: column;
 }
-.modal-form.gap1 {
-    gap: 0.5rem;
-}
-.modal-form.gap2 {
-    gap: 1rem;
-}
 .modal-form input:invalid,
 .modal-form .invalid {
     border-color: var(--text-error);
@@ -97,9 +91,26 @@ If your plugin does not need CSS, delete this file.
     align-items: center;
 }
 
-.flex {
-    display: flex;
-}
-.gap-2 {
-    gap: 2rem;
+.modal-form {
+    &.flex,
+    .flex {
+        display: flex;
+    }
+    &.gap-1,
+    .gap-1 {
+        gap: 0.5rem;
+    }
+    &.gap-2,
+    .gap-2 {
+        gap: 1rem;
+    }
+
+    &.flex-col,
+    .flex-col {
+        flex-direction: column;
+    }
+
+    .gap1 {
+        gap: 0.5rem;
+    }
 }
