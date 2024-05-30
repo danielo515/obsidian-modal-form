@@ -60,7 +60,7 @@ function compileOpenForm(formName: string, fieldsToOmit: string[], usesGlobal: b
 }
 
 function compileTemplaterTemplate(formName: string) {
-    return (fields: Field[]) => {
+    return ([fields, options]: [Field[], { includeFences: boolean }]) => {
         const fieldsToInclude = fields.filter((field): field is FieldOption => !field.omit);
         const fieldsToOmit = fields.filter((field): field is OmitedFieldOption => field.omit);
         const openTheform = compileOpenForm(
@@ -70,12 +70,12 @@ function compileTemplaterTemplate(formName: string) {
         console.log(openTheform);
 
         return [
-            `<% "---" %>`,
+            options.includeFences ? `<% "---" %>` : "",
             `<%*`,
             `  ${openTheform}`,
             `  ${compileFrontmatter(fieldsToInclude)}`,
             `-%>`,
-            `<% "---" -%>`,
+            options.includeFences ? `<% "---" -%>` : "",
         ].join("\n");
     };
 }
@@ -84,8 +84,9 @@ export const makeModel = (formDefinition: FormDefinition) => {
     const fields = writable(
         formDefinition.fields.reduce((acc, { name }) => [...acc, Field(name)], [] as Field[]),
     );
+    const options = writable({ includeFences: true });
 
-    const code = derived(fields, compileTemplaterTemplate(formDefinition.name));
+    const code = derived([fields, options], compileTemplaterTemplate(formDefinition.name));
 
     function setField(name: string, newValues: Partial<Field>) {
         console.log({ name, newValues });
@@ -114,7 +115,7 @@ export const makeModel = (formDefinition: FormDefinition) => {
     function omitField(name: string, value: boolean) {
         setField(name, { omit: value } as Field);
     }
-    return { fields, setField, code, omitField, toggleAllFrontmatter };
+    return { fields, setField, code, omitField, toggleAllFrontmatter, options };
 };
 
 export type TemplateBuilderModel = ReturnType<typeof makeModel>;

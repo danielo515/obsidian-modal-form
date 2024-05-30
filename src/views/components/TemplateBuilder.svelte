@@ -7,6 +7,7 @@
 
     $: fields = model.fields;
     $: code = model.code;
+    $: options = model.options;
 </script>
 
 <div class="modal-form flex flex-col gap-2">
@@ -55,6 +56,18 @@
                 All
             </label>
         </div>
+    </div>
+
+    <div class="flex flex-col flex-1">
+        <h3>Options</h3>
+        <label>
+            <input
+                type="checkbox"
+                checked={$options.includeFences}
+                on:change={(e) => ($options.includeFences = e.currentTarget.checked)}
+            />
+            <span>Include frontmatter fences</span>
+        </label>
     </div>
     <div class="flex flex-col flex-1">
         <h3>Template</h3>
