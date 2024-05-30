@@ -1,6 +1,7 @@
 import { App, Modal } from "obsidian";
 import { TemplateBuilderModel } from "./components/TemplateBuilder";
 import TemplateBuilder from "./components/TemplateBuilder.svelte";
+import { copyToClipboard } from "./copyToClipboard";
 /**
  * This class is just the minimum glue code to bind our core logic
  * with the  svelte UI and obsidian API modal.
@@ -23,7 +24,7 @@ export class TemplateBuilderModal extends Modal {
         const { contentEl } = this;
         this._component = new TemplateBuilder({
             target: contentEl,
-            props: { model: this.deps },
+            props: { model: this.deps, copyToClipboard },
         });
     }
 }

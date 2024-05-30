@@ -1,19 +1,9 @@
-import { ItemView, Notice, ViewStateResult, WorkspaceLeaf } from "obsidian";
+import { ItemView, ViewStateResult, WorkspaceLeaf } from "obsidian";
 import { FormDefinition } from "src/core/formDefinition";
 import ModalFormPlugin from "src/main";
 import { makeModel } from "./components/TemplateBuilder";
 import TemplateBuilder from "./components/TemplateBuilder.svelte";
-
-function copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text).then(
-        () => {
-            new Notice("Template has been copied to the clipboard");
-        },
-        (err) => {
-            console.error("Could not copy text: ", err);
-        },
-    );
-}
+import { copyToClipboard } from "./copyToClipboard";
 
 export const TEMPLATE_BUILDER_VIEW = "modal-form-template-builder-view";
 /**
