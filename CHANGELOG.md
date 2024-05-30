@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.44.0](https://github.com/danielo515/obsidian-modal-form/compare/1.43.0...1.44.0) (2024-05-30)
+
+
+### Features
+
+* more customizations in the generated template ([6db7d29](https://github.com/danielo515/obsidian-modal-form/commit/6db7d2914c099a1e14a670d73f9d5cbe84ed7cd3))
+
+
+### Bug Fixes
+
+* easy toggle all for fields to include in frontmatter ([8bf4fb4](https://github.com/danielo515/obsidian-modal-form/commit/8bf4fb4a30e9076d91d182e7a4359bba6426c5e3))
+
 ## [1.43.0](https://github.com/danielo515/obsidian-modal-form/compare/1.42.1...1.43.0) (2024-05-30)
 
 
