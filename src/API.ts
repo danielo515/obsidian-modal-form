@@ -11,7 +11,6 @@ import ModalFormPlugin from "./main";
 import { log_error, log_notice } from "./utils/Log";
 import { ModalFormError } from "./utils/ModalFormError";
 import { enrich_tfile, resolve_tfile } from "./utils/files";
-import { makeModel } from "./views/components/TemplateBuilder";
 
 type pickOption = { pick: string[] };
 type omitOption = { omit: string[] };
@@ -166,8 +165,7 @@ export class API {
     public openInTemplateBuilder(name: string) {
         const form = this.getFormByName(name);
         if (form) {
-            const model = makeModel(form);
-            this.plugin.openTemplateBuilder(model);
+            this.plugin.openTemplateBuilder({ formDefinition: form });
         }
     }
 }
