@@ -26,21 +26,34 @@ const Field = (name: string): FieldOption => ({
     omit: false,
 });
 
-function compileTemplaterTemplate(fields: Field[]) {
-    const fieldsToInclude = fields.filter((field): field is FieldOption => !field.omit);
-    const frontmatterFields = fieldsToInclude.filter((field) => field.onFrontmatter);
-    const frontmatterCode =
-        frontmatterFields.length === fieldsToInclude.length
-            ? `tR + = result.asFrontmatterString();`
-            : `tR + = result.asFrontmatterString({${frontmatterFields
-                  .map((field) => field.name)
-                  .join(", ")}});`;
+function compileFrontmatter(fields: FieldOption[]) {
+    const frontmatterFields = fields
+        .filter((field) => field.onFrontmatter)
+        .map((field) => field.name);
+    if (frontmatterFields.length === 0) {
+        return "";
+    }
+    if (frontmatterFields.length === fields.length) {
+        return `tR + = result.asFrontmatterString();`;
+    }
+    return `tR + = result.asFrontmatterString({ pick: ${JSON.stringify(
+        frontmatterFields,
+        null,
+        2,
+    )} });`;
+}
 
-    return `
+function compileTemplaterTemplate(formName: string) {
+    return (fields: Field[]) => {
+        const fieldsToInclude = fields.filter((field): field is FieldOption => !field.omit);
+
+        return `
     <% "--- "%>
-    ${frontmatterCode}
+    const result = MF.openForm("${formName}");
+    ${compileFrontmatter(fieldsToInclude)}
     <% "--- "%>
     `;
+    };
 }
 
 export const makeModel = (formDefinition: FormDefinition) => {
@@ -48,7 +61,7 @@ export const makeModel = (formDefinition: FormDefinition) => {
         formDefinition.fields.reduce((acc, { name }) => [...acc, Field(name)], [] as Field[]),
     );
 
-    const code = derived(fields, compileTemplaterTemplate);
+    const code = derived(fields, compileTemplaterTemplate(formDefinition.name));
 
     function setField(name: string, newValues: Partial<FieldOption>) {
         fields.update(($fields) =>
