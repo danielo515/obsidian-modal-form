@@ -18,8 +18,8 @@
                     <label class="flex gap-1">
                         <input
                             type="checkbox"
-                            value={field.omit}
-                            on:input={(v) =>
+                            checked={field.omit}
+                            on:change={(v) =>
                                 model.setField(field.name, { omit: v.currentTarget.checked })}
                         />
                         <span>{field.name}</span>
@@ -30,13 +30,13 @@
 
         <div class="flex flex-col gap-1">
             <h3>Fields to include in frontmatter</h3>
-            {#each $fields as field}
+            {#each $fields as field (field.name)}
                 {#if field.omit === false}
                     <div>
                         <label class="flex gap-1">
                             <input
                                 type="checkbox"
-                                value={field.onFrontmatter}
+                                checked={field.onFrontmatter}
                                 on:input={(v) =>
                                     model.setField(field.name, {
                                         onFrontmatter: v.currentTarget.checked,
@@ -47,6 +47,13 @@
                     </div>
                 {/if}
             {/each}
+            <label>
+                <input
+                    type="checkbox"
+                    on:change={(e) => model.toggleAllFrontmatter(e.currentTarget.checked)}
+                />
+                All
+            </label>
         </div>
     </div>
     <div class="flex flex-col flex-1">

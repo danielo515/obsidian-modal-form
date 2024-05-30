@@ -101,10 +101,20 @@ export const makeModel = (formDefinition: FormDefinition) => {
             ),
         );
     }
+    function toggleAllFrontmatter(value: boolean) {
+        fields.update(($fields) =>
+            $fields.map((f) => {
+                if (f.omit) {
+                    return f;
+                }
+                return { ...f, onFrontmatter: value };
+            }),
+        );
+    }
     function omitField(name: string, value: boolean) {
         setField(name, { omit: value } as Field);
     }
-    return { fields, setField, code, omitField };
+    return { fields, setField, code, omitField, toggleAllFrontmatter };
 };
 
 export type TemplateBuilderModel = ReturnType<typeof makeModel>;
