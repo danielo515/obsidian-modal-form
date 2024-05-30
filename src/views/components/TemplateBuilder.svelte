@@ -1,14 +1,12 @@
 <script lang="ts">
-    import { FormDefinition } from "src/core/formDefinition";
-    import { makeModel, type TemplateBuilderModel } from "./TemplateBuilder";
+    import { type TemplateBuilderModel } from "./TemplateBuilder";
 
-    export let definition: FormDefinition;
-    export let model: TemplateBuilderModel = makeModel(definition);
+    export let model: TemplateBuilderModel;
 
     $: fields = model.fields;
 </script>
 
-<div class="flex gap-2">
+<div class="modal-form flex gap-2">
     <div>
         <h3>Fields to include in frontmatter</h3>
         {#each $fields as field}

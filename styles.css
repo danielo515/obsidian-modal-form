@@ -96,3 +96,10 @@ If your plugin does not need CSS, delete this file.
     padding: 4px 0;
     align-items: center;
 }
+
+.flex {
+    display: flex;
+}
+.gap-2 {
+    gap: 2rem;
+}

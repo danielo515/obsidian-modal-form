@@ -1,16 +1,17 @@
 import { App, parseFrontMatterAliases } from "obsidian";
 
+import * as std from "@std";
+import { E, flow } from "@std";
+import { FormModal } from "./FormModal";
+import FormResult from "./core/FormResult";
 import { type FormDefinition, type FormOptions } from "./core/formDefinition";
 import { MigrationError } from "./core/formDefinitionSchema";
-import FormResult from "./core/FormResult";
 import { exampleModalDefinition } from "./exampleModalDefinition";
 import ModalFormPlugin from "./main";
-import { ModalFormError } from "./utils/ModalFormError";
-import { FormModal } from "./FormModal";
 import { log_error, log_notice } from "./utils/Log";
-import * as std from "@std";
+import { ModalFormError } from "./utils/ModalFormError";
 import { enrich_tfile, resolve_tfile } from "./utils/files";
-import { E, flow } from "@std";
+import { makeModel } from "./views/components/TemplateBuilder";
 
 type pickOption = { pick: string[] };
 type omitOption = { omit: string[] };
@@ -105,12 +106,16 @@ export class API {
     /**
      * Opens a named form, limiting/filtering the fields included
      * @param {string} name - The name of the form to open
-     * @param {limitOptions} limitOpts - The options to apply when filtering fields 
+     * @param {limitOptions} limitOpts - The options to apply when filtering fields
      * @param {FormOptions} formOpts - Form options to use when opening the form once filtered
      * @returns {Promise<FormResult>} - A promise that resolves with the form result
      * @throws {ModalFormError} - Throws an error if the form definition is not found
      */
-    public limitedForm(name: string, limitOpts: limitOptions, formOpts?: FormOptions): Promise<FormResult> {
+    public limitedForm(
+        name: string,
+        limitOpts: limitOptions,
+        formOpts?: FormOptions,
+    ): Promise<FormResult> {
         const formDefinition = this.getFormByName(name);
         let newFormDefinition: FormDefinition;
         if (formDefinition) {
@@ -123,7 +128,9 @@ export class API {
             } else if (isPickOption(limitOpts)) {
                 newFormDefinition = {
                     ...formDefinition,
-                    fields: formDefinition.fields.filter((field) => limitOpts.pick.includes(field.name)),
+                    fields: formDefinition.fields.filter((field) =>
+                        limitOpts.pick.includes(field.name),
+                    ),
                 };
             } else {
                 throw new ModalFormError(
@@ -153,6 +160,14 @@ export class API {
             return this.namedForm(formReference, options);
         } else {
             return this.openModalForm(formReference, options);
+        }
+    }
+
+    public openInTemplateBuilder(name: string) {
+        const form = this.getFormByName(name);
+        if (form) {
+            const model = makeModel(form);
+            this.plugin.openTemplateBuilder(model);
         }
     }
 }
