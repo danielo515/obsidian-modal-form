@@ -1,8 +1,8 @@
-import { FormDefinition } from "src/core/formDefinition";
-import ManageForms from "./ManageForms.svelte";
-import ModalFormPlugin from "../main";
 import { ItemView, Notice, WorkspaceLeaf } from "obsidian";
+import { FormDefinition } from "src/core/formDefinition";
 import { formsStore, invalidFormsStore, settingsStore } from "src/store/store";
+import ModalFormPlugin from "../main";
+import ManageForms from "./ManageForms.svelte";
 
 export const MANAGE_FORMS_VIEW = "modal-form-manage-forms-view";
 
@@ -55,6 +55,9 @@ export class ManageFormsView extends ItemView {
                 },
                 openImportFormModal: () => {
                     this.plugin.openImportFormModal();
+                },
+                openInTemplateBuilder: (formDefinition: FormDefinition) => {
+                    this.plugin.openTemplateBuilder({ formDefinition });
                 },
             },
         });

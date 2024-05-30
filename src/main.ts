@@ -1,34 +1,37 @@
+import { A, E, O, pipe } from "@std";
 import { Platform, Plugin, WorkspaceLeaf } from "obsidian";
-import FormResult from "src/core/FormResult";
-import { exampleModalDefinition } from "src/exampleModalDefinition";
-import { ModalFormSettingTab } from "src/ModalFormSettingTab";
 import { API } from "src/API";
-import { EDIT_FORM_VIEW, EditFormView } from "src/views/EditFormView";
-import { MANAGE_FORMS_VIEW, ManageFormsView } from "src/views/ManageFormsView";
-import { ModalFormError } from "src/utils/ModalFormError";
+import { ModalFormSettingTab } from "src/ModalFormSettingTab";
+import FormResult from "src/core/FormResult";
 import { FormWithTemplate, type FormDefinition } from "src/core/formDefinition";
 import {
-    formNeedsMigration,
-    migrateToLatest,
-    MigrationError,
-    InvalidData,
-} from "./core/formDefinitionSchema";
-import {
+    getDefaultSettings,
     parseSettings,
     type ModalFormSettings,
     type OpenPosition,
-    getDefaultSettings,
 } from "src/core/settings";
-import { log_error, log_notice } from "./utils/Log";
-import { settingsStore } from "./store/store";
-import { O, pipe, E, A } from "@std";
+import { exampleModalDefinition } from "src/exampleModalDefinition";
+import { ModalFormError } from "src/utils/ModalFormError";
+import { EDIT_FORM_VIEW, EditFormView } from "src/views/EditFormView";
+import { MANAGE_FORMS_VIEW, ManageFormsView } from "src/views/ManageFormsView";
+import {
+    InvalidData,
+    MigrationError,
+    formNeedsMigration,
+    migrateToLatest,
+} from "./core/formDefinitionSchema";
 import { executeTemplate } from "./core/template/templateParser";
-import { NewNoteModal } from "./suggesters/NewNoteModal";
-import { file_exists } from "./utils/files";
+import { settingsStore } from "./store/store";
 import { FormPickerModal } from "./suggesters/FormPickerModal";
+import { NewNoteModal } from "./suggesters/NewNoteModal";
+import { log_error, log_notice } from "./utils/Log";
+import { file_exists } from "./utils/files";
 import { FormImportModal } from "./views/FormImportView";
+import { TemplateBuilderModal } from "./views/TemplateBuilderModal";
+import { TEMPLATE_BUILDER_VIEW, TemplateBuilderView } from "./views/TemplateBuilderView";
+import { makeModel } from "./views/components/TemplateBuilder";
 
-type ViewType = typeof EDIT_FORM_VIEW | typeof MANAGE_FORMS_VIEW;
+type ViewType = typeof EDIT_FORM_VIEW | typeof MANAGE_FORMS_VIEW | typeof TEMPLATE_BUILDER_VIEW;
 
 // Define functions and properties you want to make available to other plugins, or templater templates, etc
 export interface PublicAPI {
@@ -102,6 +105,21 @@ export default class ModalFormPlugin extends Plugin {
             },
         });
         importModal.open();
+    }
+
+    openTemplateBuilder({
+        // We need the state to be serializable for the view, so we can't get the model directly
+        formDefinition,
+        openOnModal = false,
+    }: {
+        formDefinition: FormDefinition;
+        openOnModal?: boolean;
+    }) {
+        if (openOnModal) {
+            new TemplateBuilderModal(this.app, makeModel(formDefinition)).open();
+        } else {
+            this.activateView(TEMPLATE_BUILDER_VIEW, formDefinition);
+        }
     }
 
     closeEditForm() {
@@ -214,6 +232,7 @@ export default class ModalFormPlugin extends Plugin {
         this.attachShortcutToGlobalWindow();
         this.registerView(EDIT_FORM_VIEW, (leaf) => new EditFormView(leaf, this));
         this.registerView(MANAGE_FORMS_VIEW, (leaf) => new ManageFormsView(leaf, this));
+        this.registerView(TEMPLATE_BUILDER_VIEW, (leaf) => new TemplateBuilderView(leaf, this));
 
         // This creates an icon in the left ribbon.
         this.addRibbonIcon("documents", "Edit forms", (evt: MouseEvent) => {

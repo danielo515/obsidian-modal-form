@@ -1,16 +1,17 @@
 <script lang="ts">
-    import { FormDefinition } from "src/core/formDefinition";
-    import KeyValue from "./components/KeyValue.svelte";
-    import Button from "./components/Button.svelte";
-    import { MigrationError } from "src/core/formDefinitionSchema";
     import * as Separated from "fp-ts/Separated";
+    import { FormDefinition } from "src/core/formDefinition";
+    import { MigrationError } from "src/core/formDefinitionSchema";
     import { Readable } from "svelte/store";
+    import Button from "./components/Button.svelte";
+    import KeyValue from "./components/KeyValue.svelte";
 
     export let createNewForm: () => void;
     export let deleteForm: (formName: string) => void;
     export let duplicateForm: (formName: string) => void;
     export let editForm: (formName: string) => void;
     export let copyFormToClipboard: (form: FormDefinition) => void;
+    export let openInTemplateBuilder: (form: FormDefinition) => void;
     export let openImportFormModal: () => void;
 
     export let forms: Readable<FormDefinition[]>;
@@ -33,6 +34,10 @@
     function handleCopyForm(form: FormDefinition) {
         console.log(`Copying ${form.name}`);
         copyFormToClipboard(form);
+    }
+    function handleOpenInTemplateBuilder(form: FormDefinition) {
+        console.log(`Opening ${form.name} in template builder`);
+        openInTemplateBuilder(form);
     }
 </script>
 
@@ -62,8 +67,8 @@
                                 >{Array.isArray(value)
                                     ? value.length
                                     : typeof value === "object"
-                                      ? !!value
-                                      : value}</span
+                                    ? !!value
+                                    : value}</span
                             >
                         </KeyValue>
                     {/if}
@@ -91,6 +96,9 @@
                 ></Button>
                 <button on:click={() => handleDuplicateForm(form)}>
                     <span>Duplicate</span>
+                </button>
+                <button on:click={() => handleOpenInTemplateBuilder(form)}>
+                    <span>Open in template editor</span>
                 </button>
                 <Button
                     tooltip={`Copy ${form.name} to clipboard`}

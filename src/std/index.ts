@@ -1,14 +1,4 @@
-import {
-    compact,
-    filter,
-    filterMap,
-    findFirst,
-    findFirstMap,
-    flatten,
-    map as mapArr,
-    partition,
-    partitionMap,
-} from "fp-ts/Array";
+import * as A from "fp-ts/Array";
 import {
     Either,
     ap,
@@ -37,20 +27,10 @@ import { BaseSchema, Output, ValiError, parse as parseV } from "valibot";
 export type Option<T> = _O.Option<T>;
 export type { Either, Left, Right } from "fp-ts/Either";
 export type { NonEmptyArray } from "fp-ts/NonEmptyArray";
+export * as A from "./Array";
 export const flow = f;
 export const pipe = p;
 export const absurd = _absurd;
-export const A = {
-    partitionMap,
-    partition,
-    compact,
-    findFirst,
-    findFirstMap,
-    map: mapArr,
-    filter,
-    filterMap,
-    flatten,
-};
 /**
  * Non empty array
  */
