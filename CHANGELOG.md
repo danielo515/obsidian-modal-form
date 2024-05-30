@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.43.0](https://github.com/danielo515/obsidian-modal-form/compare/1.42.1...1.43.0) (2024-05-30)
+
+
+### Features
+
+* ability to open template builder form UI ([c6663ff](https://github.com/danielo515/obsidian-modal-form/commit/c6663ffc07c00494451b4f7b0b28e7d43efa7781))
+* add a view for template builder ([f32ebfb](https://github.com/danielo515/obsidian-modal-form/commit/f32ebfb95d34dca54a34551954c2c3c3fd5e5354))
+* copy to clipboard and better format ([e3e3249](https://github.com/danielo515/obsidian-modal-form/commit/e3e324990a1df2ce24c319fb72aac31e605b16a6))
+* open TemplateBuilder in a modal ([e376cd0](https://github.com/danielo515/obsidian-modal-form/commit/e376cd0cab476413e321cd4ad620948ec0bcd780))
+* **std:** updateFirst for Array ([e6f28e1](https://github.com/danielo515/obsidian-modal-form/commit/e6f28e13441e629d04ab0d9a4807ed420171e419))
+
 ## [1.42.1](https://github.com/danielo515/obsidian-modal-form/compare/1.42.0...1.42.1) (2024-05-14)
 
 
