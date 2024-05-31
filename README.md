@@ -38,6 +38,11 @@ https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4
 ![example form](docs/media/example.png)
 ![templates](docs/media/templates-v1.gif)
 
+### Template builder
+
+We have a nice UI to help you creating the required templates.
+![template builder](docs/media/template-builder.png)
+
 ## Why this plugin?
 
 Obsidian is a great tool for taking notes, but it is also a nice for managing data.
