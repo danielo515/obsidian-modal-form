@@ -11,6 +11,7 @@
 </script>
 
 <div class="modal-form flex flex-col gap-2">
+    <h2 style="margin-bottom: 0;">Template for: {model.title}</h2>
     <div class="flex gap-2">
         <div class="flex gap-1 flex-col">
             <h3>Fields to exclude</h3>

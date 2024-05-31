@@ -115,7 +115,15 @@ export const makeModel = (formDefinition: FormDefinition) => {
     function omitField(name: string, value: boolean) {
         setField(name, { omit: value } as Field);
     }
-    return { fields, setField, code, omitField, toggleAllFrontmatter, options };
+    return {
+        fields,
+        setField,
+        code,
+        omitField,
+        toggleAllFrontmatter,
+        options,
+        title: formDefinition.name,
+    };
 };
 
 export type TemplateBuilderModel = ReturnType<typeof makeModel>;
