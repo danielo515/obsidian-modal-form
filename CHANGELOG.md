@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.44.1](https://github.com/danielo515/obsidian-modal-form/compare/1.44.0...1.44.1) (2024-05-31)
+
+
+### Bug Fixes
+
+* show title in the template builder ([012901d](https://github.com/danielo515/obsidian-modal-form/commit/012901d86a2408429c4ebde0c93e2bdf531f4850))
+
 ## [1.44.0](https://github.com/danielo515/obsidian-modal-form/compare/1.43.0...1.44.0) (2024-05-30)
 
 
