@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.45.0](https://github.com/danielo515/obsidian-modal-form/compare/1.44.1...1.45.0) (2024-06-04)
+
+
+### Features
+
+* **templater:** customize result name in template builder ([16a2297](https://github.com/danielo515/obsidian-modal-form/commit/16a2297371e2efc449b838a42dd838e4ed419193))
+* **templater:** easily build template body ([b705136](https://github.com/danielo515/obsidian-modal-form/commit/b7051362f34a2d785581e0265b7ef7ebc7b1b3de))
+
 ## [1.44.1](https://github.com/danielo515/obsidian-modal-form/compare/1.44.0...1.44.1) (2024-05-31)
 
 
