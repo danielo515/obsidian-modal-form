@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.45.1](https://github.com/danielo515/obsidian-modal-form/compare/1.45.0...1.45.1) (2024-06-04)
+
+
+### Bug Fixes
+
+* **templater:** flex wrap ([4aed840](https://github.com/danielo515/obsidian-modal-form/commit/4aed8409626f2049805a777aac35a7934028d1c8))
+
 ## [1.45.0](https://github.com/danielo515/obsidian-modal-form/compare/1.44.1...1.45.0) (2024-06-04)
 
 
