@@ -1,5 +1,6 @@
 import { A, pipe } from "@std";
 import { FormDefinition } from "src/core/formDefinition";
+import { buildResultBody } from "src/core/templater/builder";
 import { derived, writable } from "svelte/store";
 
 // type FieldDefinition = FormDefinition["fields"][number];
@@ -67,7 +68,7 @@ function compileOpenForm(
 type Options = { includeFences: boolean; resultName: string };
 
 function compileTemplaterTemplate(formName: string) {
-    return ([fields, options]: [Field[], Options]) => {
+    return ([fields, options, bodyTemplate]: [Field[], Options, string]) => {
         const fieldsToInclude = fields.filter((field): field is FieldOption => !field.omit);
         const fieldsToOmit = fields.filter((field): field is OmittedFieldOption => field.omit);
         const openTheform = compileOpenForm(
@@ -75,7 +76,6 @@ function compileTemplaterTemplate(formName: string) {
             options.resultName,
             fieldsToOmit.map((x) => x.name),
         ).join("\n  ");
-        console.log(openTheform);
 
         return [
             options.includeFences ? `<% "---" %>` : "",
@@ -84,6 +84,12 @@ function compileTemplaterTemplate(formName: string) {
             `  ${compileFrontmatter(fieldsToInclude, options.resultName)}`,
             `-%>`,
             options.includeFences ? `<% "---" -%>` : "",
+
+            buildResultBody(
+                fieldsToInclude.map((f) => f.name),
+                bodyTemplate,
+                options,
+            ),
         ].join("\n");
     };
 }
@@ -93,8 +99,12 @@ export const makeModel = (formDefinition: FormDefinition) => {
         formDefinition.fields.reduce((acc, { name }) => [...acc, Field(name)], [] as Field[]),
     );
     const options = writable<Options>({ includeFences: true, resultName: "result" });
+    const bodyTemplate = writable("");
 
-    const code = derived([fields, options], compileTemplaterTemplate(formDefinition.name));
+    const code = derived(
+        [fields, options, bodyTemplate],
+        compileTemplaterTemplate(formDefinition.name),
+    );
 
     function setField(name: string, newValues: Partial<Field>) {
         console.log({ name, newValues });
@@ -130,6 +140,7 @@ export const makeModel = (formDefinition: FormDefinition) => {
         omitField,
         toggleAllFrontmatter,
         options,
+        bodyTemplate,
         title: formDefinition.name,
     };
 };

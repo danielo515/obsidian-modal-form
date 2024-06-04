@@ -7,9 +7,12 @@
     export let model: TemplateBuilderModel;
     export let copyToClipboard: (content: string) => void;
 
+    const templateMessage = `{{fieldName}} `;
+
     $: fields = model.fields;
     $: code = model.code;
     $: options = model.options;
+    $: bodyTemplate = model.bodyTemplate;
 </script>
 
 <div class="modal-form flex flex-col gap-2">
@@ -61,21 +64,26 @@
         </div>
     </div>
 
-    <div class="flex flex-col">
-        <h3>Fields to include in body</h3>
-        {#each $fields as field (field.name)}
-            {#if field.omit === false}
-                <label>
-                    <input
-                        type="checkbox"
-                        checked={field.onBody}
-                        on:input={(v) =>
-                            model.setField(field.name, { onBody: v.currentTarget.checked })}
-                    />
-                    <span>{field.name}</span>
-                </label>
-            {/if}
-        {/each}
+    <div class="flex flex-col gap-2">
+        <h3>Body template</h3>
+        <div>
+            <p style="margin:0; padding:0">
+                Whatever you write here will be used in the body part of the template (after the
+                frontmatter).
+            </p>
+            <p style="margin:0; padding:0">
+                You can use <span class="code">{templateMessage}</span> syntax to build the body of the
+                template.
+            </p>
+        </div>
+        <div class="flex">
+            {#each $fields as field}
+                <button type="button" on:click={() => ($bodyTemplate += `{{${field.name}}}`)}>
+                    {field.name}
+                </button>
+            {/each}
+        </div>
+        <textarea class="w-full" rows="10" bind:value={$bodyTemplate} />
     </div>
 
     <div class="flex flex-col flex-1 gap-1">
@@ -109,3 +117,11 @@
         </Code>
     </div>
 </div>
+
+<style>
+    .code {
+        font-family: var(--font-family-monospace);
+        background-color: var(--background-secondary);
+        color: var(--text-muted);
+    }
+</style>
