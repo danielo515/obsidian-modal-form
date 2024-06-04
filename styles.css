@@ -116,4 +116,8 @@ If your plugin does not need CSS, delete this file.
     .flex-1 {
         flex: 1;
     }
+
+    .items-center {
+        align-items: center;
+    }
 }
