@@ -1,5 +1,7 @@
 <script lang="ts">
     import Code from "./Code.svelte";
+    import FormRow from "./FormRow.svelte";
+    import Label from "./Label.svelte";
     import { type TemplateBuilderModel } from "./TemplateBuilder";
 
     export let model: TemplateBuilderModel;
@@ -59,16 +61,39 @@
         </div>
     </div>
 
-    <div class="flex flex-col flex-1">
+    <div class="flex flex-col">
+        <h3>Fields to include in body</h3>
+        {#each $fields as field (field.name)}
+            {#if field.omit === false}
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={field.onBody}
+                        on:input={(v) =>
+                            model.setField(field.name, { onBody: v.currentTarget.checked })}
+                    />
+                    <span>{field.name}</span>
+                </label>
+            {/if}
+        {/each}
+    </div>
+
+    <div class="flex flex-col flex-1 gap-1">
         <h3>Options</h3>
-        <label>
+        <Label label="Include frontmatter fences" inline>
             <input
                 type="checkbox"
                 checked={$options.includeFences}
                 on:change={(e) => ($options.includeFences = e.currentTarget.checked)}
             />
-            <span>Include frontmatter fences</span>
-        </label>
+        </Label>
+        <FormRow label="Result variable name" id={`result_variable_name`} inline>
+            <input
+                type="text"
+                value={$options.resultName}
+                on:input={(e) => ($options.resultName = e.currentTarget.value)}
+            />
+        </FormRow>
     </div>
     <div class="flex flex-col flex-1">
         <h3>Template</h3>

@@ -11,13 +11,13 @@ interface FieldOption {
     omit: false;
 }
 
-interface OmitedFieldOption {
+interface OmittedFieldOption {
     name: string;
     omit: true;
     // field: FieldDefinition;
 }
 
-type Field = FieldOption | OmitedFieldOption;
+type Field = FieldOption | OmittedFieldOption;
 
 const Field = (name: string): FieldOption => ({
     name,
@@ -26,7 +26,7 @@ const Field = (name: string): FieldOption => ({
     omit: false,
 });
 
-function compileFrontmatter(fields: FieldOption[]) {
+function compileFrontmatter(fields: FieldOption[], resultName: string) {
     const frontmatterFields = fields
         .filter((field) => field.onFrontmatter)
         .map((field) => field.name);
@@ -34,37 +34,45 @@ function compileFrontmatter(fields: FieldOption[]) {
         return "";
     }
     if (frontmatterFields.length === fields.length) {
-        return `tR += result.asFrontmatterString();`;
+        return `tR += ${resultName}.asFrontmatterString();`;
     }
-    return `tR += result.asFrontmatterString({ pick: ${JSON.stringify(
+    return `tR += ${resultName}.asFrontmatterString({ pick: ${JSON.stringify(
         frontmatterFields,
         null,
         16,
     )} \t});`;
 }
 
-function compileOpenForm(formName: string, fieldsToOmit: string[], usesGlobal: boolean = false) {
+function compileOpenForm(
+    formName: string,
+    resultName: string,
+    fieldsToOmit: string[],
+    usesGlobal: boolean = false,
+) {
     const omitOptions =
         fieldsToOmit.length > 0 ? `, ${JSON.stringify({ omit: fieldsToOmit }, null, 8)}` : "";
     const args = `"${formName}"${omitOptions}`;
     console.log({ args });
     if (usesGlobal) {
-        return [`const result = await MF.openForm(${args});`];
+        return [`const ${resultName} = await MF.openForm(${args});`];
     }
     return `
     const modalForm = app.plugins.plugins.modalforms.api;
-    const result = await modalForm.openForm(${args});`
+    const ${resultName} = await modalForm.openForm(${args});`
         .trim()
         .split("\n")
         .map((x) => x.trim());
 }
 
+type Options = { includeFences: boolean; resultName: string };
+
 function compileTemplaterTemplate(formName: string) {
-    return ([fields, options]: [Field[], { includeFences: boolean }]) => {
+    return ([fields, options]: [Field[], Options]) => {
         const fieldsToInclude = fields.filter((field): field is FieldOption => !field.omit);
-        const fieldsToOmit = fields.filter((field): field is OmitedFieldOption => field.omit);
+        const fieldsToOmit = fields.filter((field): field is OmittedFieldOption => field.omit);
         const openTheform = compileOpenForm(
             formName,
+            options.resultName,
             fieldsToOmit.map((x) => x.name),
         ).join("\n  ");
         console.log(openTheform);
@@ -73,7 +81,7 @@ function compileTemplaterTemplate(formName: string) {
             options.includeFences ? `<% "---" %>` : "",
             `<%*`,
             `  ${openTheform}`,
-            `  ${compileFrontmatter(fieldsToInclude)}`,
+            `  ${compileFrontmatter(fieldsToInclude, options.resultName)}`,
             `-%>`,
             options.includeFences ? `<% "---" -%>` : "",
         ].join("\n");
@@ -84,7 +92,7 @@ export const makeModel = (formDefinition: FormDefinition) => {
     const fields = writable(
         formDefinition.fields.reduce((acc, { name }) => [...acc, Field(name)], [] as Field[]),
     );
-    const options = writable({ includeFences: true });
+    const options = writable<Options>({ includeFences: true, resultName: "result" });
 
     const code = derived([fields, options], compileTemplaterTemplate(formDefinition.name));
 
