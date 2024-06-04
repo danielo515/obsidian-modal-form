@@ -83,7 +83,7 @@ function compileTemplaterTemplate(formName: string) {
             `  ${openTheform}`,
             `  ${compileFrontmatter(fieldsToInclude, options.resultName)}`,
             `-%>`,
-            options.includeFences ? `<% "---" -%>` : "",
+            options.includeFences ? `<% "---" %>` : "",
 
             buildResultBody(
                 fieldsToInclude.map((f) => f.name),

@@ -20,8 +20,9 @@ function getFunctionBody(fn: Function) {
  * This is just a dummy function to get type-checking
  * in the template strings we are generating.
  */
+// prettier-ignore
 function get_value() {
-    result.get("__key__");
+    result.get("__key__")
 }
 
 export function buildResultBody(
@@ -29,7 +30,10 @@ export function buildResultBody(
     template: string,
     options: { resultName: string },
 ) {
-    const getTemplate = getFunctionBody(get_value).replace(/result/, options.resultName);
+    const getTemplate = getFunctionBody(get_value)
+        .replace(/result/, options.resultName)
+        .replace(/;$/, ""); //stupid automatic semicolon insertion
+    console.log({ getTemplate });
     return fields.reduce((template, field) => {
         return template.replace(
             new RegExp(`{{${field}}}`, "g"),

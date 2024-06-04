@@ -76,9 +76,9 @@
                 template.
             </p>
         </div>
-        <div class="flex">
+        <div class="flex gap-1">
             {#each $fields as field}
-                <button type="button" on:click={() => ($bodyTemplate += `{{${field.name}}}`)}>
+                <button type="button" on:click={() => ($bodyTemplate += `{{${field.name}}}\n`)}>
                     {field.name}
                 </button>
             {/each}
