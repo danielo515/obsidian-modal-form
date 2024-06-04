@@ -120,4 +120,7 @@ If your plugin does not need CSS, delete this file.
     .items-center {
         align-items: center;
     }
+    .flex-wrap {
+        flex-wrap: wrap;
+    }
 }
