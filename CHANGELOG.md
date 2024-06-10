@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.45.2](https://github.com/danielo515/obsidian-modal-form/compare/1.45.1...1.45.2) (2024-06-10)
+
+
+### Bug Fixes
+
+* **runtime:** better weights in file suggestions  ([aac26d1](https://github.com/danielo515/obsidian-modal-form/commit/aac26d13a369869918e4d857a3db832c8025d4a2)), closes [#272](https://github.com/danielo515/obsidian-modal-form/issues/272)
+
 ## [1.45.1](https://github.com/danielo515/obsidian-modal-form/compare/1.45.0...1.45.1) (2024-06-04)
 
 
