@@ -37,9 +37,10 @@ export class FileSuggest extends AbstractInputSuggest<TFile> {
             includeScore: true,
             shouldSort: true,
             keys: [
-                { name: "path", weight: 2 },
-                { name: "tags", weight: 1 },
+                { name: "name", weight: 3 },
                 { name: "frontmatter.aliases", weight: 2 },
+                { name: "path", weight: 1 },
+                { name: "tags", weight: 1 }
             ],
         });
         return fuse.search(lower_input_str).map((result) => {
