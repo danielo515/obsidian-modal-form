@@ -16,10 +16,6 @@ export function log_notice(
     el.append(head, body);
 }
 
-export function log_update(msg: string): void {
-    log_notice("Modal form update", msg);
-}
-
 export function log_error(e: Error | ModalFormError): void {
     if (e instanceof ModalFormError && e.console_msg) {
         log_notice("Modal from error: ", e.message + "\n" + e.console_msg, "var(--text-error)");
@@ -34,4 +30,8 @@ export function log_error(e: Error | ModalFormError): void {
  * Use it to notify the user about important errors
  * @param title
  */
-export const notifyError = (title: string) => (msg: string) => log_notice(`🚨 ${title} 🚨`, msg, "notice-error");
+export const notifyError = (title: string) => (msg: string) =>
+    log_notice(`🚨 ${title} 🚨`, msg, "notice-error");
+
+export const notifyWarning = (title: string) => (msg: string) =>
+    log_notice(`⚠️ ${title} ⚠️`, msg, "notice-warning");

@@ -24,7 +24,7 @@ import { executeTemplate } from "./core/template/templateParser";
 import { settingsStore } from "./store/store";
 import { FormPickerModal } from "./suggesters/FormPickerModal";
 import { NewNoteModal } from "./suggesters/NewNoteModal";
-import { log_error, log_notice } from "./utils/Log";
+import { log_error, log_notice, notifyWarning } from "./utils/Log";
 import { file_exists } from "./utils/files";
 import { FormImportModal } from "./views/FormImportView";
 import { TemplateBuilderModal } from "./views/TemplateBuilderModal";
@@ -262,6 +262,37 @@ export default class ModalFormPlugin extends Plugin {
         });
 
         this.addCommand({
+            id: "insert-form-template",
+            name: "Insert form template",
+            editorCallback: (editor, ctx) => {
+                const formsWithTemplates = this.getFormsWithTemplates();
+                if (formsWithTemplates.length === 0) {
+                    notifyWarning("No forms with templates found")(
+                        `Make sure you have at least one form with a template`,
+                    );
+                    return;
+                }
+                if (formsWithTemplates.length === 1) {
+                    const form = formsWithTemplates[0] as FormWithTemplate;
+                    this.api.openForm(form).then((result) => {
+                        editor.replaceSelection(
+                            executeTemplate(form.template.parsedTemplate, result.getData()),
+                        );
+                    });
+                    return;
+                }
+
+                new FormPickerModal(this.app, formsWithTemplates, (form) => {
+                    this.api.openForm(form).then((result) => {
+                        editor.replaceSelection(
+                            executeTemplate(form.template.parsedTemplate, result.getData()),
+                        );
+                    });
+                }).open();
+            },
+        });
+
+        this.addCommand({
             id: "edit-form",
             name: "Edit form",
             callback: async () => {
@@ -301,13 +332,8 @@ export default class ModalFormPlugin extends Plugin {
         return destinationPath;
     }
 
-    /**
-     * Checks if there are forms with templates, and presents a prompt
-     * to select a form, then opens the forms, and creates a new note
-     * with the template and the form values
-     */
-    createNoteFromForm() {
-        const formsWithTemplates = pipe(
+    getFormsWithTemplates() {
+        return pipe(
             this.settings!.formDefinitions,
             A.filterMap((form) => {
                 if (form instanceof MigrationError) {
@@ -319,6 +345,15 @@ export default class ModalFormPlugin extends Plugin {
                 return O.none;
             }),
         );
+    }
+
+    /**
+     * Checks if there are forms with templates, and presents a prompt
+     * to select a form, then opens the forms, and creates a new note
+     * with the template and the form values
+     */
+    createNoteFromForm() {
+        const formsWithTemplates = this.getFormsWithTemplates();
         const onFormSelected = async (
             form: FormWithTemplate,
             noteName: string,
