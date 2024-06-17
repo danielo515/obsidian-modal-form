@@ -90,7 +90,9 @@ function compileTemplaterTemplate(formName: string) {
                 bodyTemplate,
                 options,
             ),
-        ].join("\n");
+        ]
+            .filter(Boolean)
+            .join("\n");
     };
 }
 
