@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.46.0](https://github.com/danielo515/obsidian-modal-form/compare/1.45.2...1.46.0) (2024-06-17)
+
+
+### Features
+
+* **util:** insert a form template into current note command ([d60fe82](https://github.com/danielo515/obsidian-modal-form/commit/d60fe825aaee824c3f9f506675e86af2f5ba4e91))
+
+
+### Bug Fixes
+
+* **templater:** remove empty lines ([eda92a2](https://github.com/danielo515/obsidian-modal-form/commit/eda92a2a62350035ca599fe1bef14749b44b346e))
+
 ## [1.45.2](https://github.com/danielo515/obsidian-modal-form/compare/1.45.1...1.45.2) (2024-06-10)
 
 
