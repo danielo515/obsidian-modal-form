@@ -1,5 +1,6 @@
 ---
-title: Release nots for 1.46.0
+title: Release notes for 1.46.0
+tags: release-notes
 ---
 
 This release contains one little change that was easy to make, but I think that it unlocks a very interesting use case for modal forms.
