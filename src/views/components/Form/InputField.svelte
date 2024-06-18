@@ -17,10 +17,18 @@
     <input type="text" bind:value={$value} />
 {:else if inputType === "textarea"}
     <textarea bind:value={$value} />
-{:else if inputType === "select"}
-    TODO
 {:else if inputType === "slider"}
     <input type="range" bind:value={$value} class="slider" />
+{:else if inputType === "email"}
+    <input type="email" bind:value={$value} />
+{:else if inputType === "tel"}
+    <input type="tel" bind:value={$value} />
+{:else if inputType === "date"}
+    <input type="date" bind:value={$value} />
+{:else if inputType === "time"}
+    <input type="time" bind:value={$value} />
+{:else if inputType === "datetime"}
+    <input type="datetime-local" bind:value={$value} />
 {/if}
 
 <style>

@@ -150,9 +150,9 @@ export function makeFormEngine<T extends FieldValue>({
     defaultValues = {},
 }: makeFormEngineArgs<T>): FormEngine<T> {
     const formStore: Writable<FormStore<T>> = writable({ fields: {}, status: "draft" });
-    // Creates helper functions to modify the store immutably
+    /** Creates helper functions to modify the store immutably*/
     function setFormField(name: string) {
-        // Set the initial value of the field
+        /** Set the initial value of the field*/
         function initField(errors = [], rules?: Rule) {
             formStore.update((form) => {
                 return {

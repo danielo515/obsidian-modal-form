@@ -167,6 +167,7 @@ export type inputSlider = Output<typeof InputSliderSchema>;
 export type inputNoteFromFolder = Output<typeof InputNoteFromFolderSchema>;
 export type inputDataviewSource = Output<typeof InputDataviewSourceSchema>;
 export type inputSelectFixed = Output<typeof InputSelectFixedSchema>;
+export type Select = selectFromNotes | inputSelectFixed;
 export type basicInput = Output<typeof InputBasicSchema>;
 export type multiselect = Output<typeof MultiselectSchema>;
 export type inputTag = Output<typeof InputTagSchema>;

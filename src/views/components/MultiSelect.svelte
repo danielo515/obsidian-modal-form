@@ -7,9 +7,9 @@
     export let errors: Readable<string[]>;
     export let values: Writable<string[]>;
     // We take the setting to make it consistent with the other input components
-    export let setting: Setting;
+    export let setting: Setting | undefined = undefined;
 
-    setting.settingEl.setCssStyles({
+    setting?.settingEl.setCssStyles({
         alignItems: "baseline",
     });
 </script>
