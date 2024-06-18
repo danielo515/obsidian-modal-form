@@ -1,20 +1,21 @@
-import { trySchemas, ParsingFn, parseC } from "@std";
-import { AllFieldTypes, AllSources } from "./formDefinition";
+import { ParsingFn, parseC, trySchemas } from "@std";
 import {
-    object,
-    number,
-    literal,
-    array,
-    string,
-    union,
-    optional,
-    minLength,
-    toTrimmed,
     BaseSchema,
-    enumType,
     Output,
+    array,
     boolean,
+    enumType,
+    is,
+    literal,
+    minLength,
+    number,
+    object,
+    optional,
+    string,
+    toTrimmed,
+    union,
 } from "valibot";
+import { AllFieldTypes, AllSources } from "./formDefinition";
 
 /**
  * Here are the definition for the input types.
@@ -41,6 +42,10 @@ const InputBasicTypeSchema = enumType([
     "email",
     "tel",
 ]);
+
+export const isBasicInputType = (type: string) => is(InputBasicTypeSchema, type);
+export type BasicInputType = Output<typeof InputBasicTypeSchema>;
+
 //=========== Schema definitions
 export const SelectFromNotesSchema = object({
     type: literal("select"),

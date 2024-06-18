@@ -4,6 +4,7 @@ import * as TE from "fp-ts/TaskEither";
 import { App, Modal, Platform, Setting, sanitizeHTMLToDom } from "obsidian";
 import { SvelteComponent } from "svelte";
 import { Writable } from "svelte/store";
+import FormModalComponent from "./FormModal.svelte";
 import FormResult, { type ModalFormData } from "./core/FormResult";
 import { formDataFromFormDefaults } from "./core/formDataFromFormDefaults";
 import type { FormDefinition, FormOptions } from "./core/formDefinition";
@@ -62,6 +63,12 @@ export class FormModal extends Modal {
         if (this.modalDefinition.customClassname)
             contentEl.addClass(this.modalDefinition.customClassname);
         contentEl.createEl("h1", { text: this.modalDefinition.title });
+        this.svelteComponents.push(
+            new FormModalComponent({
+                target: contentEl,
+                props: { formEngine: this.formEngine, fields: this.modalDefinition.fields },
+            }),
+        );
         this.modalDefinition.fields.forEach((definition) => {
             const name = definition.label || definition.name;
             const required = definition.isRequired ?? false;
@@ -226,7 +233,8 @@ export class FormModal extends Modal {
                                 fieldInput.options.forEach((option) => {
                                     element.addOption(option.value, option.label);
                                 });
-                                initialValue !== undefined && element.setValue(String(initialValue));
+                                initialValue !== undefined &&
+                                    element.setValue(String(initialValue));
                                 fieldStore.value.set(element.getValue());
                                 element.onChange(fieldStore.value.set);
                             });
