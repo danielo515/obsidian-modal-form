@@ -4,6 +4,7 @@
     import { makeFormEngine } from "src/store/formStore";
     import InputField from "src/views/components/Form/InputField.svelte";
     import ObsidianInputWrapper from "src/views/components/Form/ObsidianInputWrapper.svelte";
+    import InputDataview from "./views/components/Form/InputDataview.svelte";
     import InputFolder from "./views/components/Form/InputFolder.svelte";
     import InputTag from "./views/components/Form/InputTag.svelte";
     import MultiSelectField from "./views/components/Form/MultiSelectField.svelte";
@@ -22,6 +23,8 @@
         <ObsidianToggle field={definition} {value} />
     {:else if definition.input.type === "folder"}
         <InputFolder field={definition} {value} {app} />
+    {:else if definition.input.type === "dataview"}
+        <InputDataview field={definition} input={definition.input} {value} {errors} {app} />
     {:else}
         <ObsidianInputWrapper
             {errors}
