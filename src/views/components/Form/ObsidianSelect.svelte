@@ -3,7 +3,7 @@
     import { FieldDefinition } from "src/core/formDefinition";
     import { FieldValue } from "src/store/formStore";
     import { Readable, Writable } from "svelte/store";
-    import ObsidianInput from "./ObsidianInput.svelte";
+    import ObsidianInput from "./ObsidianInputWrapper.svelte";
     export let field: FieldDefinition;
     export let input: inputSelectFixed;
     export let value: Writable<FieldValue>;

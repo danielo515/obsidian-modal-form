@@ -16,13 +16,13 @@
             {/if}
         </div>
         <div class="setting-item-description">{description}</div>
+        {#each $errors as error}
+            <div class="setting-item-description error">{error}</div>
+        {/each}
     </div>
-    <div class="setting-item-control">
+    <div class="setting-item-control" class:error={$errors.length > 0}>
         <slot />
     </div>
-    {#each $errors as error}
-        <p>{error}</p>
-    {/each}
 </div>
 
 <style>
@@ -31,5 +31,12 @@
     }
     .setting-item {
         align-items: baseline;
+    }
+    .error {
+        color: var(--text-error);
+    }
+    /** This will correctly produce a css rule scoped to this file, because the global part is prefixed with a scoped class*/
+    .error :global(input) {
+        border-color: var(--text-error);
     }
 </style>
