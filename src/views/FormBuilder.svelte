@@ -1,24 +1,24 @@
 <script lang="ts">
+    import { A, pipe } from "@std";
+    import { App, setIcon } from "obsidian";
     import {
-        type EditableFormDefinition,
-        type FormDefinition,
+        InputTypeReadable,
         isValidFormDefinition,
         validateFields,
-        InputTypeReadable,
+        type EditableFormDefinition,
+        type FormDefinition,
     } from "src/core/formDefinition";
-    import { App, setIcon } from "obsidian";
-    import InputBuilderDataview from "./components/inputBuilderDataview.svelte";
-    import InputBuilderSelect from "./components/InputBuilderSelect.svelte";
-    import InputFolder from "./components/InputFolder.svelte";
+    import { ParsedTemplate, parsedTemplateToString } from "src/core/template/templateParser";
     import { log_error } from "src/utils/Log";
     import { ModalFormError } from "src/utils/ModalFormError";
     import FormRow from "./components/FormRow.svelte";
-    import Toggle from "./components/Toggle.svelte";
-    import TemplateEditor from "./components/TemplateEditor.svelte";
-    import { A, pipe } from "@std";
-    import Tabs from "./components/Tabs.svelte";
-    import { ParsedTemplate, parsedTemplateToString } from "src/core/template/templateParser";
     import InputBuilderDocumentBlock from "./components/InputBuilderDocumentBlock.svelte";
+    import InputFolder from "./components/InputBuilderFolder.svelte";
+    import InputBuilderSelect from "./components/InputBuilderSelect.svelte";
+    import Tabs from "./components/Tabs.svelte";
+    import TemplateEditor from "./components/TemplateEditor.svelte";
+    import Toggle from "./components/Toggle.svelte";
+    import InputBuilderDataview from "./components/inputBuilderDataview.svelte";
 
     export let definition: EditableFormDefinition = {
         title: "",

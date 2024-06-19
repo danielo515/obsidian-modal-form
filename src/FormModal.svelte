@@ -4,6 +4,7 @@
     import { makeFormEngine } from "src/store/formStore";
     import InputField from "src/views/components/Form/InputField.svelte";
     import ObsidianInputWrapper from "src/views/components/Form/ObsidianInputWrapper.svelte";
+    import InputFolder from "./views/components/Form/InputFolder.svelte";
     import InputTag from "./views/components/Form/InputTag.svelte";
     import MultiSelectField from "./views/components/Form/MultiSelectField.svelte";
     import ObsidianSelect from "./views/components/Form/ObsidianSelect.svelte";
@@ -15,10 +16,12 @@
 
 {#each fields as definition}
     {@const { value, errors } = formEngine.addField(definition)}
-    {#if definition.input.type === "select" && definition.input.source === "fixed"}
+    {#if definition.input.type === "select"}
         <ObsidianSelect input={definition.input} field={definition} {value} {errors} />
     {:else if definition.input.type === "toggle"}
         <ObsidianToggle field={definition} {value} />
+    {:else if definition.input.type === "folder"}
+        <InputFolder field={definition} {value} {app} />
     {:else}
         <ObsidianInputWrapper
             {errors}
