@@ -30,7 +30,7 @@ export class FormModal extends Modal {
     svelteComponents: SvelteComponent[] = [];
     initialFormValues: ModalFormData;
     subscriptions: (() => void)[] = [];
-    formEngine: FormEngine<FieldValue>;
+    formEngine: FormEngine;
     constructor(
         app: App,
         private modalDefinition: FormDefinition,

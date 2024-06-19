@@ -8,6 +8,7 @@ import * as O from "fp-ts/Option";
 import { Option } from "fp-ts/Option";
 import { fromEntries, toEntries } from "fp-ts/Record";
 import { absurd } from "fp-ts/function";
+import { FieldDefinition } from "src/core/formDefinition";
 import { Readable, Writable, derived, get, writable } from "svelte/store";
 
 type Rule = { tag: "required"; message: string }; //| { tag: 'minLength', length: number, message: string } | { tag: 'maxLength', length: number, message: string } | { tag: 'pattern', pattern: RegExp, message: string };
@@ -37,7 +38,7 @@ type FormStore<T extends FieldValue> = {
 
 // TODO: instead of making the whole engine generic, make just the addField method generic extending the type of the field value
 // Then, the whole formEngine can be typed as FormEngine<FieldValue>
-export interface FormEngine<T extends FieldValue> {
+export interface FormEngine {
     /**
      * Adds a field to the form engine.
      * It returns an object with a writable store that represents the value of the field,
@@ -45,14 +46,14 @@ export interface FormEngine<T extends FieldValue> {
      * Use them to bind the field to the form and be notified of errors.
      * @param field a field definition to start tracking
      */
-    addField: (field: { name: string; label?: string; isRequired?: boolean }) => {
-        value: Writable<T>;
+    addField(field: { name: string; label?: string; isRequired?: boolean }): {
+        value: Writable<FieldValue>;
         errors: Readable<string[]>;
     };
     /**
      * Subscribes to the form store. This method is required to conform to the svelte store interface.
      */
-    subscribe: Readable<FormStore<T>>["subscribe"];
+    subscribe: Readable<FormStore<FieldValue>>["subscribe"];
     /**
      * Readable store that represents the validity of the form.
      * If any of the fields in the form have errors, this will be false.
@@ -144,12 +145,12 @@ type makeFormEngineArgs<T> = {
     defaultValues?: Record<string, T>;
 };
 
-export function makeFormEngine<T extends FieldValue>({
+export function makeFormEngine({
     onSubmit,
     onCancel,
     defaultValues = {},
-}: makeFormEngineArgs<T>): FormEngine<T> {
-    const formStore: Writable<FormStore<T>> = writable({ fields: {}, status: "draft" });
+}: makeFormEngineArgs<FieldValue>): FormEngine {
+    const formStore: Writable<FormStore<FieldValue>> = writable({ fields: {}, status: "draft" });
     /** Creates helper functions to modify the store immutably*/
     function setFormField(name: string) {
         /** Set the initial value of the field*/
@@ -164,7 +165,7 @@ export function makeFormEngine<T extends FieldValue>({
                 };
             });
         }
-        function setValue(value: T) {
+        function setValue<T extends FieldValue>(value: T) {
             formStore.update((form) => {
                 const field = form.fields[name];
                 if (!field) {
@@ -183,7 +184,7 @@ export function makeFormEngine<T extends FieldValue>({
         return { initField, setValue };
     }
 
-    function setErrors(failedFields: Field<T>[]) {
+    function setErrors<T extends FieldValue>(failedFields: Field<T>[]) {
         formStore.update((form) => {
             return pipe(
                 failedFields,
@@ -222,11 +223,11 @@ export function makeFormEngine<T extends FieldValue>({
             formStore.update((form) => ({ ...form, status: "cancelled" }));
             onCancel?.();
         },
-        addField: (field) => {
+        addField(field: FieldDefinition) {
             const { initField: setField, setValue } = setFormField(field.name);
             setField([], field.isRequired ? requiredRule(field.label || field.name) : undefined);
             const fieldStore = derived(formStore, ({ fields }) => fields[field.name]);
-            const fieldValueStore: Writable<T> = {
+            const fieldValueStore: Writable<FieldValue> = {
                 subscribe(cb) {
                     return fieldStore.subscribe((x) =>
                         pipe(

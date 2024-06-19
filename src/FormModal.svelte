@@ -3,7 +3,8 @@
     import { FormDefinition } from "src/core/formDefinition";
     import { makeFormEngine } from "src/store/formStore";
     import InputField from "src/views/components/Form/InputField.svelte";
-    import ObsidianInput from "src/views/components/Form/ObsidianInputWrapper.svelte";
+    import ObsidianInputWrapper from "src/views/components/Form/ObsidianInputWrapper.svelte";
+    import InputTag from "./views/components/Form/InputTag.svelte";
     import MultiSelectField from "./views/components/Form/MultiSelectField.svelte";
     import ObsidianSelect from "./views/components/Form/ObsidianSelect.svelte";
     import ObsidianToggle from "./views/components/Form/ObsidianToggle.svelte";
@@ -19,7 +20,7 @@
     {:else if definition.input.type === "toggle"}
         <ObsidianToggle field={definition} {value} />
     {:else}
-        <ObsidianInput
+        <ObsidianInputWrapper
             {errors}
             label={definition.label || definition.name}
             description={definition.description}
@@ -27,9 +28,11 @@
         >
             {#if definition.input.type === "multiselect"}
                 <MultiSelectField input={definition.input} {value} {errors} {app} />
+            {:else if definition.input.type === "tag"}
+                <InputTag input={definition.input} {value} {errors} {app} />
             {:else}
                 <InputField {value} inputType={definition.input.type} />
             {/if}
-        </ObsidianInput>
+        </ObsidianInputWrapper>
     {/if}
 {/each}
