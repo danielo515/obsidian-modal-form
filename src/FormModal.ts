@@ -66,7 +66,11 @@ export class FormModal extends Modal {
         this.svelteComponents.push(
             new FormModalComponent({
                 target: contentEl,
-                props: { formEngine: this.formEngine, fields: this.modalDefinition.fields },
+                props: {
+                    formEngine: this.formEngine,
+                    fields: this.modalDefinition.fields,
+                    app: this.app,
+                },
             }),
         );
         this.modalDefinition.fields.forEach((definition) => {
