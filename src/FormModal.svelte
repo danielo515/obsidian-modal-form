@@ -4,8 +4,10 @@
     import { makeFormEngine } from "src/store/formStore";
     import InputField from "src/views/components/Form/InputField.svelte";
     import ObsidianInputWrapper from "src/views/components/Form/ObsidianInputWrapper.svelte";
+    import DocumentBlock from "./views/components/Form/DocumentBlock.svelte";
     import InputDataview from "./views/components/Form/InputDataview.svelte";
     import InputFolder from "./views/components/Form/InputFolder.svelte";
+    import InputNote from "./views/components/Form/InputNote.svelte";
     import InputTag from "./views/components/Form/InputTag.svelte";
     import MultiSelectField from "./views/components/Form/MultiSelectField.svelte";
     import ObsidianSelect from "./views/components/Form/ObsidianSelect.svelte";
@@ -25,6 +27,16 @@
         <InputFolder field={definition} {value} {app} />
     {:else if definition.input.type === "dataview"}
         <InputDataview field={definition} input={definition.input} {value} {errors} {app} />
+    {:else if definition.input.type === "note"}
+        <InputNote field={definition} input={definition.input} {value} {errors} {app} />
+    {:else if definition.input.type === "document_block"}
+        <!-- I need to put this separated to be able to target the right slot, it does not work inside #if -->
+        <ObsidianInputWrapper
+            label={definition.label || definition.name}
+            description={definition.description}
+        >
+            <DocumentBlock field={definition.input} form={formEngine} slot="info" />
+        </ObsidianInputWrapper>
     {:else}
         <ObsidianInputWrapper
             {errors}

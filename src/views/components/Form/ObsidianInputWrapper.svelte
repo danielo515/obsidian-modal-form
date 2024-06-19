@@ -19,6 +19,7 @@
         {#each $errors as error}
             <div class="setting-item-description error">{error}</div>
         {/each}
+        <slot name="info" />
     </div>
     <div class="setting-item-control" class:error={$errors.length > 0}>
         <slot />

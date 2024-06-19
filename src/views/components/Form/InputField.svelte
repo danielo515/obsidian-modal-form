@@ -1,13 +1,18 @@
 <script lang="ts">
     /** This component is only meant for the most basic input types. If any of those types starts to require more fancy setup it should be moved to it's own separated input*/
-    import { AllFieldTypes } from "src/core/formDefinition";
     import { type FieldValue } from "src/store/formStore";
     import { Writable } from "svelte/store";
     export let value: Writable<FieldValue>;
-    export let inputType: Exclude<
-        AllFieldTypes,
-        "tag" | "toggle" | "multiselect" | "folder" | "dataview" | "select"
-    >;
+    export let inputType:
+        | "number"
+        | "text"
+        | "date"
+        | "time"
+        | "datetime"
+        | "textarea"
+        | "email"
+        | "tel"
+        | "slider";
 </script>
 
 {#if inputType === "number"}

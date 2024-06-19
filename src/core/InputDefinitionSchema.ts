@@ -172,3 +172,5 @@ export type basicInput = Output<typeof InputBasicSchema>;
 export type multiselect = Output<typeof MultiselectSchema>;
 export type inputTag = Output<typeof InputTagSchema>;
 export type inputType = Output<typeof InputTypeSchema>;
+
+export type DocumentBlock = Output<typeof DocumentBlock>;
