@@ -3,23 +3,13 @@
     import { type FieldValue } from "src/store/formStore";
     import { Writable } from "svelte/store";
     export let value: Writable<FieldValue>;
-    export let inputType:
-        | "number"
-        | "text"
-        | "date"
-        | "time"
-        | "datetime"
-        | "email"
-        | "tel"
-        | "slider";
+    export let inputType: "number" | "text" | "date" | "time" | "datetime" | "email" | "tel";
 </script>
 
 {#if inputType === "number"}
     <input type="number" bind:value={$value} />
 {:else if inputType === "text"}
     <input type="text" bind:value={$value} />
-{:else if inputType === "slider"}
-    <input type="range" bind:value={$value} class="slider" />
 {:else if inputType === "email"}
     <input type="email" bind:value={$value} />
 {:else if inputType === "tel"}

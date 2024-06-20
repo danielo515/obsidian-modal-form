@@ -13,6 +13,7 @@
     import MultiSelectField from "./views/components/Form/MultiSelectField.svelte";
     import ObsidianSelect from "./views/components/Form/ObsidianSelect.svelte";
     import ObsidianToggle from "./views/components/Form/ObsidianToggle.svelte";
+    import InputSlider from "./views/components/Form/inputSlider.svelte";
     export let app: App;
     export let formEngine: ReturnType<typeof makeFormEngine>;
     export let fields: FormDefinition["fields"];
@@ -33,7 +34,7 @@
     {:else if definition.input.type === "textarea"}
         <InputTextArea field={definition} {value} {errors} />
     {:else if definition.input.type === "document_block"}
-        <!-- I need to put this separated to be able to target the right slot, it does not work inside #if -->
+        <!-- I need to put this separated to be able to target the correct slot, it does not work inside #if -->
         <ObsidianInputWrapper
             label={definition.label || definition.name}
             description={definition.description}
@@ -49,6 +50,8 @@
         >
             {#if definition.input.type === "multiselect"}
                 <MultiSelectField input={definition.input} {value} {errors} {app} />
+            {:else if definition.input.type === "slider"}
+                <InputSlider input={definition.input} {value} />
             {:else if definition.input.type === "tag"}
                 <InputTag input={definition.input} {value} {errors} {app} />
             {:else}
