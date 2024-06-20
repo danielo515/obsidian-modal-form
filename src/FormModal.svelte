@@ -9,6 +9,7 @@
     import InputFolder from "./views/components/Form/InputFolder.svelte";
     import InputNote from "./views/components/Form/InputNote.svelte";
     import InputTag from "./views/components/Form/InputTag.svelte";
+    import InputTextArea from "./views/components/Form/InputTextArea.svelte";
     import MultiSelectField from "./views/components/Form/MultiSelectField.svelte";
     import ObsidianSelect from "./views/components/Form/ObsidianSelect.svelte";
     import ObsidianToggle from "./views/components/Form/ObsidianToggle.svelte";
@@ -29,6 +30,8 @@
         <InputDataview field={definition} input={definition.input} {value} {errors} {app} />
     {:else if definition.input.type === "note"}
         <InputNote field={definition} input={definition.input} {value} {errors} {app} />
+    {:else if definition.input.type === "textarea"}
+        <InputTextArea field={definition} {value} {errors} />
     {:else if definition.input.type === "document_block"}
         <!-- I need to put this separated to be able to target the right slot, it does not work inside #if -->
         <ObsidianInputWrapper

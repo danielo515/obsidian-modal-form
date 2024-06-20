@@ -4,10 +4,11 @@
     export let label = "";
     export let description = "";
     export let required = false;
+    export let className = "";
 </script>
 
 <!-- Trying to emulate native Obsidian settings -->
-<div class="setting-item">
+<div class="setting-item {className}">
     <div class="setting-item-info">
         <div class="setting-item-name">
             {label}

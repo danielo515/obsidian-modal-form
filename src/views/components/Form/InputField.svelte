@@ -9,7 +9,6 @@
         | "date"
         | "time"
         | "datetime"
-        | "textarea"
         | "email"
         | "tel"
         | "slider";
@@ -19,8 +18,6 @@
     <input type="number" bind:value={$value} />
 {:else if inputType === "text"}
     <input type="text" bind:value={$value} />
-{:else if inputType === "textarea"}
-    <textarea bind:value={$value} />
 {:else if inputType === "slider"}
     <input type="range" bind:value={$value} class="slider" />
 {:else if inputType === "email"}
