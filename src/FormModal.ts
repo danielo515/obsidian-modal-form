@@ -14,9 +14,6 @@ const notify = throttle(
     (msg: string[]) => log_notice("⚠️  The form has errors ⚠️", msg.join("\n"), "notice-warning"),
     2000,
 );
-const notifyError = (title: string) =>
-    throttle((msg: string) => log_notice(`🚨 ${title} 🚨`, msg, "notice-error"), 2000);
-
 export class FormModal extends Modal {
     svelteComponents: SvelteComponent[] = [];
     initialFormValues: ModalFormData;
