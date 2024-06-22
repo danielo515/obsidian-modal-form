@@ -81,7 +81,7 @@ export async function MultiSelectModel(
 export function MultiSelectTags(
     fieldInput: inputTag,
     app: App,
-    values: Writable<string[]>,
+    values: Writable<string[] | undefined>,
 ): MultiSelectModel {
     const remainingOptions = new Set(
         Object.keys(app.metadataCache.getTags()).map(
@@ -95,7 +95,10 @@ export function MultiSelectTags(
                 remainingOptions,
                 (selected) => {
                     remainingOptions.delete(selected);
-                    values.update((x) => [...x, selected]);
+                    values.update((x) => {
+                        console.log(x);
+                        return x == undefined ? [selected] : [...x, selected];
+                    });
                 },
                 app,
                 true,
@@ -105,7 +108,7 @@ export function MultiSelectTags(
             remainingOptions.add(value);
             values.update((x) =>
                 pipe(
-                    x,
+                    x || [],
                     A.filter((x) => x !== value),
                 ),
             );

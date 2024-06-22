@@ -1,13 +1,14 @@
 // This is the store that represents a runtime form. It is a writable store that contains the current state of the form
 // and the errors that are present in the form. It is used by the Form component to render the form and to update the
 
-import { NonEmptyArray, pipe } from "@std";
+import { NonEmptyArray, flow, pipe } from "@std";
 import * as A from "fp-ts/Array";
 import * as E from "fp-ts/Either";
 import * as O from "fp-ts/Option";
 import { Option } from "fp-ts/Option";
 import { fromEntries, toEntries } from "fp-ts/Record";
 import { absurd } from "fp-ts/function";
+import { input } from "src/core";
 import { FieldDefinition } from "src/core/formDefinition";
 import { Readable, Writable, derived, get, writable } from "svelte/store";
 
@@ -152,7 +153,7 @@ export function makeFormEngine({
 }: makeFormEngineArgs<FieldValue>): FormEngine {
     const formStore: Writable<FormStore<FieldValue>> = writable({ fields: {}, status: "draft" });
     /** Creates helper functions to modify the store immutably*/
-    function setFormField(name: string) {
+    function setFormField({ name, input }: FieldDefinition) {
         /** Set the initial value of the field*/
         function initField(errors = [], rules?: Rule) {
             formStore.update((form) => {
@@ -224,7 +225,7 @@ export function makeFormEngine({
             onCancel?.();
         },
         addField(field: FieldDefinition) {
-            const { initField: setField, setValue } = setFormField(field.name);
+            const { initField: setField, setValue } = setFormField(field);
             setField([], field.isRequired ? requiredRule(field.label || field.name) : undefined);
             const fieldStore = derived(formStore, ({ fields }) => fields[field.name]);
             const fieldValueStore: Writable<FieldValue> = {
@@ -251,7 +252,9 @@ export function makeFormEngine({
                         const newValue = pipe(
                             // fuck prettier
                             current.value,
-                            O.map(updater),
+                            input.requiresListOfStrings(field.input)
+                                ? O.match(() => O.of(updater([])), flow(updater, O.of))
+                                : O.map(updater),
                         );
                         return {
                             ...form,

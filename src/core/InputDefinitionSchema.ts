@@ -1,4 +1,5 @@
 import { ParsingFn, parseC, trySchemas } from "@std";
+import { absurd } from "fp-ts/function";
 import {
     BaseSchema,
     Output,
@@ -174,3 +175,30 @@ export type inputTag = Output<typeof InputTagSchema>;
 export type inputType = Output<typeof InputTypeSchema>;
 
 export type DocumentBlock = Output<typeof DocumentBlock>;
+
+export function requiresListOfStrings(input: inputType): boolean {
+    const type = input.type;
+    switch (type) {
+        case "multiselect":
+        case "tag":
+            return true;
+        case "select":
+        case "dataview":
+        case "note":
+        case "folder":
+        case "slider":
+        case "document_block":
+        case "number":
+        case "text":
+        case "date":
+        case "time":
+        case "datetime":
+        case "textarea":
+        case "toggle":
+        case "email":
+        case "tel":
+            return false;
+        default:
+            return absurd(type);
+    }
+}
