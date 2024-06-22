@@ -7,4 +7,18 @@
     export let input: I.inputSlider;
 </script>
 
-<input type="range" bind:value={$value} class="slider" min={input.min} max={input.max} />
+<div class="wrapper">
+    <span>
+        {$value === undefined ? input.min : $value}
+    </span>
+    <input type="range" bind:value={$value} class="slider" min={input.min} max={input.max} />
+</div>
+
+<style>
+    .wrapper {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 1rem;
+    }
+</style>
