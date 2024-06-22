@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.47.0](https://github.com/danielo515/obsidian-modal-form/compare/1.46.0...1.47.0) (2024-06-22)
+
+
+### Features
+
+* group error messages ([e0e9423](https://github.com/danielo515/obsidian-modal-form/commit/e0e94231b3d6034144934aa71cb14f523e79d349))
+* remove completely the old way of rendering fields ([801d331](https://github.com/danielo515/obsidian-modal-form/commit/801d3318efc100c25b35536432f955b98b45652d))
+* **runtime:** svelte versions of DocumentBlock and InputNote ([968d230](https://github.com/danielo515/obsidian-modal-form/commit/968d230c3643fb788647171f8c9bfbba282e85cf))
+
+
+### Bug Fixes
+
+* **runtime:** input tag in svelte ([879aba9](https://github.com/danielo515/obsidian-modal-form/commit/879aba9cf411cc94f235096018bd2d8ebbc0931b))
+* **runtime:** svelte wrappers for obsidian settings ([37f5236](https://github.com/danielo515/obsidian-modal-form/commit/37f52364b0282f641c165f199f323465623157d9))
+
 ## [1.46.0](https://github.com/danielo515/obsidian-modal-form/compare/1.45.2...1.46.0) (2024-06-17)
 
 
