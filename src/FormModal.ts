@@ -11,7 +11,7 @@ import { log_notice } from "./utils/Log";
 export type SubmitFn = (formResult: FormResult) => void;
 
 const notify = throttle(
-    (msg: string) => log_notice("⚠️  The form has errors ⚠️", msg, "notice-warning"),
+    (msg: string[]) => log_notice("⚠️  The form has errors ⚠️", msg.join("\n"), "notice-warning"),
     2000,
 );
 const notifyError = (title: string) =>
@@ -61,6 +61,7 @@ export class FormModal extends Modal {
                     formEngine: this.formEngine,
                     fields: this.modalDefinition.fields,
                     app: this.app,
+                    reportFormErrors: notify,
                 },
             }),
         );

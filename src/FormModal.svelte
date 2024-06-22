@@ -15,8 +15,11 @@
     import ObsidianToggle from "./views/components/Form/ObsidianToggle.svelte";
     import InputSlider from "./views/components/Form/inputSlider.svelte";
     export let app: App;
+    export let reportFormErrors: (errors: string[]) => void;
     export let formEngine: ReturnType<typeof makeFormEngine>;
     export let fields: FormDefinition["fields"];
+    $: errors = formEngine.errors;
+    $: $errors.length && reportFormErrors($errors);
 </script>
 
 {#each fields as definition}

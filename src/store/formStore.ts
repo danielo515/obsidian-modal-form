@@ -1,3 +1,4 @@
+import * as R from "fp-ts/Record";
 // This is the store that represents a runtime form. It is a writable store that contains the current state of the form
 // and the errors that are present in the form. It is used by the Form component to render the form and to update the
 
@@ -71,6 +72,7 @@ export interface FormEngine {
      * or even persist the form state to allow the user to resume later.
      */
     triggerCancel: () => void;
+    errors: Readable<string[]>;
 }
 function nonEmptyValue(s: FieldValue): Option<FieldValue> {
     switch (typeof s) {
@@ -199,9 +201,19 @@ export function makeFormEngine({
         });
     }
 
+    const errors = derived(formStore, ({ fields }) =>
+        pipe(
+            fields,
+            R.toEntries,
+            A.filterMap(([_, f]) => (f.errors.length > 0 ? O.some(f.errors) : O.none)),
+            A.flatten,
+        ),
+    );
+
     // TODO: dependent fields, handle more than just strings
     return {
         subscribe: formStore.subscribe,
+        errors,
         isValid: derived(formStore, ({ fields }) =>
             pipe(
                 fields,
