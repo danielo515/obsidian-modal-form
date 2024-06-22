@@ -9,7 +9,13 @@ nav:
     - Manging results: managing-results.md
     - Change log: changelog.md
     - Importing a form: import-forms.md
-
+    - Blog:
+          - blog/index.md
+plugins:
+    - search
+    - tags
+    - blog:
+          blog_toc: true
 theme:
     name: material
     icon:

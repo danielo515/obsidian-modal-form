@@ -1,11 +1,12 @@
 ---
 title: Release notes for 1.46.0
+date: 2024-06-15
 tags: release-notes
 ---
 
 This release contains one little change that was easy to make, but I think that it unlocks a very interesting use case for modal forms.
 There is a not very well documented feature in the FormEditor that allows to define a specific (and simple) template linked to that form.
-I implemented it partially for fun, because I love coding parsers but also partially because many times I only need very basic templating 
+I implemented it partially for fun, because I love coding parsers but also partially because many times I only need very basic templating
 functionality and I don't want to have to write another templater template.
 Also, I find very appealing the idea of having both the form and the template visible and linked in the same place, which is not the case when you use templater templates.
 Up until now, the only thing you can use this templates for was for creating new notes from that template.
