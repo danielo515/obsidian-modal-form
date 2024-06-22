@@ -6,11 +6,11 @@
     type option = { label: string; value: string } | string;
 
     import { App, setIcon } from "obsidian";
-    import FormRow from "./FormRow.svelte";
-    import InputFolder from "./InputFolder.svelte";
-    import { AllSources } from "src/core/formDefinition";
-    import InputBuilderDataview from "./inputBuilderDataview.svelte";
     import { canAllowUnknownValues } from "src/core/InputDefinitionSchema";
+    import { AllSources } from "src/core/formDefinition";
+    import FormRow from "./FormRow.svelte";
+    import InputFolder from "./InputBuilderFolder.svelte";
+    import InputBuilderDataview from "./inputBuilderDataview.svelte";
 
     export let index: number;
     export let source: AllSources = "fixed";

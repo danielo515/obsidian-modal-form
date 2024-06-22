@@ -1,20 +1,22 @@
-import { trySchemas, ParsingFn, parseC } from "@std";
-import { AllFieldTypes, AllSources } from "./formDefinition";
+import { ParsingFn, parseC, trySchemas } from "@std";
+import { absurd } from "fp-ts/function";
 import {
-    object,
-    number,
-    literal,
-    array,
-    string,
-    union,
-    optional,
-    minLength,
-    toTrimmed,
     BaseSchema,
-    enumType,
     Output,
+    array,
     boolean,
+    enumType,
+    is,
+    literal,
+    minLength,
+    number,
+    object,
+    optional,
+    string,
+    toTrimmed,
+    union,
 } from "valibot";
+import { AllFieldTypes, AllSources } from "./formDefinition";
 
 /**
  * Here are the definition for the input types.
@@ -41,6 +43,10 @@ const InputBasicTypeSchema = enumType([
     "email",
     "tel",
 ]);
+
+export const isBasicInputType = (type: string) => is(InputBasicTypeSchema, type);
+export type BasicInputType = Output<typeof InputBasicTypeSchema>;
+
 //=========== Schema definitions
 export const SelectFromNotesSchema = object({
     type: literal("select"),
@@ -162,7 +168,37 @@ export type inputSlider = Output<typeof InputSliderSchema>;
 export type inputNoteFromFolder = Output<typeof InputNoteFromFolderSchema>;
 export type inputDataviewSource = Output<typeof InputDataviewSourceSchema>;
 export type inputSelectFixed = Output<typeof InputSelectFixedSchema>;
+export type Select = selectFromNotes | inputSelectFixed;
 export type basicInput = Output<typeof InputBasicSchema>;
 export type multiselect = Output<typeof MultiselectSchema>;
 export type inputTag = Output<typeof InputTagSchema>;
 export type inputType = Output<typeof InputTypeSchema>;
+
+export type DocumentBlock = Output<typeof DocumentBlock>;
+
+export function requiresListOfStrings(input: inputType): boolean {
+    const type = input.type;
+    switch (type) {
+        case "multiselect":
+        case "tag":
+            return true;
+        case "select":
+        case "dataview":
+        case "note":
+        case "folder":
+        case "slider":
+        case "document_block":
+        case "number":
+        case "text":
+        case "date":
+        case "time":
+        case "datetime":
+        case "textarea":
+        case "toggle":
+        case "email":
+        case "tel":
+            return false;
+        default:
+            return absurd(type);
+    }
+}

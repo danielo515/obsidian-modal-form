@@ -53,7 +53,6 @@ function compileOpenForm(
     const omitOptions =
         fieldsToOmit.length > 0 ? `, ${JSON.stringify({ omit: fieldsToOmit }, null, 8)}` : "";
     const args = `"${formName}"${omitOptions}`;
-    console.log({ args });
     if (usesGlobal) {
         return [`const ${resultName} = await MF.openForm(${args});`];
     }

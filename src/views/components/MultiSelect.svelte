@@ -7,9 +7,9 @@
     export let errors: Readable<string[]>;
     export let values: Writable<string[]>;
     // We take the setting to make it consistent with the other input components
-    export let setting: Setting;
+    export let setting: Setting | undefined = undefined;
 
-    setting.settingEl.setCssStyles({
+    setting?.settingEl.setCssStyles({
         alignItems: "baseline",
     });
 </script>
@@ -28,35 +28,37 @@
             <span class="invalid">{error}</span>
         {/each}
         <div class="badges">
-            {#each $values as value}
-                <div class="badge">
-                    <span>{value}</span>
-                    <button on:click={() => removeValue(value)}>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="svg-icon lucide-x"
-                            ><line x1="18" y1="6" x2="6" y2="18" /><line
-                                x1="6"
-                                y1="6"
-                                x2="18"
-                                y2="18"
-                            /></svg
-                        ></button
-                    >
-                </div>
-            {:else}
-                <div class="badge hidden">
-                    <span>Nothing selected</span>
-                </div>
-            {/each}
+            {#if $values !== undefined}
+                {#each $values as value}
+                    <div class="badge">
+                        <span>{value}</span>
+                        <button on:click={() => removeValue(value)}>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="svg-icon lucide-x"
+                                ><line x1="18" y1="6" x2="6" y2="18" /><line
+                                    x1="6"
+                                    y1="6"
+                                    x2="18"
+                                    y2="18"
+                                /></svg
+                            ></button
+                        >
+                    </div>
+                {:else}
+                    <div class="badge hidden">
+                        <span>Nothing selected</span>
+                    </div>
+                {/each}
+            {/if}
         </div>
     {:catch error}
         Failure obtaining the options to display
