@@ -1,7 +1,7 @@
 import { A, pipe } from "@std";
 import { absurd } from "fp-ts/function";
 import { App } from "obsidian";
-import { inputTag, multiselect } from "src/core/InputDefinitionSchema";
+import { inputTag, multiselect } from "src/core/input/InputDefinitionSchema";
 import { executeSandboxedDvQuery, sandboxedDvQuery } from "src/suggesters/SafeDataviewQuery";
 import { StringSuggest } from "src/suggesters/StringSuggest";
 import { FileSuggest } from "src/suggesters/suggestFile";

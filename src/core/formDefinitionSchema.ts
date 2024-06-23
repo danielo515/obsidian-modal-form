@@ -1,23 +1,23 @@
+import { parse, pipe } from "@std";
 import * as E from "fp-ts/Either";
-import { pipe, parse } from "@std";
 import {
-    object,
-    literal,
-    type Output,
-    is,
-    array,
-    string,
-    optional,
-    merge,
-    unknown,
     ValiError,
-    passthrough,
+    array,
     boolean,
+    is,
+    literal,
+    merge,
+    object,
+    optional,
+    passthrough,
+    string,
+    unknown,
+    type Output,
 } from "valibot";
-import { FormDefinition } from "./formDefinition";
 import { findFieldErrors, stringifyIssues } from "./findInputDefinitionSchema";
+import { FormDefinition } from "./formDefinition";
+import { InputTypeSchema, nonEmptyString } from "./input/InputDefinitionSchema";
 import { ParsedTemplateSchema } from "./template/templateSchema";
-import { InputTypeSchema, nonEmptyString } from "./InputDefinitionSchema";
 
 /**
  * Here are the core logic around the main domain of the plugin,

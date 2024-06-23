@@ -16,7 +16,7 @@ import {
     toTrimmed,
     union,
 } from "valibot";
-import { AllFieldTypes, AllSources } from "./formDefinition";
+import { AllFieldTypes, AllSources } from "../formDefinition";
 
 /**
  * Here are the definition for the input types.

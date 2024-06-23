@@ -1,9 +1,9 @@
 import { A, NonEmptyArray, ParsingFn, parse, pipe } from "@std";
 import * as E from "fp-ts/Either";
-import { ValiError, BaseSchema } from "valibot";
-import { FieldMinimal, FieldMinimalSchema } from "./formDefinitionSchema";
+import { BaseSchema, ValiError } from "valibot";
 import { AllFieldTypes } from "./formDefinition";
-import { InputTypeToParserMap } from "./InputDefinitionSchema";
+import { FieldMinimal, FieldMinimalSchema } from "./formDefinitionSchema";
+import { InputTypeToParserMap } from "./input/InputDefinitionSchema";
 
 export function stringifyIssues(error: ValiError): NonEmptyArray<string> {
     return error.issues.map(
