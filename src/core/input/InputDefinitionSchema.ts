@@ -142,6 +142,8 @@ export const InputTypeSchema = union([
     DocumentBlock,
 ]);
 
+export type Input = Output<typeof InputTypeSchema>;
+
 export const InputTypeToParserMap: Record<AllFieldTypes, ParsingFn<BaseSchema>> = {
     number: parseC(InputBasicSchema),
     text: parseC(InputBasicSchema),

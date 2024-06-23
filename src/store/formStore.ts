@@ -2,6 +2,7 @@ import * as R from "fp-ts/Record";
 // This is the store that represents a runtime form. It is a writable store that contains the current state of the form
 // and the errors that are present in the form. It is used by the Form component to render the form and to update the
 
+import { input } from "@core";
 import { NonEmptyArray, flow, pipe } from "@std";
 import * as A from "fp-ts/Array";
 import * as E from "fp-ts/Either";
@@ -9,7 +10,6 @@ import * as O from "fp-ts/Option";
 import { Option } from "fp-ts/Option";
 import { fromEntries, toEntries } from "fp-ts/Record";
 import { absurd } from "fp-ts/function";
-import { input } from "src/core";
 import { FieldDefinition } from "src/core/formDefinition";
 import { Readable, Writable, derived, get, writable } from "svelte/store";
 
