@@ -68,7 +68,7 @@
             required={definition.isRequired}
         >
             {#if definition.input.type === "multiselect"}
-                <MultiSelectField input={definition.input} {value} {errors} {app} />
+                <MultiSelectField I={definition.input} {value} {errors} {app} />
             {:else if definition.input.type === "slider"}
                 <InputSlider input={definition.input} {value} />
             {:else if definition.input.type === "tag"}
