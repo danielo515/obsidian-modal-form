@@ -5,6 +5,7 @@
     import { FormEngine } from "src/store/formStore";
     import InputField from "src/views/components/Form/InputField.svelte";
     import ObsidianInputWrapper from "src/views/components/Form/ObsidianInputWrapper.svelte";
+    import { derived } from "svelte/store";
     import DocumentBlock from "./DocumentBlock.svelte";
     import InputDataview from "./InputDataview.svelte";
     import InputFolder from "./InputFolder.svelte";
@@ -24,11 +25,20 @@
     $: value = model.value;
     $: errors = model.errors;
     $: isVisible = model.isVisible;
+    $: visibleError = derived(model.isVisible, ($isVisible) =>
+        E.isLeft($isVisible) ? [$isVisible.left] : ([] as string[]),
+    );
     $: console.log($isVisible);
 </script>
 
 {#if E.isLeft($isVisible)}
-    {$isVisible.left}
+    <ObsidianInputWrapper
+        label={definition.label || definition.name}
+        description={definition.description}
+        errors={visibleError}
+    >
+        <input type="text" class="input" disabled placeholder="Condition error" />
+    </ObsidianInputWrapper>
 {:else if $isVisible.right}
     {#if definition.input.type === "select"}
         <ObsidianSelect input={definition.input} field={definition} {value} {errors} />
