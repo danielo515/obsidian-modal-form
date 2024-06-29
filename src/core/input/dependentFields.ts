@@ -47,3 +47,67 @@ export function availableConditionsForInput(input: FieldDefinition["input"]): Co
             return absurd(input);
     }
 }
+
+function processIsSet(_condition: Extract<Condition, { type: "isSet" }>, value: unknown) {
+    if (value === null || value === undefined) {
+        return false;
+    }
+    if (typeof value === "string") {
+        return value !== "";
+    }
+    return true;
+}
+
+function processStringCondition(
+    condition: Extract<Condition, { type: "startsWith" | "contains" }>,
+    value: unknown,
+) {
+    if (typeof value !== "string") {
+        return false;
+    }
+    switch (condition.type) {
+        case "startsWith":
+            return value.startsWith(condition.value);
+        case "contains":
+            return value.includes(condition.value);
+        default:
+            return absurd(condition.type);
+    }
+}
+
+function processNumberCondition(
+    condition: Extract<Condition, { type: "above" | "below" }>,
+    value: unknown,
+) {
+    if (typeof value !== "number") {
+        return false;
+    }
+    switch (condition.type) {
+        case "above":
+            return value > condition.value;
+        case "below":
+            return value < condition.value;
+        default:
+            return absurd(condition);
+    }
+}
+
+export function valueMeetsCondition(condition: Condition, value: unknown) {
+    if (value === null || value === undefined) {
+        return false;
+    }
+    switch (condition.type) {
+        case "isSet":
+            return processIsSet(condition, value);
+        case "startsWith":
+        case "contains":
+            return processStringCondition(condition, value);
+        case "above":
+        case "below":
+            return processNumberCondition(condition, value);
+        case "boolean":
+            return value === condition.value;
+        default:
+            return absurd(condition);
+    }
+}
