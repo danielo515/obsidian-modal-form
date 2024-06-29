@@ -1,5 +1,6 @@
 <script lang="ts">
     import { input } from "@core";
+    import { absurd } from "fp-ts/lib/function";
     import { FieldDefinition } from "src/core/formDefinition";
     import FormRow from "../FormRow.svelte";
 
@@ -10,11 +11,17 @@
     let selectedCondition: input.ConditionType | undefined = undefined;
     let textValue = "";
     let numberValue = 0;
+    let booleanValue = false;
     $: conditions =
         // Why? to trigger svelte reactivity on fields changes
         siblingFields && selectedTargetField
             ? input.availableConditionsForInput(selectedTargetField.input)
             : [];
+    $: {
+        if (selectedTargetField?.input.type === "toggle") {
+            selectedCondition = "boolean";
+        }
+    }
     $: {
         if (selectedCondition && selectedTargetField) {
             const field = selectedTargetField?.name;
@@ -26,10 +33,12 @@
                     };
                     break;
                 case "boolean":
-                    value = { field, type: "boolean", value: false };
+                    value = { field, type: "boolean", value: booleanValue };
                     break;
                 case "startsWith":
                 case "contains":
+                case "endsWith":
+                case "isExactly":
                     value = {
                         field,
                         type: selectedCondition,
@@ -38,11 +47,17 @@
                     break;
                 case "above":
                 case "below":
+                case "aboveOrEqual":
+                case "belowOrEqual":
+                case "exactly":
                     value = {
                         field,
                         type: selectedCondition,
                         value: numberValue,
                     };
+                    break;
+                default:
+                    absurd(selectedCondition);
             }
         }
     }
@@ -63,19 +78,34 @@
 
 {#if conditions.length > 0}
     <FormRow label="Condition" id="condition-{name}">
-        <select bind:value={selectedCondition} class="dropdown">
-            {#each conditions as condition}
-                <option value={condition}>{condition}</option>
-            {/each}
-        </select>
+        {#if selectedTargetField?.input.type === "toggle"}
+            <select class="dropdown" disabled>
+                <option value="boolean">is</option>
+            </select>
+        {:else}
+            <select bind:value={selectedCondition} class="dropdown">
+                {#each conditions as condition}
+                    <option value={condition}>
+                        {condition}
+                    </option>
+                {/each}
+            </select>
+        {/if}
     </FormRow>
 {/if}
 {#if selectedCondition && selectedCondition !== "isSet"}
     <FormRow label="Value" id="condition-value-{name}">
-        {#if selectedCondition === "contains" || selectedCondition === "startsWith"}
+        {#if selectedCondition === "contains" || selectedCondition === "startsWith" || selectedCondition === "endsWith" || selectedCondition === "isExactly"}
             <input type="text" class="input" bind:value={textValue} />
-        {:else if selectedCondition === "above" || selectedCondition === "below"}
+        {:else if selectedCondition === "above" || selectedCondition === "below" || selectedCondition === "aboveOrEqual" || selectedCondition === "belowOrEqual" || selectedCondition === "exactly"}
             <input type="number" class="input" bind:value={numberValue} />
+        {:else if selectedCondition === "boolean"}
+            <select bind:value={booleanValue} class="dropdown">
+                <option value={false}>False</option>
+                <option value={true}>True</option>
+            </select>
+        {:else}
+            {absurd(selectedCondition)}
         {/if}
     </FormRow>
 {/if}

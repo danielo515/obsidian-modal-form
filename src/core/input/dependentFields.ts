@@ -9,12 +9,15 @@ const booleanValue = v.object({
 });
 const startsWith = v.object({
     field: v.string(),
-    type: v.enumType(["startsWith", "contains"]),
+    type: v.enumType(["startsWith", "endsWith", "isExactly", "contains"]),
     value: v.string(),
 });
-const above = v.object({ field: v.string(), type: v.literal("above"), value: v.number() });
-const below = v.object({ field: v.string(), type: v.literal("below"), value: v.number() });
-export const ConditionSchema = v.union([isSet, booleanValue, startsWith, above, below]);
+const above = v.object({
+    field: v.string(),
+    type: v.enumType(["above", "aboveOrEqual", "below", "belowOrEqual", "exactly"]),
+    value: v.number(),
+});
+export const ConditionSchema = v.union([isSet, booleanValue, startsWith, above]);
 
 export type Condition = v.Output<typeof ConditionSchema>;
 export type ConditionType = Condition["type"];
@@ -27,10 +30,10 @@ export function availableConditionsForInput(input: FieldDefinition["input"]): Co
         case "folder":
         case "note":
         case "tel":
-            return ["isSet", "startsWith", "contains"];
+            return ["startsWith", "endsWith", "isExactly", "contains"];
         case "slider":
         case "number":
-            return ["isSet", "above", "below"];
+            return ["above", "aboveOrEqual", "below", "belowOrEqual", "exactly"];
         case "toggle":
             return ["boolean"];
         case "date":
@@ -59,7 +62,7 @@ function processIsSet(_condition: Extract<Condition, { type: "isSet" }>, value: 
 }
 
 function processStringCondition(
-    condition: Extract<Condition, { type: "startsWith" | "contains" }>,
+    condition: Extract<Condition, { type: "startsWith" | "contains" | "endsWith" | "isExactly" }>,
     value: unknown,
 ): boolean {
     if (typeof value !== "string") {
@@ -70,13 +73,20 @@ function processStringCondition(
             return value.startsWith(condition.value);
         case "contains":
             return value.includes(condition.value);
+        case "endsWith":
+            return value.endsWith(condition.value);
+        case "isExactly":
+            return value === condition.value;
         default:
             return absurd(condition.type);
     }
 }
 
 function processNumberCondition(
-    condition: Extract<Condition, { type: "above" | "below" }>,
+    condition: Extract<
+        Condition,
+        { type: "above" | "below" | "aboveOrEqual" | "belowOrEqual" | "exactly" }
+    >,
     value: unknown,
 ): boolean {
     if (typeof value !== "number") {
@@ -87,8 +97,14 @@ function processNumberCondition(
             return value > condition.value;
         case "below":
             return value < condition.value;
+        case "aboveOrEqual":
+            return value >= condition.value;
+        case "belowOrEqual":
+            return value <= condition.value;
+        case "exactly":
+            return value === condition.value;
         default:
-            return absurd(condition);
+            return absurd(condition.type);
     }
 }
 
@@ -102,9 +118,14 @@ export function valueMeetsCondition(condition: Condition, value: unknown): boole
             return processIsSet(condition, value);
         case "startsWith":
         case "contains":
+        case "endsWith":
+        case "isExactly":
             return processStringCondition(condition, value);
         case "above":
         case "below":
+        case "aboveOrEqual":
+        case "belowOrEqual":
+        case "exactly":
             return processNumberCondition(condition, value);
         case "boolean":
             return value === condition.value;
