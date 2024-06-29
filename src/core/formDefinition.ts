@@ -1,3 +1,4 @@
+import { input } from "@core";
 import { A, O, pipe } from "@std";
 import { Simplify } from "type-fest";
 import { is, safeParse, type Output } from "valibot";
@@ -104,17 +105,20 @@ export type EditableInput = {
     allowUnknownValues?: boolean;
 };
 
+export type EditableField = {
+    name: string;
+    label?: string;
+    description: string;
+    input: EditableInput;
+    folder?: string;
+    options?: { value: string; label: string }[];
+    condition?: input.Condition;
+};
+
 export type EditableFormDefinition = FormDefinition & {
     title: string;
     name: string;
-    fields: {
-        name: string;
-        label?: string;
-        description: string;
-        input: EditableInput;
-        folder?: string;
-        options?: { value: string; label: string }[];
-    }[];
+    fields: EditableField[];
 };
 
 export function isValidBasicInput(input: unknown): input is basicInput {
