@@ -30,3 +30,8 @@ Form in preview mode with the condition met
 ![condition met](<condition-met.png>)
 with the condition not met
 ![condition not met](<condition-not-met.png>)
+
+The wording of the feature is not final, I'm not very satisfied with the current wording, so I'm open to suggestions.
+I hope you like it, that it does not introduce too many inconveniences and that it is useful to you.
+
+Please let me know your thoughts and suggestions.
