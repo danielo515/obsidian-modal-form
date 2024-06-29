@@ -128,7 +128,6 @@
     }
     const handlePreview = () => {
         if (!isValidFormDefinition(definition)) return;
-        console.log("preview of", definition);
         onPreview(definition);
     };
     $: availableFieldsForCondition = definition.fields.filter(

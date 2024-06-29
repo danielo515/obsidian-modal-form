@@ -1,3 +1,4 @@
+import { input } from "@core";
 import { parse, pipe } from "@std";
 import * as E from "fp-ts/Either";
 import {
@@ -30,6 +31,7 @@ export const FieldDefinitionSchema = object({
     label: optional(string()),
     description: string(),
     isRequired: optional(boolean()),
+    condition: optional(input.ConditionSchema),
     input: InputTypeSchema,
 });
 /**

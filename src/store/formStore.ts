@@ -11,6 +11,7 @@ import { Option } from "fp-ts/Option";
 import { fromEntries, toEntries } from "fp-ts/Record";
 import { absurd } from "fp-ts/function";
 import { FieldDefinition } from "src/core/formDefinition";
+import { valueMeetsCondition } from "src/core/input";
 import { Readable, Writable, derived, get, writable } from "svelte/store";
 
 type Rule = { tag: "required"; message: string }; //| { tag: 'minLength', length: number, message: string } | { tag: 'maxLength', length: number, message: string } | { tag: 'pattern', pattern: RegExp, message: string };
@@ -51,6 +52,7 @@ export interface FormEngine {
     addField(field: { name: string; label?: string; isRequired?: boolean }): {
         value: Writable<FieldValue>;
         errors: Readable<string[]>;
+        isVisible: Readable<boolean>;
     };
     /**
      * Subscribes to the form store. This method is required to conform to the svelte store interface.
@@ -156,7 +158,10 @@ export function makeFormEngine({
     const formStore: Writable<FormStore<FieldValue>> = writable({ fields: {}, status: "draft" });
     /** Creates helper functions to modify the store immutably*/
     function setFormField({ name, input }: FieldDefinition) {
-        /** Set the initial value of the field*/
+        /**
+         * Initializes a field in the form store with the provided errors, rules
+         * and default values (read from the defaultValues object passed to the form engine)
+         */
         function initField(errors = [], rules?: Rule) {
             formStore.update((form) => {
                 return {
@@ -282,8 +287,26 @@ export function makeFormEngine({
                     });
                 },
             };
+            const isVisible = derived(formStore, ($form) => {
+                if (field.isRequired) return true;
+                const condition = field.condition;
+                if (condition === undefined) return true;
+                return pipe(
+                    $form.fields[condition.field],
+                    O.fromNullable,
+                    O.match(
+                        () => O.of(true),
+                        (f) => {
+                            return f.value;
+                        },
+                    ),
+                    O.map((value) => valueMeetsCondition(condition, value)),
+                    O.getOrElse(() => true),
+                );
+            });
             return {
                 value: fieldValueStore,
+                isVisible,
                 errors: derived(formStore, ({ fields }) => fields[field.name]?.errors ?? []),
             };
         },

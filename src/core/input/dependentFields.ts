@@ -14,9 +14,9 @@ const startsWith = v.object({
 });
 const above = v.object({ field: v.string(), type: v.literal("above"), value: v.number() });
 const below = v.object({ field: v.string(), type: v.literal("below"), value: v.number() });
-const condition = v.union([isSet, booleanValue, startsWith, above, below]);
+export const ConditionSchema = v.union([isSet, booleanValue, startsWith, above, below]);
 
-export type Condition = v.Output<typeof condition>;
+export type Condition = v.Output<typeof ConditionSchema>;
 export type ConditionType = Condition["type"];
 
 export function availableConditionsForInput(input: FieldDefinition["input"]): ConditionType[] {
@@ -61,7 +61,7 @@ function processIsSet(_condition: Extract<Condition, { type: "isSet" }>, value: 
 function processStringCondition(
     condition: Extract<Condition, { type: "startsWith" | "contains" }>,
     value: unknown,
-) {
+): boolean {
     if (typeof value !== "string") {
         return false;
     }
@@ -78,7 +78,7 @@ function processStringCondition(
 function processNumberCondition(
     condition: Extract<Condition, { type: "above" | "below" }>,
     value: unknown,
-) {
+): boolean {
     if (typeof value !== "number") {
         return false;
     }
@@ -92,7 +92,7 @@ function processNumberCondition(
     }
 }
 
-export function valueMeetsCondition(condition: Condition, value: unknown) {
+export function valueMeetsCondition(condition: Condition, value: unknown): boolean {
     if (value === null || value === undefined) {
         return false;
     }
