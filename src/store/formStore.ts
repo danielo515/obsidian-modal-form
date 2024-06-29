@@ -291,15 +291,15 @@ export function makeFormEngine({
                 console.log(
                     "condition",
                     field.name,
-                    field.condition && $form.fields[field.condition.field],
+                    field.condition && $form.fields[field.condition.dependencyName],
                 );
                 if (field.isRequired) return E.of(true);
                 const condition = field.condition;
                 if (condition === undefined) return E.of(true);
                 return pipe(
-                    $form.fields[condition.field],
+                    $form.fields[condition.dependencyName],
                     E.fromNullable(
-                        `Field '${condition.field}' which is a dependency of '${field.name}' does not exist`,
+                        `Field '${condition.dependencyName}' which is a dependency of '${field.name}' does not exist`,
                     ),
                     E.map((f) => valueMeetsCondition(condition, O.toUndefined(f.value))),
                 );

@@ -12,7 +12,7 @@
     $: {
         if (isConditional) {
             field.condition = {
-                field: "",
+                dependencyName: "",
                 type: "isSet",
             };
         } else {

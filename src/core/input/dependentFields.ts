@@ -1,19 +1,19 @@
 import { absurd } from "fp-ts/function";
 import * as v from "valibot";
 import { FieldDefinition } from "../formDefinition";
-const isSet = v.object({ field: v.string(), type: v.literal("isSet") });
+const isSet = v.object({ dependencyName: v.string(), type: v.literal("isSet") });
 const booleanValue = v.object({
-    field: v.string(),
+    dependencyName: v.string(),
     type: v.literal("boolean"),
     value: v.boolean(),
 });
 const startsWith = v.object({
-    field: v.string(),
+    dependencyName: v.string(),
     type: v.enumType(["startsWith", "endsWith", "isExactly", "contains"]),
     value: v.string(),
 });
 const above = v.object({
-    field: v.string(),
+    dependencyName: v.string(),
     type: v.enumType(["above", "aboveOrEqual", "below", "belowOrEqual", "exactly"]),
     value: v.number(),
 });

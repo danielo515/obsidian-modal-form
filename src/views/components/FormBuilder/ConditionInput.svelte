@@ -28,19 +28,19 @@
             switch (selectedCondition) {
                 case "isSet":
                     value = {
-                        field,
+                        dependencyName: field,
                         type: "isSet",
                     };
                     break;
                 case "boolean":
-                    value = { field, type: "boolean", value: booleanValue };
+                    value = { dependencyName: field, type: "boolean", value: booleanValue };
                     break;
                 case "startsWith":
                 case "contains":
                 case "endsWith":
                 case "isExactly":
                     value = {
-                        field,
+                        dependencyName: field,
                         type: selectedCondition,
                         value: textValue,
                     };
@@ -51,7 +51,7 @@
                 case "belowOrEqual":
                 case "exactly":
                     value = {
-                        field,
+                        dependencyName: field,
                         type: selectedCondition,
                         value: numberValue,
                     };
