@@ -12,8 +12,7 @@
     import { ParsedTemplate, parsedTemplateToString } from "src/core/template/templateParser";
     import { log_error } from "src/utils/Log";
     import { ModalFormError } from "src/utils/ModalFormError";
-    import { slide } from "svelte/transition";
-    import { ConditionInput } from "./components/FormBuilder";
+    import FieldMeta from "./components/FormBuilder/FieldMeta.svelte";
     import FormRow from "./components/FormRow.svelte";
     import InputBuilderDocumentBlock from "./components/InputBuilderDocumentBlock.svelte";
     import InputFolder from "./components/InputBuilderFolder.svelte";
@@ -231,9 +230,6 @@
                     {#each definition.fields as field, index}
                         {@const desc_id = `desc_${index}`}
                         {@const delete_id = `delete_${index}`}
-                        {@const availableConditions = availableFieldsForCondition.filter(
-                            (x) => x.name !== field.name,
-                        )}
                         <div
                             class="flex column md-row gap2"
                             use:scrollWhenActive={index === activeFieldIndex}
@@ -353,17 +349,7 @@
                                 <Toggle bind:checked={field.isRequired} tabindex={index} />
                             </FormRow>
                         {/if}
-                        {#if availableConditions.length > 0}
-                            <div class="flex gap-2" transition:slide>
-                                <FormRow label="Make conditional" id={`required_${index}`}>
-                                    <Toggle bind:checked={field.isConditional} tabindex={index} />
-                                </FormRow>
-                                <ConditionInput
-                                    siblingFields={availableConditions}
-                                    name={field.name}
-                                />
-                            </div>
-                        {/if}
+                        <FieldMeta {field} {availableFieldsForCondition} {index} />
                         <div class="flex gap1">
                             <button
                                 type="button"
