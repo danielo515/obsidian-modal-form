@@ -17,7 +17,7 @@
             : [];
     $: {
         if (selectedCondition && selectedTargetField) {
-            const field = selectedTargetField?.input.type;
+            const field = selectedTargetField?.name;
             switch (selectedCondition) {
                 case "isSet":
                     value = {
@@ -46,7 +46,6 @@
             }
         }
     }
-    $: console.log(value);
 </script>
 
 <FormRow label="When field" id="sibling-field-of-{name}">

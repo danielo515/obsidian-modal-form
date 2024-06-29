@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { E } from "@std";
     import { App } from "obsidian";
     import { FieldDefinition } from "src/core/formDefinition";
     import { FormEngine } from "src/store/formStore";
@@ -26,7 +27,9 @@
     $: console.log($isVisible);
 </script>
 
-{#if $isVisible}
+{#if E.isLeft($isVisible)}
+    {$isVisible.left}
+{:else if $isVisible.right}
     {#if definition.input.type === "select"}
         <ObsidianSelect input={definition.input} field={definition} {value} {errors} />
     {:else if definition.input.type === "toggle"}

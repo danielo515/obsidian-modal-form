@@ -7,14 +7,16 @@
     export let field: EditableField;
     export let availableFieldsForCondition: FieldDefinition[];
     export let index: number;
-    let isConditional = false;
+    let isConditional = !!field.condition || false;
     $: availableConditions = availableFieldsForCondition.filter((x) => x.name !== field.name);
     $: {
-        if (isConditional && !field.condition) {
+        if (isConditional) {
             field.condition = {
                 field: "",
                 type: "isSet",
             };
+        } else {
+            field.condition = undefined;
         }
     }
 </script>

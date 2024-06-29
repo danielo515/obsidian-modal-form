@@ -98,6 +98,7 @@ export function valueMeetsCondition(condition: Condition, value: unknown): boole
     }
     switch (condition.type) {
         case "isSet":
+            console.log({ ...condition, value });
             return processIsSet(condition, value);
         case "startsWith":
         case "contains":

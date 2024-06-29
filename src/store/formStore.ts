@@ -52,7 +52,7 @@ export interface FormEngine {
     addField(field: { name: string; label?: string; isRequired?: boolean }): {
         value: Writable<FieldValue>;
         errors: Readable<string[]>;
-        isVisible: Readable<boolean>;
+        isVisible: Readable<E.Either<string, boolean>>;
     };
     /**
      * Subscribes to the form store. This method is required to conform to the svelte store interface.
@@ -287,21 +287,21 @@ export function makeFormEngine({
                     });
                 },
             };
-            const isVisible = derived(formStore, ($form) => {
-                if (field.isRequired) return true;
+            const isVisible = derived(formStore, ($form): E.Either<string, boolean> => {
+                console.log(
+                    "condition",
+                    field.name,
+                    field.condition && $form.fields[field.condition.field],
+                );
+                if (field.isRequired) return E.of(true);
                 const condition = field.condition;
-                if (condition === undefined) return true;
+                if (condition === undefined) return E.of(true);
                 return pipe(
                     $form.fields[condition.field],
-                    O.fromNullable,
-                    O.match(
-                        () => O.of(true),
-                        (f) => {
-                            return f.value;
-                        },
+                    E.fromNullable(
+                        `Field '${condition.field}' which is a dependency of '${field.name}' does not exist`,
                     ),
-                    O.map((value) => valueMeetsCondition(condition, value)),
-                    O.getOrElse(() => true),
+                    E.map((f) => valueMeetsCondition(condition, O.toUndefined(f.value))),
                 );
             });
             return {
