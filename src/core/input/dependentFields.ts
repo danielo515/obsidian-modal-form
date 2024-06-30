@@ -109,12 +109,8 @@ function processNumberCondition(
 }
 
 export function valueMeetsCondition(condition: Condition, value: unknown): boolean {
-    if (value === null || value === undefined) {
-        return false;
-    }
     switch (condition.type) {
         case "isSet":
-            console.log({ ...condition, value });
             return processIsSet(condition, value);
         case "startsWith":
         case "contains":

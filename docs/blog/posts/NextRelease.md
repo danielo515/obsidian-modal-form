@@ -31,6 +31,8 @@ Form in preview mode with the condition met
 with the condition not met
 ![condition not met](<condition-not-met.png>)
 
+This first iteration is purely visual: just because a field is hidden it does not mean that, if it has a value, is not going to be included in the result. If you fill a field, and then do something that makes it hidden, the value will still be included in the result. I think in practice most people just needs a way to start with several fields hidden, and then show them based on the value of other fields, so I think this is a good first approach.
+
 The wording of the feature is not final, I'm not very satisfied with the current wording, so I'm open to suggestions.
 I hope you like it, that it does not introduce too many inconveniences and that it is useful to you.
 
