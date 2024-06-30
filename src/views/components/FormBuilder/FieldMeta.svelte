@@ -23,7 +23,7 @@
 
 {#if availableConditions.length > 0}
     <div class="flex gap-2" transition:slide>
-        <FormRow label="Make conditional" id={`conditional-${index}`}>
+        <FormRow label="Conditional" id={`conditional-${index}`}>
             <Toggle bind:checked={isConditional} tabindex={index} />
         </FormRow>
         {#if field.condition !== undefined && isConditional}

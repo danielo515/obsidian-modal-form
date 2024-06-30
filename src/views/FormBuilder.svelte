@@ -344,7 +344,7 @@
                         </div>
 
                         {#if ["text", "email", "tel", "number", "note", "tag", "dataview", "multiselect"].includes(field.input.type)}
-                            <FormRow label="Make required" id={`required_${index}`}>
+                            <FormRow label="Required" id={`required_${index}`}>
                                 <Toggle bind:checked={field.isRequired} tabindex={index} />
                             </FormRow>
                         {/if}
