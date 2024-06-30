@@ -5,8 +5,8 @@
      */
     type option = { label: string; value: string } | string;
 
+    import { input } from "@core";
     import { App, setIcon } from "obsidian";
-    import { canAllowUnknownValues } from "src/core/InputDefinitionSchema";
     import { AllSources } from "src/core/formDefinition";
     import FormRow from "./FormRow.svelte";
     import InputFolder from "./InputBuilderFolder.svelte";
@@ -23,7 +23,8 @@
     export let is_multi: boolean;
     $: id = `builder_select_${index}`;
     $: options_id = `builder_select_options_btn_${index}`;
-    $: showAllowUnknownValuesOption = is_multi && canAllowUnknownValues("multiselect", source);
+    $: showAllowUnknownValuesOption =
+        is_multi && input.canAllowUnknownValues("multiselect", source);
 
     function moveOption(from: number, direction: "up" | "down") {
         const to = direction === "up" ? from - 1 : from + 1;

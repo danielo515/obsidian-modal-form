@@ -1,1 +1,1 @@
-export * as input from "./InputDefinitionSchema";
+export * as input from "./input";

@@ -1,11 +1,11 @@
 <script lang="ts">
+    import { input as I } from "@core";
     import { App } from "obsidian";
-    import { multiselect } from "src/core/InputDefinitionSchema";
     import { FieldValue } from "src/store/formStore";
     import { Readable, Writable } from "svelte/store";
     import MultiSelect from "../MultiSelect.svelte";
     import { MultiSelectModel } from "../MultiSelectModel";
-    export let input: multiselect;
+    export let input: I.multiselect;
     export let app: App;
     export let errors: Readable<string[]>;
     export let value: Writable<FieldValue>;

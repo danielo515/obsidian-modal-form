@@ -2,6 +2,7 @@ import * as R from "fp-ts/Record";
 // This is the store that represents a runtime form. It is a writable store that contains the current state of the form
 // and the errors that are present in the form. It is used by the Form component to render the form and to update the
 
+import { input } from "@core";
 import { NonEmptyArray, flow, pipe } from "@std";
 import * as A from "fp-ts/Array";
 import * as E from "fp-ts/Either";
@@ -9,8 +10,8 @@ import * as O from "fp-ts/Option";
 import { Option } from "fp-ts/Option";
 import { fromEntries, toEntries } from "fp-ts/Record";
 import { absurd } from "fp-ts/function";
-import { input } from "src/core";
 import { FieldDefinition } from "src/core/formDefinition";
+import { valueMeetsCondition } from "src/core/input";
 import { Readable, Writable, derived, get, writable } from "svelte/store";
 
 type Rule = { tag: "required"; message: string }; //| { tag: 'minLength', length: number, message: string } | { tag: 'maxLength', length: number, message: string } | { tag: 'pattern', pattern: RegExp, message: string };
@@ -51,6 +52,7 @@ export interface FormEngine {
     addField(field: { name: string; label?: string; isRequired?: boolean }): {
         value: Writable<FieldValue>;
         errors: Readable<string[]>;
+        isVisible: Readable<E.Either<string, boolean>>;
     };
     /**
      * Subscribes to the form store. This method is required to conform to the svelte store interface.
@@ -156,7 +158,10 @@ export function makeFormEngine({
     const formStore: Writable<FormStore<FieldValue>> = writable({ fields: {}, status: "draft" });
     /** Creates helper functions to modify the store immutably*/
     function setFormField({ name, input }: FieldDefinition) {
-        /** Set the initial value of the field*/
+        /**
+         * Initializes a field in the form store with the provided errors, rules
+         * and default values (read from the defaultValues object passed to the form engine)
+         */
         function initField(errors = [], rules?: Rule) {
             formStore.update((form) => {
                 return {
@@ -282,8 +287,26 @@ export function makeFormEngine({
                     });
                 },
             };
+            const isVisible = derived(formStore, ($form): E.Either<string, boolean> => {
+                console.log(
+                    "condition",
+                    field.name,
+                    field.condition && $form.fields[field.condition.dependencyName],
+                );
+                if (field.isRequired) return E.of(true);
+                const condition = field.condition;
+                if (condition === undefined) return E.of(true);
+                return pipe(
+                    $form.fields[condition.dependencyName],
+                    E.fromNullable(
+                        `Field '${condition.dependencyName}' which is a dependency of '${field.name}' does not exist`,
+                    ),
+                    E.map((f) => valueMeetsCondition(condition, O.toUndefined(f.value))),
+                );
+            });
             return {
                 value: fieldValueStore,
+                isVisible,
                 errors: derived(formStore, ({ fields }) => fields[field.name]?.errors ?? []),
             };
         },

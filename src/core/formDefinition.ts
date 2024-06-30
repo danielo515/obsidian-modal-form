@@ -1,13 +1,14 @@
-import { type Output, is, safeParse } from "valibot";
-import {
-    FieldDefinitionSchema,
-    FormDefinitionLatestSchema,
-    FieldListSchema,
-    FormDefinitionBasicSchema,
-    MigrationError,
-} from "./formDefinitionSchema";
+import { input } from "@core";
 import { A, O, pipe } from "@std";
 import { Simplify } from "type-fest";
+import { is, safeParse, type Output } from "valibot";
+import {
+    FieldDefinitionSchema,
+    FieldListSchema,
+    FormDefinitionBasicSchema,
+    FormDefinitionLatestSchema,
+    MigrationError,
+} from "./formDefinitionSchema";
 import {
     InputBasicSchema,
     InputDataviewSourceSchema,
@@ -25,7 +26,7 @@ import {
     inputType,
     multiselect,
     selectFromNotes,
-} from "./InputDefinitionSchema";
+} from "./input/InputDefinitionSchema";
 
 export const InputTypeReadable: Record<AllFieldTypes, string> = {
     text: "Text",
@@ -104,17 +105,20 @@ export type EditableInput = {
     allowUnknownValues?: boolean;
 };
 
+export type EditableField = {
+    name: string;
+    label?: string;
+    description: string;
+    input: EditableInput;
+    folder?: string;
+    options?: { value: string; label: string }[];
+    condition?: input.Condition;
+};
+
 export type EditableFormDefinition = FormDefinition & {
     title: string;
     name: string;
-    fields: {
-        name: string;
-        label?: string;
-        description: string;
-        input: EditableInput;
-        folder?: string;
-        options?: { value: string; label: string }[];
-    }[];
+    fields: EditableField[];
 };
 
 export function isValidBasicInput(input: unknown): input is basicInput {

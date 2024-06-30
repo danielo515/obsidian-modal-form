@@ -16,7 +16,7 @@ import {
     toTrimmed,
     union,
 } from "valibot";
-import { AllFieldTypes, AllSources } from "./formDefinition";
+import { AllFieldTypes, AllSources } from "../formDefinition";
 
 /**
  * Here are the definition for the input types.
@@ -141,6 +141,8 @@ export const InputTypeSchema = union([
     MultiselectSchema,
     DocumentBlock,
 ]);
+
+export type Input = Output<typeof InputTypeSchema>;
 
 export const InputTypeToParserMap: Record<AllFieldTypes, ParsingFn<BaseSchema>> = {
     number: parseC(InputBasicSchema),
