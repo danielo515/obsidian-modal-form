@@ -21,11 +21,3 @@
 {:else if inputType === "datetime"}
     <input type="datetime-local" bind:value={$value} />
 {/if}
-
-<style>
-    textarea {
-        width: 100%;
-        flex: 1;
-        padding: 0.5rem;
-    }
-</style>
