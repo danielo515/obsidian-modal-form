@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.48.0](https://github.com/danielo515/obsidian-modal-form/compare/1.47.0...1.48.0) (2024-07-02)
+
+
+### Features
+
+* conditional input form builder ([5f6a9be](https://github.com/danielo515/obsidian-modal-form/commit/5f6a9befea605507dc7e4f5eaed42d620da72954))
+* **runtime:** conditional fields v1 ([4ab141e](https://github.com/danielo515/obsidian-modal-form/commit/4ab141ec537089f3e9cbd052843e3b45fec9aea6))
+* **runtime:** show conditional errors in the form ([83a1060](https://github.com/danielo515/obsidian-modal-form/commit/83a1060aef020133f2723f090c09603a058e010e))
+
+
+### Bug Fixes
+
+* ConditionInput finally works as expected ([c5d5fff](https://github.com/danielo515/obsidian-modal-form/commit/c5d5fff647b1ae8fb2bcd8a168b97a90b48ff8b1))
+
 ## [1.47.0](https://github.com/danielo515/obsidian-modal-form/compare/1.46.0...1.47.0) (2024-06-22)
 
 
