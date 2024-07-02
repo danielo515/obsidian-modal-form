@@ -6,7 +6,7 @@ tags: release-notes
 
 This is a very exciting release for me, because it includes one of the features that I have been wanting to implement for a long time, and also one of the most requested features. But it also includes some minor improvements, so let's take those first:
 
-- The placeholder of the label is set by default to the name of the field. This will make it easier for people to understand that the default label value is the name of the field.
+- The placeholder of the label is set by default to the name of the field. This will make it easier for people to understand that the default label value is the name of the field. ![name as label placeholder](<Screenshot 2024-07-02 at 17.45.35.png>)
 
 Now the big feature:
 
