@@ -1,6 +1,6 @@
 ---
-title: Release notes for 1.4x.0
-date: 2024-06-29
+title: Release notes for 1.48.0
+date: 2024-07-02
 tags: release-notes
 ---
 
