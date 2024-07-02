@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.28">
     
     
       
@@ -825,11 +825,11 @@
 <li>The placeholder of the label is set by default to the name of the field. This will make it easier for people to understand that the default label value is the name of the field.</li>
 </ul>
 <p>Now the big feature:</p>
-<h3 id="dependent-fields"><a class="toclink" href="../../2024/06/29/release-notes-for-14x0/#dependent-fields"><strong>Dependent fields</strong></a></h3>
+<h3 id="conditional-fields"><a class="toclink" href="../../2024/06/29/release-notes-for-14x0/#conditional-fields"><strong>Conditional fields</strong></a></h3>
 <p>As with every new feature, I like to start small, so this first version is very simple.
 It just settles the basic foundation and works only with the most basic field types.
 This will allow me to gather feedback and improve it in the next releases after making sure that the basic functionality is working as expected.</p>
-<p>In this first approach there are not many safeguards either, so you can end up in forms that don't render anything, for example because of with fields that are excluding each other. I don't think this is going to be a big problem in practice, but I will be monitoring the feedback to see if it is necessary to add some kind of validation, or at least some kind of warning.
+<p>In this first approach there are not many safeguards either, so you can end up in forms that don't show any field, for example because of fields that are excluding each other. I don't think this is going to be a big problem in practice, but I will be monitoring the feedback to see if it is necessary to add some kind of validation, or at least some kind of warning.
 The reason I am not adding it any limitations in this first version is because flexibility: forms can be called with parameters to omit fields, default values, etc. and I don't want to limit that flexibility.</p>
 <p>Here are some screenshots of the feature in action.</p>
 <p>Form builder:</p>
@@ -1023,7 +1023,7 @@ While the experience of doing this in the Obsidian desktop app is fine, it is a 
     <script id="__config" type="application/json">{"base": "../../..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.ad660dcc.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.fe8b6f2b.min.js"></script>
       
     
   </body>
