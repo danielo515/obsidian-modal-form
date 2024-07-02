@@ -22,9 +22,8 @@ The reason I am not adding it any limitations in this first version is because f
 Here are some screenshots of the feature in action.
 
 Form builder:
-
-![boolean comparison](<conditional-boolean.png>)
-![string comparison](<conditional-string.png>)
+![boolean condition](<Screenshot 2024-07-02 at 17.36.07.png>)
+![text condition](<Screenshot 2024-07-02 at 17.34.38.png>)
 
 Form in preview mode with the condition met
 ![condition met](<condition-met.png>)
