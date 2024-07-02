@@ -11,7 +11,7 @@
     $: availableConditions = availableFieldsForCondition.filter((x) => x.name !== field.name);
     $: {
         if (isConditional) {
-            field.condition = {
+            field.condition = field.condition || {
                 dependencyName: "",
                 type: "isSet",
             };
@@ -26,12 +26,13 @@
         <FormRow label="Conditional" id={`conditional-${index}`}>
             <Toggle bind:checked={isConditional} tabindex={index} />
         </FormRow>
-        {#if field.condition !== undefined && isConditional}
+        {#if field.condition !== undefined}
             <div class="flex gap-2" transition:slide>
                 <ConditionInput
                     siblingFields={availableConditions}
                     name={field.name}
-                    bind:value={field.condition}
+                    condition={field.condition}
+                    onChange={(condition) => (field.condition = condition)}
                 />
             </div>
         {/if}

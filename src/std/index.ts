@@ -27,6 +27,8 @@ import { BaseSchema, Output, ValiError, parse as parseV } from "valibot";
 export type Option<T> = _O.Option<T>;
 export type { Either, Left, Right } from "fp-ts/Either";
 export type { NonEmptyArray } from "fp-ts/NonEmptyArray";
+export * as Str from "fp-ts/string";
+export * as Struct from "fp-ts/struct";
 export * as A from "./Array";
 export const flow = f;
 export const pipe = p;

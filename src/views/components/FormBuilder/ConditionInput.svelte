@@ -3,15 +3,20 @@
     import { absurd } from "fp-ts/lib/function";
     import { FieldDefinition } from "src/core/formDefinition";
     import FormRow from "../FormRow.svelte";
+    import { buildCondition } from "./ConditionInput";
 
     export let siblingFields: FieldDefinition[];
     export let name: string;
-    export let value: input.Condition;
-    let selectedTargetField: FieldDefinition | undefined = undefined;
-    let selectedCondition: input.ConditionType | undefined = undefined;
+    export let condition: input.Condition;
+    export let onChange: (condition: input.Condition) => void;
+    let selectedTargetField: FieldDefinition | undefined = siblingFields.find(
+        (x) => x.name === condition.dependencyName,
+    );
+    $: selectedCondition = condition.type;
     let textValue = "";
     let numberValue = 0;
     let booleanValue = false;
+    // $: selectedTargetField = siblingFields.find((x) => x.name === value.dependencyName);
     $: conditions =
         // Why? to trigger svelte reactivity on fields changes
         siblingFields && selectedTargetField
@@ -24,43 +29,18 @@
     }
     $: {
         if (selectedCondition && selectedTargetField) {
-            const field = selectedTargetField?.name;
-            switch (selectedCondition) {
-                case "isSet":
-                    value = {
-                        dependencyName: field,
-                        type: "isSet",
-                    };
-                    break;
-                case "boolean":
-                    value = { dependencyName: field, type: "boolean", value: booleanValue };
-                    break;
-                case "startsWith":
-                case "contains":
-                case "endsWith":
-                case "isExactly":
-                    value = {
-                        dependencyName: field,
-                        type: selectedCondition,
-                        value: textValue,
-                    };
-                    break;
-                case "above":
-                case "below":
-                case "aboveOrEqual":
-                case "belowOrEqual":
-                case "exactly":
-                    value = {
-                        dependencyName: field,
-                        type: selectedCondition,
-                        value: numberValue,
-                    };
-                    break;
-                default:
-                    absurd(selectedCondition);
-            }
+            const newCondition = buildCondition(
+                selectedCondition,
+                selectedTargetField.name,
+                booleanValue,
+                textValue,
+                numberValue,
+            );
+            console.log({ newCondition });
+            if (!input.ConditionEq.equals(newCondition, condition)) onChange(newCondition);
         }
     }
+    $: console.log({ conditions, selectedCondition, selectedTargetField, siblingFields, name });
 </script>
 
 <FormRow label="When field" id="sibling-field-of-{name}">

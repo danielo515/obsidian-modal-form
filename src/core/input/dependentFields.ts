@@ -1,3 +1,5 @@
+import { Str } from "@std";
+import * as Eq from "fp-ts/Eq";
 import { absurd } from "fp-ts/function";
 import * as v from "valibot";
 import { FieldDefinition } from "../formDefinition";
@@ -21,6 +23,12 @@ export const ConditionSchema = v.union([isSet, booleanValue, startsWith, above])
 
 export type Condition = v.Output<typeof ConditionSchema>;
 export type ConditionType = Condition["type"];
+
+export const ConditionEq = Eq.struct({
+    dependencyName: Str.Eq,
+    type: Str.Eq,
+    value: Str.Eq,
+});
 
 export function availableConditionsForInput(input: FieldDefinition["input"]): ConditionType[] {
     switch (input.type) {
