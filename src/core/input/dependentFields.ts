@@ -38,10 +38,10 @@ export function availableConditionsForInput(input: FieldDefinition["input"]): Co
         case "folder":
         case "note":
         case "tel":
-            return ["startsWith", "endsWith", "isExactly", "contains"];
+            return ["isSet", "startsWith", "endsWith", "isExactly", "contains"];
         case "slider":
         case "number":
-            return ["above", "aboveOrEqual", "below", "belowOrEqual", "exactly"];
+            return ["isSet", "above", "aboveOrEqual", "below", "belowOrEqual", "exactly"];
         case "toggle":
             return ["boolean"];
         case "date":

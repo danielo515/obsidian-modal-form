@@ -1,52 +1,44 @@
 <script lang="ts">
     import { input } from "@core";
-    import { absurd } from "fp-ts/lib/function";
+    import { A, O, pipe } from "@std";
     import { FieldDefinition } from "src/core/formDefinition";
     import FormRow from "../FormRow.svelte";
-    import { buildCondition } from "./ConditionInput";
+    import { getInitialInputValues, makeModel } from "./ConditionInput";
 
     export let siblingFields: FieldDefinition[];
     export let name: string;
     export let condition: input.Condition;
     export let onChange: (condition: input.Condition) => void;
-    let selectedTargetField: FieldDefinition | undefined = siblingFields.find(
-        (x) => x.name === condition.dependencyName,
-    );
-    $: selectedCondition = condition.type;
-    let textValue = "";
-    let numberValue = 0;
-    let booleanValue = false;
-    // $: selectedTargetField = siblingFields.find((x) => x.name === value.dependencyName);
-    $: conditions =
-        // Why? to trigger svelte reactivity on fields changes
-        siblingFields && selectedTargetField
-            ? input.availableConditionsForInput(selectedTargetField.input)
-            : [];
+    const model = makeModel(siblingFields, condition, onChange);
+    $: conditions = model.conditionTypeOptions;
+    $: conditionType = model.conditionType;
+    $: dependencyName = model.dependencyName;
+    $: valueField = model.valueField;
+    $: console.log(name, $conditions, $dependencyName, $valueField);
+    let { booleanValue, numberValue, textValue } = getInitialInputValues(condition);
     $: {
-        if (selectedTargetField?.input.type === "toggle") {
-            selectedCondition = "boolean";
+        pipe(
+            $conditions,
+            O.chain((conditions) =>
+                // if the current condition is not in the list of available conditions, set it to the first available condition
+                conditions.includes($conditionType) ? O.none : A.head(conditions),
+            ),
+            O.map((newVAlue) => {
+                $conditionType = newVAlue;
+            }),
+        );
+        if (O.isSome($valueField)) {
+            if ($valueField.value.type === "dropdown") $valueField.value.set(booleanValue);
+            if ($valueField.value.type === "text") $valueField.value.set(textValue);
+            if ($valueField.value.type === "number") $valueField.value.set(numberValue);
         }
     }
-    $: {
-        if (selectedCondition && selectedTargetField) {
-            const newCondition = buildCondition(
-                selectedCondition,
-                selectedTargetField.name,
-                booleanValue,
-                textValue,
-                numberValue,
-            );
-            console.log({ newCondition });
-            if (!input.ConditionEq.equals(newCondition, condition)) onChange(newCondition);
-        }
-    }
-    $: console.log({ conditions, selectedCondition, selectedTargetField, siblingFields, name });
 </script>
 
 <FormRow label="When field" id="sibling-field-of-{name}">
-    <select bind:value={selectedTargetField} class="dropdown">
+    <select bind:value={$dependencyName} class="dropdown">
         {#each siblingFields as field}
-            <option value={field}
+            <option value={field.name}
                 >{field.name}
                 {#if field.label}
                     ({field.label})
@@ -56,36 +48,29 @@
     </select>
 </FormRow>
 
-{#if conditions.length > 0}
+{#if O.isSome($conditions)}
     <FormRow label="Condition" id="condition-{name}">
-        {#if selectedTargetField?.input.type === "toggle"}
-            <select class="dropdown" disabled>
-                <option value="boolean">is</option>
-            </select>
-        {:else}
-            <select bind:value={selectedCondition} class="dropdown">
-                {#each conditions as condition}
-                    <option value={condition}>
-                        {condition}
-                    </option>
-                {/each}
-            </select>
-        {/if}
+        <select class="dropdown" bind:value={$conditionType}>
+            {#each $conditions.value as option}
+                <option value={option}>
+                    {option}
+                </option>
+            {/each}
+        </select>
     </FormRow>
 {/if}
-{#if selectedCondition && selectedCondition !== "isSet"}
+{#if O.isSome($valueField)}
     <FormRow label="Value" id="condition-value-{name}">
-        {#if selectedCondition === "contains" || selectedCondition === "startsWith" || selectedCondition === "endsWith" || selectedCondition === "isExactly"}
+        {#if $valueField.value.type === "text"}
             <input type="text" class="input" bind:value={textValue} />
-        {:else if selectedCondition === "above" || selectedCondition === "below" || selectedCondition === "aboveOrEqual" || selectedCondition === "belowOrEqual" || selectedCondition === "exactly"}
+        {:else if $valueField.value.type === "number"}
             <input type="number" class="input" bind:value={numberValue} />
-        {:else if selectedCondition === "boolean"}
-            <select bind:value={booleanValue} class="dropdown">
-                <option value={false}>False</option>
-                <option value={true}>True</option>
+        {:else if $valueField.value.type === "dropdown"}
+            <select class="dropdown" bind:value={booleanValue}>
+                {#each $valueField.value.options as option}
+                    <option value={option}>{option}</option>
+                {/each}
             </select>
-        {:else}
-            {absurd(selectedCondition)}
         {/if}
     </FormRow>
 {/if}
