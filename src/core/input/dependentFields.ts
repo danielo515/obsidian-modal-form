@@ -1,3 +1,5 @@
+import { Str } from "@std";
+import * as Eq from "fp-ts/Eq";
 import { absurd } from "fp-ts/function";
 import * as v from "valibot";
 import { FieldDefinition } from "../formDefinition";
@@ -22,6 +24,12 @@ export const ConditionSchema = v.union([isSet, booleanValue, startsWith, above])
 export type Condition = v.Output<typeof ConditionSchema>;
 export type ConditionType = Condition["type"];
 
+export const ConditionEq = Eq.struct({
+    dependencyName: Str.Eq,
+    type: Str.Eq,
+    value: Str.Eq,
+});
+
 export function availableConditionsForInput(input: FieldDefinition["input"]): ConditionType[] {
     switch (input.type) {
         case "text":
@@ -30,10 +38,10 @@ export function availableConditionsForInput(input: FieldDefinition["input"]): Co
         case "folder":
         case "note":
         case "tel":
-            return ["startsWith", "endsWith", "isExactly", "contains"];
+            return ["isSet", "startsWith", "endsWith", "isExactly", "contains"];
         case "slider":
         case "number":
-            return ["above", "aboveOrEqual", "below", "belowOrEqual", "exactly"];
+            return ["isSet", "above", "aboveOrEqual", "below", "belowOrEqual", "exactly"];
         case "toggle":
             return ["boolean"];
         case "date":

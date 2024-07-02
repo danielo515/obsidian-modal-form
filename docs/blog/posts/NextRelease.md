@@ -10,13 +10,13 @@ This is a very exciting release for me, because it includes one of the features 
 
 Now the big feature:
 
-## **Dependent fields**
+## **Conditional fields**
 
 As with every new feature, I like to start small, so this first version is very simple.
 It just settles the basic foundation and works only with the most basic field types.
 This will allow me to gather feedback and improve it in the next releases after making sure that the basic functionality is working as expected.
 
-In this first approach there are not many safeguards either, so you can end up in forms that don't render anything, for example because of with fields that are excluding each other. I don't think this is going to be a big problem in practice, but I will be monitoring the feedback to see if it is necessary to add some kind of validation, or at least some kind of warning.
+In this first approach there are not many safeguards either, so you can end up in forms that don't show any field, for example because of fields that are excluding each other. I don't think this is going to be a big problem in practice, but I will be monitoring the feedback to see if it is necessary to add some kind of validation, or at least some kind of warning.
 The reason I am not adding it any limitations in this first version is because flexibility: forms can be called with parameters to omit fields, default values, etc. and I don't want to limit that flexibility.
 
 Here are some screenshots of the feature in action.
