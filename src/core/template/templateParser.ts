@@ -1,15 +1,15 @@
-import * as R from "fp-ts/Record";
+import { Either, O, pipe } from "@std";
+import * as A from "fp-ts/Array";
 import * as E from "fp-ts/Either";
+import * as R from "fp-ts/Record";
+import { absurd, identity } from "fp-ts/function";
 import * as St from "fp-ts/string";
+import { stringifyYaml } from "obsidian";
 import * as P from "parser-ts/Parser";
 import * as C from "parser-ts/char";
 import * as S from "parser-ts/string";
-import * as A from "fp-ts/Array";
-import { Either, O, pipe } from "@std";
-import { TemplateText, TemplateVariable, FrontmatterCommand } from "./templateSchema";
-import { absurd, identity } from "fp-ts/function";
 import { ModalFormData } from "../FormResult";
-import { stringifyYaml } from "obsidian";
+import type { FrontmatterCommand, TemplateText, TemplateVariable } from "./templateSchema";
 type Token = TemplateText | TemplateVariable | FrontmatterCommand;
 export type ParsedTemplate = Token[];
 

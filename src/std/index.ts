@@ -84,10 +84,8 @@ export type ParsingFn<S extends BaseSchema> = (
  * Concatenates two parsing functions that return Either<ValiError, B> into one.
  * If the first function returns a Right, the second function is not called.
  */
-class _EFunSemigroup<A extends BaseSchema, B extends BaseSchema>
-    implements Semigroup<ParsingFn<A>>
-{
-    concat(f: ParsingFn<A>, g: ParsingFn<B>): (i: unknown) => Either<ValiError, unknown> {
+class _EFunSemigroup<A extends BaseSchema> implements Semigroup<ParsingFn<A>> {
+    concat(f: ParsingFn<A>, g: ParsingFn<A>): (i: unknown) => Either<ValiError, unknown> {
         return (i) => {
             const fRes = f(i);
             if (isRight(fRes)) return fRes;
