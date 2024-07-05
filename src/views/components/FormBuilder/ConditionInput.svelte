@@ -28,9 +28,18 @@
             }),
         );
         if (O.isSome($valueField)) {
+            // By the time we are able to set a value, the condition is complete so we can submit it
+            // Using each of the set functions will ensure type safety
             if ($valueField.value.type === "dropdown") $valueField.value.set(booleanValue);
             if ($valueField.value.type === "text") $valueField.value.set(textValue);
             if ($valueField.value.type === "number") $valueField.value.set(numberValue);
+        }
+    }
+    $: {
+        if ($conditionType === "isSet") {
+            // This is the only case where we can submit a condition without a value
+            if ($dependencyName !== condition.dependencyName && $dependencyName !== undefined)
+                onChange({ type: "isSet", dependencyName: $dependencyName });
         }
     }
 </script>
