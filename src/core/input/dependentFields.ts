@@ -48,7 +48,9 @@ export function availableConditionsForInput(input: FieldDefinition["input"]): Co
         case "time":
         case "datetime":
             return ["isSet"];
+        // Select values are always set, so that's why we don't have an "isSet" condition
         case "select":
+            return ["startsWith", "endsWith", "isExactly", "contains"];
         case "multiselect":
         case "tag":
         case "dataview":
