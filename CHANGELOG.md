@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.49.0](https://github.com/danielo515/obsidian-modal-form/compare/1.48.0...1.49.0) (2024-07-05)
+
+
+### Features
+
+* **runtime:** allow the select to be used as condition for other  fields ([0d23e0b](https://github.com/danielo515/obsidian-modal-form/commit/0d23e0b8b56877f566b753f738f36497b40c5c0d))
+
+
+### Bug Fixes
+
+* **builder:** properly save the isSet condition ([1ffe488](https://github.com/danielo515/obsidian-modal-form/commit/1ffe48882612cfb03da0427316dbc4daa7caeb86))
+
 ## [1.48.0](https://github.com/danielo515/obsidian-modal-form/compare/1.47.0...1.48.0) (2024-07-02)
 
 
