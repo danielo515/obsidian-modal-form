@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Snippet } from "svelte";
-    const {label, inline, children}: {label:string, inline: boolean, children: Snippet} = $props();
+    let {label, inline, children}: {label:string, inline: boolean, children: Snippet} = $props();
 </script>
 
 <label class="field-group" class:inline>

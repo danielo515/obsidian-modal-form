@@ -18,6 +18,7 @@
     };
     $: id = `dataview_${index}`;
     $: preview = makePreview(value);
+    console.log({ FormRow, Code });
 </script>
 
 <FormRow label="Dataview Query" {id}>
@@ -41,7 +42,7 @@
         class="form-control"
         rows="3"
         placeholder="dv.pages('#tag').map(p => p.file.name)"
-    />
+    ></textarea>
     <h6>Results preview</h6>
     {#if error}
         <div class="modal-form-error-message">{error}</div>

@@ -39,6 +39,7 @@
         console.log(`Opening ${form.name} in template builder`);
         openInTemplateBuilder(form);
     }
+    console.log({ Button, KeyValue, Separated });
 </script>
 
 <div class="header">
@@ -101,6 +102,7 @@
                     <span>Open in template editor</span>
                 </button>
                 <Button
+                    variant="regular"
                     tooltip={`Copy ${form.name} to clipboard`}
                     icon="clipboard-copy"
                     onClick={() => handleCopyForm(form)}

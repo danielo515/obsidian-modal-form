@@ -1,7 +1,5 @@
 <script lang="ts">
-    export let activeTab: string;
-    export let tabs: string[];
-    $: console.log(activeTab);
+    let { activeTab, tabs }: { activeTab: string; tabs: string[] } = $props();
 </script>
 
 <div class="tabs">
@@ -9,7 +7,7 @@
         <div class="tab-outer" class:active={tab === activeTab}>
             <button
                 class="tab"
-                on:click={() => {
+                onclick={() => {
                     activeTab = tab;
                 }}
             >

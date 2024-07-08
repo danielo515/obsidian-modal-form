@@ -1,20 +1,26 @@
 <script lang="ts">
-    import { ButtonComponent, setIcon } from "obsidian";
-    import { onMount } from "svelte";
-
-    export let tooltip: string | undefined = undefined;
-    export let icon: "trash" | "clipboard-copy" | "pencil" | undefined =
-        undefined;
-    export let text: string | undefined = undefined;
-    export let variant: "regular" | "danger" | "primary" = "regular";
-    export let onClick: () => void;
+    import { ButtonComponent } from "obsidian";
     const variants: Record<typeof variant, string> = {
         regular: "modal-form-regular",
         danger: "modal-form-danger",
         primary: "modal-form-primary",
     };
+    let {
+        tooltip,
+        icon,
+        text,
+        variant,
+        onClick,
+    }: {
+        tooltip?: string | undefined;
+        icon?: "trash" | "clipboard-copy" | "pencil" | undefined;
+        text?: string | undefined;
+        variant: "regular" | "danger" | "primary";
+        onClick: () => void;
+    } = $props();
     let root: HTMLElement;
-    onMount(() => {
+    $effect(() => {
+        console.log("Button mounted");
         const btn = new ButtonComponent(root);
         if (icon) btn.setIcon(icon);
         if (tooltip) btn.setTooltip(tooltip);

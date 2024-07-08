@@ -133,6 +133,14 @@
     $: availableFieldsForCondition = definition.fields.filter(
         (f) => input.availableConditionsForInput(f.input).length > 0,
     );
+    console.log({
+        Tabs,
+        InputTypeReadable,
+        FieldMeta,
+        FormRow,
+        InputBuilderDataview,
+        Toggle,
+    });
 </script>
 
 <div class=" wrapper modal-form">

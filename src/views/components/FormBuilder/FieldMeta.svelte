@@ -19,6 +19,7 @@
             field.condition = undefined;
         }
     }
+    console.log({ FormRow, Toggle });
 </script>
 
 {#if availableConditions.length > 0}
