@@ -1,6 +1,7 @@
 import { throttle } from "@std";
 import { App, Modal, Setting } from "obsidian";
 import { SvelteComponent } from "svelte";
+import { createClassComponent } from "svelte/legacy";
 import FormModalComponent from "./FormModal.svelte";
 import FormResult, { type ModalFormData } from "./core/FormResult";
 import { formDataFromFormDefaults } from "./core/formDataFromFormDefaults";
@@ -52,7 +53,8 @@ export class FormModal extends Modal {
             contentEl.addClass(this.modalDefinition.customClassname);
         contentEl.createEl("h1", { text: this.modalDefinition.title });
         this.svelteComponents.push(
-            new FormModalComponent({
+            createClassComponent({
+                component: FormModalComponent,
                 target: contentEl,
                 props: {
                     formEngine: this.formEngine,

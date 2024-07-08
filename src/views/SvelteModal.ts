@@ -1,5 +1,6 @@
 import { App, Modal } from "obsidian";
 import { SvelteComponent } from "svelte";
+import { createClassComponent } from "svelte/legacy";
 
 type SvelteProps = ConstructorParameters<typeof SvelteComponent>[0];
 
@@ -24,7 +25,8 @@ export class SvelteModal<T extends SvelteProps> extends Modal {
 
     onOpen() {
         const { contentEl } = this;
-        this._component = new this.component({
+        this._component = createClassComponent({
+            component: this.component,
             target: contentEl,
             props: this.getProps(this),
         });

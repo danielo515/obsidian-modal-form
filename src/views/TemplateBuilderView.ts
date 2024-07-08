@@ -1,6 +1,7 @@
 import { ItemView, ViewStateResult, WorkspaceLeaf } from "obsidian";
 import { FormDefinition } from "src/core/formDefinition";
 import ModalFormPlugin from "src/main";
+import { createClassComponent } from "svelte/legacy";
 import { makeModel } from "./components/TemplateBuilder";
 import TemplateBuilder from "./components/TemplateBuilder.svelte";
 import { copyToClipboard } from "./copyToClipboard";
@@ -38,7 +39,8 @@ export class TemplateBuilderView extends ItemView {
             return;
         }
         contentEl.empty();
-        this._component = new TemplateBuilder({
+        this._component = createClassComponent({
+            component: TemplateBuilder,
             target: contentEl,
             props: { model: makeModel(this.model), copyToClipboard },
         });

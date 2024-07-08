@@ -355,13 +355,13 @@
                                 disabled={index === 0}
                                 use:setIcon={"arrow-up"}
                                 on:click={() => moveField(index, "up")}
-                            />
+                            ></button>
                             <button
                                 type="button"
                                 disabled={index === definition.fields.length - 1}
                                 use:setIcon={"arrow-down"}
                                 on:click={() => moveField(index, "down")}
-                            />
+                            ></button>
                             <button type="button" on:click={() => duplicateField(index)}
                                 >Duplicate</button
                             >
@@ -374,7 +374,7 @@
                                         (_, i) => i !== index,
                                     );
                                 }}
-                            />
+                            ></button>
                         </div>
                         <hr />
                     {:else}

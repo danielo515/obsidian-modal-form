@@ -19,7 +19,7 @@
             class="form-input"
             placeholder="Paste your form JSON here"
             on:input={() => validate(value)}
-        />
+        ></textarea>
 
         <div class="vertical">
             {#if ui.errors.length > 0}
