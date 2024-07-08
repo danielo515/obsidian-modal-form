@@ -2,13 +2,24 @@
     import { App } from "obsidian";
     import { FormDefinition } from "src/core/formDefinition";
     import { makeFormEngine } from "src/store/formStore";
+    import { onMount } from "svelte";
     import RenderField from "./views/components/Form/RenderField.svelte";
-    export let app: App;
-    export let reportFormErrors: (errors: string[]) => void;
-    export let formEngine: ReturnType<typeof makeFormEngine>;
-    export let fields: FormDefinition["fields"];
-    $: errors = formEngine.errors;
-    $: $errors.length && reportFormErrors($errors);
+    const {
+        app,
+        reportFormErrors,
+        formEngine,
+        fields,
+    }: {
+        app: App;
+        reportFormErrors: (errors: string[]) => void;
+        formEngine: ReturnType<typeof makeFormEngine>;
+        fields: FormDefinition["fields"];
+    } = $props();
+    onMount(() =>
+        formEngine.errors.subscribe((errors) => {
+            if (errors.length > 0) reportFormErrors(errors);
+        }),
+    );
 </script>
 
 {#each fields as definition}
