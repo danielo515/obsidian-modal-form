@@ -1,7 +1,9 @@
 import { A, pipe } from '@std';
-import { FormDefinition, duplicateForm } from 'src/core/formDefinition';
+import type { FormDefinition} from 'src/core/formDefinition';
+import { duplicateForm } from 'src/core/formDefinition';
 import { MigrationError } from 'src/core/formDefinitionSchema';
-import { ModalFormSettings, getDefaultSettings } from 'src/core/settings';
+import type { ModalFormSettings} from 'src/core/settings';
+import { getDefaultSettings } from 'src/core/settings';
 import { writable, derived } from 'svelte/store';
 
 const settings = writable({ ...getDefaultSettings() });

@@ -1,5 +1,6 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
-import ModalFormPlugin from "./main";
+import type { App} from "obsidian";
+import { PluginSettingTab, Setting } from "obsidian";
+import type ModalFormPlugin from "./main";
 import { isValidOpenPosition } from "./core/settings";
 
 export class ModalFormSettingTab extends PluginSettingTab {

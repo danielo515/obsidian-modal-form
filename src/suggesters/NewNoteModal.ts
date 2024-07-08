@@ -1,5 +1,6 @@
-import { App, Modal, Setting } from "obsidian";
-import { FormWithTemplate } from "src/core/formDefinition";
+import type { App} from "obsidian";
+import { Modal, Setting } from "obsidian";
+import type { FormWithTemplate } from "src/core/formDefinition";
 import { FolderSuggest } from "./suggestFolder";
 import { GenericSuggest } from "./suggestGeneric";
 import { log_notice } from "src/utils/Log";

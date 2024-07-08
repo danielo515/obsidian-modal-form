@@ -1,8 +1,8 @@
 <script lang="ts">
     import * as Separated from "fp-ts/Separated";
-    import { FormDefinition } from "src/core/formDefinition";
+    import type { FormDefinition } from "src/core/formDefinition";
     import { MigrationError } from "src/core/formDefinitionSchema";
-    import { Readable } from "svelte/store";
+    import type { Readable } from "svelte/store";
     import Button from "./components/Button.svelte";
     import KeyValue from "./components/KeyValue.svelte";
 
@@ -39,7 +39,6 @@
         console.log(`Opening ${form.name} in template builder`);
         openInTemplateBuilder(form);
     }
-    console.log({ Button, KeyValue, Separated });
 </script>
 
 <div class="header">

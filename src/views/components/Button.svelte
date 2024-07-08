@@ -20,7 +20,6 @@
     } = $props();
     let root: HTMLElement;
     $effect(() => {
-        console.log("Button mounted");
         const btn = new ButtonComponent(root);
         if (icon) btn.setIcon(icon);
         if (tooltip) btn.setTooltip(tooltip);

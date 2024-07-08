@@ -1,11 +1,13 @@
 import { throttle } from "@std";
-import { App, Modal, Setting } from "obsidian";
+import type { App} from "obsidian";
+import { Modal, Setting } from "obsidian";
 import { mount, unmount } from "svelte";
 import FormModalComponent from "./FormModal.svelte";
 import FormResult, { type ModalFormData } from "./core/FormResult";
 import { formDataFromFormDefaults } from "./core/formDataFromFormDefaults";
 import type { FormDefinition, FormOptions } from "./core/formDefinition";
-import { FormEngine, makeFormEngine } from "./store/formStore";
+import type { FormEngine} from "./store/formStore";
+import { makeFormEngine } from "./store/formStore";
 import { log_notice } from "./utils/Log";
 
 export type SubmitFn = (formResult: FormResult) => void;

@@ -1,9 +1,11 @@
 import { A, E, O, pipe } from "@std";
-import { Platform, Plugin, WorkspaceLeaf } from "obsidian";
+import type { WorkspaceLeaf } from "obsidian";
+import { Platform, Plugin } from "obsidian";
 import { API } from "src/API";
 import { ModalFormSettingTab } from "src/ModalFormSettingTab";
-import FormResult from "src/core/FormResult";
-import { FormWithTemplate, type FormDefinition } from "src/core/formDefinition";
+import type FormResult from "src/core/FormResult";
+import type { FormWithTemplate} from "src/core/formDefinition";
+import { type FormDefinition } from "src/core/formDefinition";
 import {
     getDefaultSettings,
     parseSettings,
@@ -14,8 +16,9 @@ import { exampleModalDefinition } from "src/exampleModalDefinition";
 import { ModalFormError } from "src/utils/ModalFormError";
 import { EDIT_FORM_VIEW, EditFormView } from "src/views/EditFormView";
 import { MANAGE_FORMS_VIEW, ManageFormsView } from "src/views/ManageFormsView";
+import type {
+    InvalidData} from "./core/formDefinitionSchema";
 import {
-    InvalidData,
     MigrationError,
     formNeedsMigration,
     migrateToLatest,

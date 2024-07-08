@@ -1,4 +1,5 @@
-import { Either, O, pipe } from "@std";
+import type { Either } from "@std";
+import { O, pipe } from "@std";
 import * as A from "fp-ts/Array";
 import * as E from "fp-ts/Either";
 import * as R from "fp-ts/Record";
@@ -8,8 +9,12 @@ import { stringifyYaml } from "obsidian";
 import * as P from "parser-ts/Parser";
 import * as C from "parser-ts/char";
 import * as S from "parser-ts/string";
-import { ModalFormData } from "../FormResult";
-import type { FrontmatterCommand, TemplateText, TemplateVariable } from "./templateSchema";
+import type { ModalFormData } from "../FormResult";
+import {
+    type FrontmatterCommand,
+    type TemplateText,
+    type TemplateVariable,
+} from "./templateSchema";
 type Token = TemplateText | TemplateVariable | FrontmatterCommand;
 export type ParsedTemplate = Token[];
 

@@ -1,6 +1,7 @@
-import { ItemView, ViewStateResult, WorkspaceLeaf } from "obsidian";
-import { FormDefinition } from "src/core/formDefinition";
-import ModalFormPlugin from "src/main";
+import type { ViewStateResult, WorkspaceLeaf } from "obsidian";
+import { ItemView } from "obsidian";
+import type { FormDefinition } from "src/core/formDefinition";
+import type ModalFormPlugin from "src/main";
 import { createClassComponent } from "svelte/legacy";
 import { makeModel } from "./components/TemplateBuilder";
 import TemplateBuilder from "./components/TemplateBuilder.svelte";

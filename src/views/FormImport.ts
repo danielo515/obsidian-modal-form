@@ -2,8 +2,9 @@ import * as J from "fp-ts/Json";
 import { O, type Option, ensureError, pipe } from "@std";
 import * as E from "fp-ts/Either";
 import { InvalidData, MigrationError, migrateToLatest } from "src/core/formDefinitionSchema";
-import { Readable, writable } from "svelte/store";
-import { FormDefinition } from "src/core/formDefinition";
+import type { Readable} from "svelte/store";
+import { writable } from "svelte/store";
+import type { FormDefinition } from "src/core/formDefinition";
 
 type State = E.Either<string[], Option<FormDefinition>>;
 type UiState = {

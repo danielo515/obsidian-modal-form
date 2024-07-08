@@ -1,4 +1,4 @@
-import { FormDefinition } from "./formDefinition";
+import type { FormDefinition } from "./formDefinition";
 import { formDataFromFormDefaults } from "./formDataFromFormDefaults";
 
 describe("formDataFromFormOptions", () => {

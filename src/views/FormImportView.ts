@@ -1,6 +1,8 @@
-import { App, Modal } from "obsidian";
+import type { App} from "obsidian";
+import { Modal } from "obsidian";
 import { createClassComponent } from "svelte/legacy";
-import { FormImportDeps, makeFormInputModel } from "./FormImport";
+import type { FormImportDeps} from "./FormImport";
+import { makeFormInputModel } from "./FormImport";
 import FormImport from "./FormImport.svelte";
 /**
  * This class is just the minimum glue code to bind our core logic

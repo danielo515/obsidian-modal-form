@@ -2,7 +2,7 @@ import { Str } from "@std";
 import * as Eq from "fp-ts/Eq";
 import { absurd } from "fp-ts/function";
 import * as v from "valibot";
-import { FieldDefinition } from "../formDefinition";
+import type { FieldDefinition } from "../formDefinition";
 const isSet = v.object({ dependencyName: v.string(), type: v.literal("isSet") });
 const booleanValue = v.object({
     dependencyName: v.string(),

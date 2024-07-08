@@ -1,13 +1,14 @@
-import { App, parseFrontMatterAliases } from "obsidian";
+import type { App} from "obsidian";
+import { parseFrontMatterAliases } from "obsidian";
 
 import * as std from "@std";
 import { E, flow } from "@std";
 import { FormModal } from "./FormModal";
-import FormResult from "./core/FormResult";
+import type FormResult from "./core/FormResult";
 import { type FormDefinition, type FormOptions } from "./core/formDefinition";
 import { MigrationError } from "./core/formDefinitionSchema";
 import { exampleModalDefinition } from "./exampleModalDefinition";
-import ModalFormPlugin from "./main";
+import type ModalFormPlugin from "./main";
 import { log_error, log_notice } from "./utils/Log";
 import { ModalFormError } from "./utils/ModalFormError";
 import { enrich_tfile, resolve_tfile } from "./utils/files";

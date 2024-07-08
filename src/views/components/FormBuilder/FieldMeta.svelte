@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { EditableField, FieldDefinition } from "src/core/formDefinition";
+    import type { EditableField, FieldDefinition } from "src/core/formDefinition";
     import { slide } from "svelte/transition";
     import FormRow from "../FormRow.svelte";
     import Toggle from "../Toggle.svelte";
@@ -19,7 +19,6 @@
             field.condition = undefined;
         }
     }
-    console.log({ FormRow, Toggle });
 </script>
 
 {#if availableConditions.length > 0}

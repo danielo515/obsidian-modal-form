@@ -1,4 +1,5 @@
-import { Output, array, literal, object, string, union } from "valibot";
+import type { Output} from "valibot";
+import { array, literal, object, string, union } from "valibot";
 
 const TemplateTextSchema = object({
     _tag: literal("text"),

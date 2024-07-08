@@ -1,5 +1,6 @@
-import { App, Modal } from "obsidian";
-import { SvelteComponent } from "svelte";
+import type { App} from "obsidian";
+import { Modal } from "obsidian";
+import type { SvelteComponent } from "svelte";
 import { createClassComponent } from "svelte/legacy";
 
 type SvelteProps = ConstructorParameters<typeof SvelteComponent>[0];

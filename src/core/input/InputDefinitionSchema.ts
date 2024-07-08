@@ -1,8 +1,10 @@
-import { ParsingFn, parseC, trySchemas } from "@std";
+import type { ParsingFn} from "@std";
+import { parseC, trySchemas } from "@std";
 import { absurd } from "fp-ts/function";
-import {
+import type {
     BaseSchema,
-    Output,
+    Output} from "valibot";
+import {
     array,
     boolean,
     enumType,
@@ -16,7 +18,7 @@ import {
     toTrimmed,
     union,
 } from "valibot";
-import { AllFieldTypes, AllSources } from "../formDefinition";
+import type { AllFieldTypes, AllSources } from "../formDefinition";
 
 /**
  * Here are the definition for the input types.

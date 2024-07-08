@@ -1,4 +1,4 @@
-import FormResult from "../FormResult";
+import type FormResult from "../FormResult";
 
 /**
  * This is a dummy declare so we can use the FormResult

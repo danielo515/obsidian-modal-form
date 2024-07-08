@@ -1,6 +1,8 @@
 import * as S from "fp-ts/string";
-import { App, CachedMetadata, TAbstractFile, TFile, TFolder, Vault, normalizePath } from "obsidian";
-import { E, Either, O, pipe, A } from "@std";
+import type { App, CachedMetadata, TAbstractFile} from "obsidian";
+import { TFile, TFolder, Vault, normalizePath } from "obsidian";
+import type { Either} from "@std";
+import { E, O, pipe, A } from "@std";
 export class FolderDoesNotExistError extends Error {
     static readonly tag = "FolderDoesNotExistError";
 }

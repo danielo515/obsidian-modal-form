@@ -7,7 +7,7 @@
 
     import { input } from "@core";
     import { App, setIcon } from "obsidian";
-    import { AllSources } from "src/core/formDefinition";
+    import type { AllSources } from "src/core/formDefinition";
     import FormRow from "./FormRow.svelte";
     import InputFolder from "./InputBuilderFolder.svelte";
     import InputBuilderDataview from "./inputBuilderDataview.svelte";

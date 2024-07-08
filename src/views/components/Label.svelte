@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Snippet } from "svelte";
+    import type { Snippet } from "svelte";
     let {label, inline, children}: {label:string, inline: boolean, children: Snippet} = $props();
 </script>
 

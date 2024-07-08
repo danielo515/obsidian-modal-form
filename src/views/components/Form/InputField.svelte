@@ -1,7 +1,7 @@
 <script lang="ts">
     /** This component is only meant for the most basic input types. If any of those types starts to require more fancy setup it should be moved to it's own separated input*/
     import { type FieldValue } from "src/store/formStore";
-    import { Writable } from "svelte/store";
+    import type { Writable } from "svelte/store";
     export let value: Writable<FieldValue>;
     export let inputType: "number" | "text" | "date" | "time" | "datetime" | "email" | "tel";
 </script>

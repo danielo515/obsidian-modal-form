@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Setting } from "obsidian";
-    import { Readable, Writable } from "svelte/store";
+    import type { Readable, Writable } from "svelte/store";
     import { MultiSelectModel } from "./MultiSelectModel";
 
     export let model: Promise<MultiSelectModel>;

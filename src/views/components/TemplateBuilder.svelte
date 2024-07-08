@@ -13,7 +13,6 @@
     $: code = model.code;
     $: options = model.options;
     $: bodyTemplate = model.bodyTemplate;
-    console.log({ Label, FormRow, Code });
 </script>
 
 <div class="modal-form flex flex-col gap-2">

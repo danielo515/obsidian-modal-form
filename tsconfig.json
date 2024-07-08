@@ -12,7 +12,7 @@
         "importHelpers": true,
         "isolatedModules": true,
         "strictNullChecks": true,
-        "verbatimModuleSyntax": false,
+        "verbatimModuleSyntax": true,
         "strict": true,
         "noUncheckedIndexedAccess": true,
         "types": [

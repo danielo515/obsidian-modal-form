@@ -1,9 +1,9 @@
 <script lang="ts">
     import { input as I } from "@core";
     import { Setting } from "obsidian";
-    import { FieldDefinition } from "src/core/formDefinition";
-    import { FieldValue } from "src/store/formStore";
-    import { Writable } from "svelte/store";
+    import type { FieldDefinition } from "src/core/formDefinition";
+    import type { FieldValue } from "src/store/formStore";
+    import type { Writable } from "svelte/store";
     export let field: FieldDefinition;
     export let input: I.inputSelectFixed;
     export let value: Writable<FieldValue>;

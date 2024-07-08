@@ -1,4 +1,6 @@
 import * as A from "fp-ts/Array";
+import type {
+    Either} from "fp-ts/Either";
 import {
     type Either,
     ap,
@@ -18,12 +20,15 @@ import {
     tryCatch,
     tryCatchK,
 } from "fp-ts/Either";
-import { type NonEmptyArray, concatAll as concatAllNea } from "fp-ts/NonEmptyArray";
-import * as _O from "fp-ts/Option";
-import { type Semigroup, concatAll } from "fp-ts/Semigroup";
+import type { NonEmptyArray} from "fp-ts/NonEmptyArray";
+import { concatAll as concatAllNea } from "fp-ts/NonEmptyArray";
+import type * as _O from "fp-ts/Option";
+import type { Semigroup} from "fp-ts/Semigroup";
+import { concatAll } from "fp-ts/Semigroup";
 import * as TE from "fp-ts/TaskEither";
 import { absurd as _absurd, flow as f, pipe as p } from "fp-ts/function";
-import { type BaseSchema, type Output, ValiError, parse as parseV } from "valibot";
+import type { BaseSchema, Output, ValiError} from "valibot";
+import { parse as parseV } from "valibot";
 export type Option<T> = _O.Option<T>;
 export type { Either, Left, Right } from "fp-ts/Either";
 export type { NonEmptyArray } from "fp-ts/NonEmptyArray";

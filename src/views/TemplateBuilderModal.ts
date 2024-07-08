@@ -1,6 +1,7 @@
-import { App, Modal } from "obsidian";
+import type { App} from "obsidian";
+import { Modal } from "obsidian";
 import { createClassComponent } from "svelte/legacy";
-import { TemplateBuilderModel } from "./components/TemplateBuilder";
+import type { TemplateBuilderModel } from "./components/TemplateBuilder";
 import TemplateBuilder from "./components/TemplateBuilder.svelte";
 import { copyToClipboard } from "./copyToClipboard";
 /**

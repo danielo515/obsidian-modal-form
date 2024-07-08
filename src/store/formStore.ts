@@ -11,10 +11,11 @@ import type { Option } from "fp-ts/Option";
 import * as O from "fp-ts/Option";
 import { fromEntries, toEntries } from "fp-ts/Record";
 import { absurd } from "fp-ts/function";
-import { FieldDefinition } from "src/core/formDefinition";
+import type { FieldDefinition } from "src/core/formDefinition";
 import { valueMeetsCondition } from "src/core/input";
 import { type Logger, logger } from "src/utils/Logger";
 import type { Readable, Writable } from "svelte/store";
+import type { Readable, Writable} from "svelte/store";
 import { derived, get, writable } from "svelte/store";
 
 type Rule = { tag: "required"; message: string }; //| { tag: 'minLength', length: number, message: string } | { tag: 'maxLength', length: number, message: string } | { tag: 'pattern', pattern: RegExp, message: string };

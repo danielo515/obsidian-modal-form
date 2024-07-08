@@ -1,8 +1,9 @@
-import { ItemView, Notice, WorkspaceLeaf } from "obsidian";
-import { FormDefinition } from "src/core/formDefinition";
+import type { WorkspaceLeaf } from "obsidian";
+import { ItemView, Notice } from "obsidian";
+import type { FormDefinition } from "src/core/formDefinition";
 import { formsStore, invalidFormsStore, settingsStore } from "src/store/store";
 import { createClassComponent } from "svelte/legacy";
-import ModalFormPlugin from "../main";
+import type ModalFormPlugin from "../main";
 import ManageForms from "./ManageForms.svelte";
 
 export const MANAGE_FORMS_VIEW = "modal-form-manage-forms-view";

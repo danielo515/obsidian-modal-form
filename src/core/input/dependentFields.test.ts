@@ -1,6 +1,6 @@
 import { input } from "@core";
 import * as v from "valibot";
-import { FieldDefinition } from "../formDefinition";
+import type { FieldDefinition } from "../formDefinition";
 import * as deps from "./dependentFields";
 import { ConditionSchema } from "./dependentFields";
 

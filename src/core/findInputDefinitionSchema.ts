@@ -1,8 +1,10 @@
-import { A, NonEmptyArray, ParsingFn, parse, pipe } from "@std";
+import type { NonEmptyArray, ParsingFn} from "@std";
+import { A, parse, pipe } from "@std";
 import * as E from "fp-ts/Either";
-import { BaseSchema, ValiError } from "valibot";
-import { AllFieldTypes } from "./formDefinition";
-import { FieldMinimal, FieldMinimalSchema } from "./formDefinitionSchema";
+import type { BaseSchema, ValiError } from "valibot";
+import type { AllFieldTypes } from "./formDefinition";
+import type { FieldMinimal} from "./formDefinitionSchema";
+import { FieldMinimalSchema } from "./formDefinitionSchema";
 import { InputTypeToParserMap } from "./input/InputDefinitionSchema";
 
 export function stringifyIssues(error: ValiError): NonEmptyArray<string> {

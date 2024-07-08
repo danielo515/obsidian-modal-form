@@ -18,7 +18,6 @@
     };
     $: id = `dataview_${index}`;
     $: preview = makePreview(value);
-    console.log({ FormRow, Code });
 </script>
 
 <FormRow label="Dataview Query" {id}>

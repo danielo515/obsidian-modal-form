@@ -1,6 +1,6 @@
 <script lang="ts">
     import { App } from "obsidian";
-    import { FormDefinition } from "src/core/formDefinition";
+    import type { FormDefinition } from "src/core/formDefinition";
     import { makeFormEngine } from "src/store/formStore";
     import { onMount } from "svelte";
     import RenderField from "./views/components/Form/RenderField.svelte";

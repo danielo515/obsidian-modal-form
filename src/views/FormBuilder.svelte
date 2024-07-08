@@ -9,7 +9,7 @@
         type EditableFormDefinition,
         type FormDefinition,
     } from "src/core/formDefinition";
-    import { ParsedTemplate, parsedTemplateToString } from "src/core/template/templateParser";
+    import { parsedTemplateToString, type ParsedTemplate } from "src/core/template/templateParser";
     import { log_error } from "src/utils/Log";
     import { ModalFormError } from "src/utils/ModalFormError";
     import FieldMeta from "./components/FormBuilder/FieldMeta.svelte";
@@ -133,14 +133,6 @@
     $: availableFieldsForCondition = definition.fields.filter(
         (f) => input.availableConditionsForInput(f.input).length > 0,
     );
-    console.log({
-        Tabs,
-        InputTypeReadable,
-        FieldMeta,
-        FormRow,
-        InputBuilderDataview,
-        Toggle,
-    });
 </script>
 
 <div class=" wrapper modal-form">
