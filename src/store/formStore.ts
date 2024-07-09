@@ -3,16 +3,19 @@ import * as R from "fp-ts/Record";
 // and the errors that are present in the form. It is used by the Form component to render the form and to update the
 
 import { input } from "@core";
-import { NonEmptyArray, flow, pipe } from "@std";
+import type { NonEmptyArray } from "@std";
+import { flow, pipe } from "@std";
 import * as A from "fp-ts/Array";
 import * as E from "fp-ts/Either";
+import type { Option } from "fp-ts/Option";
 import * as O from "fp-ts/Option";
-import { Option } from "fp-ts/Option";
 import { fromEntries, toEntries } from "fp-ts/Record";
 import { absurd } from "fp-ts/function";
 import { FieldDefinition } from "src/core/formDefinition";
 import { valueMeetsCondition } from "src/core/input";
-import { Readable, Writable, derived, get, writable } from "svelte/store";
+import { type Logger, logger } from "src/utils/Logger";
+import type { Readable, Writable } from "svelte/store";
+import { derived, get, writable } from "svelte/store";
 
 type Rule = { tag: "required"; message: string }; //| { tag: 'minLength', length: number, message: string } | { tag: 'maxLength', length: number, message: string } | { tag: 'pattern', pattern: RegExp, message: string };
 function requiredRule(fieldName: string, message?: string): Rule {
@@ -148,12 +151,14 @@ type makeFormEngineArgs<T> = {
     onSubmit: OnFormSubmit<T>;
     onCancel: () => void;
     defaultValues?: Record<string, T>;
+    logger?: Logger;
 };
 
 export function makeFormEngine({
     onSubmit,
     onCancel,
     defaultValues = {},
+    logger: l = logger,
 }: makeFormEngineArgs<FieldValue>): FormEngine {
     const formStore: Writable<FormStore<FieldValue>> = writable({ fields: {}, status: "draft" });
     /** Creates helper functions to modify the store immutably*/
@@ -177,7 +182,7 @@ export function makeFormEngine({
             formStore.update((form) => {
                 const field = form.fields[name];
                 if (!field) {
-                    console.error(new Error(`Field ${name} does not exist`));
+                    l.error(new Error(`Field ${name} does not exist`));
                     return form;
                 }
                 return {
@@ -242,6 +247,7 @@ export function makeFormEngine({
             onCancel?.();
         },
         addField(field: FieldDefinition) {
+            l.debug("Adding field", field.name);
             const { initField: setField, setValue } = setFormField(field);
             setField([], field.isRequired ? requiredRule(field.label || field.name) : undefined);
             const fieldStore = derived(formStore, ({ fields }) => fields[field.name]);
