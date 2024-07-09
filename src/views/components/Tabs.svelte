@@ -1,5 +1,5 @@
 <script lang="ts">
-    let { activeTab, tabs }: { activeTab: string; tabs: string[] } = $props();
+    let { activeTab = $bindable(), tabs }: { activeTab: string; tabs: string[] } = $props();
 </script>
 
 <div class="tabs">
