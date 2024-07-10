@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.50.0](https://github.com/danielo515/obsidian-modal-form/compare/1.49.0...1.50.0) (2024-07-10)
+
+
+### Features
+
+* logger instance ([a30a9ff](https://github.com/danielo515/obsidian-modal-form/commit/a30a9ff1d12def22fbbec93eb25f34bfe7987180))
+
+
+### Bug Fixes
+
+* provide a logger implementation that only shows debug messages on debug ([72faa20](https://github.com/danielo515/obsidian-modal-form/commit/72faa206cd2467c72cb53e77c2251dc2003ba872))
+
 ## [1.49.0](https://github.com/danielo515/obsidian-modal-form/compare/1.48.0...1.49.0) (2024-07-05)
 
 
