@@ -294,7 +294,7 @@ export function makeFormEngine({
                 },
             };
             const isVisible = derived(formStore, ($form): E.Either<string, boolean> => {
-                console.log(
+                l.debug(
                     "condition",
                     field.name,
                     field.condition && $form.fields[field.condition.dependencyName],

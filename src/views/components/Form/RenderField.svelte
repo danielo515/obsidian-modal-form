@@ -15,12 +15,14 @@
     import MultiSelectField from "./MultiSelectField.svelte";
     import ObsidianSelect from "./ObsidianSelect.svelte";
     import ObsidianToggle from "./ObsidianToggle.svelte";
+    import { logger as l } from "src/utils/Logger";
     import InputSlider from "./inputSlider.svelte";
 
     export let model: ReturnType<FormEngine["addField"]>;
     export let definition: FieldDefinition;
     export let formEngine: FormEngine;
     export let app: App;
+    export let logger = l;
 
     $: value = model.value;
     $: errors = model.errors;
@@ -28,7 +30,7 @@
     $: visibleError = derived(model.isVisible, ($isVisible) =>
         E.isLeft($isVisible) ? [$isVisible.left] : ([] as string[]),
     );
-    $: console.log($isVisible);
+    $: logger.debug($isVisible);
 </script>
 
 {#if E.isLeft($isVisible)}

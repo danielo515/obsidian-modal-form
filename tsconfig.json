@@ -5,7 +5,7 @@
         "inlineSources": true,
         "resolveJsonModule": true,
         "module": "ESNext",
-        "target": "ES6",
+        "target": "ES2019",
         "allowJs": true,
         "noImplicitAny": true,
         "moduleResolution": "node",

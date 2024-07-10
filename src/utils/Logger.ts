@@ -2,7 +2,7 @@ type Level = "DEBUG" | "INFO" | "WARN" | "ERROR";
 function noop() {}
 export class Logger {
     private static instance: Logger;
-    #level: Level = "DEBUG";
+    #level: Level = process.env.NODE_ENV === "development" ? "DEBUG" : "ERROR";
     private constructor() {}
 
     static getInstance(): Logger {
