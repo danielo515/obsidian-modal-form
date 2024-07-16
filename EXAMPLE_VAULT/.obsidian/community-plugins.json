@@ -1,5 +1,6 @@
 [
-  "obsidian42-brat",
   "hot-reload",
-  "modalforms"
+  "modalforms",
+  "dataview",
+  "templater-obsidian"
 ]
