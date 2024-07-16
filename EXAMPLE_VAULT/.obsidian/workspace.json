@@ -1,0 +1,381 @@
+{
+  "main": {
+    "id": "5d2b8fa57cd8c26a",
+    "type": "split",
+    "children": [
+      {
+        "id": "7bfc0fbab8e332d7",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d30e7349b1394e4a",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "f7dbc66c163b68a7",
+    "type": "split",
+    "children": [
+      {
+        "id": "d3952bfb1cb39d91",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "108ea77b5afc540a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "fc7a57e2ece63d3b",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "df6876f7c8fbaca8",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "6dfafadb11f29f79",
+    "type": "split",
+    "children": [
+      {
+        "id": "310b0de927bc4565",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "611902fffbcf26e6",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "37d7fa2b5ed0388f",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "4523701950aeeece",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "3337a0fc3dc3c6d5",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {}
+            }
+          },
+          {
+            "id": "cd5ba647679d883d",
+            "type": "leaf",
+            "state": {
+              "type": "modal-form-manage-forms-view",
+              "state": {}
+            }
+          },
+          {
+            "id": "44269408191a639f",
+            "type": "leaf",
+            "state": {
+              "type": "modal-form-edit-form-view",
+              "state": {
+                "title": "Example form",
+                "name": "example-form",
+                "fields": [
+                  {
+                    "name": "name",
+                    "label": "Name",
+                    "description": "It is named how?",
+                    "isRequired": true,
+                    "input": {
+                      "type": "text"
+                    }
+                  },
+                  {
+                    "name": "age",
+                    "label": "Age",
+                    "description": "How old",
+                    "isRequired": true,
+                    "input": {
+                      "type": "number"
+                    }
+                  },
+                  {
+                    "name": "dateOfBirth",
+                    "label": "Date of Birth",
+                    "description": "When were you born?",
+                    "input": {
+                      "type": "date"
+                    }
+                  },
+                  {
+                    "name": "timeOfDay",
+                    "label": "Time of day",
+                    "description": "The time you can do this",
+                    "input": {
+                      "type": "time"
+                    }
+                  },
+                  {
+                    "name": "is_family",
+                    "label": "Is family",
+                    "description": "If it is part of the family",
+                    "input": {
+                      "type": "toggle"
+                    }
+                  },
+                  {
+                    "name": "favorite_book",
+                    "label": "Favorite book",
+                    "description": "Pick one",
+                    "input": {
+                      "type": "note",
+                      "folder": "Books"
+                    },
+                    "isRequired": false
+                  },
+                  {
+                    "name": "folder",
+                    "label": "The destination folder",
+                    "description": "It offers auto-completion to existing folders",
+                    "input": {
+                      "type": "folder"
+                    }
+                  },
+                  {
+                    "name": "multi_example",
+                    "label": "Multi select folder",
+                    "description": "Allows to pick many notes from a folder",
+                    "input": {
+                      "type": "multiselect",
+                      "source": "notes",
+                      "folder": "Books",
+                      "query": "",
+                      "allowUnknownValues": false,
+                      "multi_select_options": []
+                    },
+                    "isRequired": false
+                  },
+                  {
+                    "name": "multi_example_2",
+                    "label": "Multi select fixed",
+                    "description": "Allows to pick many notes from a fixed list",
+                    "input": {
+                      "type": "multiselect",
+                      "source": "fixed",
+                      "multi_select_options": [
+                        "Android",
+                        "iOS",
+                        "Windows",
+                        "MacOS",
+                        "Linux",
+                        "Solaris",
+                        "MS2"
+                      ],
+                      "allowUnknownValues": false,
+                      "query": ""
+                    },
+                    "isRequired": false
+                  },
+                  {
+                    "name": "multi_select_dataview",
+                    "label": "Multi select dataview",
+                    "description": "Allows to pick several values from a dv query",
+                    "input": {
+                      "type": "multiselect",
+                      "source": "dataview",
+                      "query": "dv.pages(\"#person\").map(p => p.file.name)",
+                      "allowUnknownValues": true,
+                      "multi_select_options": []
+                    },
+                    "isRequired": false
+                  },
+                  {
+                    "name": "best_fried",
+                    "label": "Best friend",
+                    "description": "Select of type note from a folder",
+                    "input": {
+                      "type": "select",
+                      "source": "notes",
+                      "folder": "People",
+                      "options": []
+                    }
+                  },
+                  {
+                    "name": "dataview_example",
+                    "label": "Dataview example",
+                    "description": "Only people matching the dataview query will be shown",
+                    "input": {
+                      "type": "dataview",
+                      "query": "dv.pages(\"#person\").filter(p => p.age < 30).map(p => p.file.name)"
+                    },
+                    "isRequired": false
+                  },
+                  {
+                    "name": "friendship_level",
+                    "label": "Friendship level",
+                    "description": "How good friends are you?",
+                    "input": {
+                      "type": "slider",
+                      "min": 0,
+                      "max": 10
+                    }
+                  },
+                  {
+                    "name": "favorite_meal",
+                    "label": "Favorite meal",
+                    "description": "Pick one option",
+                    "input": {
+                      "type": "select",
+                      "source": "fixed",
+                      "options": [
+                        {
+                          "value": "pizza",
+                          "label": "🍕 Pizza"
+                        },
+                        {
+                          "value": "pasta",
+                          "label": "🍝 Pasta"
+                        },
+                        {
+                          "value": "burger",
+                          "label": "🍔 Burger"
+                        },
+                        {
+                          "value": "salad",
+                          "label": "🥗 Salad"
+                        },
+                        {
+                          "value": "steak",
+                          "label": "🥩 Steak"
+                        },
+                        {
+                          "value": "sushi",
+                          "label": "🍣 Sushi"
+                        },
+                        {
+                          "value": "ramen",
+                          "label": "🍜 Ramen"
+                        },
+                        {
+                          "value": "tacos",
+                          "label": "🌮 Tacos"
+                        },
+                        {
+                          "value": "fish",
+                          "label": "🐟 Fish"
+                        },
+                        {
+                          "value": "chicken",
+                          "label": "🍗 Chicken"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "some notes",
+                    "label": "Multi line notes",
+                    "description": "Put your thouhts here",
+                    "input": {
+                      "type": "textarea"
+                    }
+                  },
+                  {
+                    "name": "Tags",
+                    "description": "Tags input example",
+                    "input": {
+                      "type": "tag"
+                    },
+                    "isRequired": false
+                  },
+                  {
+                    "name": "document",
+                    "description": "Document block example",
+                    "input": {
+                      "type": "document_block",
+                      "body": "return `Hello ${form.name}!<br> Your best friend is <b>${form.best_fried}</b>`"
+                    }
+                  }
+                ],
+                "version": "1"
+              }
+            }
+          }
+        ],
+        "currentTab": 5
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "obsidian42-brat:BRAT": false,
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "modalforms:Edit forms": false
+    }
+  },
+  "active": "44269408191a639f",
+  "lastOpenFiles": []
+}
