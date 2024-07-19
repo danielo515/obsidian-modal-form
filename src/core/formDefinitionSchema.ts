@@ -1,8 +1,8 @@
 import { input } from "@core";
 import { parse, pipe } from "@std";
 import * as E from "fp-ts/Either";
+import type { ValiError } from "valibot";
 import {
-    ValiError,
     array,
     boolean,
     is,
@@ -16,7 +16,7 @@ import {
     type Output,
 } from "valibot";
 import { findFieldErrors, stringifyIssues } from "./findInputDefinitionSchema";
-import { FormDefinition } from "./formDefinition";
+import type { FormDefinition } from "./formDefinition";
 import { InputTypeSchema, nonEmptyString } from "./input/InputDefinitionSchema";
 import { ParsedTemplateSchema } from "./template/templateSchema";
 

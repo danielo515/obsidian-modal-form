@@ -1,8 +1,8 @@
 <script lang="ts">
     import { E } from "@std";
     import { App } from "obsidian";
-    import { FieldDefinition } from "src/core/formDefinition";
-    import { FormEngine } from "src/store/formStore";
+    import type { FieldDefinition } from "src/core/formDefinition";
+    import type { FormEngine } from "src/store/formStore";
     import InputField from "src/views/components/Form/InputField.svelte";
     import ObsidianInputWrapper from "src/views/components/Form/ObsidianInputWrapper.svelte";
     import { derived } from "svelte/store";

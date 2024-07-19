@@ -1,7 +1,7 @@
 import { parseFunctionBody, pipe } from "@std";
 import * as T from "fp-ts/Task";
 import * as TE from "fp-ts/TaskEither";
-import { App } from "obsidian";
+import type { App } from "obsidian";
 import { log_error } from "src/utils/Log";
 import { ModalFormError } from "src/utils/ModalFormError";
 

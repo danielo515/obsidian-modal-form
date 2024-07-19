@@ -1,10 +1,10 @@
 <script lang="ts">
     import { App } from "obsidian";
     import { input as I } from "src/core";
-    import { FieldDefinition } from "src/core/formDefinition";
-    import { FieldValue } from "src/store/formStore";
+    import type { FieldDefinition } from "src/core/formDefinition";
+    import type { FieldValue } from "src/store/formStore";
     import { DataviewSuggest } from "src/suggesters/suggestFromDataview";
-    import { Readable, Writable } from "svelte/store";
+    import type { Readable, Writable } from "svelte/store";
     import ObsidianInputWrapper from "./ObsidianInputWrapper.svelte";
     export let field: FieldDefinition;
     export let input: I.inputDataviewSource;

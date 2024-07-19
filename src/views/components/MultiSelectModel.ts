@@ -1,11 +1,11 @@
 import { A, pipe } from "@std";
 import { absurd } from "fp-ts/function";
-import { App } from "obsidian";
-import { inputTag, multiselect } from "src/core/input/InputDefinitionSchema";
+import type { App } from "obsidian";
+import type { inputTag, multiselect } from "src/core/input/InputDefinitionSchema";
 import { executeSandboxedDvQuery, sandboxedDvQuery } from "src/suggesters/SafeDataviewQuery";
 import { StringSuggest } from "src/suggesters/StringSuggest";
 import { FileSuggest } from "src/suggesters/suggestFile";
-import { Writable } from "svelte/store";
+import type { Writable } from "svelte/store";
 
 export interface MultiSelectModel {
     createInput(element: HTMLInputElement): void;

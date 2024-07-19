@@ -1,5 +1,7 @@
-import { App, Modal } from "obsidian";
-import { TemplateBuilderModel } from "./components/TemplateBuilder";
+import type { App} from "obsidian";
+import { Modal } from "obsidian";
+import { createClassComponent } from "svelte/legacy";
+import type { TemplateBuilderModel } from "./components/TemplateBuilder";
 import TemplateBuilder from "./components/TemplateBuilder.svelte";
 import { copyToClipboard } from "./copyToClipboard";
 /**
@@ -22,7 +24,8 @@ export class TemplateBuilderModal extends Modal {
 
     onOpen() {
         const { contentEl } = this;
-        this._component = new TemplateBuilder({
+        this._component = createClassComponent({
+            component: TemplateBuilder,
             target: contentEl,
             props: { model: this.deps, copyToClipboard },
         });

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { input } from "@core";
     import { A, O, pipe } from "@std";
-    import { FieldDefinition } from "src/core/formDefinition";
+    import type { FieldDefinition } from "src/core/formDefinition";
     import FormRow from "../FormRow.svelte";
     import { getInitialInputValues, makeModel } from "./ConditionInput";
 

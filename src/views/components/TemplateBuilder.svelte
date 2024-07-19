@@ -83,7 +83,7 @@
                 </button>
             {/each}
         </div>
-        <textarea class="w-full" rows="10" bind:value={$bodyTemplate} />
+        <textarea class="w-full" rows="10" bind:value={$bodyTemplate}></textarea>
     </div>
 
     <div class="flex flex-col flex-1 gap-1">

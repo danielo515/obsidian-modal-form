@@ -3,7 +3,7 @@ import * as O from "fp-ts/Option";
 import * as NEA from "fp-ts/NonEmptyArray";
 import { filterWithIndex } from "fp-ts/Record";
 import { object, optional, array, string, coerce } from "valibot";
-import { NonEmptyArray } from "fp-ts/NonEmptyArray";
+import type { NonEmptyArray } from "fp-ts/NonEmptyArray";
 
 const KeysSchema = array(coerce(string(), String))
 

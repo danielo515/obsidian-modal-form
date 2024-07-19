@@ -1,7 +1,8 @@
 import { input } from "@core";
 import { A, O, absurd, pipe } from "@std";
-import { FieldDefinition } from "src/core/formDefinition";
-import { Readable, Writable, derived, writable } from "svelte/store";
+import type { FieldDefinition } from "src/core/formDefinition";
+import type { Readable, Writable} from "svelte/store";
+import { derived, writable } from "svelte/store";
 
 export function buildCondition(
     conditionType: input.ConditionType,

@@ -1,5 +1,7 @@
-import { AbstractInputSuggest, App } from "obsidian";
-import { SafeDataviewQuery, executeSandboxedDvQuery, sandboxedDvQuery } from "./SafeDataviewQuery";
+import type { App } from "obsidian";
+import { AbstractInputSuggest } from "obsidian";
+import type { SafeDataviewQuery} from "./SafeDataviewQuery";
+import { executeSandboxedDvQuery, sandboxedDvQuery } from "./SafeDataviewQuery";
 import { createRegexFromInput } from "./createRegexFromInput";
 
 /**

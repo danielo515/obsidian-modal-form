@@ -1,5 +1,6 @@
-import { App, FuzzySuggestModal } from "obsidian";
-import { FormDefinition } from "src/core/formDefinition";
+import type { App} from "obsidian";
+import { FuzzySuggestModal } from "obsidian";
+import type { FormDefinition } from "src/core/formDefinition";
 
 export class FormPickerModal<Definition extends FormDefinition> extends FuzzySuggestModal<Definition> {
     constructor(app: App, protected forms: Definition[], protected onSelected: (form: Definition) => void) {

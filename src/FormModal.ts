@@ -1,11 +1,13 @@
 import { throttle } from "@std";
-import { App, Modal, Setting } from "obsidian";
-import { SvelteComponent } from "svelte";
+import type { App} from "obsidian";
+import { Modal, Setting } from "obsidian";
+import { mount, unmount } from "svelte";
 import FormModalComponent from "./FormModal.svelte";
 import FormResult, { type ModalFormData } from "./core/FormResult";
 import { formDataFromFormDefaults } from "./core/formDataFromFormDefaults";
 import type { FormDefinition, FormOptions } from "./core/formDefinition";
-import { FormEngine, makeFormEngine } from "./store/formStore";
+import type { FormEngine} from "./store/formStore";
+import { makeFormEngine } from "./store/formStore";
 import { log_notice } from "./utils/Log";
 
 export type SubmitFn = (formResult: FormResult) => void;
@@ -15,9 +17,8 @@ const notify = throttle(
     2000,
 );
 export class FormModal extends Modal {
-    svelteComponents: SvelteComponent[] = [];
+    svelteComponents: Record<string, unknown>[] = [];
     initialFormValues: ModalFormData;
-    subscriptions: (() => void)[] = [];
     formEngine: FormEngine;
     constructor(
         app: App,
@@ -52,7 +53,7 @@ export class FormModal extends Modal {
             contentEl.addClass(this.modalDefinition.customClassname);
         contentEl.createEl("h1", { text: this.modalDefinition.title });
         this.svelteComponents.push(
-            new FormModalComponent({
+            mount(FormModalComponent, {
                 target: contentEl,
                 props: {
                     formEngine: this.formEngine,
@@ -92,8 +93,7 @@ export class FormModal extends Modal {
 
     onClose() {
         const { contentEl } = this;
-        this.svelteComponents.forEach((component) => component.$destroy());
-        this.subscriptions.forEach((subscription) => subscription());
+        this.svelteComponents.forEach((component) => unmount(component));
         contentEl.empty();
         this.initialFormValues = {};
     }

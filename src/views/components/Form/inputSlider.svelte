@@ -1,7 +1,7 @@
 <script lang="ts">
     import { input as I } from "src/core";
-    import { FieldValue } from "src/store/formStore";
-    import { Writable } from "svelte/store";
+    import type { FieldValue } from "src/store/formStore";
+    import type { Writable } from "svelte/store";
 
     export let value: Writable<FieldValue>;
     export let input: I.inputSlider;

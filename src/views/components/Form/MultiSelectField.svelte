@@ -1,8 +1,8 @@
 <script lang="ts">
     import { input as I } from "@core";
     import { App } from "obsidian";
-    import { FieldValue } from "src/store/formStore";
-    import { Readable, Writable } from "svelte/store";
+    import type { FieldValue } from "src/store/formStore";
+    import type { Readable, Writable } from "svelte/store";
     import MultiSelect from "../MultiSelect.svelte";
     import { MultiSelectModel } from "../MultiSelectModel";
     export let input: I.multiselect;

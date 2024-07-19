@@ -1,14 +1,19 @@
-import { input } from "@core";
+import type { input } from "@core";
 import { A, O, pipe } from "@std";
-import { Simplify } from "type-fest";
+import type { Simplify } from "type-fest";
 import { is, safeParse, type Output } from "valibot";
-import {
-    FieldDefinitionSchema,
-    FieldListSchema,
-    FormDefinitionBasicSchema,
-    FormDefinitionLatestSchema,
-    MigrationError,
-} from "./formDefinitionSchema";
+import type { FieldDefinitionSchema, FormDefinitionLatestSchema } from "./formDefinitionSchema";
+import { FieldListSchema, FormDefinitionBasicSchema, MigrationError } from "./formDefinitionSchema";
+import type {
+    basicInput,
+    inputDataviewSource,
+    inputNoteFromFolder,
+    inputSelectFixed,
+    inputSlider,
+    inputType,
+    multiselect,
+    selectFromNotes,
+} from "./input/InputDefinitionSchema";
 import {
     InputBasicSchema,
     InputDataviewSourceSchema,
@@ -18,14 +23,6 @@ import {
     InputTypeSchema,
     MultiselectSchema,
     SelectFromNotesSchema,
-    basicInput,
-    inputDataviewSource,
-    inputNoteFromFolder,
-    inputSelectFixed,
-    inputSlider,
-    inputType,
-    multiselect,
-    selectFromNotes,
 } from "./input/InputDefinitionSchema";
 
 export const InputTypeReadable: Record<AllFieldTypes, string> = {

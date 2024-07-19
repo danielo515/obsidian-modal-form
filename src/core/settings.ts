@@ -1,4 +1,5 @@
-import { Output, ValiError, array, boolean, enumType, is, object, optional, unknown } from "valibot";
+import type { Output, ValiError} from "valibot";
+import { array, boolean, enumType, is, object, optional, unknown } from "valibot";
 import type { FormDefinition } from "./formDefinition";
 import type { MigrationError } from "./formDefinitionSchema";
 import * as E from 'fp-ts/Either';

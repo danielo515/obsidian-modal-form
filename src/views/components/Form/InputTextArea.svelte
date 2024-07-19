@@ -1,8 +1,8 @@
 <script lang="ts">
     import { Platform } from "obsidian";
-    import { FieldDefinition } from "src/core/formDefinition";
-    import { FieldValue } from "src/store/formStore";
-    import { Readable, Writable } from "svelte/store";
+    import type { FieldDefinition } from "src/core/formDefinition";
+    import type { FieldValue } from "src/store/formStore";
+    import type { Readable, Writable } from "svelte/store";
     import ObsidianInputWrapper from "./ObsidianInputWrapper.svelte";
     export let field: FieldDefinition;
     export let value: Writable<FieldValue>;

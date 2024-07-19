@@ -1,11 +1,11 @@
 <script lang="ts">
-    export let label: string;
-    export let inline = false;
+    import type { Snippet } from "svelte";
+    let {label, inline, children}: {label:string, inline: boolean, children: Snippet} = $props();
 </script>
 
 <label class="field-group" class:inline>
     <span>{label}</span>
-    <slot />
+    {@render children()}
 </label>
 
 <style>

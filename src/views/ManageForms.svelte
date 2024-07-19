@@ -1,8 +1,8 @@
 <script lang="ts">
     import * as Separated from "fp-ts/Separated";
-    import { FormDefinition } from "src/core/formDefinition";
+    import type { FormDefinition } from "src/core/formDefinition";
     import { MigrationError } from "src/core/formDefinitionSchema";
-    import { Readable } from "svelte/store";
+    import type { Readable } from "svelte/store";
     import Button from "./components/Button.svelte";
     import KeyValue from "./components/KeyValue.svelte";
 
@@ -101,6 +101,7 @@
                     <span>Open in template editor</span>
                 </button>
                 <Button
+                    variant="regular"
                     tooltip={`Copy ${form.name} to clipboard`}
                     icon="clipboard-copy"
                     onClick={() => handleCopyForm(form)}

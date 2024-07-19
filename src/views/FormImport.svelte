@@ -1,9 +1,9 @@
 <script lang="ts">
     import { type FormImportModel } from "./FormImport";
     export let model: FormImportModel;
-    const { state, validate } = model;
+    const { state: state_, validate } = model;
     let value: string = "";
-    $: ui = model.uiState($state);
+    $: ui = model.uiState($state_);
 </script>
 
 <div class="vertical mainView">
@@ -19,7 +19,7 @@
             class="form-input"
             placeholder="Paste your form JSON here"
             on:input={() => validate(value)}
-        />
+        ></textarea>
 
         <div class="vertical">
             {#if ui.errors.length > 0}

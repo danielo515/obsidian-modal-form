@@ -1,4 +1,5 @@
-import { AbstractInputSuggest, App, TFile, setIcon } from "obsidian";
+import type { App, TFile} from "obsidian";
+import { AbstractInputSuggest, setIcon } from "obsidian";
 import { enrich_tfile, get_tfiles_from_folder } from "../utils/files";
 import { E, pipe, A } from "@std";
 import Fuse from "fuse.js";

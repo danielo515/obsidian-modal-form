@@ -2,9 +2,10 @@ import * as R from 'fp-ts/Record';
 import * as O from 'fp-ts/Option';
 import { log_error } from "../utils/Log";
 import { ModalFormError } from "../utils/ModalFormError";
-import { FormDefinition } from './formDefinition';
+import type { FormDefinition } from './formDefinition';
 import { A, pipe } from '@std';
-import { ModalFormData, isPrimitiveArray, isPrimitive, Val } from './FormResult';
+import type { ModalFormData, Val } from './FormResult';
+import { isPrimitiveArray, isPrimitive } from './FormResult';
 
 
 /**

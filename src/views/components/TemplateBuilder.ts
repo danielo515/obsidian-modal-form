@@ -1,5 +1,5 @@
 import { A, pipe } from "@std";
-import { FormDefinition } from "src/core/formDefinition";
+import type { FormDefinition } from "src/core/formDefinition";
 import { buildResultBody } from "src/core/templater/builder";
 import { derived, writable } from "svelte/store";
 

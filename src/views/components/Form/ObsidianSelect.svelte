@@ -1,11 +1,11 @@
 <script lang="ts">
     import { E, pipe } from "@std";
     import { input as I } from "src/core";
-    import { FieldDefinition } from "src/core/formDefinition";
-    import { FieldValue } from "src/store/formStore";
+    import type { FieldDefinition } from "src/core/formDefinition";
+    import type { FieldValue } from "src/store/formStore";
     import { log_error } from "src/utils/Log";
     import { get_tfiles_from_folder } from "src/utils/files";
-    import { Readable, Writable } from "svelte/store";
+    import type { Readable, Writable } from "svelte/store";
     import ObsidianInput from "./ObsidianInputWrapper.svelte";
     export let field: FieldDefinition;
     export let input: I.Select;

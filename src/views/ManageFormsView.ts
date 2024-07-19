@@ -1,7 +1,9 @@
-import { ItemView, Notice, WorkspaceLeaf } from "obsidian";
-import { FormDefinition } from "src/core/formDefinition";
+import type { WorkspaceLeaf } from "obsidian";
+import { ItemView, Notice } from "obsidian";
+import type { FormDefinition } from "src/core/formDefinition";
 import { formsStore, invalidFormsStore, settingsStore } from "src/store/store";
-import ModalFormPlugin from "../main";
+import { createClassComponent } from "svelte/legacy";
+import type ModalFormPlugin from "../main";
 import ManageForms from "./ManageForms.svelte";
 
 export const MANAGE_FORMS_VIEW = "modal-form-manage-forms-view";
@@ -32,7 +34,8 @@ export class ManageFormsView extends ItemView {
         const container = this.containerEl.children[1] || this.containerEl.createDiv();
         container.empty();
 
-        this.component = new ManageForms({
+        this.component = createClassComponent({
+            component: ManageForms,
             target: container,
             props: {
                 forms: formsStore,
