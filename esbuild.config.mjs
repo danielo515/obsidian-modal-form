@@ -54,7 +54,8 @@ const config = {
 };
 
 if (prod) {
-    const result = esbuild.buildSync(config);
+    const context = await esbuild.context(config);
+    const result = await context.rebuild();
     fs.writeFileSync("meta.json", JSON.stringify(result.metafile));
     process.exit(0);
 } else {
