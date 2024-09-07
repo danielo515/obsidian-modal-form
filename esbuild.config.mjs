@@ -13,7 +13,7 @@ if you want to view the source, please visit the github repository of this plugi
 
 const prod = process.argv[2] === "production";
 
-const context = await esbuild.context({
+const config = {
     banner: {
         js: banner,
     },
@@ -51,12 +51,17 @@ const context = await esbuild.context({
     define: {
         "process.env.NODE_ENV": JSON.stringify(prod ? "production" : "development"),
     },
-});
+};
 
 if (prod) {
+    const context = await esbuild.context(config);
     const result = await context.rebuild();
     fs.writeFileSync("meta.json", JSON.stringify(result.metafile));
     process.exit(0);
 } else {
+    const context = await esbuild.context({
+        ...config,
+        outfile: "EXAMPLE_VAULT/.obsidian/plugins/modal-form/main.js",
+    });
     await context.watch();
 }

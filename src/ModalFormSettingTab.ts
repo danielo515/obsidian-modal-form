@@ -1,6 +1,6 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
-import ModalFormPlugin from "./main";
 import { isValidOpenPosition } from "./core/settings";
+import ModalFormPlugin from "./main";
 
 export class ModalFormSettingTab extends PluginSettingTab {
     plugin: ModalFormPlugin;
@@ -13,7 +13,11 @@ export class ModalFormSettingTab extends PluginSettingTab {
     async display() {
         const { containerEl, plugin } = this;
         containerEl.empty();
-        containerEl.createEl('a', { text: 'Modal Form documentation', cls: 'nav-link', href: 'https://github.com/danielo515/obsidian-modal-form' })
+        containerEl.createEl("a", {
+            text: "Modal Form documentation",
+            cls: "nav-link",
+            href: "https://github.com/danielo515/obsidian-modal-form",
+        });
 
         const settings = await plugin.getSettings();
 
@@ -30,14 +34,16 @@ export class ModalFormSettingTab extends PluginSettingTab {
                     .setValue(settings.editorPosition)
                     .onChange(async (value) => {
                         if (isValidOpenPosition(value)) {
-                            await this.plugin.setEditorPosition(value)
+                            await this.plugin.setEditorPosition(value);
                         }
                     });
             });
 
         new Setting(containerEl)
             .setName("Attach Modal-Form Shortcut to Global Window")
-            .setDesc("Enable or disable attaching a modal-form shortcut to the global window. If you enable this you will be able to access the API using the global variable `MF`. Enabling is immediate, disabling requires a restart.")
+            .setDesc(
+                "Enable or disable attaching a modal-form shortcut to the global window. If you enable this you will be able to access the API using the global variable `MF`. Enabling is immediate, disabling requires a restart.",
+            )
             .addToggle((component) => {
                 component
                     .setValue(settings.attachShortcutToGlobalWindow)
