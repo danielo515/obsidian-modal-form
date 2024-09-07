@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.51.0](https://github.com/danielo515/obsidian-modal-form/compare/1.50.0...1.51.0) (2024-09-07)
+
+
+### Features
+
+* create an example vault ([6c1f7c8](https://github.com/danielo515/obsidian-modal-form/commit/6c1f7c88aac77cb7753e4cd605fd7a869d34e4b2))
+
 ## [1.50.0](https://github.com/danielo515/obsidian-modal-form/compare/1.49.0...1.50.0) (2024-07-10)
 
 
