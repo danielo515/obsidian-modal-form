@@ -1,0 +1,11 @@
+{
+  "templater-obsidian:insert-templater": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "I"
+    }
+  ],
+  "editor:toggle-italics": []
+}

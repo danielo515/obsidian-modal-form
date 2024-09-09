@@ -13,7 +13,8 @@
           "description": "It is named how?",
           "isRequired": true,
           "input": {
-            "type": "text"
+            "type": "text",
+            "hidden": false
           }
         },
         {
@@ -22,7 +23,8 @@
           "description": "How old",
           "isRequired": true,
           "input": {
-            "type": "number"
+            "type": "number",
+            "hidden": false
           }
         },
         {
@@ -30,7 +32,8 @@
           "label": "Date of Birth",
           "description": "When were you born?",
           "input": {
-            "type": "date"
+            "type": "date",
+            "hidden": false
           }
         },
         {
@@ -38,7 +41,8 @@
           "label": "Time of day",
           "description": "The time you can do this",
           "input": {
-            "type": "time"
+            "type": "time",
+            "hidden": false
           }
         },
         {
@@ -46,7 +50,8 @@
           "label": "Is family",
           "description": "If it is part of the family",
           "input": {
-            "type": "toggle"
+            "type": "toggle",
+            "hidden": false
           }
         },
         {
@@ -191,7 +196,8 @@
           "label": "Multi line notes",
           "description": "Put your thouhts here",
           "input": {
-            "type": "textarea"
+            "type": "textarea",
+            "hidden": false
           }
         },
         {
