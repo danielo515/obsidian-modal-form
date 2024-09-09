@@ -8,6 +8,7 @@ describe("dependentFields", () => {
     it("should return a list of conditions available for the input type: 'text'", () => {
         const field: FieldDefinition["input"] = {
             type: "text",
+            hidden: false,
         };
         const types = input.availableConditionsForInput(field);
         types.forEach((type) => {

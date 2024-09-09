@@ -10,32 +10,32 @@ export const exampleModalDefinition: FormDefinition = {
             label: "Name",
             description: "It is named how?",
             isRequired: true,
-            input: { type: "text" },
+            input: { type: "text", hidden: false },
         },
         {
             name: "age",
             label: "Age",
             description: "How old",
             isRequired: true,
-            input: { type: "number" },
+            input: { type: "number", hidden: false },
         },
         {
             name: "dateOfBirth",
             label: "Date of Birth",
             description: "When were you born?",
-            input: { type: "date" },
+            input: { type: "date", hidden: false },
         },
         {
             name: "timeOfDay",
             label: "Time of day",
             description: "The time you can do this",
-            input: { type: "time" },
+            input: { type: "time", hidden: false },
         },
         {
             name: "is_family",
             label: "Is family",
             description: "If it is part of the family",
-            input: { type: "toggle" },
+            input: { type: "toggle", hidden: false },
         },
         {
             name: "favorite_book",
@@ -138,10 +138,17 @@ export const exampleModalDefinition: FormDefinition = {
         {
             name: "some notes",
             label: "Multi line notes",
-            description: "Put your thouhts here",
+            description: "Put your thoughts here",
             input: {
                 type: "textarea",
+                hidden: false,
             },
+        },
+        {
+            name: "hidden_field",
+            label: "This field is hidden",
+            description: "It is useful for internal data",
+            input: { type: "text", hidden: true },
         },
         {
             name: "Tags",

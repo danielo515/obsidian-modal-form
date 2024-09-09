@@ -1,15 +1,15 @@
-import { FormDefinition } from "./formDefinition";
 import { formDataFromFormDefaults } from "./formDataFromFormDefaults";
+import { FormDefinition } from "./formDefinition";
 
 describe("formDataFromFormOptions", () => {
     const fields: FormDefinition["fields"] = [
-        { name: "age", description: "", input: { type: "number" } },
+        { name: "age", description: "", input: { type: "number", hidden: false } },
         {
             name: "name",
             description: "Enter your name",
-            input: { type: "text" },
+            input: { type: "text", hidden: false },
         },
-        { name: "age", description: "", input: { type: "number" } },
+        { name: "age", description: "", input: { type: "number", hidden: false } },
         {
             name: "hobbies",
             description: "Select your hobbies",
@@ -20,7 +20,7 @@ describe("formDataFromFormOptions", () => {
                 multi_select_options: ["reading", "swimming", "running"],
             },
         },
-        { name: "isEmployed", description: "", input: { type: "toggle" } },
+        { name: "isEmployed", description: "", input: { type: "toggle", hidden: false } },
     ];
 
     it("should return the correct form data when all values are valid", () => {

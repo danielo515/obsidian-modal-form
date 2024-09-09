@@ -44,7 +44,7 @@ const InputBasicTypeSchema = enumType([
     "tel",
 ]);
 
-export const isBasicInputType = (type: string) => is(InputBasicTypeSchema, type);
+export const isBasicInputType = (input: Input) => is(InputBasicSchema, input);
 export type BasicInputType = Output<typeof InputBasicTypeSchema>;
 
 //=========== Schema definitions
@@ -74,7 +74,10 @@ export const InputDataviewSourceSchema = object({
     type: literal("dataview"),
     query: nonEmptyString("dataview query"),
 });
-export const InputBasicSchema = object({ type: InputBasicTypeSchema });
+export const InputBasicSchema = object({
+    type: InputBasicTypeSchema,
+    hidden: optional(boolean(), false),
+});
 export const InputSelectFixedSchema = object({
     type: literal("select"),
     source: literal("fixed"),

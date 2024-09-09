@@ -185,7 +185,11 @@
                                         name: "",
                                         label: "",
                                         description: "",
-                                        input: { type: "text", allowUnknownValues: false },
+                                        input: {
+                                            type: "text",
+                                            allowUnknownValues: false,
+                                            hidden: false,
+                                        },
                                     },
                                 ];
                                 // onChange();

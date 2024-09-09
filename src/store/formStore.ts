@@ -12,7 +12,7 @@ import * as O from "fp-ts/Option";
 import { fromEntries, toEntries } from "fp-ts/Record";
 import { absurd } from "fp-ts/function";
 import { FieldDefinition } from "src/core/formDefinition";
-import { valueMeetsCondition } from "src/core/input";
+import { isBasicInputType, valueMeetsCondition } from "src/core/input";
 import { type Logger, logger } from "src/utils/Logger";
 import type { Readable, Writable } from "svelte/store";
 import { derived, get, writable } from "svelte/store";
@@ -299,6 +299,11 @@ export function makeFormEngine({
                     field.name,
                     field.condition && $form.fields[field.condition.dependencyName],
                 );
+                if (isBasicInputType(field.input)) {
+                    if (field.input.hidden) {
+                        return E.of(false);
+                    }
+                }
                 if (field.isRequired) return E.of(true);
                 const condition = field.condition;
                 if (condition === undefined) return E.of(true);
