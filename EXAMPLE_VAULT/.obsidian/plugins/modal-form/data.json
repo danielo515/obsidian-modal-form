@@ -217,6 +217,53 @@
         }
       ],
       "version": "1"
+    },
+    {
+      "title": "Hidden fields example",
+      "name": "hidden-fields",
+      "fields": [
+        {
+          "name": "Explanation",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "document_block",
+            "body": "return `This field contains several hidden fields`"
+          }
+        },
+        {
+          "name": "hidden_text",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "text",
+            "hidden": true
+          }
+        },
+        {
+          "name": "hidden_date",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "date",
+            "hidden": true
+          }
+        },
+        {
+          "name": "hidden_number",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "number",
+            "hidden": true
+          }
+        }
+      ],
+      "version": "1"
     }
   ]
 }
