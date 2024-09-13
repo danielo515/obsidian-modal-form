@@ -9,6 +9,7 @@
         type EditableFormDefinition,
         type FormDefinition,
     } from "src/core/formDefinition";
+    import { isBasicInputType } from "src/core/input";
     import { ParsedTemplate, parsedTemplateToString } from "src/core/template/templateParser";
     import { log_error } from "src/utils/Log";
     import { ModalFormError } from "src/utils/ModalFormError";
@@ -185,7 +186,11 @@
                                         name: "",
                                         label: "",
                                         description: "",
-                                        input: { type: "text", allowUnknownValues: false },
+                                        input: {
+                                            type: "text",
+                                            allowUnknownValues: false,
+                                            hidden: false,
+                                        },
                                     },
                                 ];
                                 // onChange();
@@ -251,6 +256,16 @@
                                     id={`label_${index}`}
                                 />
                             </div>
+
+                            {#if isBasicInputType(field.input)}
+                                <FormRow
+                                    label="Hidden field"
+                                    tooltip="This field will not be shown. It is a common way to pass data to the form that is not meant to be seen."
+                                    id={`hidden_${index}`}
+                                >
+                                    <Toggle bind:checked={field.input.hidden} tabindex={index} />
+                                </FormRow>
+                            {/if}
 
                             <div class="flex column gap1">
                                 <label
@@ -399,7 +414,7 @@
         height: 100%;
         overflow: hidden;
     }
-    .is-mobile .body,
+    :global(.is-mobile .body),
     .body {
         padding-top: 0.5rem;
         overflow-y: scroll;
