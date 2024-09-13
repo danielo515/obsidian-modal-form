@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.51.0](https://github.com/danielo515/obsidian-modal-form/compare/1.50.0...1.51.0) (2024-09-13)
+
+
+### Features
+
+* create an example vault ([6c1f7c8](https://github.com/danielo515/obsidian-modal-form/commit/6c1f7c88aac77cb7753e4cd605fd7a869d34e4b2))
+* **form-builder:** add ability to hide fields to the UI ([1af3b2d](https://github.com/danielo515/obsidian-modal-form/commit/1af3b2ddda71d5f95b27309382c849300f940123))
+* **form-engine:** basic inputs can be hidden ([6b5d17f](https://github.com/danielo515/obsidian-modal-form/commit/6b5d17fb7feaf056dc835bacc9a5ba8ec18e0d53))
+
 ## [1.50.0](https://github.com/danielo515/obsidian-modal-form/compare/1.49.0...1.50.0) (2024-07-10)
 
 
