@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.52.0](https://github.com/danielo515/obsidian-modal-form/compare/1.51.0...1.52.0) (2024-09-29)
+
+
+### Features
+
+* **form-runtime:** markdown block input ([567d391](https://github.com/danielo515/obsidian-modal-form/commit/567d3911ea308291eb4e231adaa11f21e2b7cd78))
+
 ## [1.51.0](https://github.com/danielo515/obsidian-modal-form/compare/1.50.0...1.51.0) (2024-09-13)
 
 
