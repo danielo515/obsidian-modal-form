@@ -680,6 +680,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#release-notes-for-1520" class="md-nav__link">
+    <span class="md-ellipsis">
+      Release notes for 1.52.0
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#release-notes-for-1510" class="md-nav__link">
     <span class="md-ellipsis">
       Release notes for 1.51.0
@@ -766,6 +775,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#release-notes-for-1520" class="md-nav__link">
+    <span class="md-ellipsis">
+      Release notes for 1.52.0
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#release-notes-for-1510" class="md-nav__link">
     <span class="md-ellipsis">
       Release notes for 1.51.0
@@ -815,6 +833,56 @@
       <header class="md-typeset">
         <h1 id="2024">2024</h1>
       </header>
+      
+        <article class="md-post md-post--excerpt">
+  <header class="md-post__header">
+    
+    <div class="md-post__meta md-meta">
+      <ul class="md-meta__list">
+        <li class="md-meta__item">
+          <time datetime="2024-09-29 00:00:00">September 29, 2024</time></li>
+        
+        
+          
+          <li class="md-meta__item">
+            
+              2 min read
+            
+          </li>
+        
+      </ul>
+      
+    </div>
+  </header>
+  <div class="md-post__content md-typeset">
+    <h2 id="release-notes-for-1520"><a class="toclink" href="../../2024/09/29/release-notes-for-1520/">Release notes for 1.52.0</a></h2>
+<h3 id="markdown-block"><a class="toclink" href="../../2024/09/29/release-notes-for-1520/#markdown-block">Markdown block</a></h3>
+<p>This release introduces a new input, the "markdown block".
+Just like the existing "document block" this is not a real input, but more a building block for richer forms.
+The definition is expected to contain a function body returning a markdown string. This markdown string will then be rendered
+into the form and the user filling it will be able to see it.</p>
+<p>To illustrate with an example, imagine a simple form with a single text input, we can define a markdown block with this content:</p>
+<pre><code class="language-js">return `# hello
+- line 1
+- ${form.text}
+- ![[image.png]]`
+</code></pre>
+<p>Have you noticed the image syntax? Yes, images are supported too.
+This is how it looks once rendered:
+<img alt="form containing markdown block" src="../../Screenshot%202024-09-29%20at%2020.03.34.png" /></p>
+<h4 id="updates-to-the-existing-document-block"><a class="toclink" href="../../2024/09/29/release-notes-for-1520/#updates-to-the-existing-document-block">Updates to the existing document block</a></h4>
+<p>Both Markdown block and document block now have access to the dataview API (along with the form data itself).
+This allows to build much complex and data packed information panels.
+To access the dataview API, you do normally just like in any other place using a special variable named <code>dv</code>.
+For example, and continuing with the markdown example, we could render a list of all the people (in markdown) using dataview
+like this:</p>
+<pre><code class="language-js">return dv.markdownList(dv.pages('#person').map(x =&gt; x.file.name))
+</code></pre>
+<p>That will render something like this:
+<img alt="markdown using dataview" src="../../Screenshot%202024-09-29%20at%2020.32.35.png" /></p>
+    
+  </div>
+</article>
       
         <article class="md-post md-post--excerpt">
   <header class="md-post__header">
