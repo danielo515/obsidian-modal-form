@@ -293,13 +293,11 @@
           "name": "block_01",
           "label": "",
           "description": "",
+          "isRequired": false,
           "input": {
             "type": "document_block",
-            "allowUnknownValues": false,
-            "hidden": false,
             "body": "return `${form.text}`"
-          },
-          "isRequired": false
+          }
         }
       ],
       "version": "1"
