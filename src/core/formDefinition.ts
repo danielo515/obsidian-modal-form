@@ -46,6 +46,7 @@ export const InputTypeReadable: Record<AllFieldTypes, string> = {
     dataview: "Dataview",
     multiselect: "Multiselect",
     document_block: "Document block",
+    markdown_block: "Markdown block",
 } as const;
 
 export function isDataViewSource(input: unknown): input is inputDataviewSource {

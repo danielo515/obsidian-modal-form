@@ -353,8 +353,14 @@
                                     bind:value={field.input.query}
                                     {app}
                                 />
-                            {:else if field.input.type === "document_block"}
-                                <InputBuilderDocumentBlock {index} bind:body={field.input.body} />
+                            {:else if field.input.type === "document_block" || field.input.type === "markdown_block"}
+                                <InputBuilderDocumentBlock
+                                    {index}
+                                    bind:body={field.input.body}
+                                    flavour={field.input.type === "document_block"
+                                        ? "html"
+                                        : "markdown"}
+                                />
                             {/if}
                         </div>
 

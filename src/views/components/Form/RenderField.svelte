@@ -3,6 +3,7 @@
     import { App } from "obsidian";
     import { FieldDefinition } from "src/core/formDefinition";
     import { FormEngine } from "src/store/formStore";
+    import { logger as l } from "src/utils/Logger";
     import InputField from "src/views/components/Form/InputField.svelte";
     import ObsidianInputWrapper from "src/views/components/Form/ObsidianInputWrapper.svelte";
     import { derived } from "svelte/store";
@@ -10,13 +11,13 @@
     import InputDataview from "./InputDataview.svelte";
     import InputFolder from "./InputFolder.svelte";
     import InputNote from "./InputNote.svelte";
+    import InputSlider from "./inputSlider.svelte";
     import InputTag from "./InputTag.svelte";
     import InputTextArea from "./InputTextArea.svelte";
+    import MarkdownBlock from "./MarkdownBlock.svelte";
     import MultiSelectField from "./MultiSelectField.svelte";
     import ObsidianSelect from "./ObsidianSelect.svelte";
     import ObsidianToggle from "./ObsidianToggle.svelte";
-    import { logger as l } from "src/utils/Logger";
-    import InputSlider from "./inputSlider.svelte";
 
     export let model: ReturnType<FormEngine["addField"]>;
     export let definition: FieldDefinition;
@@ -54,13 +55,15 @@
         <InputNote field={definition} input={definition.input} {value} {errors} {app} />
     {:else if definition.input.type === "textarea"}
         <InputTextArea field={definition} {value} {errors} />
+    {:else if definition.input.type === "markdown_block"}
+        <MarkdownBlock field={definition.input} form={formEngine} {app} />
     {:else if definition.input.type === "document_block"}
         <!-- I need to put this separated to be able to target the correct slot, it does not work inside #if -->
         <ObsidianInputWrapper
             label={definition.label || definition.name}
             description={definition.description}
         >
-            <DocumentBlock field={definition.input} form={formEngine} slot="info" />
+            <DocumentBlock field={definition.input} form={formEngine} slot="info" {app} />
         </ObsidianInputWrapper>
     {:else}
         <ObsidianInputWrapper

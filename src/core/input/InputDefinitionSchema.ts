@@ -131,6 +131,15 @@ const DocumentBlock = object({
     body: string(),
 });
 
+/**
+ * Same as DocumentBlock, but with accepts and markdown as result
+ * from the body function
+ */
+const MarkdownBlock = object({
+    type: literal("markdown_block"),
+    body: string(),
+});
+
 // Codec for all the input types
 export const InputTypeSchema = union([
     InputBasicSchema,
@@ -143,6 +152,7 @@ export const InputTypeSchema = union([
     InputSelectFixedSchema,
     MultiselectSchema,
     DocumentBlock,
+    MarkdownBlock,
 ]);
 
 export type Input = Output<typeof InputTypeSchema>;
@@ -165,6 +175,7 @@ export const InputTypeToParserMap: Record<AllFieldTypes, ParsingFn<BaseSchema>> 
     dataview: parseC(InputDataviewSourceSchema),
     multiselect: parseC(MultiselectSchema),
     document_block: parseC(DocumentBlock),
+    markdown_block: parseC(MarkdownBlock),
 };
 
 //=========== Types derived from schemas
@@ -180,6 +191,7 @@ export type inputTag = Output<typeof InputTagSchema>;
 export type inputType = Output<typeof InputTypeSchema>;
 
 export type DocumentBlock = Output<typeof DocumentBlock>;
+export type MarkdownBlock = Output<typeof MarkdownBlock>;
 
 export function requiresListOfStrings(input: inputType): boolean {
     const type = input.type;
@@ -193,6 +205,7 @@ export function requiresListOfStrings(input: inputType): boolean {
         case "folder":
         case "slider":
         case "document_block":
+        case "markdown_block":
         case "number":
         case "text":
         case "date":

@@ -55,6 +55,7 @@ export function availableConditionsForInput(input: FieldDefinition["input"]): Co
         case "tag":
         case "dataview":
         case "document_block":
+        case "markdown_block":
             return [];
         default:
             return absurd(input);

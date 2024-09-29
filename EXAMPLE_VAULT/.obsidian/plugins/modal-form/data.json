@@ -229,7 +229,7 @@
           "isRequired": false,
           "input": {
             "type": "document_block",
-            "body": "return `This field contains several hidden fields`"
+            "body": "return `This field contains several hidden fields ${form.hidden_text}`"
           }
         },
         {
@@ -261,6 +261,45 @@
             "type": "number",
             "hidden": true
           }
+        }
+      ],
+      "version": "1"
+    },
+    {
+      "title": "Codeblock examples",
+      "name": "codeblocks",
+      "fields": [
+        {
+          "name": "md_block",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "markdown_block",
+            "body": "return `# hello\n- line 1\n- ${form.text}\n- ![[image.png]]`"
+          }
+        },
+        {
+          "name": "text",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "text",
+            "hidden": false
+          }
+        },
+        {
+          "name": "block_01",
+          "label": "",
+          "description": "",
+          "input": {
+            "type": "document_block",
+            "allowUnknownValues": false,
+            "hidden": false,
+            "body": "return `${form.text}`"
+          },
+          "isRequired": false
         }
       ],
       "version": "1"
