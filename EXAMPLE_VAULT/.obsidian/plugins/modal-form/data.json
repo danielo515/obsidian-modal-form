@@ -301,6 +301,24 @@
         }
       ],
       "version": "1"
+    },
+    {
+      "title": "Image input example",
+      "name": "image_input",
+      "fields": [
+        {
+          "name": "image",
+          "label": "Example image",
+          "description": "Pick an image and save it to your vault",
+          "isRequired": false,
+          "input": {
+            "type": "image",
+            "filenameTemplate": "image-{{date}}",
+            "saveLocation": "attachments/profile_pictures"
+          }
+        }
+      ],
+      "version": "1"
     }
   ]
 }

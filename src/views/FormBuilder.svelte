@@ -15,13 +15,14 @@
     import { ModalFormError } from "src/utils/ModalFormError";
     import FieldMeta from "./components/FormBuilder/FieldMeta.svelte";
     import FormRow from "./components/FormRow.svelte";
+    import InputBuilderDataview from "./components/inputBuilderDataview.svelte";
     import InputBuilderDocumentBlock from "./components/InputBuilderDocumentBlock.svelte";
     import InputFolder from "./components/InputBuilderFolder.svelte";
+    import InputBuilderImage from "./components/InputBuilderImage.svelte";
     import InputBuilderSelect from "./components/InputBuilderSelect.svelte";
     import Tabs from "./components/Tabs.svelte";
     import TemplateEditor from "./components/TemplateEditor.svelte";
     import Toggle from "./components/Toggle.svelte";
-    import InputBuilderDataview from "./components/inputBuilderDataview.svelte";
 
     export let definition: EditableFormDefinition = {
         title: "",
@@ -360,6 +361,14 @@
                                     flavour={field.input.type === "document_block"
                                         ? "html"
                                         : "markdown"}
+                                />
+                            {:else if field.input.type === "image"}
+                                <InputBuilderImage
+                                    {index}
+                                    bind:saveLocation={field.input.saveLocation}
+                                    bind:filenameTemplate={field.input.filenameTemplate}
+                                    notifyChange={onChange}
+                                    {app}
                                 />
                             {/if}
                         </div>

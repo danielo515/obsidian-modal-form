@@ -57,6 +57,8 @@ export function availableConditionsForInput(input: FieldDefinition["input"]): Co
         case "document_block":
         case "markdown_block":
             return [];
+        case "image":
+            return ["isSet"];
         default:
             return absurd(input);
     }
