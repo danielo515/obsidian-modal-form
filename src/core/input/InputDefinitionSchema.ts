@@ -140,6 +140,12 @@ const MarkdownBlock = object({
     body: string(),
 });
 
+export const InputImageSchema = object({
+    type: literal("image"),
+    saveLocation: nonEmptyString("save location"),
+    saveFunction: optional(string()), // Optional custom save function name
+});
+
 // Codec for all the input types
 export const InputTypeSchema = union([
     InputBasicSchema,
@@ -153,6 +159,7 @@ export const InputTypeSchema = union([
     MultiselectSchema,
     DocumentBlock,
     MarkdownBlock,
+    InputImageSchema,
 ]);
 
 export type Input = Output<typeof InputTypeSchema>;
@@ -176,6 +183,7 @@ export const InputTypeToParserMap: Record<AllFieldTypes, ParsingFn<BaseSchema>> 
     multiselect: parseC(MultiselectSchema),
     document_block: parseC(DocumentBlock),
     markdown_block: parseC(MarkdownBlock),
+    image: parseC(InputImageSchema),
 };
 
 //=========== Types derived from schemas
@@ -215,6 +223,7 @@ export function requiresListOfStrings(input: inputType): boolean {
         case "toggle":
         case "email":
         case "tel":
+        case "image":
             return false;
         default:
             return absurd(type);

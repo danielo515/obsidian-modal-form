@@ -47,6 +47,7 @@ export const InputTypeReadable: Record<AllFieldTypes, string> = {
     multiselect: "Multiselect",
     document_block: "Document block",
     markdown_block: "Markdown block",
+    image: "Image",
 } as const;
 
 export function isDataViewSource(input: unknown): input is inputDataviewSource {

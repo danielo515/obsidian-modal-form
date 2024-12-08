@@ -156,6 +156,15 @@ export const exampleModalDefinition: FormDefinition = {
             input: { type: "tag" },
         },
         {
+            name: "profile_picture",
+            label: "Profile Picture",
+            description: "Upload a profile picture",
+            input: { 
+                type: "image",
+                saveLocation: "attachments/profile_pictures/"
+            },
+        },
+        {
             name: "document",
             description: "Document block example",
             input: {
