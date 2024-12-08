@@ -140,10 +140,10 @@ const MarkdownBlock = object({
     body: string(),
 });
 
-export const InputImageSchema = object({
+export const ImageInputSchema = object({
     type: literal("image"),
+    filenameTemplate: nonEmptyString("filename template"),
     saveLocation: nonEmptyString("save location"),
-    saveFunction: optional(string()), // Optional custom save function name
 });
 
 // Codec for all the input types
@@ -159,7 +159,7 @@ export const InputTypeSchema = union([
     MultiselectSchema,
     DocumentBlock,
     MarkdownBlock,
-    InputImageSchema,
+    ImageInputSchema,
 ]);
 
 export type Input = Output<typeof InputTypeSchema>;
@@ -183,7 +183,7 @@ export const InputTypeToParserMap: Record<AllFieldTypes, ParsingFn<BaseSchema>> 
     multiselect: parseC(MultiselectSchema),
     document_block: parseC(DocumentBlock),
     markdown_block: parseC(MarkdownBlock),
-    image: parseC(InputImageSchema),
+    image: parseC(ImageInputSchema),
 };
 
 //=========== Types derived from schemas
@@ -200,6 +200,8 @@ export type inputType = Output<typeof InputTypeSchema>;
 
 export type DocumentBlock = Output<typeof DocumentBlock>;
 export type MarkdownBlock = Output<typeof MarkdownBlock>;
+
+export type imageInput = Output<typeof ImageInputSchema>;
 
 export function requiresListOfStrings(input: inputType): boolean {
     const type = input.type;

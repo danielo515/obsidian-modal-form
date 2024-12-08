@@ -73,7 +73,7 @@
             description={definition.description}
             required={definition.isRequired}
         >
-            <ImageInput id={definition.name} {app} saveLocation={definition.input.saveLocation} />
+            <ImageInput id={definition.name} {app} input={definition.input} />
         </ObsidianInputWrapper>
     {:else}
         <ObsidianInputWrapper

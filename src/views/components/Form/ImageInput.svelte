@@ -1,11 +1,15 @@
 <!-- ImageInput.svelte -->
 <script lang="ts">
-    import { ensureError } from "@std";
+    import { E, ensureError, pipe } from "@std";
+    import { absurd } from "fp-ts/lib/function";
     import { App, normalizePath } from "obsidian";
+    import { FolderDoesNotExistError, NotAFolderError, resolve_tfolder } from "src/utils/files";
+    import { createFilename } from "src/core/input/imageFilenameTemplate";
+    import { type imageInput } from "src/core/input/InputDefinitionSchema";
 
     export let id: string;
     export let app: App;
-    export let saveLocation: string;
+    export let input: imageInput;
 
     let fileInput: HTMLInputElement;
     let previewImage: HTMLImageElement;
@@ -14,21 +18,32 @@
 
     async function saveImage(dataUrl: string) {
         try {
-            // Save image using Obsidian API
             const base64Data = dataUrl.split(",")[1];
             if (!base64Data) {
                 throw new Error("There was a problem loading the image data");
             }
             const buffer = Buffer.from(base64Data, "base64");
 
-            // Ensure the save location exists
-            const folder = normalizePath(saveLocation).split("/").slice(0, -1).join("/");
-            const folderExists = await app.vault.adapter.exists(folder);
-            if (!folderExists) {
-                await app.vault.createFolder(folder);
-            }
+            await pipe(
+                input.saveLocation,
+                (path) => resolve_tfolder(path, app),
+                E.fold(
+                    async (err) => {
+                        if (err instanceof FolderDoesNotExistError) {
+                            return await app.vault.createFolder(input.saveLocation);
+                        }
+                        if (err instanceof NotAFolderError) {
+                            throw new Error("Save location is not a folder");
+                        }
+                        return absurd(err);
+                    },
+                    () => Promise.resolve(),
+                ),
+            );
 
-            await app.vault.createBinary(saveLocation, buffer);
+            const filename = createFilename(input.filenameTemplate);
+            const fullPath = normalizePath(`${input.saveLocation}/${filename}`);
+            await app.vault.createBinary(fullPath, buffer);
 
             error = null;
         } catch (e) {

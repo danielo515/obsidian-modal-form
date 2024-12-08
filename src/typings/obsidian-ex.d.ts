@@ -1,5 +1,6 @@
 // https://github.com/blacksmithgu/obsidian-dataview/blob/bb594a27ba1eed130d7c2ab7eff0990578e93f62/src/typings/obsidian-ex.d.ts
 import type { DataviewApi } from "api/plugin-api";
+import type moment from "moment";
 import "obsidian";
 import { PublicAPI } from "src/main";
 
@@ -38,4 +39,10 @@ declare global {
         MF?: PublicAPI;
         ModalForm?: PublicAPI;
     }
+}
+
+declare global {
+  interface Window {
+    moment: typeof moment;
+  }
 }
