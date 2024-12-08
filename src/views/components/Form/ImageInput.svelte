@@ -1,23 +1,52 @@
 <!-- ImageInput.svelte -->
 <script lang="ts">
     import { E, ensureError, pipe } from "@std";
+    import type { Either } from "fp-ts/lib/Either";
     import { absurd } from "fp-ts/lib/function";
     import { App, normalizePath } from "obsidian";
-    import { FolderDoesNotExistError, NotAFolderError, resolve_tfolder } from "src/utils/files";
     import { createFilename } from "src/core/input/imageFilenameTemplate";
     import { type imageInput } from "src/core/input/InputDefinitionSchema";
+    import { FolderDoesNotExistError, NotAFolderError, resolve_tfolder } from "src/utils/files";
+    import { logger } from "src/utils/Logger";
 
     export let id: string;
     export let app: App;
     export let input: imageInput;
+    export let l = logger;
 
     let fileInput: HTMLInputElement;
     let previewImage: HTMLImageElement;
-    let selectedFile: File | null = null;
     let error: string | null = null;
+
+    function getImageExtension(dataUrl: string): Either<Error, string> {
+        return pipe(
+            dataUrl.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,/),
+            E.fromNullable(new Error("Invalid image format")),
+            E.chain(
+                E.liftNullable(
+                    (x) => x[1],
+                    (_) => new Error("Invalid image format"),
+                ),
+            ),
+            E.chain((mimeType) =>
+                pipe(
+                    mimeType.split("/")[1],
+                    E.fromNullable(new Error("Invalid image format")),
+                    E.map((extension) => extension.replace("jpeg", "jpg")),
+                ),
+            ),
+        );
+    }
 
     async function saveImage(dataUrl: string) {
         try {
+            const extension = await pipe(
+                getImageExtension(dataUrl),
+                E.getOrElseW((err) => {
+                    throw err;
+                }),
+            );
+
             const base64Data = dataUrl.split(",")[1];
             if (!base64Data) {
                 throw new Error("There was a problem loading the image data");
@@ -42,7 +71,7 @@
             );
 
             const filename = createFilename(input.filenameTemplate);
-            const fullPath = normalizePath(`${input.saveLocation}/${filename}`);
+            const fullPath = normalizePath(`${input.saveLocation}/${filename}.${extension}`);
             await app.vault.createBinary(fullPath, buffer);
 
             error = null;
@@ -56,11 +85,16 @@
     function handleFileChange(event: Event) {
         const target = event.target as HTMLInputElement;
         if (target.files && target.files[0]) {
-            selectedFile = target.files[0];
+            const selectedFile = target.files[0];
             const reader = new FileReader();
 
             reader.onload = async (e) => {
-                const dataUrl = e.target?.result as string;
+                const dataUrl = e.target?.result;
+                l.debug("dataUrl", dataUrl);
+                if (typeof dataUrl !== "string") {
+                    console.error("Invalid data URL", dataUrl);
+                    return;
+                }
                 if (previewImage) {
                     previewImage.src = dataUrl;
                 }
