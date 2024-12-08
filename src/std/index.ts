@@ -17,6 +17,7 @@ export * as E from "fp-ts/Either";
 export type { Either, Left, Right } from "fp-ts/Either";
 export type { NonEmptyArray } from "fp-ts/NonEmptyArray";
 export * as O from "fp-ts/Option";
+export * as TE from "fp-ts/TaskEither";
 export * as Str from "fp-ts/string";
 export * as Struct from "fp-ts/struct";
 export * as A from "./Array";
