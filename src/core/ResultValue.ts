@@ -1,5 +1,6 @@
 import { E, O, ensureError, pipe } from "@std";
 import { notifyError } from "src/utils/Log";
+import { FileProxy } from "./files/FileProxy";
 
 function _toBulletList(value: Record<string, unknown> | unknown[]) {
     if (Array.isArray(value)) {
@@ -110,7 +111,7 @@ export class ResultValue<T = unknown> {
         return `[${this.name}:: ${this.toString()}]`;
     }
     /**
-     * Transforms the containerd value using the provided function.
+     * Transforms the contained value using the provided function.
      * If the value is undefined or null the function will not be called
      * and the result will be the same as the original.
      * This is useful if you want to apply somme modifications to the value
@@ -180,5 +181,22 @@ export class ResultValue<T = unknown> {
      * */
     get trimmed() {
         return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? it.trim() : it)));
+    }
+
+    /**
+     * renders the value as a markdown link.
+     * If the value is a string, it will be rendered as a markdown link.
+     * If the value is a FileProxy (right now just used for images), it will be rendered as an embedded link.
+     * Any other type of value will be rendered as an empty string.
+     */
+    get link() {
+        switch (true) {
+            case typeof this.value === "string":
+                return `[[${this.value}]]`;
+            case this.value instanceof FileProxy:
+                return `![[${this.value.path}]]`;
+            default:
+                return "";
+        }
     }
 }
