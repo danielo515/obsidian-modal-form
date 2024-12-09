@@ -42,12 +42,7 @@
 
     <div class="preview">
         {#if $previewUrl}
-            <img
-                src={$previewUrl}
-                alt="Preview"
-                class="hidden"
-                on:load={(e) => e.currentTarget.classList.remove("hidden")}
-            />
+            <img src={$previewUrl} alt="Preview" />
         {/if}
     </div>
 </div>
@@ -71,9 +66,5 @@
         max-height: 200px;
         max-width: 200px;
         border-radius: var(--radius-m);
-    }
-
-    .preview img.hidden {
-        display: none;
     }
 </style>
