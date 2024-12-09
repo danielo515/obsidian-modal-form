@@ -1,7 +1,8 @@
 import { E, pipe, TE } from "@std";
 import type { Either } from "fp-ts/Either";
 import { absurd, constVoid } from "fp-ts/function";
-import { App, normalizePath, TFile } from "obsidian";
+import { App, normalizePath } from "obsidian";
+import { FileProxy } from "src/core/files/FileProxy";
 import { createFilename } from "src/core/input/imageFilenameTemplate";
 import { type imageInput } from "src/core/input/InputDefinitionSchema";
 import { FolderDoesNotExistError, NotAFolderError, resolve_tfolder } from "src/utils/files";
@@ -12,7 +13,7 @@ import { writable } from "svelte/store";
 export interface ImageInputModel {
     readonly error: Readable<string | null>;
     readonly previewUrl: Readable<string | null>;
-    readonly result: Readable<Either<Error, TFile | null>>;
+    readonly result: Readable<Either<Error, FileProxy | null>>;
     handleFileChange(file: File): Promise<void>;
 }
 
@@ -52,9 +53,9 @@ function getImageExtension(dataUrl: string): Either<Error, string> {
 export function makeImageInputModel({ app, input, l = logger }: ImageInputModelDeps): ImageInputModel {
     const error = writable<string | null>(null);
     const previewUrl = writable<string | null>(null);
-    const result = writable<Either<Error, TFile | null>>(E.right(null));
+    const result = writable<Either<Error, FileProxy | null>>(E.right(null));
 
-    async function saveImage(dataUrl: string): Promise<Either<Error, TFile>> {
+    async function saveImage(dataUrl: string): Promise<Either<Error, FileProxy>> {
         return pipe(
             // Get image extension
             pipe(
@@ -107,9 +108,12 @@ export function makeImageInputModel({ app, input, l = logger }: ImageInputModelD
             TE.chain(({extension, bytes}) => {
                 const filename = createFilename(input.filenameTemplate);
                 const fullPath = normalizePath(`${input.saveLocation}/${filename}.${extension}`);
-                return TE.tryCatch(
-                    () => app.vault.createBinary(fullPath, bytes),
-                    (e) => e instanceof Error ? e : new Error("Failed to save file")
+                return pipe(
+                    TE.tryCatch(
+                        () => app.vault.createBinary(fullPath, bytes),
+                        (e) => e instanceof Error ? e : new Error("Failed to save file")
+                    ),
+                    TE.map((file) => new FileProxy(file))
                 );
             }),
             

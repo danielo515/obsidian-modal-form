@@ -1,17 +1,17 @@
 <!-- ImageInput.svelte -->
 <script lang="ts">
     import { E } from "@std";
-    import type { TFile } from "obsidian";
+    import type { FileProxy } from "src/core/files/FileProxy";
     import type { ImageInputModel } from "./ImageInputModel";
 
     export let id: string;
     export let model: ImageInputModel;
-    export let value: TFile | null = null;
+    export let value: FileProxy | null = null;
 
     $: ({ error, previewUrl, result } = model);
 
     $: if (E.isRight($result)) {
-        value = $result.right;
+        value = $result.right ?? null;
     }
 
     let fileInput: HTMLInputElement;
