@@ -194,7 +194,7 @@
         {
           "name": "some notes",
           "label": "Multi line notes",
-          "description": "Put your thouhts here",
+          "description": "Put your thoughts here",
           "input": {
             "type": "textarea",
             "hidden": false
@@ -313,7 +313,7 @@
           "isRequired": false,
           "input": {
             "type": "image",
-            "filenameTemplate": "image-{{date}}",
+            "filenameTemplate": "image-{{datetime}}",
             "saveLocation": "attachments/profile_pictures"
           }
         }

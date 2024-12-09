@@ -11,10 +11,10 @@ import type { Option } from "fp-ts/Option";
 import * as O from "fp-ts/Option";
 import { fromEntries, toEntries } from "fp-ts/Record";
 import { absurd } from "fp-ts/function";
-import { TFile } from "obsidian";
+import { FileProxy } from "src/core/files/FileProxy";
 import { FieldDefinition } from "src/core/formDefinition";
 import { isBasicInputType, valueMeetsCondition } from "src/core/input";
-import { type Logger, logger } from "src/utils/Logger";
+import { logger, type Logger } from "src/utils/Logger";
 import type { Readable, Writable } from "svelte/store";
 import { derived, get, writable } from "svelte/store";
 
@@ -22,7 +22,7 @@ type Rule = { tag: "required"; message: string }; //| { tag: 'minLength', length
 function requiredRule(fieldName: string, message?: string): Rule {
     return { tag: "required", message: message ?? `'${fieldName}' is required` };
 }
-export type FieldValue = string | number | boolean | string[] | TFile;
+export type FieldValue = string | boolean | number | FileProxy | string[];
 type Field<T extends FieldValue> = Readonly<{
     value: Option<T>;
     name: string;

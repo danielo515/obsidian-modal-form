@@ -1,6 +1,7 @@
 <script lang="ts">
     import { E } from "@std";
     import { App } from "obsidian";
+    import { FileProxy } from "src/core/files/FileProxy";
     import { FieldDefinition } from "src/core/formDefinition";
     import { FormEngine } from "src/store/formStore";
     import { logger as l } from "src/utils/Logger";
@@ -74,14 +75,10 @@
             description={definition.description}
             required={definition.isRequired}
         >
-            {@const imageModel = makeImageInputModel({ app, input: definition.input })}
-            <ImageInput
-                id={definition.name}
-                {app}
-                input={definition.input}
-                model={imageModel}
-                bind:value={$value}
-            />
+            {#if $value == null || $value instanceof FileProxy}
+                {@const imageModel = makeImageInputModel({ app, input: definition.input })}
+                <ImageInput id={definition.name} model={imageModel} bind:value={$value} />
+            {/if}
         </ObsidianInputWrapper>
     {:else}
         <ObsidianInputWrapper

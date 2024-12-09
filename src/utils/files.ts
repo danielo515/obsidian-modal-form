@@ -145,8 +145,8 @@ export function enrich_tfile(
 }
 
 /* Checks if a file exists.
-* It does not differenciate between files and folders
-*/
+ * It does not differentiate between files and folders
+ */
 export function file_exists(file_str: string, app: App): boolean {
     return pipe(
         normalizePath(file_str),
@@ -161,5 +161,5 @@ export function folder_exists(folder_str: string, app: App): boolean {
         normalizePath(folder_str),
         (path) => app.vault.getAbstractFileByPath(path),
         (value) => value instanceof TFolder,
-    )
+    );
 }

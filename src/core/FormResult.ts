@@ -1,10 +1,11 @@
-import { ResultValue } from "./ResultValue";
-import { objectSelect } from "./objectSelect";
 import { stringifyYaml } from "obsidian";
+import { ResultValue } from "./ResultValue";
+import { FileProxy } from "./files/FileProxy";
+import { objectSelect } from "./objectSelect";
 
 type ResultStatus = "ok" | "cancelled";
-export type Val = string | boolean | number | string[];
-// We don't use FormData because that is builtin browser API
+export type Val = string | boolean | number | FileProxy | string[];
+// We don't use the name "FormData" because that is already take by a builtin browser API
 export type ModalFormData = { [key: string]: Val };
 
 export function isPrimitive(value: unknown): value is string | boolean | number {
@@ -19,19 +20,19 @@ export default class FormResult {
     private constructor(
         private data: ModalFormData,
         public status: ResultStatus,
-    ) { }
+    ) {}
 
     static make(data: ModalFormData, status: ResultStatus) {
         return new Proxy(new FormResult(data, status), {
             get(target, key, receiver) {
                 // Forward everything that is an own property or not a string key
-                if (key in target || typeof key !== 'string') {
-                    return Reflect.get(target, key, receiver)
+                if (key in target || typeof key !== "string") {
+                    return Reflect.get(target, key, receiver);
                 }
                 // Any other access, will be forwarded to the getValue and wrapped in a ResultValue
-                return target.getValue(key)
-            }
-        })
+                return target.getValue(key);
+            },
+        });
     }
     /**
      * Transform  the current data into a frontmatter string, which is expected
@@ -58,7 +59,12 @@ export default class FormResult {
     asDataviewProperties(options?: unknown): string {
         const data = objectSelect(this.data, options);
         return Object.entries(data)
-            .map(([key, value]) => `${key}:: ${Array.isArray(value) ? value.map((v) => JSON.stringify(v)) : value}`)
+            .map(
+                ([key, value]) =>
+                    `${key}:: ${
+                        Array.isArray(value) ? value.map((v) => JSON.stringify(v)) : value
+                    }`,
+            )
             .join("\n");
     }
     /**
