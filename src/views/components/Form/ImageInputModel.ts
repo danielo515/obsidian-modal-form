@@ -39,10 +39,14 @@ function getImageExtension(dataUrl: string): Either<Error, string> {
                 E.fromNullable(new Error("Invalid image format")),
                 E.map((extension) => {
                     switch (extension.toLowerCase()) {
-                        case 'jpeg': return 'jpg';
-                        case 'svg+xml': return 'svg';
-                        case 'tiff': return 'tif';
-                        default: return extension;
+                        case "jpeg":
+                            return "jpg";
+                        case "svg+xml":
+                            return "svg";
+                        case "tiff":
+                            return "tif";
+                        default:
+                            return extension;
                     }
                 }),
             ),
@@ -50,38 +54,36 @@ function getImageExtension(dataUrl: string): Either<Error, string> {
     );
 }
 
-export function makeImageInputModel({ app, input, l = logger }: ImageInputModelDeps): ImageInputModel {
+export function makeImageInputModel({
+    app,
+    input,
+    l = logger,
+}: ImageInputModelDeps): ImageInputModel {
     const error = writable<string | null>(null);
     const previewUrl = writable<string | null>(null);
     const result = writable<Either<Error, FileProxy | null>>(E.right(null));
 
-    async function saveImage(dataUrl: string): Promise<Either<Error, FileProxy>> {
+    function saveImage(dataUrl: string): TE.TaskEither<Error, FileProxy> {
         return pipe(
             // Get image extension
-            pipe(
-                getImageExtension(dataUrl),
-                TE.fromEither
-            ),
-            
+            getImageExtension(dataUrl),
+            TE.fromEither,
             // Extract base64 data
-            TE.chain((extension) => 
+            TE.chain((extension) =>
                 pipe(
                     dataUrl.split(",")[1],
                     E.fromNullable(new Error("There was a problem loading the image data")),
                     E.map((base64Data) => {
                         const binaryStr = atob(base64Data);
-                        const bytes = new Uint8Array(binaryStr.length);
-                        for (let i = 0; i < binaryStr.length; i++) {
-                            bytes[i] = binaryStr.charCodeAt(i);
-                        }
+                        const bytes = Uint8Array.from(binaryStr, (c) => c.charCodeAt(0));
                         return { extension, bytes };
                     }),
-                    TE.fromEither
-                )
+                    TE.fromEither,
+                ),
             ),
-            
+
             // Ensure save location exists
-            TE.chain(({extension, bytes}) => {
+            TE.chain(({ extension, bytes }) => {
                 return pipe(
                     input.saveLocation,
                     (path) => resolve_tfolder(path, app),
@@ -89,8 +91,12 @@ export function makeImageInputModel({ app, input, l = logger }: ImageInputModelD
                         (err): TE.TaskEither<Error, void> => {
                             if (err instanceof FolderDoesNotExistError) {
                                 return TE.tryCatch(
-                                    () => app.vault.createFolder(input.saveLocation).then(constVoid),
-                                    (e) => e instanceof Error ? e : new Error("Failed to create folder")
+                                    () =>
+                                        app.vault.createFolder(input.saveLocation).then(constVoid),
+                                    (e) =>
+                                        e instanceof Error
+                                            ? e
+                                            : new Error("Failed to create folder"),
                                 );
                             }
                             if (err instanceof NotAFolderError) {
@@ -98,27 +104,24 @@ export function makeImageInputModel({ app, input, l = logger }: ImageInputModelD
                             }
                             return absurd(err);
                         },
-                        (): TE.TaskEither<Error, void> => TE.right(undefined)
+                        (): TE.TaskEither<Error, void> => TE.right(undefined),
                     ),
-                    TE.map(() => ({extension, bytes}))
+                    TE.map(() => ({ extension, bytes })),
                 );
             }),
-            
+
             // Save the file
-            TE.chain(({extension, bytes}) => {
+            TE.chain(({ extension, bytes }) => {
                 const filename = createFilename(input.filenameTemplate);
                 const fullPath = normalizePath(`${input.saveLocation}/${filename}.${extension}`);
                 return pipe(
                     TE.tryCatch(
                         () => app.vault.createBinary(fullPath, bytes),
-                        (e) => e instanceof Error ? e : new Error("Failed to save file")
+                        (e) => (e instanceof Error ? e : new Error("Failed to save file")),
                     ),
-                    TE.map((file) => new FileProxy(file))
+                    TE.map((file) => new FileProxy(file)),
                 );
             }),
-            
-            // Finally evaluate the TaskEither
-            (te) => te()
         );
     }
 
@@ -132,17 +135,23 @@ export function makeImageInputModel({ app, input, l = logger }: ImageInputModelD
             const dataUrl = e.target?.result;
             if (typeof dataUrl !== "string") {
                 error.set("Failed to read image file");
+                l.error("dataUrl is not a string", dataUrl);
                 return;
             }
 
             previewUrl.set(dataUrl);
-            const saveResult = await saveImage(dataUrl);
-            if (E.isLeft(saveResult)) {
-                error.set(saveResult.left.message);
-                result.set(saveResult);
-            } else {
-                result.set(saveResult);
-            }
+            await pipe(
+                saveImage(dataUrl),
+                TE.mapBoth(
+                    (err) => {
+                        error.set(err.message);
+                        l.error(err);
+                    },
+                    (fileProxy) => {
+                        result.set(E.right(fileProxy));
+                    },
+                ),
+            )();
         };
         reader.readAsDataURL(file);
     }
@@ -151,6 +160,6 @@ export function makeImageInputModel({ app, input, l = logger }: ImageInputModelD
         error,
         previewUrl,
         result,
-        handleFileChange
+        handleFileChange,
     };
 }

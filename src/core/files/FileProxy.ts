@@ -23,7 +23,7 @@ export interface SerializableFileData {
  * 
  * @example
  * ```typescript
- * const file = new TFile(...);
+ * declare const file: TFile;
  * const proxy = new FileProxy(file);
  * 
  * // Access properties
