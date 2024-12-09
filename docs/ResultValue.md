@@ -2,7 +2,7 @@
 # ResultValue
 
 This class is a helper wrapper for values coming from a form Result.
-It provides a safer and convenient interface to render the contained value in various formats. 
+It provides a safer and convenient interface to render the contained value in various formats.
 The main purpose is to avoid the need to check for null or undefined values while having a convenient interface to print the value in a template.
 
 ## Usage
@@ -17,7 +17,6 @@ All the following examples assume that the form has been opened with the followi
 
 By default, the value is rendered as a string. If the value is null or undefined, an empty string is returned.
 You don't need to call or do anything special to render the value as a string, just use it as if it was a string.
-
 
 ```typescript
 <% result.getValue('firstField') %>
@@ -76,7 +75,6 @@ If the value were a primitive, like the string "Hello World", the above code wou
 [listField:: Hello World]
 ```
 
-
 ### `map(fn: (value: any) => any): ResultValue` method
 
 The map method is a powerful one that allows you to transform the value contained in the ResultValue object without extracting it, allowing you to chain multiple transformations.
@@ -90,14 +88,14 @@ The above code will print the list field as a bullet list, but all the values wi
 The map method takes a function that takes the value and returns a new value.
 It can be used when none of the provided printing are enough for your use case, or when one of them is almost what you need but you need to transform the value a bit more.
 
-
 ### `trimmed`,`lower`,`upper` shortcuts
 
 The ResultValue class provides some shortcuts to common transformations of the value.
 They are:
- - `trimmed`: Trims the value, removing any leading or trailing whitespace.
- - `lower`: Converts the value to lowercase.
- - `upper`: Converts the value to uppercase.
+
+- `trimmed`: Trims the value, removing any leading or trailing whitespace.
+- `lower`: Converts the value to lowercase.
+- `upper`: Converts the value to uppercase.
 
 All of these shortcuts return a new ResultValue object, so you can chain them with other methods.
 
@@ -114,3 +112,18 @@ The most common use is probably just to use one of them, like `trimmed` or `uppe
 ```
 
 All of this shortcuts are able to handle single values and lists, so you can use them with any value.
+
+### `link` method
+
+The `link` method is a convenience method to render the value as a markdown link.
+If the value is a string, it will be rendered as a markdown link.
+If the value is a FileProxy (right now just used for images), it will be rendered as an embedded link.
+Any other type of value will be rendered as an empty string.
+
+```typescript
+<% result.getValue('myField').link %>
+```
+
+You can also use the shorthand way of accessing values directly from the form result object, like `result.myField.link`.
+
+Take a look at the example vault to see how it is used.

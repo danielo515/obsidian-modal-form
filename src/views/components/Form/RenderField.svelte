@@ -1,6 +1,7 @@
 <script lang="ts">
     import { E } from "@std";
     import { App } from "obsidian";
+    import { FileProxy } from "src/core/files/FileProxy";
     import { FieldDefinition } from "src/core/formDefinition";
     import { FormEngine } from "src/store/formStore";
     import { logger as l } from "src/utils/Logger";
@@ -8,6 +9,8 @@
     import ObsidianInputWrapper from "src/views/components/Form/ObsidianInputWrapper.svelte";
     import { derived } from "svelte/store";
     import DocumentBlock from "./DocumentBlock.svelte";
+    import ImageInput from "./ImageInput.svelte";
+    import { makeImageInputModel } from "./ImageInputModel";
     import InputDataview from "./InputDataview.svelte";
     import InputFolder from "./InputFolder.svelte";
     import InputNote from "./InputNote.svelte";
@@ -64,6 +67,18 @@
             description={definition.description}
         >
             <DocumentBlock field={definition.input} form={formEngine} slot="info" {app} />
+        </ObsidianInputWrapper>
+    {:else if definition.input.type === "image"}
+        <ObsidianInputWrapper
+            {errors}
+            label={definition.label || definition.name}
+            description={definition.description}
+            required={definition.isRequired}
+        >
+            {#if $value == null || $value instanceof FileProxy}
+                {@const imageModel = makeImageInputModel({ app, input: definition.input })}
+                <ImageInput id={definition.name} model={imageModel} bind:value={$value} />
+            {/if}
         </ObsidianInputWrapper>
     {:else}
         <ObsidianInputWrapper

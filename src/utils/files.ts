@@ -1,6 +1,6 @@
+import { A, E, Either, O, pipe } from "@std";
 import * as S from "fp-ts/string";
 import { App, CachedMetadata, TAbstractFile, TFile, TFolder, Vault, normalizePath } from "obsidian";
-import { E, Either, O, pipe, A } from "@std";
 export class FolderDoesNotExistError extends Error {
     static readonly tag = "FolderDoesNotExistError";
 }
@@ -144,10 +144,22 @@ export function enrich_tfile(
     };
 }
 
+/* Checks if a file exists.
+ * It does not differentiate between files and folders
+ */
 export function file_exists(file_str: string, app: App): boolean {
     return pipe(
         normalizePath(file_str),
         (path) => app.vault.getAbstractFileByPath(path),
         (value) => value !== null,
+    );
+}
+
+/* Checks if a folder exists */
+export function folder_exists(folder_str: string, app: App): boolean {
+    return pipe(
+        normalizePath(folder_str),
+        (path) => app.vault.getAbstractFileByPath(path),
+        (value) => value instanceof TFolder,
     );
 }

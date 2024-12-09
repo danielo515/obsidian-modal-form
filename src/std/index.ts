@@ -1,22 +1,10 @@
 import * as A from "fp-ts/Array";
 import {
     type Either,
-    ap,
-    bimap,
-    chainW,
-    flap,
-    flatMap,
-    fromNullable,
-    getOrElse,
-    isLeft,
     isRight,
     left,
-    map,
-    mapLeft,
-    match,
     right,
-    tryCatch,
-    tryCatchK,
+    tryCatchK
 } from "fp-ts/Either";
 import { type NonEmptyArray, concatAll as concatAllNea } from "fp-ts/NonEmptyArray";
 import * as _O from "fp-ts/Option";
@@ -25,9 +13,11 @@ import * as TE from "fp-ts/TaskEither";
 import { absurd as _absurd, flow as f, pipe as p } from "fp-ts/function";
 import { type BaseSchema, type Output, ValiError, parse as parseV } from "valibot";
 export type Option<T> = _O.Option<T>;
+export * as E from "fp-ts/Either";
 export type { Either, Left, Right } from "fp-ts/Either";
 export type { NonEmptyArray } from "fp-ts/NonEmptyArray";
 export * as O from "fp-ts/Option";
+export * as TE from "fp-ts/TaskEither";
 export * as Str from "fp-ts/string";
 export * as Struct from "fp-ts/struct";
 export * as A from "./Array";
@@ -41,25 +31,6 @@ export const NEA = {
     concatAll: concatAllNea,
 };
 
-export const E = {
-    isLeft,
-    isRight,
-    left,
-    right,
-    tryCatchK,
-    tryCatch,
-    getOrElse,
-    map,
-    mapLeft,
-    bimap,
-    flatMap,
-    fromNullable,
-    match,
-    ap,
-    flap,
-    chainW,
-    fold: match,
-};
 
 export const parse = tryCatchK(parseV, (e: unknown) => e as ValiError);
 

@@ -194,7 +194,7 @@
         {
           "name": "some notes",
           "label": "Multi line notes",
-          "description": "Put your thouhts here",
+          "description": "Put your thoughts here",
           "input": {
             "type": "textarea",
             "hidden": false
@@ -297,6 +297,24 @@
           "input": {
             "type": "document_block",
             "body": "return `${form.text}`"
+          }
+        }
+      ],
+      "version": "1"
+    },
+    {
+      "title": "Image input example",
+      "name": "image_input",
+      "fields": [
+        {
+          "name": "image",
+          "label": "Example image",
+          "description": "Pick an image and save it to your vault",
+          "isRequired": false,
+          "input": {
+            "type": "image",
+            "filenameTemplate": "image-{{datetime}}",
+            "saveLocation": "attachments/profile_pictures"
           }
         }
       ],
