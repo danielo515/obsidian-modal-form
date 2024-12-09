@@ -680,6 +680,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#release-notes-for-1530" class="md-nav__link">
+    <span class="md-ellipsis">
+      Release notes for 1.53.0
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#release-notes-for-1520" class="md-nav__link">
     <span class="md-ellipsis">
       Release notes for 1.52.0
@@ -775,6 +784,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#release-notes-for-1530" class="md-nav__link">
+    <span class="md-ellipsis">
+      Release notes for 1.53.0
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#release-notes-for-1520" class="md-nav__link">
     <span class="md-ellipsis">
       Release notes for 1.52.0
@@ -833,6 +851,55 @@
       <header class="md-typeset">
         <h1 id="2024">2024</h1>
       </header>
+      
+        <article class="md-post md-post--excerpt">
+  <header class="md-post__header">
+    
+    <div class="md-post__meta md-meta">
+      <ul class="md-meta__list">
+        <li class="md-meta__item">
+          <time datetime="2024-12-09 00:00:00+00:00">December 9, 2024</time></li>
+        
+        
+          
+          <li class="md-meta__item">
+            
+              2 min read
+            
+          </li>
+        
+      </ul>
+      
+    </div>
+  </header>
+  <div class="md-post__content md-typeset">
+    <h2 id="release-notes-for-1530"><a class="toclink" href="../../2024/12/09/release-notes-for-1530/">Release notes for 1.53.0</a></h2>
+<h3 id="introducing-image-input"><a class="toclink" href="../../2024/12/09/release-notes-for-1530/#introducing-image-input">Introducing Image Input</a></h3>
+<p>This release introduces a brand new input type: the image input! This new component allows you to upload images directly through your forms, automatically saving them to your vault.
+I'm particularly excited about this new feature because I already have a lot of usecases for it on my daily life (I like to keep a record of the restaurants I visit and the meals I eat there).
+The possibilities it opens are big and I'm really excited about seeing what new and more visual experiences you can create using it.
+I also think that having a specialized way of adding images to your notes/templates is better than the obsidian way in a lot of situations.</p>
+<h4 id="whats-new"><a class="toclink" href="../../2024/12/09/release-notes-for-1530/#whats-new">What's New</a></h4>
+<p>The image input is a powerful new addition to our form inputs family that lets you:</p>
+<ul>
+<li>Save images directly to your vault</li>
+<li>Preview the image</li>
+<li>Atomically define where each image will be saved for each input</li>
+<li>Use templates for file naming with date/time placeholders</li>
+</ul>
+<p>Here's how it looks in action:
+<img alt="Image input example" src="../../image-input-example.png" /></p>
+<h4 id="using-the-image-input"><a class="toclink" href="../../2024/12/09/release-notes-for-1530/#using-the-image-input">Using the Image Input</a></h4>
+<p>Adding an image input to your form is very straightforward using the FormBuilder. Here's an example screenshot:
+<img alt="image in input builder" src="../../image-input-builder.png" /></p>
+<p>The configuration has two main settings:</p>
+<ul>
+<li><code>filenameTemplate</code>: Define how your files will be named. You can use placeholders like <code>{{date}}</code>, <code>{{time}}</code>, or <code>{{datetime}}</code>.</li>
+<li><code>saveLocation</code>: Specify where in your vault the image will be saved. Don't worry if the folder doesn't exist - it will be created automatically!</li>
+</ul>
+    
+  </div>
+</article>
       
         <article class="md-post md-post--excerpt">
   <header class="md-post__header">
