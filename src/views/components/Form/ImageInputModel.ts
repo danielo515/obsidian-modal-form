@@ -6,13 +6,13 @@ import { createFilename } from "src/core/input/imageFilenameTemplate";
 import { type imageInput } from "src/core/input/InputDefinitionSchema";
 import { FolderDoesNotExistError, NotAFolderError, resolve_tfolder } from "src/utils/files";
 import { logger } from "src/utils/Logger";
-import type { Writable } from "svelte/store";
+import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
 
 export interface ImageInputModel {
-    readonly error: Writable<string | null>;
-    readonly savedFile: Writable<TFile | null>;
-    readonly previewUrl: Writable<string | null>;
+    readonly error: Readable<string | null>;
+    readonly previewUrl: Readable<string | null>;
+    readonly result: Readable<Either<Error, TFile | null>>;
     handleFileChange(file: File): Promise<void>;
 }
 
@@ -51,8 +51,8 @@ function getImageExtension(dataUrl: string): Either<Error, string> {
 
 export function makeImageInputModel({ app, input, l = logger }: ImageInputModelDeps): ImageInputModel {
     const error = writable<string | null>(null);
-    const savedFile = writable<TFile | null>(null);
     const previewUrl = writable<string | null>(null);
+    const result = writable<Either<Error, TFile | null>>(E.right(null));
 
     async function saveImage(dataUrl: string): Promise<Either<Error, TFile>> {
         return pipe(
@@ -119,38 +119,34 @@ export function makeImageInputModel({ app, input, l = logger }: ImageInputModelD
     }
 
     async function handleFileChange(file: File) {
+        error.set(null);
+        previewUrl.set(null);
+        result.set(E.right(null));
+
         const reader = new FileReader();
         reader.onload = async (e) => {
             const dataUrl = e.target?.result;
-            l.debug("dataUrl", dataUrl);
             if (typeof dataUrl !== "string") {
-                error.set("Invalid data URL");
+                error.set("Failed to read image file");
                 return;
             }
 
             previewUrl.set(dataUrl);
-            const result = await saveImage(dataUrl);
-            pipe(
-                result,
-                E.fold(
-                    (err) => {
-                        error.set(err.message);
-                        l.error("Error saving image:", err);
-                    },
-                    (file) => {
-                        error.set(null);
-                        savedFile.set(file);
-                    }
-                )
-            );
+            const saveResult = await saveImage(dataUrl);
+            if (E.isLeft(saveResult)) {
+                error.set(saveResult.left.message);
+                result.set(saveResult);
+            } else {
+                result.set(saveResult);
+            }
         };
         reader.readAsDataURL(file);
     }
 
     return {
         error,
-        savedFile,
         previewUrl,
+        result,
         handleFileChange
     };
 }

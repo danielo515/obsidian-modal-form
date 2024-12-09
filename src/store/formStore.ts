@@ -11,6 +11,7 @@ import type { Option } from "fp-ts/Option";
 import * as O from "fp-ts/Option";
 import { fromEntries, toEntries } from "fp-ts/Record";
 import { absurd } from "fp-ts/function";
+import { TFile } from "obsidian";
 import { FieldDefinition } from "src/core/formDefinition";
 import { isBasicInputType, valueMeetsCondition } from "src/core/input";
 import { type Logger, logger } from "src/utils/Logger";
@@ -21,7 +22,7 @@ type Rule = { tag: "required"; message: string }; //| { tag: 'minLength', length
 function requiredRule(fieldName: string, message?: string): Rule {
     return { tag: "required", message: message ?? `'${fieldName}' is required` };
 }
-export type FieldValue = string | number | boolean | string[];
+export type FieldValue = string | number | boolean | string[] | TFile;
 type Field<T extends FieldValue> = Readonly<{
     value: Option<T>;
     name: string;

@@ -9,6 +9,7 @@
     import { derived } from "svelte/store";
     import DocumentBlock from "./DocumentBlock.svelte";
     import ImageInput from "./ImageInput.svelte";
+    import { makeImageInputModel } from "./ImageInputModel";
     import InputDataview from "./InputDataview.svelte";
     import InputFolder from "./InputFolder.svelte";
     import InputNote from "./InputNote.svelte";
@@ -73,7 +74,14 @@
             description={definition.description}
             required={definition.isRequired}
         >
-            <ImageInput id={definition.name} {app} input={definition.input} />
+            {@const imageModel = makeImageInputModel({ app, input: definition.input })}
+            <ImageInput
+                id={definition.name}
+                {app}
+                input={definition.input}
+                model={imageModel}
+                bind:value={$value}
+            />
         </ObsidianInputWrapper>
     {:else}
         <ObsidianInputWrapper
