@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.53.0](https://github.com/danielo515/obsidian-modal-form/compare/1.52.0...1.53.0) (2024-12-09)
+
+
+### Features
+
+* **input:** added Image input type ([cfc0cad](https://github.com/danielo515/obsidian-modal-form/commit/cfc0cad039ac2d23f329dafd328d5c46b9f512fc))
+
 ## [1.52.0](https://github.com/danielo515/obsidian-modal-form/compare/1.51.0...1.52.0) (2024-09-29)
 
 
