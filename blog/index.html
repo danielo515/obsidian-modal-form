@@ -768,7 +768,7 @@
           
           <li class="md-meta__item">
             
-              2 min read
+              3 min read
             
           </li>
         
@@ -793,6 +793,10 @@ I also think that having a specialized way of adding images to your notes/templa
 </ul>
 <p>Here's how it looks in action:
 <img alt="Image input example" src="image-input-example.png" /></p>
+<p>There is also a new helper in the FormResult object that simplifies the creation of markdown links to the image.
+For example, if you have a field called <code>image</code> in your form result, you can use it like this in your templates:</p>
+<pre><code>&lt;% result.image.link %&gt;
+</code></pre>
 <h4 id="using-the-image-input"><a class="toclink" href="2024/12/09/release-notes-for-1530/#using-the-image-input">Using the Image Input</a></h4>
 <p>Adding an image input to your form is very straightforward using the FormBuilder. Here's an example screenshot:
 <img alt="image in input builder" src="image-input-builder.png" /></p>
@@ -801,6 +805,23 @@ I also think that having a specialized way of adding images to your notes/templa
 <li><code>filenameTemplate</code>: Define how your files will be named. You can use placeholders like <code>{{date}}</code>, <code>{{time}}</code>, or <code>{{datetime}}</code>.</li>
 <li><code>saveLocation</code>: Specify where in your vault the image will be saved. Don't worry if the folder doesn't exist - it will be created automatically!</li>
 </ul>
+<h4 id="drawbacks"><a class="toclink" href="2024/12/09/release-notes-for-1530/#drawbacks">Drawbacks</a></h4>
+<p>As with every first version of every new feature, there is an important drawback:
+<strong>the image input is eager to save the image</strong>.
+This means that the image will be saved as soon as you select it, even if the form is not submitted, or if you pick a different image.
+This is a tradeoff that simplified the implementation and makes some scenarios simpler , like using the image in a markdown block or in other dynamic inputs.</p>
+<p>It is also worth mentioning that the value you get in the form result is not a TFile directly but a wrapped TFile object.
+This is because a lot of places assume it is safe to just serialize the form results to JSON, which is not the case for the TFile object.
+The wrapped TFile object has direct access to the most essential properties of the file, like <code>path</code>, <code>name</code>, <code>basename</code>, and <code>extension</code>.
+The wrapped TFile is also available through the <code>TFile</code> property in the wrapping class <code>FileProxy</code>.</p>
+<p>Here is an example of how you can use the wrapped TFile object:</p>
+<pre><code class="language-javascript">const result = await MF.openForm(&quot;my-form&quot;);
+// assuming your image input is called &quot;image&quot;
+const file = result.image.value.TFile;
+- ctime: &lt;% file.stat.ctime %&gt;
+- mtime: &lt;% file.stat.mtime %&gt;
+- size: &lt;% file.stat.size %&gt;
+</code></pre>
     
   </div>
 </article>
