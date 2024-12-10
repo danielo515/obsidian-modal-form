@@ -146,6 +146,12 @@ export const ImageInputSchema = object({
     saveLocation: nonEmptyString("save location"),
 });
 
+export const FileInputSchema = object({
+    type: literal("file"),
+    folder: nonEmptyString("folder"),
+    allowedExtensions: optional(array(string())),
+});
+
 // Codec for all the input types
 export const InputTypeSchema = union([
     InputBasicSchema,
@@ -160,9 +166,12 @@ export const InputTypeSchema = union([
     DocumentBlock,
     MarkdownBlock,
     ImageInputSchema,
+    FileInputSchema,
 ]);
 
 export type Input = Output<typeof InputTypeSchema>;
+
+export type fileInput = Output<typeof FileInputSchema>;
 
 export const InputTypeToParserMap: Record<AllFieldTypes, ParsingFn<BaseSchema>> = {
     number: parseC(InputBasicSchema),
@@ -184,6 +193,7 @@ export const InputTypeToParserMap: Record<AllFieldTypes, ParsingFn<BaseSchema>> 
     document_block: parseC(DocumentBlock),
     markdown_block: parseC(MarkdownBlock),
     image: parseC(ImageInputSchema),
+    file: parseC(FileInputSchema),
 };
 
 //=========== Types derived from schemas
@@ -226,6 +236,7 @@ export function requiresListOfStrings(input: inputType): boolean {
         case "email":
         case "tel":
         case "image":
+        case "file":
             return false;
         default:
             return absurd(type);
