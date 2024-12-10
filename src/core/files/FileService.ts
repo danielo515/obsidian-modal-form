@@ -1,6 +1,6 @@
 import { TE } from "@std";
 
-type FileProps = {
+export type FileProps = {
     /** The full path of the file, including filename and extension */
     path: string;
     /** The complete filename with extension */

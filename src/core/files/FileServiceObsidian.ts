@@ -4,7 +4,7 @@ import { resolve_tfolder } from "src/utils/files";
 import { Logger } from "src/utils/Logger";
 import { FileError, FileService } from "./FileService";
 
-export class FileServiceObsidian implements FileService {
+export class ObsidianFileService implements FileService {
     constructor(
         private app: App,
         private logger: Logger,

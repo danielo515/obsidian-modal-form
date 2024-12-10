@@ -1,11 +1,9 @@
 import { E, pipe, TE } from "@std";
 import type { Either } from "fp-ts/Either";
-import { absurd, constVoid } from "fp-ts/function";
-import { App, normalizePath } from "obsidian";
 import { FileProxy } from "src/core/files/FileProxy";
+import { FileService } from "src/core/files/FileService";
 import { createFilename } from "src/core/input/imageFilenameTemplate";
 import { type imageInput } from "src/core/input/InputDefinitionSchema";
-import { FolderDoesNotExistError, NotAFolderError, resolve_tfolder } from "src/utils/files";
 import { logger } from "src/utils/Logger";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
@@ -18,8 +16,8 @@ export interface ImageInputModel {
 }
 
 interface ImageInputModelDeps {
-    app: App;
     input: imageInput;
+    fileService: FileService;
     l?: typeof logger;
 }
 
@@ -55,7 +53,7 @@ function getImageExtension(dataUrl: string): Either<Error, string> {
 }
 
 export function makeImageInputModel({
-    app,
+    fileService,
     input,
     l = logger,
 }: ImageInputModelDeps): ImageInputModel {
@@ -82,43 +80,11 @@ export function makeImageInputModel({
                 ),
             ),
 
-            // Ensure save location exists
-            TE.chain(({ extension, bytes }) => {
-                return pipe(
-                    input.saveLocation,
-                    (path) => resolve_tfolder(path, app),
-                    E.fold(
-                        (err): TE.TaskEither<Error, void> => {
-                            if (err instanceof FolderDoesNotExistError) {
-                                return TE.tryCatch(
-                                    () =>
-                                        app.vault.createFolder(input.saveLocation).then(constVoid),
-                                    (e) =>
-                                        e instanceof Error
-                                            ? e
-                                            : new Error("Failed to create folder"),
-                                );
-                            }
-                            if (err instanceof NotAFolderError) {
-                                return TE.left(new Error("Save location is not a folder"));
-                            }
-                            return absurd(err);
-                        },
-                        (): TE.TaskEither<Error, void> => TE.right(undefined),
-                    ),
-                    TE.map(() => ({ extension, bytes })),
-                );
-            }),
-
             // Save the file
-            TE.chain(({ extension, bytes }) => {
+            TE.chainW(({ extension, bytes }) => {
                 const filename = createFilename(input.filenameTemplate);
-                const fullPath = normalizePath(`${input.saveLocation}/${filename}.${extension}`);
                 return pipe(
-                    TE.tryCatch(
-                        () => app.vault.createBinary(fullPath, bytes),
-                        (e) => (e instanceof Error ? e : new Error("Failed to save file")),
-                    ),
+                    fileService.saveFile(`${filename}.${extension}`, input.saveLocation, bytes),
                     TE.map((file) => new FileProxy(file)),
                 );
             }),
@@ -129,6 +95,8 @@ export function makeImageInputModel({
         error.set(null);
         previewUrl.set(null);
         result.set(E.right(null));
+
+        l.debug("handleFileChange file", file);
 
         const reader = new FileReader();
         reader.onload = async (e) => {
