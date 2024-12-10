@@ -1,11 +1,5 @@
 import * as A from "fp-ts/Array";
-import {
-    type Either,
-    isRight,
-    left,
-    right,
-    tryCatchK
-} from "fp-ts/Either";
+import { type Either, isRight, left, right, tryCatchK } from "fp-ts/Either";
 import { type NonEmptyArray, concatAll as concatAllNea } from "fp-ts/NonEmptyArray";
 import * as _O from "fp-ts/Option";
 import { type Semigroup, concatAll } from "fp-ts/Semigroup";
@@ -17,10 +11,10 @@ export * as E from "fp-ts/Either";
 export type { Either, Left, Right } from "fp-ts/Either";
 export type { NonEmptyArray } from "fp-ts/NonEmptyArray";
 export * as O from "fp-ts/Option";
-export * as TE from "fp-ts/TaskEither";
 export * as Str from "fp-ts/string";
 export * as Struct from "fp-ts/struct";
 export * as A from "./Array";
+export * as TE from "./TaskEither";
 export const flow = f;
 export const pipe = p;
 export const absurd = _absurd;
@@ -30,7 +24,6 @@ export const absurd = _absurd;
 export const NEA = {
     concatAll: concatAllNea,
 };
-
 
 export const parse = tryCatchK(parseV, (e: unknown) => e as ValiError);
 

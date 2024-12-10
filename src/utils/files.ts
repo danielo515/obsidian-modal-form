@@ -2,24 +2,24 @@ import { A, E, Either, O, pipe } from "@std";
 import * as S from "fp-ts/string";
 import { App, CachedMetadata, TAbstractFile, TFile, TFolder, Vault, normalizePath } from "obsidian";
 export class FolderDoesNotExistError extends Error {
-    static readonly tag = "FolderDoesNotExistError";
+    readonly _tag = "FolderDoesNotExistError";
 }
 
 export class NotAFolderError extends Error {
-    static readonly tag = "NotAFolderError";
+    readonly _tag = "NotAFolderError";
     constructor(public file: TAbstractFile) {
         super(`File ${file.path} is not a folder`);
     }
 }
 
 export class FileDoesNotExistError extends Error {
-    static readonly tag = "FileDoesNotExistError";
+    readonly _tag = "FileDoesNotExistError";
     static of(file: string) {
         return new FileDoesNotExistError(`File "${file}" doesn't exist`);
     }
 }
 export class NotAFileError extends Error {
-    static readonly tag = "NotAFileError";
+    readonly _tag = "NotAFileError";
     constructor(public file: TAbstractFile) {
         super(`File ${file.path} is not a file`);
     }
