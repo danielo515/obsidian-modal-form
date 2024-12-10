@@ -2,7 +2,7 @@ import { E, pipe, TE } from "@std";
 import type { Either } from "fp-ts/Either";
 import { FileProxy } from "src/core/files/FileProxy";
 import { FileService } from "src/core/files/FileService";
-import { type imageInput } from "src/core/input/InputDefinitionSchema";
+import { fileInput } from "src/core/input/InputDefinitionSchema";
 import { logger } from "src/utils/Logger";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
@@ -11,10 +11,11 @@ export interface FileInputModel {
     readonly error: Readable<string | null>;
     readonly result: Readable<Either<Error, FileProxy | null>>;
     handleFileChange(file: File): Promise<void>;
+    readonly accepted: string | undefined;
 }
 
 interface FileInputModelDeps {
-    input: imageInput;
+    input: fileInput;
     fileService: FileService;
     l?: typeof logger;
 }
@@ -36,7 +37,7 @@ export function makeFileInputModel({
         const filename = file.name;
         const content = await file.arrayBuffer();
         await pipe(
-            fileService.saveFile(filename, input.saveLocation, content),
+            fileService.saveFile(filename, input.folder, content),
             TE.map((file) => new FileProxy(file)),
             TE.mapBoth(
                 (err) => {
@@ -54,5 +55,6 @@ export function makeFileInputModel({
         error,
         result,
         handleFileChange,
+        accepted: input.allowedExtensions?.join(", "),
     };
 }
