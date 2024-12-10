@@ -2,6 +2,7 @@
     import { E } from "@std";
     import { App } from "obsidian";
     import { FileProxy } from "src/core/files/FileProxy";
+    import { ObsidianFileService } from "src/core/files/FileServiceObsidian";
     import { FieldDefinition } from "src/core/formDefinition";
     import { FormEngine } from "src/store/formStore";
     import { logger as l } from "src/utils/Logger";
@@ -27,6 +28,8 @@
     export let formEngine: FormEngine;
     export let app: App;
     export let logger = l;
+
+    $: fileService = new ObsidianFileService(app, l);
 
     $: value = model.value;
     $: errors = model.errors;
@@ -76,7 +79,7 @@
             required={definition.isRequired}
         >
             {#if $value == null || $value instanceof FileProxy}
-                {@const imageModel = makeImageInputModel({ app, input: definition.input })}
+                {@const imageModel = makeImageInputModel({ fileService, input: definition.input })}
                 <ImageInput id={definition.name} model={imageModel} bind:value={$value} />
             {/if}
         </ObsidianInputWrapper>

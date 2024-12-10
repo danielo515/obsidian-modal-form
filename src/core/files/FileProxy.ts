@@ -1,4 +1,4 @@
-import type { TFile, TFolder } from "obsidian";
+import { FileProps } from "./FileService";
 
 /**
  * Represents the serializable data of a file.
@@ -20,25 +20,25 @@ export interface SerializableFileData {
  * A proxy wrapper for TFile that provides safe serialization.
  * This class encapsulates a TFile instance and provides access to its
  * essential properties while ensuring that the data can be safely serialized to JSON.
- * 
+ *
  * @example
  * ```typescript
  * declare const file: TFile;
  * const proxy = new FileProxy(file);
- * 
+ *
  * // Access properties
  * console.log(proxy.path); // "folder/file.md"
- * 
+ *
  * // Serialize
  * const json = JSON.stringify(proxy); // Safe to serialize
  * ```
  */
-export class FileProxy {
+export class FileProxy<T extends FileProps = FileProps> {
     /**
      * Creates a new FileProxy instance.
      * @param file - The TFile instance to wrap
      */
-    constructor(private file: TFile) {}
+    constructor(private file: T) {}
 
     /**
      * Gets the full path of the file, including filename and extension.
@@ -68,18 +68,14 @@ export class FileProxy {
         return this.file.extension;
     }
 
-    get TFile(): TFile {
+    get TFile(): T {
         return this.file;
-    }
-
-    get parent(): TFolder | null {
-        return this.file.parent;
     }
 
     /**
      * Converts the FileProxy instance to a plain object suitable for serialization.
      * This method is automatically called by JSON.stringify().
-     * 
+     *
      * @returns A plain object containing the serializable file data
      */
     toJSON(): SerializableFileData {
