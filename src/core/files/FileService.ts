@@ -12,7 +12,7 @@ export type FileProps = {
 };
 
 export class FileError extends Error {
-    protected readonly _tag = "FileError";
+    readonly _tag = "FileError";
     constructor(
         message: string,
         readonly cause: unknown,
