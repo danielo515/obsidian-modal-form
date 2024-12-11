@@ -12,7 +12,10 @@ export class ObsidianFileService implements FileService {
     createFile = (fullPath: string, content: ArrayBuffer) =>
         TE.tryCatch(
             () => this.app.vault.createBinary(fullPath, content),
-            FileError.of("Error saving file"),
+            (err) =>
+                err instanceof Error
+                    ? new FileError(err.message, err)
+                    : new FileError("Error creating file", err),
         );
     createFolder = (fullPath: string) =>
         TE.tryCatch(
@@ -27,7 +30,9 @@ export class ObsidianFileService implements FileService {
                 this.logger.debug("Folder does not exist, creating it", err);
                 return this.createFolder(path);
             }),
-            TE.mapLeft(FileError.of("Error saving file")),
+            TE.catchTag("NotAFolderError", (err) =>
+                TE.left(new FileError("Destination is not a folder", err)),
+            ),
             TE.map((tFolder) => normalizePath(`${tFolder.path}/${fileName}`)),
             TE.chain((path) => this.createFile(path, content)),
         );

@@ -319,6 +319,26 @@
         }
       ],
       "version": "1"
+    },
+    {
+      "title": "File input example",
+      "name": "file_input",
+      "fields": [
+        {
+          "name": "file",
+          "label": "",
+          "description": "Pick a file to attach",
+          "isRequired": false,
+          "input": {
+            "type": "file",
+            "folder": "attachments/pdfs",
+            "allowedExtensions": [
+              "pdf"
+            ]
+          }
+        }
+      ],
+      "version": "1"
     }
   ]
 }

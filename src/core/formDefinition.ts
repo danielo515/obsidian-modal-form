@@ -48,6 +48,7 @@ export const InputTypeReadable: Record<AllFieldTypes, string> = {
     document_block: "Document block",
     markdown_block: "Markdown block",
     image: "Image",
+    file: "File",
 } as const;
 
 export function isDataViewSource(input: unknown): input is inputDataviewSource {

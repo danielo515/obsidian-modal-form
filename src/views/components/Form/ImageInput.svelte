@@ -1,4 +1,3 @@
-<!-- ImageInput.svelte -->
 <script lang="ts">
     import { E } from "@std";
     import type { FileProxy } from "src/core/files/FileProxy";

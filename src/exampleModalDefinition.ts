@@ -158,12 +158,22 @@ export const exampleModalDefinition: FormDefinition = {
         {
             name: "profile_picture",
             label: "Profile Picture",
-            description: "Upload a profile picture. It will be saved in the attachments folder with the current date.",
+            description:
+                "Upload a profile picture. It will be saved in the attachments folder with the current date.",
             input: {
                 type: "image",
                 saveLocation: "attachments/profile_pictures",
-                filenameTemplate: "profile-{{datetime}}.png"
-            }
+                filenameTemplate: "profile-{{datetime}}.png",
+            },
+        },
+        {
+            name: "pdf",
+            description: "PDF example",
+            input: {
+                type: "file",
+                folder: "attachments/pdfs",
+                allowedExtensions: ["pdf"],
+            },
         },
         {
             name: "document",
