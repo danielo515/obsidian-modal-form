@@ -323,24 +323,22 @@
     {
       "title": "File input example",
       "name": "file_input",
-      "version": "1",
       "fields": [
         {
           "name": "file",
           "label": "",
           "description": "Pick a file to attach",
+          "isRequired": false,
           "input": {
             "type": "file",
-            "allowUnknownValues": false,
-            "hidden": false,
+            "folder": "attachments/pdfs",
             "allowedExtensions": [
               "pdf"
-            ],
-            "folder": "attachments/pdfs"
-          },
-          "isRequired": false
+            ]
+          }
         }
-      ]
+      ],
+      "version": "1"
     }
   ]
 }

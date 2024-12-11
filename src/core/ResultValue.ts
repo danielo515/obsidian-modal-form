@@ -15,13 +15,16 @@ function isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function deepMap(value: unknown, fn: (value: unknown) => unknown): unknown {
+function deepMap(value: unknown, fn: (value: unknown) => unknown, iterations = 0): unknown {
+    if (iterations > 10) {
+        return fn(value);
+    }
     if (Array.isArray(value)) {
-        return value.map((v) => deepMap(v, fn));
+        return value.map((v) => deepMap(v, fn, iterations + 1));
     }
     if (isRecord(value)) {
         return Object.fromEntries(
-            Object.entries(value).map(([key, value]) => [key, deepMap(value, fn)]),
+            Object.entries(value).map(([key, value]) => [key, deepMap(value, fn, iterations + 1)]),
         );
     }
     return fn(value);
@@ -84,7 +87,11 @@ export class ResultValue<T = unknown> {
                 return `- ${this.value}`;
             case "object": {
                 const value = this.value;
-                if (value === null) return "";
+                // if the value is null or undefined, return an empty string
+                if (value == null) return "";
+                if (value instanceof FileProxy) {
+                    return `- ${value.name}`;
+                }
                 if (Array.isArray(value)) {
                     return _toBulletList(value);
                 }
@@ -159,8 +166,12 @@ export class ResultValue<T = unknown> {
     /**
      * getter that returns all the string values uppercased.
      * If the value is an array, it will return an array with all the strings uppercased.
+     * The usage of map is important for safety and method chaining.
      */
-    get upper() {
+    get upper(): ResultValue<unknown> {
+        if (this.value instanceof FileProxy) {
+            return new ResultValue(this.value.name.toLocaleUpperCase(), this.name, this.notify);
+        }
         return this.map((v) =>
             deepMap(v, (it) => (typeof it === "string" ? it.toLocaleUpperCase() : it)),
         );
@@ -169,9 +180,13 @@ export class ResultValue<T = unknown> {
      * getter that returns all the string values lowercased.
      * If the value is an array, it will return an array with all the strings lowercased.
      * If the value is an object, it will return an object with all the string values lowercased.
+     * The usage of map is important for safety and method chaining.
      * @returns FormValue
      */
-    get lower() {
+    get lower(): ResultValue<unknown> {
+        if (this.value instanceof FileProxy) {
+            return new ResultValue(this.value.name.toLocaleLowerCase(), this.name, this.notify);
+        }
         return this.map((v) =>
             deepMap(v, (it) => (typeof it === "string" ? it.toLocaleLowerCase() : it)),
         );
@@ -179,7 +194,10 @@ export class ResultValue<T = unknown> {
     /**
      * getter that returns all the string values trimmed.
      * */
-    get trimmed() {
+    get trimmed(): ResultValue<unknown> {
+        if (this.value instanceof FileProxy) {
+            return new ResultValue(this.value.name.trim(), this.name, this.notify);
+        }
         return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? it.trim() : it)));
     }
 

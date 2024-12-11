@@ -12,7 +12,10 @@ export class ObsidianFileService implements FileService {
     createFile = (fullPath: string, content: ArrayBuffer) =>
         TE.tryCatch(
             () => this.app.vault.createBinary(fullPath, content),
-            FileError.of("Error saving file"),
+            (err) =>
+                err instanceof Error
+                    ? new FileError(err.message, err)
+                    : new FileError("Error creating file", err),
         );
     createFolder = (fullPath: string) =>
         TE.tryCatch(

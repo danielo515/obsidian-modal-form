@@ -86,4 +86,8 @@ export class FileProxy<T extends FileProps = FileProps> {
             extension: this.extension,
         };
     }
+
+    toString(): string {
+        return this.path;
+    }
 }
