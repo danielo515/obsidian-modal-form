@@ -19,6 +19,7 @@
     import InputBuilderDocumentBlock from "./components/InputBuilderDocumentBlock.svelte";
     import InputFolder from "./components/InputBuilderFolder.svelte";
     import InputBuilderImage from "./components/InputBuilderImage.svelte";
+    import InputBuilderFile from "./components/InputBuilderFile.svelte";
     import InputBuilderSelect from "./components/InputBuilderSelect.svelte";
     import Tabs from "./components/Tabs.svelte";
     import TemplateEditor from "./components/TemplateEditor.svelte";
@@ -370,10 +371,18 @@
                                     notifyChange={onChange}
                                     {app}
                                 />
+                            {:else if field.input.type === "file"}
+                                <InputBuilderFile
+                                    {index}
+                                    bind:folder={field.input.folder}
+                                    bind:allowedExtensions={field.input.allowedExtensions}
+                                    notifyChange={onChange}
+                                    {app}
+                                />
                             {/if}
                         </div>
 
-                        {#if ["text", "email", "tel", "number", "note", "tag", "dataview", "multiselect"].includes(field.input.type)}
+                        {#if ["text", "email", "tel", "number", "note", "tag", "dataview", "multiselect", "file"].includes(field.input.type)}
                             <FormRow label="Required" id={`required_${index}`}>
                                 <Toggle bind:checked={field.isRequired} tabindex={index} />
                             </FormRow>
