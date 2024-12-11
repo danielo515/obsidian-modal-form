@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.54.0](https://github.com/danielo515/obsidian-modal-form/compare/1.53.0...1.54.0) (2024-12-11)
+
+
+### Features
+
+* **builder:** File input builder ([48b62af](https://github.com/danielo515/obsidian-modal-form/commit/48b62af80cfdb2ca81793c9258a2872367e7144f))
+* **input:** file input schema and rendering ([b4682ff](https://github.com/danielo515/obsidian-modal-form/commit/b4682ff73b0bbe9fe038db0fc19eca55f6bcfade))
+
 ## [1.53.0](https://github.com/danielo515/obsidian-modal-form/compare/1.52.0...1.53.0) (2024-12-09)
 
 
