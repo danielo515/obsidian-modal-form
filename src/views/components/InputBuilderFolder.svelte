@@ -1,11 +1,12 @@
 <script lang="ts">
-    import { Setting } from "obsidian";
+    import { App, Setting } from "obsidian";
     import { FolderSuggest } from "src/suggesters/suggestFolder";
     /**
      * This component is just to select a folder, not notes inside the folder
      */
     export let index: number;
     export let folder: string | undefined;
+    export let app: App;
     // This is just used to notify the parent component that the value has changed
     // it is useful for example to persis the intermediary state of the form
     export let notifyChange: () => void;

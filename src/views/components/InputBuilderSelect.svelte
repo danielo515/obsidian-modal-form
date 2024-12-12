@@ -136,7 +136,7 @@
         {/each}
     </FormRow>
 {:else if source === "notes"}
-    <InputFolder {index} bind:folder {notifyChange} />
+    <InputFolder {index} bind:folder {notifyChange} {app} />
 {:else if source === "dataview"}
     <InputBuilderDataview {index} bind:value={query} {app} />
 {/if}

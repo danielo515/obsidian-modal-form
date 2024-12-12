@@ -346,12 +346,14 @@
                             {:else if field.input.type === "note"}
                                 <InputFolder
                                     {index}
+                                    {app}
                                     bind:folder={field.input.folder}
                                     notifyChange={onChange}
                                 />
                             {:else if field.input.type === "folder"}
                                 <InputFolder
                                     {index}
+                                    {app}
                                     bind:folder={field.input.parentFolder}
                                     notifyChange={onChange}
                                 />
