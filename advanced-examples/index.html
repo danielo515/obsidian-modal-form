@@ -847,8 +847,9 @@
 <p>If you want to modify the content of a notes frontmatter with one of your existing forms, put the following
 snippet in a templater template, substituting the name of your form:</p>
 <pre><code class="language-javascript">&lt;%*
+const modalForm = app.plugins.plugins.modalforms.api;
   const run = async (frontmatter) =&gt; {
-    const result = await tp.user.openForm('frontmatter', {
+    const result = await modalForm.openForm('frontmatter', {
       values: { ...frontmatter },
     });
     return result.getData();
