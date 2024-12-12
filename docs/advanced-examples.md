@@ -11,8 +11,9 @@ snippet in a templater template, substituting the name of your form:
 
 ```javascript
 <%*
+const modalForm = app.plugins.plugins.modalforms.api;
   const run = async (frontmatter) => {
-    const result = await tp.user.openForm('frontmatter', {
+    const result = await modalForm.openForm('frontmatter', {
       values: { ...frontmatter },
     });
     return result.getData();
@@ -76,7 +77,6 @@ It can be a single `dataview` command, or it can be more things, like concatenat
 Which will look like this in the form:
 
 ![demo modal](Screenshot 2024-05-08 at 15.08.02.png)
-
 
 You can take advantage of the preview to experiment a bit with what you will get in the input
 
