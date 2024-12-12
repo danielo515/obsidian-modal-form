@@ -7,16 +7,23 @@
     import { useSetting } from "./useObsidianSetting";
     export let field: FieldDefinition;
     export let value: Writable<FieldValue>;
+    export let parentFolder: string | undefined;
     export let app: App;
     let search_: SearchComponent | undefined;
     function customizer(setting: Setting) {
         setting.addSearch((component) => {
-            new FolderSuggest(component.inputEl, app);
+            new FolderSuggest(component.inputEl, app, parentFolder);
             search_ = component;
             component.onChange((v) => {
-                $value = v;
+                $value = v.trim();
             });
         });
+        setting.infoEl.appendChild(
+            createSpan({
+                cls: "setting-item-description",
+                text: parentFolder ? `Searching in: ${parentFolder}` : "",
+            }),
+        );
     }
     $: if (search_) {
         search_.setValue($value as string);

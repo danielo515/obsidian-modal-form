@@ -68,6 +68,7 @@ export const InputNoteFromFolderSchema = object({
 });
 export const InputFolderSchema = object({
     type: literal("folder"),
+    parentFolder: optional(string([toTrimmed()])),
     // TODO: allow exclude option
 });
 export const InputDataviewSourceSchema = object({

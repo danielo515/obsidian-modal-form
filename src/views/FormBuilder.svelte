@@ -17,9 +17,9 @@
     import FormRow from "./components/FormRow.svelte";
     import InputBuilderDataview from "./components/inputBuilderDataview.svelte";
     import InputBuilderDocumentBlock from "./components/InputBuilderDocumentBlock.svelte";
+    import InputBuilderFile from "./components/InputBuilderFile.svelte";
     import InputFolder from "./components/InputBuilderFolder.svelte";
     import InputBuilderImage from "./components/InputBuilderImage.svelte";
-    import InputBuilderFile from "./components/InputBuilderFile.svelte";
     import InputBuilderSelect from "./components/InputBuilderSelect.svelte";
     import Tabs from "./components/Tabs.svelte";
     import TemplateEditor from "./components/TemplateEditor.svelte";
@@ -347,6 +347,12 @@
                                 <InputFolder
                                     {index}
                                     bind:folder={field.input.folder}
+                                    notifyChange={onChange}
+                                />
+                            {:else if field.input.type === "folder"}
+                                <InputFolder
+                                    {index}
+                                    bind:folder={field.input.parentFolder}
                                     notifyChange={onChange}
                                 />
                             {:else if field.input.type === "dataview"}
