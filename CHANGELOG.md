@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.55.0](https://github.com/danielo515/obsidian-modal-form/compare/1.54.0...1.55.0) (2024-12-12)
+
+
+### Features
+
+* **input:** you can define a parent folder on the folder input ([d208648](https://github.com/danielo515/obsidian-modal-form/commit/d208648ba49cb8674b48b0f3f1eca9bfb9aed5ad))
+
+
+### Bug Fixes
+
+* remove deprecated usages ([96aed30](https://github.com/danielo515/obsidian-modal-form/commit/96aed30449aa0ac7006b34188559a9ec820b4c53))
+
 ## [1.54.0](https://github.com/danielo515/obsidian-modal-form/compare/1.53.0...1.54.0) (2024-12-11)
 
 
