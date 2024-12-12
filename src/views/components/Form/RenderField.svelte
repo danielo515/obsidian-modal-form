@@ -56,7 +56,12 @@
     {:else if definition.input.type === "toggle"}
         <ObsidianToggle field={definition} {value} />
     {:else if definition.input.type === "folder"}
-        <InputFolder field={definition} {value} {app} />
+        <InputFolder
+            field={definition}
+            parentFolder={definition.input.parentFolder}
+            {value}
+            {app}
+        />
     {:else if definition.input.type === "dataview"}
         <InputDataview field={definition} input={definition.input} {value} {errors} {app} />
     {:else if definition.input.type === "note"}

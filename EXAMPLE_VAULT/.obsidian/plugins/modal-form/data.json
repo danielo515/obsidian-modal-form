@@ -343,31 +343,28 @@
     {
       "title": "Frontmatter example",
       "name": "frontmatter",
-      "version": "1",
       "fields": [
         {
           "name": "title",
           "label": "",
           "description": "",
+          "isRequired": false,
           "input": {
             "type": "text",
-            "allowUnknownValues": false,
             "hidden": false
-          },
-          "isRequired": false
+          }
         },
         {
           "name": "tags",
           "label": "",
           "description": "",
+          "isRequired": false,
           "input": {
-            "type": "tag",
-            "allowUnknownValues": false,
-            "hidden": false
-          },
-          "isRequired": false
+            "type": "tag"
+          }
         }
-      ]
+      ],
+      "version": "1"
     }
   ]
 }
