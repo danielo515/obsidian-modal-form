@@ -1,6 +1,6 @@
 <script lang="ts">
     import { input } from "@core";
-    import { A, pipe } from "@std";
+    import { A, absurd, pipe } from "@std";
     import { App, setIcon } from "obsidian";
     import {
         InputTypeReadable,
@@ -387,6 +387,10 @@
                                     notifyChange={onChange}
                                     {app}
                                 />
+                            {:else if field.input.type === "number" || field.input.type === "email" || field.input.type === "tel" || field.input.type === "date" || field.input.type === "time" || field.input.type === "datetime" || field.input.type === "toggle" || field.input.type === "textarea" || field.input.type === "text" || field.input.type === "tag"}
+                                <!-- * empty  -->
+                            {:else}
+                                {absurd(field.input.type)}
                             {/if}
                         </div>
 
