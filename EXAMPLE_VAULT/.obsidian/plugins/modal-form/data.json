@@ -365,6 +365,28 @@
         }
       ],
       "version": "1"
+    },
+    {
+      "title": "Long list tip example",
+      "name": "long-list",
+      "version": "1",
+      "fields": [
+        {
+          "name": "chore",
+          "label": "Chores",
+          "description": "Pick a chore to do",
+          "input": {
+            "type": "dataview",
+            "allowUnknownValues": false,
+            "hidden": false,
+            "options": [],
+            "source": "notes",
+            "query": "[\n    'Wash the dishes',\n    'Take out the trash',\n    'Do the laundry',\n    'Mow the lawn',\n    'Feed the cat',\n    'Feed the dog',\n    'Feed the fish',\n    'Feed the birds',\n    'Feed the turtles',\n    'Feed the rabbits',\n    'Feed the turtles',]",
+            "multi_select_options": []
+          },
+          "isRequired": false
+        }
+      ]
     }
   ]
 }
