@@ -4,8 +4,6 @@ import { TemplateError } from "./TemplateError";
 export interface TemplateService {
     /**
      * Creates a note from a template content
-     * @param template The template content
-     * @param targetPath Path where the new note should be created
      */
     createNoteFromTemplate(
         templateContent: string,

@@ -1,5 +1,5 @@
 import { TE } from "@std";
-import { App, normalizePath } from "obsidian";
+import { App, normalizePath, TFile } from "obsidian";
 import { Logger } from "src/utils/Logger";
 import { TemplateError } from "./TemplateError";
 import { TemplateService } from "./TemplateService";
@@ -14,13 +14,23 @@ export class BasicTemplateService implements TemplateService {
     ) {}
 
     createNoteFromTemplate = (
-        template: string,
-        targetPath: string,
+        templateContent: string,
+        targetFolder: string,
+        filename: string,
+        openNewNote: boolean,
     ): TE.TaskEither<TemplateError, void> =>
-        TE.tryCatch(
-            async () => {
-                await this.app.vault.create(normalizePath(targetPath), template);
-            },
-            TemplateError.of("Error creating note from template"),
-        );
+        TE.tryCatch(async () => {
+            const fullPath = normalizePath(`${targetFolder}/${filename}.md`);
+            await this.app.vault.create(fullPath, templateContent);
+            if (openNewNote) {
+                const file = this.app.vault.getAbstractFileByPath(fullPath);
+                if (!file) {
+                    this.logger.error("File not found", fullPath);
+                    return;
+                }
+                if (file instanceof TFile) {
+                    await this.app.workspace.getLeaf("split").openFile(file);
+                }
+            }
+        }, TemplateError.of("Error creating note from template"));
 }
