@@ -382,6 +382,192 @@
         }
       ],
       "version": "1"
+    },
+    {
+      "title": "Templater example",
+      "name": "templater-example",
+      "fields": [
+        {
+          "name": "name",
+          "label": "",
+          "description": "",
+          "isRequired": true,
+          "input": {
+            "type": "text",
+            "hidden": false
+          }
+        },
+        {
+          "name": "age",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "number",
+            "hidden": false
+          }
+        },
+        {
+          "name": "favorite_book",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "note",
+            "folder": "Books"
+          }
+        },
+        {
+          "name": "isFamily",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "toggle",
+            "hidden": false
+          }
+        },
+        {
+          "name": "additional_information",
+          "label": "Additional info",
+          "description": "Provide any extra notes about this contact that you want",
+          "isRequired": false,
+          "input": {
+            "type": "textarea",
+            "hidden": false
+          }
+        }
+      ],
+      "version": "1",
+      "template": {
+        "parsedTemplate": [
+          {
+            "_tag": "text",
+            "value": "---\ncreated: <% tp.date.now(\"YYYY-MM-DD HH:mm:ss\") %>\nmodified: <% tp.file.last_modified_date(\"YYYY-MM-DD HH:mm:ss\") %>\nname: "
+          },
+          {
+            "_tag": "variable",
+            "value": "name"
+          },
+          {
+            "_tag": "text",
+            "value": "\nage: "
+          },
+          {
+            "_tag": "variable",
+            "value": "age"
+          },
+          {
+            "_tag": "text",
+            "value": "\ndateOfBirth: "
+          },
+          {
+            "_tag": "variable",
+            "value": "dateOfBirth"
+          },
+          {
+            "_tag": "text",
+            "value": "\nisFamily: "
+          },
+          {
+            "_tag": "variable",
+            "value": "isFamily"
+          },
+          {
+            "_tag": "text",
+            "value": "\nfavoriteBook: "
+          },
+          {
+            "_tag": "variable",
+            "value": "favorite_book"
+          },
+          {
+            "_tag": "text",
+            "value": "\ntags: "
+          },
+          {
+            "_tag": "variable",
+            "value": "Tags"
+          },
+          {
+            "_tag": "text",
+            "value": "\n---\n\n<%*\n// Get current time in user's timezone\nconst now = moment();\nconst age = parseInt("
+          },
+          {
+            "_tag": "variable",
+            "value": "age"
+          },
+          {
+            "_tag": "text",
+            "value": ");\nconst birthYear = now.year() - age;\n_%>\n\n# "
+          },
+          {
+            "_tag": "variable",
+            "value": "name"
+          },
+          {
+            "_tag": "text",
+            "value": "'s Profile\n> Created on <% tp.date.now(\"dddd, MMMM Do YYYY\") %> at <% tp.date.now(\"HH:mm\") %>\n\n## Basic Information\n- **Age**: "
+          },
+          {
+            "_tag": "variable",
+            "value": "age"
+          },
+          {
+            "_tag": "text",
+            "value": " years old *(born around <%* tR + birthYear %>)*\n- **Date of Birth**: "
+          },
+          {
+            "_tag": "variable",
+            "value": "dateOfBirth"
+          },
+          {
+            "_tag": "text",
+            "value": "\n- **Best Time to Contact**: "
+          },
+          {
+            "_tag": "variable",
+            "value": "timeOfDay"
+          },
+          {
+            "_tag": "text",
+            "value": "\n- **Family Member**: "
+          },
+          {
+            "_tag": "variable",
+            "value": "is_family"
+          },
+          {
+            "_tag": "text",
+            "value": "\n- **Days until next birthday**: <%* \nif (tp.frontmatter.dateOfBirth) {\n    const birthday = moment(tp.frontmatter.dateOfBirth);\n    const nextBirthday = moment(birthday).year(now.year());\n    if (nextBirthday.isBefore(now)) {\n        nextBirthday.add(1, 'year');\n    }\n    tR + nextBirthday.diff(now, 'days');\n} else {\n    tR + \"Unknown\";\n}\n\nconsole.log({ age, birthYear, frontmatter: tp.frontmatter })\n_%> days\n\n## Preferences\n- **Favorite Book**: [["
+          },
+          {
+            "_tag": "variable",
+            "value": "favorite_book"
+          },
+          {
+            "_tag": "text",
+            "value": "]]\n<%* if (tp.frontmatter.favorite_book) { %>\n> [!note] Related Books\n> \\`\\`\\`dataview\n> LIST\n> FROM [["
+          },
+          {
+            "_tag": "variable",
+            "value": "favorite_book"
+          },
+          {
+            "_tag": "text",
+            "value": "]]-links\n> SORT file.name ASC\n> \\`\\`\\`\n<%* } %>\n\n## Additional Information\n"
+          },
+          {
+            "_tag": "variable",
+            "value": "additional_information"
+          },
+          {
+            "_tag": "text",
+            "value": "\n\n---\n> Last modified: <% tp.file.last_modified_date(\"dddd, MMMM Do YYYY HH:mm:ss\") %>"
+          }
+        ],
+        "createCommand": true
+      }
     }
   ]
 }
