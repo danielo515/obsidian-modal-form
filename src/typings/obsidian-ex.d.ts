@@ -3,7 +3,6 @@ import type { DataviewApi } from "api/plugin-api";
 import type moment from "moment";
 import "obsidian";
 import { TemplaterApi } from "src/core/template";
-import { PublicAPI } from "src/main";
 
 declare module "obsidian" {
     interface MetadataCache {
@@ -34,13 +33,8 @@ declare module "obsidian" {
 declare global {
     interface Window {
         DataviewAPI?: DataviewApi;
-        MF?: PublicAPI;
-        ModalForm?: PublicAPI;
-    }
-}
-
-declare global {
-    interface Window {
+        MF?: API;
+        ModalForm?: API;
         moment: typeof moment;
     }
 }
