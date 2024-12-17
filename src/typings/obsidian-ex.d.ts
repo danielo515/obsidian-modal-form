@@ -2,6 +2,7 @@
 import type { DataviewApi } from "api/plugin-api";
 import type moment from "moment";
 import "obsidian";
+import { TemplaterApi } from "src/core/template";
 import { PublicAPI } from "src/main";
 
 declare module "obsidian" {
@@ -19,17 +20,14 @@ declare module "obsidian" {
                 dataview?: {
                     api: DataviewApi;
                 };
+                "templater-obsidian"?: { templater: TemplaterApi };
             };
         };
     }
 
     interface Workspace {
         /** Sent to rendered dataview components to tell them to possibly refresh */
-        on(
-            name: "dataview:refresh-views",
-            callback: () => void,
-            ctx?: unknown,
-        ): EventRef;
+        on(name: "dataview:refresh-views", callback: () => void, ctx?: unknown): EventRef;
     }
 }
 
@@ -42,7 +40,7 @@ declare global {
 }
 
 declare global {
-  interface Window {
-    moment: typeof moment;
-  }
+    interface Window {
+        moment: typeof moment;
+    }
 }
