@@ -29,13 +29,22 @@ export class TemplaterService implements TemplateService {
         filename: string,
         openNewNote: boolean,
     ): TE.TaskEither<TemplateError, void> =>
-        TE.tryCatch(async () => {
-            const title = filename;
-            await this.templaterApi.create_new_note_from_template(
-                templateContent,
-                targetFolder,
-                title,
-                openNewNote,
-            );
-        }, TemplateError.of("Error creating note from template"));
+        TE.tryCatch(
+            async () => {
+                const title = filename;
+                const result = await this.templaterApi.create_new_note_from_template(
+                    templateContent,
+                    targetFolder,
+                    title,
+                    openNewNote,
+                );
+                if (result === undefined) {
+                    throw new Error("Templater API returned undefined, probably a parsing error");
+                }
+            },
+            (e) =>
+                e instanceof Error
+                    ? TemplateError.of(e.message)(e)
+                    : TemplateError.of("Unknown error")(e),
+        );
 }

@@ -2,7 +2,6 @@ import { A, E, O, pipe, TE } from "@std";
 import { Platform, Plugin, WorkspaceLeaf } from "obsidian";
 import { API } from "src/API";
 import { ModalFormSettingTab } from "src/ModalFormSettingTab";
-import FormResult from "src/core/FormResult";
 import { FormWithTemplate, type FormDefinition } from "src/core/formDefinition";
 import {
     getDefaultSettings,
@@ -22,6 +21,7 @@ import {
 } from "./core/formDefinitionSchema";
 import { TemplateService } from "./core/template/TemplateService";
 import { getTemplateService } from "./core/template/getTemplateService";
+import { retryForm } from "./core/template/retryForm";
 import { executeTemplate } from "./core/template/templateParser";
 import { settingsStore } from "./store/store";
 import { FormPickerModal } from "./suggesters/FormPickerModal";
@@ -35,12 +35,6 @@ import { TEMPLATE_BUILDER_VIEW, TemplateBuilderView } from "./views/TemplateBuil
 import { makeModel } from "./views/components/TemplateBuilder";
 
 type ViewType = typeof EDIT_FORM_VIEW | typeof MANAGE_FORMS_VIEW | typeof TEMPLATE_BUILDER_VIEW;
-
-// Define functions and properties you want to make available to other plugins, or templater templates, etc
-export interface PublicAPI {
-    exampleForm(): Promise<FormResult>;
-    openForm(formReference: string | FormDefinition): Promise<FormResult>;
-}
 
 function notifyParsingErrors(errors: InvalidData[]) {
     if (errors.length === 0) {
@@ -68,7 +62,7 @@ export default class ModalFormPlugin extends Plugin {
     public settings: ModalFormSettings | undefined;
     private unsubscribeSettingsStore: () => void = () => {};
     // This things will be setup in the onload function rather than constructor
-    public api!: PublicAPI;
+    public api!: API;
     private templateService!: TemplateService;
 
     manageForms() {
@@ -352,6 +346,51 @@ export default class ModalFormPlugin extends Plugin {
         );
     }
 
+    createNoteFromTemplate(
+        noteName: string,
+        noteContent: string,
+        destinationFolder: string,
+    ): TE.TaskEither<Error, void> {
+        // Use template service instead of directly creating the file
+        return pipe(
+            this.templateService.createNoteFromTemplate(
+                noteContent,
+                destinationFolder,
+                noteName,
+                false, // don't open the new note
+            ),
+            TE.orElse((error) => {
+                logger.error(error);
+                return pipe(
+                    TE.tryCatch(
+                        () =>
+                            this.api.openForm(retryForm, {
+                                values: {
+                                    title: error.message,
+                                    template: noteContent,
+                                },
+                            }),
+                        E.toError,
+                    ),
+                    TE.map((result) => result.get("template")),
+                    TE.chain((template) => {
+                        if (typeof template !== "string") {
+                            notifyWarning("Failed while retrying")("Template is not a string");
+                            return TE.left(new Error("Template is not a string"));
+                        }
+                        return this.createNoteFromTemplate(noteName, template, destinationFolder);
+                    }),
+                );
+            }),
+            TE.tapIO(() => () => {
+                log_notice(
+                    "Note created successfully",
+                    `Note "${noteName}" created in ${destinationFolder}`,
+                );
+            }),
+        );
+    }
+
     /**
      * Checks if there are forms with templates, and presents a prompt
      * to select a form, then opens the forms, and creates a new note
@@ -367,27 +406,7 @@ export default class ModalFormPlugin extends Plugin {
             const formData = await this.api.openForm(form);
             const noteContent = executeTemplate(form.template.parsedTemplate, formData.getData());
 
-            // Use template service instead of directly creating the file
-            await pipe(
-                this.templateService.createNoteFromTemplate(
-                    noteContent,
-                    destinationFolder,
-                    noteName,
-                    false, // don't open the new note
-                ),
-                TE.match(
-                    (error) => {
-                        log_error(error);
-                        notifyWarning("Failed to create note from template");
-                    },
-                    () => {
-                        log_notice(
-                            "Note created successfully",
-                            `Note ${noteName} created in ${destinationFolder}`,
-                        );
-                    },
-                ),
-            )();
+            await this.createNoteFromTemplate(noteName, noteContent, destinationFolder)();
         };
 
         const picker = new NewNoteModal(
