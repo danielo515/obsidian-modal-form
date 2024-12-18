@@ -436,6 +436,16 @@
             "type": "textarea",
             "hidden": false
           }
+        },
+        {
+          "name": "dateOfBirth",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "date",
+            "hidden": false
+          }
         }
       ],
       "version": "1",
@@ -499,7 +509,15 @@
           },
           {
             "_tag": "text",
-            "value": ");\nconst birthYear = now.year() - age;\n_%>\n\n# "
+            "value": ");\nconst birthYear = now.year() - age;\nconst dateOfBirth = moment("
+          },
+          {
+            "_tag": "variable",
+            "value": "dateOfBirth"
+          },
+          {
+            "_tag": "text",
+            "value": ")\n_%>\n\n# "
           },
           {
             "_tag": "variable",
@@ -515,19 +533,11 @@
           },
           {
             "_tag": "text",
-            "value": " years old *(born around <%* tR + birthYear %>)*\n- **Date of Birth**: "
+            "value": " years old *(born around <%* tR += birthYear %>)*\n- **Date of Birth**: "
           },
           {
             "_tag": "variable",
             "value": "dateOfBirth"
-          },
-          {
-            "_tag": "text",
-            "value": "\n- **Best Time to Contact**: "
-          },
-          {
-            "_tag": "variable",
-            "value": "timeOfDay"
           },
           {
             "_tag": "text",
@@ -539,7 +549,7 @@
           },
           {
             "_tag": "text",
-            "value": "\n- **Days until next birthday**: <%* \nif (tp.frontmatter.dateOfBirth) {\n    const birthday = moment(tp.frontmatter.dateOfBirth);\n    const nextBirthday = moment(birthday).year(now.year());\n    if (nextBirthday.isBefore(now)) {\n        nextBirthday.add(1, 'year');\n    }\n    tR + nextBirthday.diff(now, 'days');\n} else {\n    tR + \"Unknown\";\n}\n\nconsole.log({ age, birthYear, frontmatter: tp.frontmatter })\n_%> days\n\n## Preferences\n- **Favorite Book**: [["
+            "value": "\n- **Days until next birthday**: <%* \nif (dateOfBirth) {\n    const nextBirthday = dateOfBirth.year(now.year());\n    if (nextBirthday.isBefore(now)) {\n        nextBirthday.add(1, 'year');\n    }\n    tR += nextBirthday.diff(now, 'days');\n} else {\n    tR += \"Unknown\";\n}\n\nconsole.log({ age, birthYear, frontmatter: tp.frontmatter, dateOfBirth })\n_%> days\n\n## Preferences\n- **Favorite Book**: [["
           },
           {
             "_tag": "variable",
@@ -547,7 +557,7 @@
           },
           {
             "_tag": "text",
-            "value": "]]\n<%* if (tp.frontmatter.favorite_book) { %>\n> [!note] Related Books\n> \\`\\`\\`dataview\n> LIST\n> FROM [["
+            "value": "]]\n<%* if (tp.frontmatter.favorite_book) { %>\n> [!note] Related Books\n> ```dataview\n> LIST\n> FROM #book\n> WHERE contains(file.outlinks, [["
           },
           {
             "_tag": "variable",
@@ -555,7 +565,7 @@
           },
           {
             "_tag": "text",
-            "value": "]]-links\n> SORT file.name ASC\n> \\`\\`\\`\n<%* } %>\n\n## Additional Information\n"
+            "value": "]])\n> SORT file.name ASC\n> ```\n<%* } %>\n\n## Additional Information\n"
           },
           {
             "_tag": "variable",

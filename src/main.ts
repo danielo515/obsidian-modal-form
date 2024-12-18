@@ -351,37 +351,42 @@ export default class ModalFormPlugin extends Plugin {
         noteContent: string,
         destinationFolder: string,
     ): TE.TaskEither<Error, void> {
-        // Use template service instead of directly creating the file
+        const loop = (noteContent: string): TE.TaskEither<Error, void> => {
+            // Use template service instead of directly creating the file
+            return pipe(
+                this.templateService.createNoteFromTemplate(
+                    noteContent,
+                    destinationFolder,
+                    noteName,
+                    false, // don't open the new note
+                ),
+                TE.orElse((error) => {
+                    logger.error(error);
+                    return pipe(
+                        TE.tryCatch(
+                            () =>
+                                this.api.openForm(retryForm, {
+                                    values: {
+                                        title: error.message,
+                                        template: noteContent,
+                                    },
+                                }),
+                            E.toError,
+                        ),
+                        TE.map((result) => result.get("template")),
+                        TE.chain((template) => {
+                            if (typeof template !== "string") {
+                                notifyWarning("Failed while retrying")("Template is not a string");
+                                return TE.left(new Error("Template is not a string"));
+                            }
+                            return loop(template);
+                        }),
+                    );
+                }),
+            );
+        };
         return pipe(
-            this.templateService.createNoteFromTemplate(
-                noteContent,
-                destinationFolder,
-                noteName,
-                false, // don't open the new note
-            ),
-            TE.orElse((error) => {
-                logger.error(error);
-                return pipe(
-                    TE.tryCatch(
-                        () =>
-                            this.api.openForm(retryForm, {
-                                values: {
-                                    title: error.message,
-                                    template: noteContent,
-                                },
-                            }),
-                        E.toError,
-                    ),
-                    TE.map((result) => result.get("template")),
-                    TE.chain((template) => {
-                        if (typeof template !== "string") {
-                            notifyWarning("Failed while retrying")("Template is not a string");
-                            return TE.left(new Error("Template is not a string"));
-                        }
-                        return this.createNoteFromTemplate(noteName, template, destinationFolder);
-                    }),
-                );
-            }),
+            loop(noteContent),
             TE.tapIO(() => () => {
                 log_notice(
                     "Note created successfully",
