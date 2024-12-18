@@ -10,12 +10,12 @@
   "properties": false,
   "page-preview": true,
   "daily-notes": false,
-  "templates": false,
+  "templates": true,
   "note-composer": true,
   "command-palette": true,
   "slash-command": false,
   "editor-status": true,
-  "bookmarks": true,
+  "bookmarks": false,
   "markdown-importer": false,
   "zk-prefixer": false,
   "random-note": false,
@@ -24,7 +24,7 @@
   "slides": false,
   "audio-recorder": false,
   "workspaces": false,
-  "file-recovery": true,
+  "file-recovery": false,
   "publish": false,
   "sync": false
 }

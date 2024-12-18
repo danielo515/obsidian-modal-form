@@ -1,8 +1,7 @@
-import { A, E, O, pipe } from "@std";
+import { A, E, O, pipe, TE } from "@std";
 import { Platform, Plugin, WorkspaceLeaf } from "obsidian";
 import { API } from "src/API";
 import { ModalFormSettingTab } from "src/ModalFormSettingTab";
-import FormResult from "src/core/FormResult";
 import { FormWithTemplate, type FormDefinition } from "src/core/formDefinition";
 import {
     getDefaultSettings,
@@ -15,16 +14,20 @@ import { ModalFormError } from "src/utils/ModalFormError";
 import { EDIT_FORM_VIEW, EditFormView } from "src/views/EditFormView";
 import { MANAGE_FORMS_VIEW, ManageFormsView } from "src/views/ManageFormsView";
 import {
-    InvalidData,
-    MigrationError,
     formNeedsMigration,
+    InvalidData,
     migrateToLatest,
+    MigrationError,
 } from "./core/formDefinitionSchema";
+import { TemplateService } from "./core/template/TemplateService";
+import { getTemplateService } from "./core/template/getTemplateService";
+import { retryForm } from "./core/template/retryForm";
 import { executeTemplate } from "./core/template/templateParser";
 import { settingsStore } from "./store/store";
 import { FormPickerModal } from "./suggesters/FormPickerModal";
 import { NewNoteModal } from "./suggesters/NewNoteModal";
 import { log_error, log_notice, notifyWarning } from "./utils/Log";
+import { logger } from "./utils/Logger";
 import { file_exists } from "./utils/files";
 import { FormImportModal } from "./views/FormImportView";
 import { TemplateBuilderModal } from "./views/TemplateBuilderModal";
@@ -32,12 +35,6 @@ import { TEMPLATE_BUILDER_VIEW, TemplateBuilderView } from "./views/TemplateBuil
 import { makeModel } from "./views/components/TemplateBuilder";
 
 type ViewType = typeof EDIT_FORM_VIEW | typeof MANAGE_FORMS_VIEW | typeof TEMPLATE_BUILDER_VIEW;
-
-// Define functions and properties you want to make available to other plugins, or templater templates, etc
-export interface PublicAPI {
-    exampleForm(): Promise<FormResult>;
-    openForm(formReference: string | FormDefinition): Promise<FormResult>;
-}
 
 function notifyParsingErrors(errors: InvalidData[]) {
     if (errors.length === 0) {
@@ -65,7 +62,8 @@ export default class ModalFormPlugin extends Plugin {
     public settings: ModalFormSettings | undefined;
     private unsubscribeSettingsStore: () => void = () => {};
     // This things will be setup in the onload function rather than constructor
-    public api!: PublicAPI;
+    public api!: API;
+    private templateService!: TemplateService;
 
     manageForms() {
         return this.activateView(MANAGE_FORMS_VIEW);
@@ -230,6 +228,7 @@ export default class ModalFormPlugin extends Plugin {
         });
         this.api = new API(this.app, this);
         this.attachShortcutToGlobalWindow();
+        this.templateService = getTemplateService(this.app, logger);
         this.registerView(EDIT_FORM_VIEW, (leaf) => new EditFormView(leaf, this));
         this.registerView(MANAGE_FORMS_VIEW, (leaf) => new ManageFormsView(leaf, this));
         this.registerView(TEMPLATE_BUILDER_VIEW, (leaf) => new TemplateBuilderView(leaf, this));
@@ -347,6 +346,56 @@ export default class ModalFormPlugin extends Plugin {
         );
     }
 
+    createNoteFromTemplate(
+        noteName: string,
+        noteContent: string,
+        destinationFolder: string,
+    ): TE.TaskEither<Error, void> {
+        const loop = (noteContent: string): TE.TaskEither<Error, void> => {
+            // Use template service instead of directly creating the file
+            return pipe(
+                this.templateService.createNoteFromTemplate(
+                    noteContent,
+                    destinationFolder,
+                    noteName,
+                    false, // don't open the new note
+                ),
+                TE.orElse((error) => {
+                    logger.error(error);
+                    return pipe(
+                        TE.tryCatch(
+                            () =>
+                                this.api.openForm(retryForm, {
+                                    values: {
+                                        title: error.message,
+                                        template: noteContent,
+                                    },
+                                }),
+                            E.toError,
+                        ),
+                        TE.map((result) => result.get("template")),
+                        TE.chain((template) => {
+                            if (typeof template !== "string") {
+                                notifyWarning("Failed while retrying")("Template is not a string");
+                                return TE.left(new Error("Template is not a string"));
+                            }
+                            return loop(template);
+                        }),
+                    );
+                }),
+            );
+        };
+        return pipe(
+            loop(noteContent),
+            TE.tapIO(() => () => {
+                log_notice(
+                    "Note created successfully",
+                    `Note "${noteName}" created in ${destinationFolder}`,
+                );
+            }),
+        );
+    }
+
     /**
      * Checks if there are forms with templates, and presents a prompt
      * to select a form, then opens the forms, and creates a new note
@@ -360,11 +409,11 @@ export default class ModalFormPlugin extends Plugin {
             destinationFolder: string,
         ) => {
             const formData = await this.api.openForm(form);
-            const newNoteFullPath = this.getUniqueNoteName(noteName, destinationFolder);
             const noteContent = executeTemplate(form.template.parsedTemplate, formData.getData());
-            console.log("new note content", noteContent);
-            this.app.vault.create(newNoteFullPath, noteContent);
+
+            await this.createNoteFromTemplate(noteName, noteContent, destinationFolder)();
         };
+
         const picker = new NewNoteModal(
             this.app,
             formsWithTemplates,
