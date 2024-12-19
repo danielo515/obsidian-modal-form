@@ -4,7 +4,7 @@
     import { FileProxy } from "src/core/files/FileProxy";
     import { ObsidianFileService } from "src/core/files/FileServiceObsidian";
     import { FieldDefinition } from "src/core/formDefinition";
-    import { FormEngine } from "src/store/formStore";
+    import { FormEngine } from "src/store/formEngine";
     import { logger as l } from "src/utils/Logger";
     import InputField from "src/views/components/Form/InputField.svelte";
     import ObsidianInputWrapper from "src/views/components/Form/ObsidianInputWrapper.svelte";

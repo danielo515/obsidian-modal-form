@@ -1,6 +1,6 @@
 <script lang="ts">
     import { input as I } from "src/core";
-    import { FieldValue } from "src/store/formStore";
+    import { FieldValue } from "src/store/formEngine";
     import { Writable } from "svelte/store";
 
     export let value: Writable<FieldValue>;

@@ -23,7 +23,7 @@ import { TemplateService } from "./core/template/TemplateService";
 import { getTemplateService } from "./core/template/getTemplateService";
 import { retryForm } from "./core/template/retryForm";
 import { executeTemplate } from "./core/template/templateParser";
-import { settingsStore } from "./store/store";
+import { settingsStore } from "./store/SettngsStore";
 import { FormPickerModal } from "./suggesters/FormPickerModal";
 import { NewNoteModal } from "./suggesters/NewNoteModal";
 import { log_error, log_notice, notifyWarning } from "./utils/Log";

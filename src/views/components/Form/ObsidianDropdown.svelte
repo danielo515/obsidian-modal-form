@@ -2,7 +2,7 @@
     import { input as I } from "@core";
     import { Setting } from "obsidian";
     import { FieldDefinition } from "src/core/formDefinition";
-    import { FieldValue } from "src/store/formStore";
+    import { FieldValue } from "src/store/formEngine";
     import { Writable } from "svelte/store";
     export let field: FieldDefinition;
     export let input: I.inputSelectFixed;

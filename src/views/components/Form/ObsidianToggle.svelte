@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Setting, ToggleComponent } from "obsidian";
     import { FieldDefinition } from "src/core/formDefinition";
-    import { FieldValue } from "src/store/formStore";
+    import { FieldValue } from "src/store/formEngine";
     import { Writable } from "svelte/store";
     import { useSetting } from "./useObsidianSetting";
     export let field: FieldDefinition;

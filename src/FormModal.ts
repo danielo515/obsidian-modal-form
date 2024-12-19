@@ -5,7 +5,7 @@ import FormModalComponent from "./FormModal.svelte";
 import FormResult, { type ModalFormData } from "./core/FormResult";
 import { formDataFromFormDefaults } from "./core/formDataFromFormDefaults";
 import type { FormDefinition, FormOptions } from "./core/formDefinition";
-import { FormEngine, makeFormEngine } from "./store/formStore";
+import { FormEngine, makeFormEngine } from "./store/formEngine";
 import { log_notice } from "./utils/Log";
 
 export type SubmitFn = (formResult: FormResult) => void;

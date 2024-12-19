@@ -1,7 +1,7 @@
 <script lang="ts">
     import { App } from "obsidian";
     import { FormDefinition } from "src/core/formDefinition";
-    import { makeFormEngine } from "src/store/formStore";
+    import { makeFormEngine } from "src/store/formEngine";
     import RenderField from "./views/components/Form/RenderField.svelte";
     export let app: App;
     export let reportFormErrors: (errors: string[]) => void;
