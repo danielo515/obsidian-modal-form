@@ -599,6 +599,57 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-variable-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Variable Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variable-with-transformations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Variable with Transformations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-transformations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Supported Transformations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Templates
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notes
+    </span>
+  </a>
+  
 </li>
         
           <li class="md-nav__item">
@@ -839,6 +890,57 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-variable-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Variable Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variable-with-transformations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Variable with Transformations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-transformations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Supported Transformations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Templates
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notes
+    </span>
+  </a>
+  
 </li>
         
           <li class="md-nav__item">
@@ -934,10 +1036,89 @@ After the form template is processed, if you have the templater plugin installed
 <p>Variables are placeholders that get replaced with form field values. The variable name must match a field name from your form:</p>
 <pre><code>Hello {{name}}! Your favorite color is {{color}}.
 </code></pre>
+<h4 id="basic-variable-syntax">Basic Variable Syntax</h4>
+<ul>
+<li><strong>Variable Declaration</strong>:</li>
+</ul>
+<p><code>plaintext
+  {{ variableName }}</code></p>
+<p>Example:</p>
+<p><code>plaintext
+  {{ name }}</code></p>
+<p>Note that spaces around the variable name are ignored, allowing for flexibility in formatting.</p>
+<pre><code class="language-plaintext">This is a {{variableName}}. And this is also a valid {{ variableName }}
+</code></pre>
+<h4 id="variable-with-transformations">Variable with Transformations</h4>
+<ul>
+<li><strong>Transformation Syntax</strong>: You can apply transformations to a variable by using a pipe <code>|</code> followed by the transformation name.</li>
+</ul>
+<p><code>plaintext
+  {{ variableName | transformation }}</code></p>
+<p>Example:</p>
+<p><code>plaintext
+  {{ name | trim }}</code></p>
+<h3 id="supported-transformations">Supported Transformations</h3>
+<p>The following transformations can be applied to variables:</p>
+<ol>
+<li><strong><code>upper</code></strong>: Converts the variable's value to uppercase.</li>
+<li>
+<p>Usage:</p>
+<p><code>plaintext
+ {{ name | upper }}</code></p>
+</li>
+<li>
+<p><strong><code>lower</code></strong>: Converts the variable's value to lowercase.</p>
+</li>
+<li>
+<p>Usage:</p>
+<p><code>plaintext
+ {{ name | lower }}</code></p>
+</li>
+<li>
+<p><strong><code>trim</code></strong>: Removes whitespace from both ends of the variable's value.</p>
+</li>
+<li>
+<p>Usage:</p>
+<p><code>plaintext
+ {{ name | trim }}</code></p>
+</li>
+<li>
+<p><strong><code>stringify</code></strong>: Converts the variable's value to a JSON string.</p>
+</li>
+<li>
+<p>Usage:</p>
+<p><code>plaintext
+ {{ name | stringify }}</code></p>
+</li>
+</ol>
+<h3 id="example-templates">Example Templates</h3>
+<p>Here are some examples of how to use the new template syntax:</p>
+<ul>
+<li><strong>Single Variable</strong>:</li>
+</ul>
+<p><code>plaintext
+  Hello, {{ name }}!</code></p>
+<ul>
+<li><strong>Variable with Transformation</strong>:</li>
+</ul>
+<p><code>plaintext
+  Hello, {{ name | upper }}!</code></p>
+<ul>
+<li><strong>Multiple Variables with Transformations</strong>:</li>
+</ul>
+<p><code>plaintext
+  Hello, {{ name | trim }}! You are {{ age }} years old.</code></p>
+<h3 id="notes">Notes</h3>
+<ul>
+<li>If an invalid transformation is specified, it will be silently ignored, and the variable will be processed without transformation.</li>
+<li>Spaces around the transformation operator (<code>|</code>) are ignored, allowing for flexibility in formatting:</li>
+</ul>
+<p><code>plaintext
+  {{ name | trim }} or {{ name|trim }} are both valid.</code></p>
 <h3 id="available-commands">Available Commands</h3>
 <h4 id="frontmatter-command">Frontmatter Command</h4>
 <p>The frontmatter command controls which form fields appear in the YAML frontmatter section of your note:</p>
-<pre><code>{{# frontmatter pick: title, tags #}}
+<pre><code>{# frontmatter pick: title, tags #}
 </code></pre>
 <p>Options:</p>
 <ul>
@@ -945,10 +1126,10 @@ After the form template is processed, if you have the templater plugin installed
 <li><code>omit</code>: Exclude these fields from the frontmatter</li>
 </ul>
 <p>You can combine both options:</p>
-<pre><code>{{# frontmatter pick: title, tags, date omit: draft #}}
+<pre><code>{# frontmatter pick: title, tags, date omit: draft #}
 </code></pre>
 <p>If no options are specified, all form fields will be included in the frontmatter:</p>
-<pre><code>{{# frontmatter #}}
+<pre><code>{# frontmatter #}
 </code></pre>
 <h2 id="templater-support">Templater Support</h2>
 <p>If you have the <a href="https://github.com/SilentVoid13/Templater">Templater</a> plugin installed, Modal Form will also process any templater syntax in your form templates. This means you can combine both the form template variables and templater syntax in your templates.</p>
@@ -960,7 +1141,7 @@ Today is &lt;% tp.date.now() %&gt; and you are using form templates!
 <p>Note: This feature is only available if you have the Templater plugin installed and enabled in your vault.</p>
 <h2 id="example">Example</h2>
 <p>Here's a complete template example that combines variables and frontmatter:</p>
-<pre><code>{{# frontmatter pick: title, tags #}}
+<pre><code>{# frontmatter pick: title, tags #}
 
 # {{title}}
 
