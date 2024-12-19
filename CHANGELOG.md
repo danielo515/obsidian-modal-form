@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.56.0](https://github.com/danielo515/obsidian-modal-form/compare/1.55.0...1.56.0) (2024-12-19)
+
+
+### Features
+
+* **core:** template service to use any available template engine to post-process templates ([a3f9d4e](https://github.com/danielo515/obsidian-modal-form/commit/a3f9d4e1e6eb648ecf49d5c3b73a3f3d605756df))
+* **templates:** ask templater to run on form template insertion ([2a10a25](https://github.com/danielo515/obsidian-modal-form/commit/2a10a25133df105aa035bffbdf001e8bd7da15da))
+* **templates:** offer retry on templater errors ([64dae86](https://github.com/danielo515/obsidian-modal-form/commit/64dae864a6d36e54038857b958cd21bf9f1fc412))
+* **templates:** post-process templates using templater ([ea01cd9](https://github.com/danielo515/obsidian-modal-form/commit/ea01cd93569771c4b21f7b70cc76928a957ac1aa))
+
 ## [1.55.0](https://github.com/danielo515/obsidian-modal-form/compare/1.54.0...1.55.0) (2024-12-12)
 
 
