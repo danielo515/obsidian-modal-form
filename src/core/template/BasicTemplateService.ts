@@ -1,4 +1,5 @@
 import { TE } from "@std";
+import { constVoid } from "fp-ts/function";
 import { App, normalizePath, TFile } from "obsidian";
 import { Logger } from "src/utils/Logger";
 import { TemplateError } from "./TemplateError";
@@ -33,4 +34,9 @@ export class BasicTemplateService implements TemplateService {
                 }
             }
         }, TemplateError.of("Error creating note from template"));
+
+    replaceVariablesInFile = (filePath: string): TE.TaskEither<TemplateError, void> => {
+        this.logger.debug("Replacing variables in file without templater does nothing", filePath);
+        return TE.of(constVoid());
+    };
 }
