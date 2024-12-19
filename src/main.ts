@@ -1,5 +1,5 @@
 import { A, E, O, pipe, TE } from "@std";
-import { Platform, Plugin, WorkspaceLeaf } from "obsidian";
+import { MarkdownView, Platform, Plugin, WorkspaceLeaf } from "obsidian";
 import { API } from "src/API";
 import { ModalFormSettingTab } from "src/ModalFormSettingTab";
 import { FormWithTemplate, type FormDefinition } from "src/core/formDefinition";
@@ -271,23 +271,32 @@ export default class ModalFormPlugin extends Plugin {
                     );
                     return;
                 }
+                const replaceWithForm = (form: FormWithTemplate) => {
+                    this.api.openForm(form).then((result) => {
+                        editor.replaceSelection(
+                            executeTemplate(form.template.parsedTemplate, result.getData()),
+                        );
+                        if(ctx instanceof MarkdownView) {
+                            logger.debug("Saving file after inserting form template");
+                            ctx.save().then(() => {
+                            const file = ctx.file?.path;
+                            if (!file) {
+                                return;
+                            }
+                            // This gives obsidian some time to process the frontmatter and other things before asking templater to do its job
+                             setImmediate(this.templateService.replaceVariablesInFile(file))
+                        });
+                    } else {
+                        notifyWarning("Cannot save file, editor is not a markdown view");
+                    }
+                    });
+                };
                 if (formsWithTemplates.length === 1) {
                     const form = formsWithTemplates[0] as FormWithTemplate;
-                    this.api.openForm(form).then((result) => {
-                        editor.replaceSelection(
-                            executeTemplate(form.template.parsedTemplate, result.getData()),
-                        );
-                    });
-                    return;
+                    return replaceWithForm(form);
                 }
 
-                new FormPickerModal(this.app, formsWithTemplates, (form) => {
-                    this.api.openForm(form).then((result) => {
-                        editor.replaceSelection(
-                            executeTemplate(form.template.parsedTemplate, result.getData()),
-                        );
-                    });
-                }).open();
+                new FormPickerModal(this.app, formsWithTemplates, replaceWithForm).open();
             },
         });
 

@@ -1,583 +1,583 @@
 {
-    "editorPosition": "mainView",
-    "attachShortcutToGlobalWindow": true,
-    "globalNamespace": "MF",
-    "formDefinitions": [
+  "editorPosition": "mainView",
+  "attachShortcutToGlobalWindow": true,
+  "globalNamespace": "MF",
+  "formDefinitions": [
+    {
+      "title": "Example form",
+      "name": "example-form",
+      "fields": [
         {
-            "title": "Example form",
-            "name": "example-form",
-            "fields": [
-                {
-                    "name": "name",
-                    "label": "Name",
-                    "description": "It is named how?",
-                    "isRequired": true,
-                    "input": {
-                        "type": "text",
-                        "hidden": false
-                    }
-                },
-                {
-                    "name": "age",
-                    "label": "Age",
-                    "description": "How old",
-                    "isRequired": true,
-                    "input": {
-                        "type": "number",
-                        "hidden": false
-                    }
-                },
-                {
-                    "name": "dateOfBirth",
-                    "label": "Date of Birth",
-                    "description": "When were you born?",
-                    "input": {
-                        "type": "date",
-                        "hidden": false
-                    }
-                },
-                {
-                    "name": "timeOfDay",
-                    "label": "Time of day",
-                    "description": "The time you can do this",
-                    "input": {
-                        "type": "time",
-                        "hidden": false
-                    }
-                },
-                {
-                    "name": "is_family",
-                    "label": "Is family",
-                    "description": "If it is part of the family",
-                    "input": {
-                        "type": "toggle",
-                        "hidden": false
-                    }
-                },
-                {
-                    "name": "favorite_book",
-                    "label": "Favorite book",
-                    "description": "Pick one",
-                    "input": {
-                        "type": "note",
-                        "folder": "Books"
-                    }
-                },
-                {
-                    "name": "folder",
-                    "label": "The destination folder",
-                    "description": "It offers auto-completion to existing folders",
-                    "input": {
-                        "type": "folder"
-                    }
-                },
-                {
-                    "name": "multi_example",
-                    "label": "Multi select folder",
-                    "description": "Allows to pick many notes from a folder",
-                    "input": {
-                        "type": "multiselect",
-                        "source": "notes",
-                        "folder": "Books"
-                    }
-                },
-                {
-                    "name": "multi_example_2",
-                    "label": "Multi select fixed",
-                    "description": "Allows to pick many notes from a fixed list",
-                    "input": {
-                        "type": "multiselect",
-                        "source": "fixed",
-                        "multi_select_options": [
-                            "Android",
-                            "iOS",
-                            "Windows",
-                            "MacOS",
-                            "Linux",
-                            "Solaris",
-                            "MS2"
-                        ],
-                        "allowUnknownValues": false
-                    }
-                },
-                {
-                    "name": "multi_select_dataview",
-                    "label": "Multi select dataview",
-                    "description": "Allows to pick several values from a dv query",
-                    "input": {
-                        "type": "multiselect",
-                        "source": "dataview",
-                        "query": "dv.pages(\"#person\").map(p => p.file.name)",
-                        "allowUnknownValues": true
-                    }
-                },
-                {
-                    "name": "best_fried",
-                    "label": "Best friend",
-                    "description": "Select of type note from a folder",
-                    "input": {
-                        "type": "select",
-                        "source": "notes",
-                        "folder": "People"
-                    }
-                },
-                {
-                    "name": "dataview_example",
-                    "label": "Dataview example",
-                    "description": "Only people matching the dataview query will be shown",
-                    "input": {
-                        "type": "dataview",
-                        "query": "dv.pages(\"#person\").filter(p => p.age < 30).map(p => p.file.name)"
-                    }
-                },
-                {
-                    "name": "friendship_level",
-                    "label": "Friendship level",
-                    "description": "How good friends are you?",
-                    "input": {
-                        "type": "slider",
-                        "min": 0,
-                        "max": 10
-                    }
-                },
-                {
-                    "name": "favorite_meal",
-                    "label": "Favorite meal",
-                    "description": "Pick one option",
-                    "input": {
-                        "type": "select",
-                        "source": "fixed",
-                        "options": [
-                            {
-                                "value": "pizza",
-                                "label": "🍕 Pizza"
-                            },
-                            {
-                                "value": "pasta",
-                                "label": "🍝 Pasta"
-                            },
-                            {
-                                "value": "burger",
-                                "label": "🍔 Burger"
-                            },
-                            {
-                                "value": "salad",
-                                "label": "🥗 Salad"
-                            },
-                            {
-                                "value": "steak",
-                                "label": "🥩 Steak"
-                            },
-                            {
-                                "value": "sushi",
-                                "label": "🍣 Sushi"
-                            },
-                            {
-                                "value": "ramen",
-                                "label": "🍜 Ramen"
-                            },
-                            {
-                                "value": "tacos",
-                                "label": "🌮 Tacos"
-                            },
-                            {
-                                "value": "fish",
-                                "label": "🐟 Fish"
-                            },
-                            {
-                                "value": "chicken",
-                                "label": "🍗 Chicken"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "name": "some notes",
-                    "label": "Multi line notes",
-                    "description": "Put your thoughts here",
-                    "input": {
-                        "type": "textarea",
-                        "hidden": false
-                    }
-                },
-                {
-                    "name": "Tags",
-                    "description": "Tags input example",
-                    "input": {
-                        "type": "tag"
-                    }
-                },
-                {
-                    "name": "document",
-                    "description": "Document block example",
-                    "input": {
-                        "type": "document_block",
-                        "body": "return `Hello ${form.name}!<br> Your best friend is <b>${form.best_fried}</b>`"
-                    }
-                }
-            ],
-            "version": "1"
+          "name": "name",
+          "label": "Name",
+          "description": "It is named how?",
+          "isRequired": true,
+          "input": {
+            "type": "text",
+            "hidden": false
+          }
         },
         {
-            "title": "Hidden fields example",
-            "name": "hidden-fields",
-            "fields": [
-                {
-                    "name": "Explanation",
-                    "label": "",
-                    "description": "",
-                    "isRequired": false,
-                    "input": {
-                        "type": "document_block",
-                        "body": "return `This field contains several hidden fields ${form.hidden_text}`"
-                    }
-                },
-                {
-                    "name": "hidden_text",
-                    "label": "",
-                    "description": "",
-                    "isRequired": false,
-                    "input": {
-                        "type": "text",
-                        "hidden": true
-                    }
-                },
-                {
-                    "name": "hidden_date",
-                    "label": "",
-                    "description": "",
-                    "isRequired": false,
-                    "input": {
-                        "type": "date",
-                        "hidden": true
-                    }
-                },
-                {
-                    "name": "hidden_number",
-                    "label": "",
-                    "description": "",
-                    "isRequired": false,
-                    "input": {
-                        "type": "number",
-                        "hidden": true
-                    }
-                }
-            ],
-            "version": "1"
+          "name": "age",
+          "label": "Age",
+          "description": "How old",
+          "isRequired": true,
+          "input": {
+            "type": "number",
+            "hidden": false
+          }
         },
         {
-            "title": "Codeblock examples",
-            "name": "codeblocks",
-            "fields": [
-                {
-                    "name": "md_block",
-                    "label": "",
-                    "description": "",
-                    "isRequired": false,
-                    "input": {
-                        "type": "markdown_block",
-                        "body": "return `# hello\n- line 1\n- ${form.text}\n- ![[image.png]]`"
-                    }
-                },
-                {
-                    "name": "text",
-                    "label": "",
-                    "description": "",
-                    "isRequired": false,
-                    "input": {
-                        "type": "text",
-                        "hidden": false
-                    }
-                },
-                {
-                    "name": "block_01",
-                    "label": "",
-                    "description": "",
-                    "isRequired": false,
-                    "input": {
-                        "type": "document_block",
-                        "body": "return `${form.text}`"
-                    }
-                }
-            ],
-            "version": "1"
+          "name": "dateOfBirth",
+          "label": "Date of Birth",
+          "description": "When were you born?",
+          "input": {
+            "type": "date",
+            "hidden": false
+          }
         },
         {
-            "title": "Image input example",
-            "name": "image_input",
-            "fields": [
-                {
-                    "name": "image",
-                    "label": "Example image",
-                    "description": "Pick an image and save it to your vault",
-                    "isRequired": false,
-                    "input": {
-                        "type": "image",
-                        "filenameTemplate": "image-{{datetime}}",
-                        "saveLocation": "attachments/profile_pictures"
-                    }
-                }
-            ],
-            "version": "1"
+          "name": "timeOfDay",
+          "label": "Time of day",
+          "description": "The time you can do this",
+          "input": {
+            "type": "time",
+            "hidden": false
+          }
         },
         {
-            "title": "File input example",
-            "name": "file_input",
-            "fields": [
-                {
-                    "name": "file",
-                    "label": "",
-                    "description": "Pick a file to attach",
-                    "isRequired": false,
-                    "input": {
-                        "type": "file",
-                        "folder": "attachments/pdfs",
-                        "allowedExtensions": [
-                            "pdf"
-                        ]
-                    }
-                }
-            ],
-            "version": "1"
+          "name": "is_family",
+          "label": "Is family",
+          "description": "If it is part of the family",
+          "input": {
+            "type": "toggle",
+            "hidden": false
+          }
         },
         {
-            "title": "Frontmatter example",
-            "name": "frontmatter",
-            "fields": [
-                {
-                    "name": "title",
-                    "label": "",
-                    "description": "",
-                    "isRequired": false,
-                    "input": {
-                        "type": "text",
-                        "hidden": false
-                    }
-                },
-                {
-                    "name": "tags",
-                    "label": "",
-                    "description": "",
-                    "isRequired": false,
-                    "input": {
-                        "type": "tag"
-                    }
-                }
-            ],
-            "version": "1"
+          "name": "favorite_book",
+          "label": "Favorite book",
+          "description": "Pick one",
+          "input": {
+            "type": "note",
+            "folder": "Books"
+          }
         },
         {
-            "title": "Long list tip example",
-            "name": "long-list",
-            "fields": [
-                {
-                    "name": "chore",
-                    "label": "Chores",
-                    "description": "Pick a chore to do",
-                    "isRequired": false,
-                    "input": {
-                        "type": "dataview",
-                        "query": "[\n    'Wash the dishes',\n    'Take out the trash',\n    'Do the laundry',\n    'Mow the lawn',\n    'Feed the cat',\n    'Feed the dog',\n    'Feed the fish',\n    'Feed the birds',\n    'Feed the turtles',\n    'Feed the rabbits',\n    'Feed the turtles',]"
-                    }
-                }
-            ],
-            "version": "1"
+          "name": "folder",
+          "label": "The destination folder",
+          "description": "It offers auto-completion to existing folders",
+          "input": {
+            "type": "folder"
+          }
         },
         {
-            "title": "Templater example",
-            "name": "templater-example",
-            "fields": [
-                {
-                    "name": "name",
-                    "label": "",
-                    "description": "",
-                    "isRequired": true,
-                    "input": {
-                        "type": "text",
-                        "hidden": false
-                    }
-                },
-                {
-                    "name": "age",
-                    "label": "",
-                    "description": "",
-                    "isRequired": false,
-                    "input": {
-                        "type": "number",
-                        "hidden": false
-                    }
-                },
-                {
-                    "name": "favorite_book",
-                    "label": "",
-                    "description": "",
-                    "isRequired": false,
-                    "input": {
-                        "type": "note",
-                        "folder": "Books"
-                    }
-                },
-                {
-                    "name": "isFamily",
-                    "label": "",
-                    "description": "",
-                    "isRequired": false,
-                    "input": {
-                        "type": "toggle",
-                        "hidden": false
-                    }
-                },
-                {
-                    "name": "additional_information",
-                    "label": "Additional info",
-                    "description": "Provide any extra notes about this contact that you want",
-                    "isRequired": false,
-                    "input": {
-                        "type": "textarea",
-                        "hidden": false
-                    }
-                },
-                {
-                    "name": "dateOfBirth",
-                    "label": "",
-                    "description": "",
-                    "isRequired": false,
-                    "input": {
-                        "type": "date",
-                        "hidden": false
-                    }
-                }
+          "name": "multi_example",
+          "label": "Multi select folder",
+          "description": "Allows to pick many notes from a folder",
+          "input": {
+            "type": "multiselect",
+            "source": "notes",
+            "folder": "Books"
+          }
+        },
+        {
+          "name": "multi_example_2",
+          "label": "Multi select fixed",
+          "description": "Allows to pick many notes from a fixed list",
+          "input": {
+            "type": "multiselect",
+            "source": "fixed",
+            "multi_select_options": [
+              "Android",
+              "iOS",
+              "Windows",
+              "MacOS",
+              "Linux",
+              "Solaris",
+              "MS2"
             ],
-            "version": "1",
-            "template": {
-                "parsedTemplate": [
-                    {
-                        "_tag": "text",
-                        "value": "---\ncreated: <% tp.date.now(\"YYYY-MM-DD HH:mm:ss\") %>\nmodified: <% tp.file.last_modified_date(\"YYYY-MM-DD HH:mm:ss\") %>\nname: "
-                    },
-                    {
-                        "_tag": "variable",
-                        "value": "name"
-                    },
-                    {
-                        "_tag": "text",
-                        "value": "\nage: "
-                    },
-                    {
-                        "_tag": "variable",
-                        "value": "age"
-                    },
-                    {
-                        "_tag": "text",
-                        "value": "\ndateOfBirth: "
-                    },
-                    {
-                        "_tag": "variable",
-                        "value": "dateOfBirth"
-                    },
-                    {
-                        "_tag": "text",
-                        "value": "\nisFamily: "
-                    },
-                    {
-                        "_tag": "variable",
-                        "value": "isFamily"
-                    },
-                    {
-                        "_tag": "text",
-                        "value": "\nfavoriteBook: "
-                    },
-                    {
-                        "_tag": "variable",
-                        "value": "favorite_book"
-                    },
-                    {
-                        "_tag": "text",
-                        "value": "\ntags: "
-                    },
-                    {
-                        "_tag": "variable",
-                        "value": "Tags"
-                    },
-                    {
-                        "_tag": "text",
-                        "value": "\n---\n\n<%*\n// Get current time in user's timezone\nconst now = moment();\nconst age = parseInt("
-                    },
-                    {
-                        "_tag": "variable",
-                        "value": "age"
-                    },
-                    {
-                        "_tag": "text",
-                        "value": ");\nconst birthYear = now.year() - age;\nconst dateOfBirth = moment("
-                    },
-                    {
-                        "_tag": "variable",
-                        "value": "dateOfBirth"
-                    },
-                    {
-                        "_tag": "text",
-                        "value": ")\n_%>\n\n# "
-                    },
-                    {
-                        "_tag": "variable",
-                        "value": "name"
-                    },
-                    {
-                        "_tag": "text",
-                        "value": "'s Profile\n> Created on <% tp.date.now(\"dddd, MMMM Do YYYY\") %> at <% tp.date.now(\"HH:mm\") %>\n\n## Basic Information\n- **Age**: "
-                    },
-                    {
-                        "_tag": "variable",
-                        "value": "age"
-                    },
-                    {
-                        "_tag": "text",
-                        "value": " years old *(born around <%* tR += birthYear %>)*\n- **Date of Birth**: "
-                    },
-                    {
-                        "_tag": "variable",
-                        "value": "dateOfBirth"
-                    },
-                    {
-                        "_tag": "text",
-                        "value": "\n- **Family Member**: "
-                    },
-                    {
-                        "_tag": "variable",
-                        "value": "is_family"
-                    },
-                    {
-                        "_tag": "text",
-                        "value": "\n- **Days until next birthday**: <%* \nif (dateOfBirth) {\n    const nextBirthday = dateOfBirth.year(now.year());\n    if (nextBirthday.isBefore(now)) {\n        nextBirthday.add(1, 'year');\n    }\n    tR += nextBirthday.diff(now, 'days');\n} else {\n    tR += \"Unknown\";\n}\n\nconsole.log({ age, birthYear, frontmatter: tp.frontmatter, dateOfBirth })\n_%> days\n\n## Preferences\n- **Favorite Book**: [["
-                    },
-                    {
-                        "_tag": "variable",
-                        "value": "favorite_book"
-                    },
-                    {
-                        "_tag": "text",
-                        "value": "]]\n<%* if (tp.frontmatter.favorite_book) { %>\n> [!note] Related Books\n> ```dataview\n> LIST\n> FROM #book\n> WHERE contains(file.outlinks, [["
-                    },
-                    {
-                        "_tag": "variable",
-                        "value": "favorite_book"
-                    },
-                    {
-                        "_tag": "text",
-                        "value": "]])\n> SORT file.name ASC\n> ```\n<%* } %>\n\n## Additional Information\n"
-                    },
-                    {
-                        "_tag": "variable",
-                        "value": "additional_information"
-                    },
-                    {
-                        "_tag": "text",
-                        "value": "\n\n---\n> Last modified: <% tp.file.last_modified_date(\"dddd, MMMM Do YYYY HH:mm:ss\") %>"
-                    }
-                ],
-                "createCommand": true
-            }
+            "allowUnknownValues": false
+          }
+        },
+        {
+          "name": "multi_select_dataview",
+          "label": "Multi select dataview",
+          "description": "Allows to pick several values from a dv query",
+          "input": {
+            "type": "multiselect",
+            "source": "dataview",
+            "query": "dv.pages(\"#person\").map(p => p.file.name)",
+            "allowUnknownValues": true
+          }
+        },
+        {
+          "name": "best_fried",
+          "label": "Best friend",
+          "description": "Select of type note from a folder",
+          "input": {
+            "type": "select",
+            "source": "notes",
+            "folder": "People"
+          }
+        },
+        {
+          "name": "dataview_example",
+          "label": "Dataview example",
+          "description": "Only people matching the dataview query will be shown",
+          "input": {
+            "type": "dataview",
+            "query": "dv.pages(\"#person\").filter(p => p.age < 30).map(p => p.file.name)"
+          }
+        },
+        {
+          "name": "friendship_level",
+          "label": "Friendship level",
+          "description": "How good friends are you?",
+          "input": {
+            "type": "slider",
+            "min": 0,
+            "max": 10
+          }
+        },
+        {
+          "name": "favorite_meal",
+          "label": "Favorite meal",
+          "description": "Pick one option",
+          "input": {
+            "type": "select",
+            "source": "fixed",
+            "options": [
+              {
+                "value": "pizza",
+                "label": "🍕 Pizza"
+              },
+              {
+                "value": "pasta",
+                "label": "🍝 Pasta"
+              },
+              {
+                "value": "burger",
+                "label": "🍔 Burger"
+              },
+              {
+                "value": "salad",
+                "label": "🥗 Salad"
+              },
+              {
+                "value": "steak",
+                "label": "🥩 Steak"
+              },
+              {
+                "value": "sushi",
+                "label": "🍣 Sushi"
+              },
+              {
+                "value": "ramen",
+                "label": "🍜 Ramen"
+              },
+              {
+                "value": "tacos",
+                "label": "🌮 Tacos"
+              },
+              {
+                "value": "fish",
+                "label": "🐟 Fish"
+              },
+              {
+                "value": "chicken",
+                "label": "🍗 Chicken"
+              }
+            ]
+          }
+        },
+        {
+          "name": "some notes",
+          "label": "Multi line notes",
+          "description": "Put your thoughts here",
+          "input": {
+            "type": "textarea",
+            "hidden": false
+          }
+        },
+        {
+          "name": "Tags",
+          "description": "Tags input example",
+          "input": {
+            "type": "tag"
+          }
+        },
+        {
+          "name": "document",
+          "description": "Document block example",
+          "input": {
+            "type": "document_block",
+            "body": "return `Hello ${form.name}!<br> Your best friend is <b>${form.best_fried}</b>`"
+          }
         }
-    ]
+      ],
+      "version": "1"
+    },
+    {
+      "title": "Hidden fields example",
+      "name": "hidden-fields",
+      "fields": [
+        {
+          "name": "Explanation",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "document_block",
+            "body": "return `This field contains several hidden fields ${form.hidden_text}`"
+          }
+        },
+        {
+          "name": "hidden_text",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "text",
+            "hidden": true
+          }
+        },
+        {
+          "name": "hidden_date",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "date",
+            "hidden": true
+          }
+        },
+        {
+          "name": "hidden_number",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "number",
+            "hidden": true
+          }
+        }
+      ],
+      "version": "1"
+    },
+    {
+      "title": "Codeblock examples",
+      "name": "codeblocks",
+      "fields": [
+        {
+          "name": "md_block",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "markdown_block",
+            "body": "return `# hello\n- line 1\n- ${form.text}\n- ![[image.png]]`"
+          }
+        },
+        {
+          "name": "text",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "text",
+            "hidden": false
+          }
+        },
+        {
+          "name": "block_01",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "document_block",
+            "body": "return `${form.text}`"
+          }
+        }
+      ],
+      "version": "1"
+    },
+    {
+      "title": "Image input example",
+      "name": "image_input",
+      "fields": [
+        {
+          "name": "image",
+          "label": "Example image",
+          "description": "Pick an image and save it to your vault",
+          "isRequired": false,
+          "input": {
+            "type": "image",
+            "filenameTemplate": "image-{{datetime}}",
+            "saveLocation": "attachments/profile_pictures"
+          }
+        }
+      ],
+      "version": "1"
+    },
+    {
+      "title": "File input example",
+      "name": "file_input",
+      "fields": [
+        {
+          "name": "file",
+          "label": "",
+          "description": "Pick a file to attach",
+          "isRequired": false,
+          "input": {
+            "type": "file",
+            "folder": "attachments/pdfs",
+            "allowedExtensions": [
+              "pdf"
+            ]
+          }
+        }
+      ],
+      "version": "1"
+    },
+    {
+      "title": "Frontmatter example",
+      "name": "frontmatter",
+      "fields": [
+        {
+          "name": "title",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "text",
+            "hidden": false
+          }
+        },
+        {
+          "name": "tags",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "tag"
+          }
+        }
+      ],
+      "version": "1"
+    },
+    {
+      "title": "Long list tip example",
+      "name": "long-list",
+      "fields": [
+        {
+          "name": "chore",
+          "label": "Chores",
+          "description": "Pick a chore to do",
+          "isRequired": false,
+          "input": {
+            "type": "dataview",
+            "query": "[\n    'Wash the dishes',\n    'Take out the trash',\n    'Do the laundry',\n    'Mow the lawn',\n    'Feed the cat',\n    'Feed the dog',\n    'Feed the fish',\n    'Feed the birds',\n    'Feed the turtles',\n    'Feed the rabbits',\n    'Feed the turtles',]"
+          }
+        }
+      ],
+      "version": "1"
+    },
+    {
+      "title": "Templater example",
+      "name": "templater-example",
+      "fields": [
+        {
+          "name": "name",
+          "label": "",
+          "description": "",
+          "isRequired": true,
+          "input": {
+            "type": "text",
+            "hidden": false
+          }
+        },
+        {
+          "name": "age",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "number",
+            "hidden": false
+          }
+        },
+        {
+          "name": "favorite_book",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "note",
+            "folder": "Books"
+          }
+        },
+        {
+          "name": "isFamily",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "toggle",
+            "hidden": false
+          }
+        },
+        {
+          "name": "additional_information",
+          "label": "Additional info",
+          "description": "Provide any extra notes about this contact that you want",
+          "isRequired": false,
+          "input": {
+            "type": "textarea",
+            "hidden": false
+          }
+        },
+        {
+          "name": "dateOfBirth",
+          "label": "",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "date",
+            "hidden": false
+          }
+        }
+      ],
+      "version": "1",
+      "template": {
+        "createCommand": true,
+        "parsedTemplate": [
+          {
+            "_tag": "text",
+            "value": "---\ncreated: <% tp.date.now(\"YYYY-MM-DD HH:mm:ss\") %>\nmodified: <% tp.file.last_modified_date(\"YYYY-MM-DD HH:mm:ss\") %>\nname: "
+          },
+          {
+            "_tag": "variable",
+            "value": "name"
+          },
+          {
+            "_tag": "text",
+            "value": "\nage: "
+          },
+          {
+            "_tag": "variable",
+            "value": "age"
+          },
+          {
+            "_tag": "text",
+            "value": "\ndateOfBirth: "
+          },
+          {
+            "_tag": "variable",
+            "value": "dateOfBirth"
+          },
+          {
+            "_tag": "text",
+            "value": "\nisFamily: "
+          },
+          {
+            "_tag": "variable",
+            "value": "isFamily"
+          },
+          {
+            "_tag": "text",
+            "value": "\nfavoriteBook: "
+          },
+          {
+            "_tag": "variable",
+            "value": "favorite_book"
+          },
+          {
+            "_tag": "text",
+            "value": "\ntags: "
+          },
+          {
+            "_tag": "variable",
+            "value": "Tags"
+          },
+          {
+            "_tag": "text",
+            "value": "\n---\n\n<%*\n// Get current time in user's timezone\nconst now = moment();\nconst age = parseInt("
+          },
+          {
+            "_tag": "variable",
+            "value": "age"
+          },
+          {
+            "_tag": "text",
+            "value": ");\nconst birthYear = now.year() - age;\nconst dateOfBirth = moment("
+          },
+          {
+            "_tag": "variable",
+            "value": "dateOfBirth"
+          },
+          {
+            "_tag": "text",
+            "value": ")\n_%>\n\n# "
+          },
+          {
+            "_tag": "variable",
+            "value": "name"
+          },
+          {
+            "_tag": "text",
+            "value": "'s Profile\n> Created on <% tp.date.now(\"dddd, MMMM Do YYYY\") %> at <% tp.date.now(\"HH:mm\") %>\n\n## Basic Information\n- **Age**: "
+          },
+          {
+            "_tag": "variable",
+            "value": "age"
+          },
+          {
+            "_tag": "text",
+            "value": " years old *(born around <%* tR += birthYear %>)*\n- **Date of Birth**: "
+          },
+          {
+            "_tag": "variable",
+            "value": "dateOfBirth"
+          },
+          {
+            "_tag": "text",
+            "value": "\n- **Family Member**: "
+          },
+          {
+            "_tag": "variable",
+            "value": "is_family"
+          },
+          {
+            "_tag": "text",
+            "value": "\n- **Days until next birthday**: <%* \nif (dateOfBirth) {\n    const nextBirthday = dateOfBirth.year(now.year());\n    if (nextBirthday.isBefore(now)) {\n        nextBirthday.add(1, 'year');\n    }\n    tR += nextBirthday.diff(now, 'days');\n} else {\n    tR += \"Unknown\";\n}\n\nconsole.log({ age, birthYear, frontmatter: tp.frontmatter, dateOfBirth })\n_%> days\n\n## Preferences\n- **Favorite Book**: [["
+          },
+          {
+            "_tag": "variable",
+            "value": "favorite_book"
+          },
+          {
+            "_tag": "text",
+            "value": "]]\n<%* if (tp.frontmatter.favoriteBook) { %>\n> [!note] Related Books\n> ```dataview\n> LIST\n> FROM #book\n> WHERE contains(file.outlinks, [["
+          },
+          {
+            "_tag": "variable",
+            "value": "favorite_book"
+          },
+          {
+            "_tag": "text",
+            "value": "]])\n> SORT file.name ASC\n> ```\n<%* } %>\n\n## Additional Information\n"
+          },
+          {
+            "_tag": "variable",
+            "value": "additional_information"
+          },
+          {
+            "_tag": "text",
+            "value": "\n\n---\n> Last modified: <% tp.file.last_modified_date(\"dddd, MMMM Do YYYY HH:mm:ss\") %>"
+          }
+        ]
+      }
+    }
+  ]
 }

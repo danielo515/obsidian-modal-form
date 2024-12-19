@@ -11,4 +11,6 @@ export interface TemplateService {
         filename: string,
         openNewNote: boolean,
     ): TE.TaskEither<TemplateError, void>;
+
+    replaceVariablesInFile(filePath: string): TE.TaskEither<TemplateError, void>;
 }
