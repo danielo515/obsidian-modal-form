@@ -1,9 +1,9 @@
-import ModalFormPlugin from "../main";
 import { ItemView, type ViewStateResult, WorkspaceLeaf } from "obsidian";
-import type { FormDefinition, EditableFormDefinition } from "../core/formDefinition";
-import FormEditor from './FormBuilder.svelte'
+import { settingsStore } from "src/store/SettngsStore";
 import { log_notice } from "src/utils/Log";
-import { settingsStore } from "src/store/store";
+import type { EditableFormDefinition, FormDefinition } from "../core/formDefinition";
+import ModalFormPlugin from "../main";
+import FormEditor from './FormBuilder.svelte';
 
 export const EDIT_FORM_VIEW = "modal-form-edit-form-view";
 
