@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.57.0](https://github.com/danielo515/obsidian-modal-form/compare/1.56.0...1.57.0) (2024-12-19)
+
+
+### Features
+
+* **parser:** add support for parsing transformations ([2dbe84c](https://github.com/danielo515/obsidian-modal-form/commit/2dbe84c95da65504172a68ad974174b9c5bd48b7))
+* **parser:** add support for template transformations ([7e562bb](https://github.com/danielo515/obsidian-modal-form/commit/7e562bbf2d0f54e46a960158106c0512231dfd24))
+* **template:** execute transformations when applying templates ([7552a2a](https://github.com/danielo515/obsidian-modal-form/commit/7552a2a6095ff1fd51c1b0010abfc08edc53ffa3))
+
 ## [1.56.0](https://github.com/danielo515/obsidian-modal-form/compare/1.55.0...1.56.0) (2024-12-19)
 
 
