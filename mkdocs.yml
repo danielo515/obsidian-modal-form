@@ -9,6 +9,7 @@ nav:
     - Manging results: managing-results.md
     - Change log: changelog.md
     - Importing a form: import-forms.md
+    - Templates: templates.md
     - Blog:
           - blog/index.md
 plugins:
