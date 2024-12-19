@@ -1,7 +1,6 @@
 <script lang="ts">
-    import { parseFunctionBody, pipe } from "@std";
+    import { parseFunctionBody, pipe, TE } from "@std";
     import * as R from "fp-ts/Record";
-    import * as TE from "fp-ts/TaskEither";
     import { App, Component, MarkdownRenderer } from "obsidian";
     import { input } from "src/core";
     import { FieldValue, FormEngine } from "src/store/formEngine";

@@ -20,6 +20,103 @@ Variables are placeholders that get replaced with form field values. The variabl
 Hello {{name}}! Your favorite color is {{color}}.
 ```
 
+#### Basic Variable Syntax
+
+- **Variable Declaration**:
+
+  ```plaintext
+  {{ variableName }}
+  ```
+
+  Example:
+
+  ```plaintext
+  {{ name }}
+  ```
+
+Note that spaces around the variable name are ignored, allowing for flexibility in formatting.
+
+```plaintext
+This is a {{variableName}}. And this is also a valid {{ variableName }}
+```
+
+#### Variable with Transformations
+
+- **Transformation Syntax**: You can apply transformations to a variable by using a pipe `|` followed by the transformation name.
+  
+  ```plaintext
+  {{ variableName | transformation }}
+  ```
+
+  Example:
+
+  ```plaintext
+  {{ name | trim }}
+  ```
+
+### Supported Transformations
+
+The following transformations can be applied to variables:
+
+1. **`upper`**: Converts the variable's value to uppercase.
+   - Usage:
+
+     ```plaintext
+     {{ name | upper }}
+     ```
+
+2. **`lower`**: Converts the variable's value to lowercase.
+   - Usage:
+
+     ```plaintext
+     {{ name | lower }}
+     ```
+
+3. **`trim`**: Removes whitespace from both ends of the variable's value.
+   - Usage:
+
+     ```plaintext
+     {{ name | trim }}
+     ```
+
+4. **`stringify`**: Converts the variable's value to a JSON string.
+   - Usage:
+
+     ```plaintext
+     {{ name | stringify }}
+     ```
+
+### Example Templates
+
+Here are some examples of how to use the new template syntax:
+
+- **Single Variable**:
+
+  ```plaintext
+  Hello, {{ name }}!
+  ```
+
+- **Variable with Transformation**:
+
+  ```plaintext
+  Hello, {{ name | upper }}!
+  ```
+
+- **Multiple Variables with Transformations**:
+
+  ```plaintext
+  Hello, {{ name | trim }}! You are {{ age }} years old.
+  ```
+
+### Notes
+
+- If an invalid transformation is specified, it will be silently ignored, and the variable will be processed without transformation.
+- Spaces around the transformation operator (`|`) are ignored, allowing for flexibility in formatting:
+
+  ```plaintext
+  {{ name | trim }} or {{ name|trim }} are both valid.
+  ```
+
 ### Available Commands
 
 #### Frontmatter Command
@@ -27,7 +124,7 @@ Hello {{name}}! Your favorite color is {{color}}.
 The frontmatter command controls which form fields appear in the YAML frontmatter section of your note:
 
 ```
-{{# frontmatter pick: title, tags #}}
+{# frontmatter pick: title, tags #}
 ```
 
 Options:
@@ -38,13 +135,13 @@ Options:
 You can combine both options:
 
 ```
-{{# frontmatter pick: title, tags, date omit: draft #}}
+{# frontmatter pick: title, tags, date omit: draft #}
 ```
 
 If no options are specified, all form fields will be included in the frontmatter:
 
 ```
-{{# frontmatter #}}
+{# frontmatter #}
 ```
 
 ## Templater Support
@@ -67,7 +164,7 @@ Note: This feature is only available if you have the Templater plugin installed 
 Here's a complete template example that combines variables and frontmatter:
 
 ```
-{{# frontmatter pick: title, tags #}}
+{# frontmatter pick: title, tags #}
 
 # {{title}}
 

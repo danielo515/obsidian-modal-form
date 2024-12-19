@@ -1,23 +1,29 @@
-import { Either, O, pipe } from "@std";
+import { Either, O, parse, pipe } from "@std";
 import * as A from "fp-ts/Array";
 import * as E from "fp-ts/Either";
 import * as R from "fp-ts/Record";
-import { absurd, identity } from "fp-ts/function";
+import { absurd, constUndefined, identity } from "fp-ts/function";
 import * as St from "fp-ts/string";
 import { stringifyYaml } from "obsidian";
 import * as P from "parser-ts/Parser";
 import * as C from "parser-ts/char";
 import * as S from "parser-ts/string";
-import { ModalFormData } from "../FormResult";
-import type { FrontmatterCommand, TemplateText, TemplateVariable } from "./templateSchema";
+import { ModalFormData, Val } from "../FormResult";
+import {
+    transformations,
+    type FrontmatterCommand,
+    type TemplateText,
+    type TemplateVariable,
+    type Transformations,
+} from "./templateSchema";
 type Token = TemplateText | TemplateVariable | FrontmatterCommand;
 export type ParsedTemplate = Token[];
 
 function TemplateText(value: string): TemplateText {
     return { _tag: "text", value };
 }
-function TemplateVariable(value: string): TemplateVariable {
-    return { _tag: "variable", value };
+function TemplateVariable(value: string, transformation?: Transformations): TemplateVariable {
+    return { _tag: "variable", value, transformation };
 }
 
 function FrontmatterCommand(pick: string[] = [], omit: string[] = []): FrontmatterCommand {
@@ -36,10 +42,30 @@ const EofStr = pipe(
 const open = S.fold([S.string("{{"), S.spaces]);
 const close = P.expected(S.fold([S.spaces, S.string("}}")]), 'closing variable tag: "}}"');
 const identifier = S.many1(C.alphanum);
+const transformation = pipe(
+    // dam prettier
+    S.fold([S.spaces, S.string("|"), S.spaces]),
+    P.apSecond(identifier),
+    P.map((x) => {
+        return pipe(
+            parse(transformations, x),
+            E.fold(constUndefined, (x) => x),
+        );
+    }),
+);
+
 const templateIdentifier: TokenParser = pipe(
-    identifier,
+    identifier, // First, we parse the variable name
+    // chain takes a function that accepts the result of the previous parser and returns a new parser
+    P.chain((value) =>
+        pipe(
+            // Within this pipe we build a parser of Parser<string, TemplateVariable> also using the value of the previous parser
+            P.optional(transformation),
+            P.map((trans) => TemplateVariable(value, O.toUndefined(trans))),
+        ),
+    ),
+    // finally we wrap the resulting parser in between the open and close strings
     P.between(open, close),
-    P.map(TemplateVariable),
 );
 
 // === Command Parser ===
@@ -115,6 +141,9 @@ export function parseTemplate(template: string): Either<string, ParsedTemplate> 
     // return S.run(template)(P.many(Template))
 }
 
+/**
+ * Given a parsed template, returns a list of the variables used in the template
+ */
 export function templateVariables(parsedTemplate: ReturnType<typeof parseTemplate>): string[] {
     return pipe(
         parsedTemplate,
@@ -148,7 +177,7 @@ function tokenToString(token: Token): string {
         case "text":
             return token.value;
         case "variable":
-            return `{{${token.value}}}`;
+            return `{{${token.value}${token.transformation ? `|${token.transformation}` : ""}}}`;
         case "frontmatter-command":
             return `{{# frontmatter pick: ${token.pick.join(", ")}, omit: ${token.omit.join(
                 ", ",
@@ -160,7 +189,7 @@ function tokenToString(token: Token): string {
 
 function matchToken<T>(
     onText: (value: string) => T,
-    onVariable: (variable: string) => T,
+    onVariable: (variable: string, transformation?: Transformations) => T,
     onCommand: (command: FrontmatterCommand) => T,
 ) {
     return (token: Token): T => {
@@ -168,7 +197,7 @@ function matchToken<T>(
             case "text":
                 return onText(token.value);
             case "variable":
-                return onVariable(token.value);
+                return onVariable(token.value, token.transformation);
             case "frontmatter-command":
                 return onCommand(token);
             default:
@@ -206,6 +235,28 @@ function asFrontmatterString(data: Record<string, unknown>) {
         );
 }
 
+function executeTransformation(
+    transformation: Transformations | undefined,
+): (value: Val) => string {
+    return (value) => {
+        if (transformation === undefined) {
+            return String(value);
+        }
+        switch (transformation) {
+            case "upper":
+                return String(value).toUpperCase();
+            case "lower":
+                return String(value).toLowerCase();
+            case "stringify":
+                return JSON.stringify(value);
+            case "trim":
+                return String(value).trim();
+            default:
+                return absurd(transformation);
+        }
+    };
+}
+
 export function executeTemplate(parsedTemplate: ParsedTemplate, formData: ModalFormData) {
     const toFrontmatter = asFrontmatterString(formData); // Build it upfront rater than on every call
     return pipe(
@@ -213,7 +264,11 @@ export function executeTemplate(parsedTemplate: ParsedTemplate, formData: ModalF
         A.filterMap(
             matchToken(
                 O.some,
-                (key) => O.fromNullable(formData[key]),
+                (key, transformation) =>
+                    pipe(
+                        O.fromNullable(formData[key]),
+                        O.map(executeTransformation(transformation)),
+                    ),
                 (command) =>
                     pipe(
                         //prettier
