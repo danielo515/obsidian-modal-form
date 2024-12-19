@@ -133,6 +133,84 @@ describe("parseTemplate", () => {
             ]),
         );
     });
+
+    it("should properly execute a template with transformations", () => {
+        const template = "Hello, {{name|upper}}! You are {{age|stringify}} years old.";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "John", age: 18 })),
+            E.map(tap("executed")),
+        );
+        expect(result).toEqual(E.of("Hello, JOHN! You are 18 years old."));
+    });
+
+    it("Should execute a template with lowercase transformations", () => {
+        const template = "Hello, {{name|lower}}! You are {{age}} years old.";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "John", age: 18 })),
+            E.map(tap("executed")),
+        );
+        expect(result).toEqual(E.of("Hello, john! You are 18 years old."));
+    });
+
+    it("Should execute a template with trim transformations", () => {
+        const template = "Hello, {{name|trim}}!";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: " John ", age: 18 })),
+            E.map(tap("executed")),
+        );
+        expect(result).toEqual(E.of("Hello, John!"));
+    });
+
+    it("Should execute a template with stringify transformations", () => {
+        const template = "Hello, {{name|stringify}}!";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "John", age: 18 })),
+            E.map(tap("executed")),
+        );
+        expect(result).toEqual(E.of('Hello, "John"!'));
+    });
+
+    it("Spaces around transformations should be ignored", () => {
+        const template = "Hello, {{name | stringify }}!";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "John", age: 18 })),
+            E.map(tap("executed")),
+        );
+        expect(result).toEqual(E.of('Hello, "John"!'));
+    });
+
+    it("Spaces around transformations AND variables should be ignored", () => {
+        const template = "Hello, {{ name | stringify }}!";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "John", age: 18 })),
+            E.map(tap("executed")),
+        );
+        expect(result).toEqual(E.of('Hello, "John"!'));
+    });
+
+    it("Should execute a template with no transformations", () => {
+        const template = "Hello, {{name}}! You are {{age}} years old.";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "John", age: 18 })),
+            E.map(tap("executed")),
+        );
+        expect(result).toEqual(E.of("Hello, John! You are 18 years old."));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);

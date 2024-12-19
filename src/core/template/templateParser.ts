@@ -8,7 +8,7 @@ import { stringifyYaml } from "obsidian";
 import * as P from "parser-ts/Parser";
 import * as C from "parser-ts/char";
 import * as S from "parser-ts/string";
-import { ModalFormData } from "../FormResult";
+import { ModalFormData, Val } from "../FormResult";
 import {
     transformations,
     type FrontmatterCommand,
@@ -44,7 +44,7 @@ const close = P.expected(S.fold([S.spaces, S.string("}}")]), 'closing variable t
 const identifier = S.many1(C.alphanum);
 const transformation = pipe(
     // dam prettier
-    S.fold([S.string("|"), S.spaces]),
+    S.fold([S.spaces, S.string("|"), S.spaces]),
     P.apSecond(identifier),
     P.map((x) => {
         return pipe(
@@ -141,6 +141,9 @@ export function parseTemplate(template: string): Either<string, ParsedTemplate> 
     // return S.run(template)(P.many(Template))
 }
 
+/**
+ * Given a parsed template, returns a list of the variables used in the template
+ */
 export function templateVariables(parsedTemplate: ReturnType<typeof parseTemplate>): string[] {
     return pipe(
         parsedTemplate,
@@ -186,7 +189,7 @@ function tokenToString(token: Token): string {
 
 function matchToken<T>(
     onText: (value: string) => T,
-    onVariable: (variable: string, transformation?: string) => T,
+    onVariable: (variable: string, transformation?: Transformations) => T,
     onCommand: (command: FrontmatterCommand) => T,
 ) {
     return (token: Token): T => {
@@ -232,6 +235,28 @@ function asFrontmatterString(data: Record<string, unknown>) {
         );
 }
 
+function executeTransformation(
+    transformation: Transformations | undefined,
+): (value: Val) => string {
+    return (value) => {
+        if (transformation === undefined) {
+            return String(value);
+        }
+        switch (transformation) {
+            case "upper":
+                return String(value).toUpperCase();
+            case "lower":
+                return String(value).toLowerCase();
+            case "stringify":
+                return JSON.stringify(value);
+            case "trim":
+                return String(value).trim();
+            default:
+                return absurd(transformation);
+        }
+    };
+}
+
 export function executeTemplate(parsedTemplate: ParsedTemplate, formData: ModalFormData) {
     const toFrontmatter = asFrontmatterString(formData); // Build it upfront rater than on every call
     return pipe(
@@ -239,7 +264,11 @@ export function executeTemplate(parsedTemplate: ParsedTemplate, formData: ModalF
         A.filterMap(
             matchToken(
                 O.some,
-                (key, transformation) => O.fromNullable(formData[key]),
+                (key, transformation) =>
+                    pipe(
+                        O.fromNullable(formData[key]),
+                        O.map(executeTransformation(transformation)),
+                    ),
                 (command) =>
                     pipe(
                         //prettier

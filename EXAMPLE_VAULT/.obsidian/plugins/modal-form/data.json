@@ -450,7 +450,6 @@
       ],
       "version": "1",
       "template": {
-        "createCommand": true,
         "parsedTemplate": [
           {
             "_tag": "text",
@@ -514,7 +513,8 @@
           },
           {
             "_tag": "variable",
-            "value": "dateOfBirth"
+            "value": "dateOfBirth",
+            "transformation": "stringify"
           },
           {
             "_tag": "text",
@@ -576,7 +576,8 @@
             "_tag": "text",
             "value": "\n\n---\n> Last modified: <% tp.file.last_modified_date(\"dddd, MMMM Do YYYY HH:mm:ss\") %>"
           }
-        ]
+        ],
+        "createCommand": true
       }
     }
   ]
