@@ -725,6 +725,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#release-notes-for-1560" class="md-nav__link">
+    <span class="md-ellipsis">
+      Release notes for 1.56.0
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#modal-form-showcase-thread" class="md-nav__link">
     <span class="md-ellipsis">
       Modal form showcase thread
@@ -801,6 +810,69 @@
       <header class="md-typeset">
         <h1 id="blog">Blog</h1>
       </header>
+      
+        <article class="md-post md-post--excerpt">
+  <header class="md-post__header">
+    
+    <div class="md-post__meta md-meta">
+      <ul class="md-meta__list">
+        <li class="md-meta__item">
+          <time datetime="2024-12-19 00:00:00+00:00">December 19, 2024</time></li>
+        
+        
+          
+          <li class="md-meta__item">
+            
+              2 min read
+            
+          </li>
+        
+      </ul>
+      
+    </div>
+  </header>
+  <div class="md-post__content md-typeset">
+    <h2 id="release-notes-for-1560"><a class="toclink" href="2024/12/19/release-notes-for-1560/">Release notes for 1.56.0</a></h2>
+<h3 id="templates-now-support-templater-syntax"><a class="toclink" href="2024/12/19/release-notes-for-1560/#templates-now-support-templater-syntax">Templates now support Templater syntax</a></h3>
+<p>Modal Form 1.56.0 enhances its templates feature with Templater support!
+I'm particularly excited about this integration because, with a little addition we are greatly improving the usability of this plugin, but also Templater.
+Now binding a particular form to a complex template is easier than ever, knowing the fields available in the template also becomes a lot easier and I think the overall experience is greatly improved.</p>
+<p><img alt="Templates with Templater syntax" src="templater-templates.png" /></p>
+<h4 id="whats-new"><a class="toclink" href="2024/12/19/release-notes-for-1560/#whats-new">What's New</a></h4>
+<p>The Templater integration adds the following capabilities to form templates:</p>
+<ul>
+<li>Use Templater syntax (<code>&lt;% %&gt;</code>) inside form templates</li>
+<li>Process dates, files, and system information through Templater</li>
+<li>Automatic processing of Templater syntax after form variables are replaced</li>
+</ul>
+<p>Here's a little example combining both syntaxes:</p>
+<pre><code>---
+created: &lt;% tp.date.now() %&gt;
+---
+
+Dear {{name}},
+
+Meeting scheduled for &lt;% tp.date.now(&quot;MMMM Do, YYYY&quot;) %&gt;
+Location: {{location}}
+
+Best regards,
+{{signature}}
+</code></pre>
+<h4 id="how-it-works"><a class="toclink" href="2024/12/19/release-notes-for-1560/#how-it-works">How it Works</a></h4>
+<p>The template processing now happens in two stages:</p>
+<ol>
+<li>First, Modal Form replaces all form variables (the <code>{{variable}}</code> syntax)</li>
+<li>Then, if Templater is available, it processes any Templater syntax in the resulting text</li>
+</ol>
+<h4 id="retry-functionality"><a class="toclink" href="2024/12/19/release-notes-for-1560/#retry-functionality">Retry Functionality</a></h4>
+<p>Getting templater templates right at the first try can be hard, that's why we added a retry option when templater processing part fails.
+If something goes wrong during templater processing , Modal Form now provides a retry modal where you can try to fix the template and try again.:</p>
+<p><img alt="Retry option when template processing fails" src="templates-retry.png" /></p>
+<p>This makes it easier to fix any issues without losing your form data and gives you an insight on how te template is processed.</p>
+<p>Check out the <a href="/docs/templates">templates documentation</a> for more details and examples of how to use this new feature.</p>
+    
+  </div>
+</article>
       
         <article class="md-post md-post--excerpt">
   <header class="md-post__header">
