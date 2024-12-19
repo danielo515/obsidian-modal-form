@@ -1,7 +1,7 @@
 <script lang="ts">
     import { App, SearchComponent, Setting } from "obsidian";
     import { FieldDefinition } from "src/core/formDefinition";
-    import { FieldValue } from "src/store/formStore";
+    import { FieldValue } from "src/store/formEngine";
     import { FolderSuggest } from "src/suggesters/suggestFolder";
     import { Writable } from "svelte/store";
     import { useSetting } from "./useObsidianSetting";

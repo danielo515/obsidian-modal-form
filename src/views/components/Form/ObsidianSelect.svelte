@@ -2,7 +2,7 @@
     import { E, pipe } from "@std";
     import { input as I } from "src/core";
     import { FieldDefinition } from "src/core/formDefinition";
-    import { FieldValue } from "src/store/formStore";
+    import { FieldValue } from "src/store/formEngine";
     import { log_error } from "src/utils/Log";
     import { get_tfiles_from_folder } from "src/utils/files";
     import { Readable, Writable } from "svelte/store";

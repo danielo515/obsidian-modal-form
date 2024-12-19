@@ -2,7 +2,7 @@
     import { App } from "obsidian";
     import { input as I } from "src/core";
     import { FieldDefinition } from "src/core/formDefinition";
-    import { FieldValue } from "src/store/formStore";
+    import { FieldValue } from "src/store/formEngine";
     import { DataviewSuggest } from "src/suggesters/suggestFromDataview";
     import { Readable, Writable } from "svelte/store";
     import ObsidianInputWrapper from "./ObsidianInputWrapper.svelte";

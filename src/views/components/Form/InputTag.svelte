@@ -1,7 +1,7 @@
 <script lang="ts">
     import { App } from "obsidian";
     import { input as I } from "src/core";
-    import { FieldValue } from "src/store/formStore";
+    import { FieldValue } from "src/store/formEngine";
     import { Readable, Writable } from "svelte/store";
     import MultiSelect from "../MultiSelect.svelte";
     import { MultiSelectTags } from "../MultiSelectModel";

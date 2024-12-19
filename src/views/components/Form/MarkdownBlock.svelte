@@ -4,7 +4,7 @@
     import * as TE from "fp-ts/TaskEither";
     import { App, Component, MarkdownRenderer } from "obsidian";
     import { input } from "src/core";
-    import { FieldValue, FormEngine } from "src/store/formStore";
+    import { FieldValue, FormEngine } from "src/store/formEngine";
     import { notifyError } from "src/utils/Log";
     import { onDestroy } from "svelte";
     import { Subscriber } from "svelte/store";

@@ -4,7 +4,7 @@
     import * as TE from "fp-ts/TaskEither";
     import { App, sanitizeHTMLToDom } from "obsidian";
     import { input } from "src/core";
-    import { FieldValue, FormEngine } from "src/store/formStore";
+    import { FieldValue, FormEngine } from "src/store/formEngine";
     import { notifyError } from "src/utils/Log";
     import { Subscriber } from "svelte/store";
     type GetSubscription<T> = T extends Subscriber<infer U> ? U : never;
