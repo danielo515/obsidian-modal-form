@@ -1,9 +1,9 @@
-import * as J from "fp-ts/Json";
 import { O, type Option, ensureError, pipe } from "@std";
 import * as E from "fp-ts/Either";
+import * as J from "fp-ts/Json";
+import { FormDefinition } from "src/core/formDefinition";
 import { InvalidData, MigrationError, migrateToLatest } from "src/core/formDefinitionSchema";
 import { Readable, writable } from "svelte/store";
-import { FormDefinition } from "src/core/formDefinition";
 
 type State = E.Either<string[], Option<FormDefinition>>;
 type UiState = {
@@ -44,7 +44,7 @@ function matchState<T>(state: State, matchers: Matchers<T>): T {
 
 function noop() {}
 
-export function makeFormInputModel({ createForm }: FormImportDeps): FormImportModel {
+export function makeFormImportModel({ createForm }: FormImportDeps): FormImportModel {
     const state = writable<State>(E.of(O.none));
     const setErrors = (errors: string[]) => state.set(E.left(errors));
     const resetState = () => state.set(E.of(O.none));
