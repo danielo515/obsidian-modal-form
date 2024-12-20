@@ -3,19 +3,19 @@ import { settingsStore } from "src/store/SettngsStore";
 import { log_notice } from "src/utils/Log";
 import type { EditableFormDefinition, FormDefinition } from "../core/formDefinition";
 import ModalFormPlugin from "../main";
-import FormEditor from './FormBuilder.svelte';
+import FormEditor from "./FormBuilder.svelte";
 
 export const EDIT_FORM_VIEW = "modal-form-edit-form-view";
 
 function parseState(maybeState: unknown): maybeState is EditableFormDefinition {
     if (maybeState === null) {
-        return false
+        return false;
     }
-    if (typeof maybeState !== 'object') {
-        return false
+    if (typeof maybeState !== "object") {
+        return false;
     }
-    if ('title' in maybeState && 'name' in maybeState && 'fields' in maybeState) {
-        return true
+    if ("title" in maybeState && "name" in maybeState && "fields" in maybeState) {
+        return true;
     }
     return false;
 }
@@ -26,12 +26,15 @@ function parseState(maybeState: unknown): maybeState is EditableFormDefinition {
  * Simple, right?
  */
 export class EditFormView extends ItemView {
-    formState: EditableFormDefinition = { title: '', name: '', version: '1', fields: [] };
+    formState: EditableFormDefinition = { title: "", name: "", version: "1", fields: [] };
     originalFormName?: string;
     formEditor!: FormEditor;
-    constructor(readonly leaf: WorkspaceLeaf, readonly plugin: ModalFormPlugin) {
+    constructor(
+        readonly leaf: WorkspaceLeaf,
+        readonly plugin: ModalFormPlugin,
+    ) {
         super(leaf);
-        this.icon = 'note-glyph'
+        this.icon = "note-glyph";
     }
 
     getViewType() {
@@ -43,49 +46,50 @@ export class EditFormView extends ItemView {
     }
 
     async onOpen() {
-        this.containerEl.empty()
+        this.containerEl.empty();
         this.formEditor = new FormEditor({
             target: this.containerEl,
             props: {
                 definition: this.formState,
                 app: this.app,
                 onChange: () => {
-                    console.log('Save form state', this.formState)
-                    this.app.workspace.requestSaveLayout()
+                    console.log("Save form state", this.formState);
+                    this.app.workspace.requestSaveLayout();
                 },
                 onSubmit: (formDefinition: FormDefinition) => {
-                    console.log('Submitting form', { formDefinition });
-                    if (this.originalFormName && this.originalFormName !== '') {
-                        settingsStore.updateForm(this.originalFormName, formDefinition)
+                    if (this.originalFormName && this.originalFormName !== "") {
+                        console.log("Updating form", { formDefinition });
+                        settingsStore.updateForm(this.originalFormName, formDefinition);
                     } else {
-                        settingsStore.addNewForm(formDefinition)
+                        console.log("Adding new form", { formDefinition });
+                        settingsStore.addNewForm(formDefinition);
                     }
-                    this.plugin.closeEditForm()
+                    this.plugin.closeEditForm();
                 },
                 onCancel: () => {
-                    this.plugin.closeEditForm()
+                    this.plugin.closeEditForm();
                 },
                 onPreview: async (formDefinition: FormDefinition) => {
-                    const result = await this.plugin.api.openForm(formDefinition)
-                    const result_str = JSON.stringify(result, null, 2)
-                    log_notice('Form result', result_str)
-                    console.log(result_str)
+                    const result = await this.plugin.api.openForm(formDefinition);
+                    const result_str = JSON.stringify(result, null, 2);
+                    log_notice("Form result", result_str);
+                    console.log(result_str);
                 },
-            }
+            },
         });
     }
 
     async onClose() {
-        console.log('onClose of edit form called')
+        console.log("onClose of edit form called");
         this.formEditor.$destroy();
     }
 
     async setState(state: unknown, result: ViewStateResult): Promise<void> {
-        console.log('setState of edit form called', state)
+        console.log("setState of edit form called", state);
         if (parseState(state)) {
             this.formState = state;
             this.originalFormName = state.name;
-            this.formEditor.$set({ definition: this.formState })
+            this.formEditor.$set({ definition: this.formState });
         }
         return super.setState(state, result);
     }
@@ -93,5 +97,3 @@ export class EditFormView extends ItemView {
         return this.formState;
     }
 }
-
-

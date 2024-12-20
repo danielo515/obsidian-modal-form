@@ -43,7 +43,6 @@ const open = S.fold([S.string("{{"), S.spaces]);
 const close = P.expected(S.fold([S.spaces, S.string("}}")]), 'closing variable tag: "}}"');
 const identifier = S.many1(C.alphanum);
 const transformation = pipe(
-    // dam prettier
     S.fold([S.spaces, S.string("|"), S.spaces]),
     P.apSecond(identifier),
     P.map((x) => {
