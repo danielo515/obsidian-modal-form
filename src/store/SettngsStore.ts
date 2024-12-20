@@ -1,31 +1,39 @@
-import { A, pipe } from '@std';
-import { FormDefinition, duplicateForm } from 'src/core/formDefinition';
-import { MigrationError } from 'src/core/formDefinitionSchema';
-import { ModalFormSettings, getDefaultSettings } from 'src/core/settings';
-import { writable, derived } from 'svelte/store';
+import { A, pipe } from "@std";
+import { FormDefinition, duplicateForm } from "src/core/formDefinition";
+import { MigrationError } from "src/core/formDefinitionSchema";
+import { ModalFormSettings, getDefaultSettings } from "src/core/settings";
+import { derived, writable } from "svelte/store";
 
 const settings = writable({ ...getDefaultSettings() });
-export const formsStore = derived(settings, ($settings) => pipe(
-    $settings.formDefinitions,
-    A.filter((form): form is FormDefinition => !(form instanceof MigrationError))));
-const { subscribe, update, set } = settings
+export const formsStore = derived(settings, ($settings) =>
+    pipe(
+        $settings.formDefinitions,
+        A.filter((form): form is FormDefinition => !(form instanceof MigrationError)),
+    ),
+);
+const { subscribe, update, set } = settings;
 
 export const invalidFormsStore = derived(settings, ($settings) => {
     return pipe(
         $settings.formDefinitions,
-        A.filter((form): form is MigrationError => form instanceof MigrationError));
-})
+        A.filter((form): form is MigrationError => form instanceof MigrationError),
+    );
+});
 
 export const settingsStore = {
     subscribe,
     set,
     updateForm(name: string, form: FormDefinition) {
+        let edited = false;
         update((s): ModalFormSettings => {
             const forms = s.formDefinitions.map((f) => {
-                if (f.name === name) return form;
+                if (f.name === name) {
+                    edited = true;
+                    return form;
+                }
                 return f;
             });
-            return { ...s, formDefinitions: forms };
+            return { ...s, formDefinitions: edited ? forms : [...s.formDefinitions, form] };
         });
     },
     addNewForm(form: FormDefinition) {
@@ -42,7 +50,7 @@ export const settingsStore = {
     },
     duplicateForm(formName: string) {
         update((s): ModalFormSettings => {
-            return { ...s, formDefinitions: duplicateForm(formName, s.formDefinitions) }
+            return { ...s, formDefinitions: duplicateForm(formName, s.formDefinitions) };
         });
-    }
-}
+    },
+};
