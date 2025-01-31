@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.58.0](https://github.com/danielo515/obsidian-modal-form/compare/1.57.0...1.58.0) (2025-01-31)
+
+
+### Features
+
+* preview forms from form manager ([58b8914](https://github.com/danielo515/obsidian-modal-form/commit/58b8914ea421cb810b5496559aae0c7d6d5f50c5))
+
 ## [1.57.0](https://github.com/danielo515/obsidian-modal-form/compare/1.56.0...1.57.0) (2024-12-20)
 
 
