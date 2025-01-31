@@ -10,7 +10,8 @@
         "check": "npm run lint && svelte-check --tsconfig tsconfig.json",
         "test": "jest --detectOpenHandles",
         "test-w": "jest --watch --no-cache",
-        "version": "node version-bump.mjs && git add manifest.json versions.json"
+        "version": "node version-bump.mjs && git add manifest.json versions.json",
+        "release-notes": "tsx scripts/generate-release-notes.ts"
     },
     "keywords": [],
     "author": "",
@@ -36,8 +37,8 @@
         "svelte-check": "^3.8.4",
         "svelte-preprocess": "^5.0.4",
         "ts-jest": "^29.1.5",
-        "ts-node": "^10.9.1",
         "tslib": "2.4.0",
+        "tsx": "^4.19.2",
         "typescript": "^5.5.3",
         "yaml": "^2.3.3"
     },
