@@ -13,6 +13,7 @@
     export let copyFormToClipboard: (form: FormDefinition) => void;
     export let openInTemplateBuilder: (form: FormDefinition) => void;
     export let openImportFormModal: () => void;
+    export let previewForm: (form: FormDefinition) => void;
 
     export let forms: Readable<FormDefinition[]>;
     export let invalidForms: Readable<MigrationError[]>;
@@ -38,6 +39,10 @@
     function handleOpenInTemplateBuilder(form: FormDefinition) {
         console.log(`Opening ${form.name} in template builder`);
         openInTemplateBuilder(form);
+    }
+    function handlePreviewForm(form: FormDefinition) {
+        console.log(`Previewing ${form.name}`);
+        previewForm(form);
     }
 </script>
 
@@ -93,6 +98,12 @@
                     text="Edit"
                     variant="primary"
                     icon="pencil"
+                ></Button>
+                <Button
+                    onClick={() => handlePreviewForm(form)}
+                    text="Preview"
+                    variant="regular"
+                    icon="eye"
                 ></Button>
                 <button on:click={() => handleDuplicateForm(form)}>
                     <span>Duplicate</span>
