@@ -1,7 +1,7 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
 import { FormDefinition } from "src/core/formDefinition";
 import { formsStore, invalidFormsStore, settingsStore } from "src/store/SettngsStore";
-import { logError, log_notice } from "src/utils/errorHandling";
+import { log_notice, notifyError } from "src/utils/Log";
 import ModalFormPlugin from "../main";
 import ManageForms from "./ManageForms.svelte";
 
@@ -52,7 +52,7 @@ export class ManageFormsView extends ItemView {
                 },
                 copyFormToClipboard: async (form: FormDefinition) => {
                     await navigator.clipboard.writeText(JSON.stringify(form, null, 2));
-                    log_notice("Form has been copied to the clipboard");
+                    log_notice("Copied!", "Form has been copied to the clipboard");
                 },
                 openImportFormModal: () => {
                     this.plugin.openImportFormModal();
@@ -66,11 +66,10 @@ export class ManageFormsView extends ItemView {
                         const result_str = JSON.stringify(result, null, 2);
                         log_notice("Form result", result_str);
                     } catch (error) {
-                        logError(error, "Failed to preview form");
+                        notifyError("Failed to preview form")(String(error));
                         log_notice(
-                            `Preview failed: ${
-                                error instanceof Error ? error.message : "Unknown error"
-                            }`,
+                            `Preview failed: `,
+                            `${error instanceof Error ? error.message : "Unknown error"}`,
                         );
                     }
                 },
