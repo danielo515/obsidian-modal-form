@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
 
     export let tooltip: string | undefined = undefined;
-    export let icon: "trash" | "clipboard-copy" | "pencil" | undefined =
+    export let icon: "trash" | "clipboard-copy" | "pencil" | "eye" | undefined =
         undefined;
     export let text: string | undefined = undefined;
     export let variant: "regular" | "danger" | "primary" = "regular";

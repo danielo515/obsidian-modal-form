@@ -276,19 +276,19 @@ export default class ModalFormPlugin extends Plugin {
                         editor.replaceSelection(
                             executeTemplate(form.template.parsedTemplate, result.getData()),
                         );
-                        if(ctx instanceof MarkdownView) {
+                        if (ctx instanceof MarkdownView) {
                             logger.debug("Saving file after inserting form template");
                             ctx.save().then(() => {
-                            const file = ctx.file?.path;
-                            if (!file) {
-                                return;
-                            }
-                            // This gives obsidian some time to process the frontmatter and other things before asking templater to do its job
-                             setImmediate(this.templateService.replaceVariablesInFile(file))
-                        });
-                    } else {
-                        notifyWarning("Cannot save file, editor is not a markdown view");
-                    }
+                                const file = ctx.file?.path;
+                                if (!file) {
+                                    return;
+                                }
+                                // This gives obsidian some time to process the frontmatter and other things before asking templater to do its job
+                                setImmediate(this.templateService.replaceVariablesInFile(file));
+                            });
+                        } else {
+                            notifyWarning("Cannot save file, editor is not a markdown view");
+                        }
                     });
                 };
                 if (formsWithTemplates.length === 1) {
