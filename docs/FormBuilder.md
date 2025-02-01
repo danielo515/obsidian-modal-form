@@ -7,7 +7,9 @@ The FormBuilder is a utility that helps you create forms programmatically using 
 Access the form builder through the plugin API:
 
 ```typescript
-const builder = app.plugins.plugins["obsidian-modal-form"].api.builder;
+
+const modalForm = app.plugins.plugins.modalforms.api;
+const builder = modalForm.builder;
 
 // Create a new form
 const form = builder("example-contact-form", "Example Contact Form")
@@ -16,7 +18,7 @@ const form = builder("example-contact-form", "Example Contact Form")
   .build();
 
 // Open the form modal
-app.plugins.plugins["obsidian-modal-form"].api.openModalForm(form);
+modalForm.openForm(form);
 ```
 
 ## Core Methods
@@ -265,13 +267,13 @@ builder("example-attachment-form")
 Here's a complete example of creating and opening a contact form:
 
 ```typescript
-const api = app.plugins.plugins["obsidian-modal-form"].api;
-const form = api.builder("example-contact-form", "Example Contact Form")
+const modalForm = app.plugins.plugins.modalforms.api;
+const form = modalForm.builder("example-contact-form", "Example Contact Form")
   .text({ name: "name", label: "Full Name" })
   .email({ name: "email", label: "Email Address" })
   .tel({ name: "phone", label: "Phone Number" })
   .textarea({ name: "message", label: "Message" })
   .build();
 
-api.openModalForm(form);
+modalForm.openForm(form);
 ```
