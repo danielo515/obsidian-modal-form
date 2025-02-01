@@ -142,7 +142,7 @@ export function validateFields(fields: unknown) {
     if (result.success) {
         return [];
     }
-    console.error("Fields issues", result.issues);
+    // console.dir(result.issues, { depth: Infinity });
     return result.issues.map((issue) => ({
         message: issue.message,
         path: issue.path?.map((item) => item.key).join("."),

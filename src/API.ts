@@ -3,6 +3,7 @@ import { App, parseFrontMatterAliases } from "obsidian";
 import * as std from "@std";
 import { E, flow } from "@std";
 import { FormModal } from "./FormModal";
+import { makeBuilder } from "./core/FormBuilder";
 import FormResult from "./core/FormResult";
 import { type FormDefinition, type FormOptions } from "./core/formDefinition";
 import { MigrationError } from "./core/formDefinitionSchema";
@@ -46,6 +47,8 @@ export class API {
             E.map((f) => enrich_tfile(f, this.app)),
         ),
     };
+
+    builder: ReturnType<typeof makeBuilder>;
     /**
      * Constructor for the API class
      * @param {App} app - The application instance
@@ -54,7 +57,9 @@ export class API {
     constructor(
         private app: App,
         private plugin: ModalFormPlugin,
-    ) {}
+    ) {
+        this.builder = makeBuilder((title, message) => log_notice(message, title));
+    }
 
     /**
      * Opens a modal form with the provided form definition

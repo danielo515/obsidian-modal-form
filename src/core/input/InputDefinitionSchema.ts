@@ -56,6 +56,7 @@ export const SelectFromNotesSchema = object({
 export const InputTagSchema = object({
     type: literal("tag"),
     exclude: optional(string()), // This should be a regex string
+    hidden: optional(boolean(), false),
 });
 export const InputSliderSchema = object({
     type: literal("slider"),
