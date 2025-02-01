@@ -153,7 +153,7 @@ export const exampleModalDefinition: FormDefinition = {
         {
             name: "Tags",
             description: "Tags input example",
-            input: { type: "tag" },
+            input: { type: "tag", hidden: false },
         },
         {
             name: "profile_picture",

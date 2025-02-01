@@ -1,0 +1,209 @@
+import { makeBuilder } from "./FormBuilder";
+import type { FormDefinition } from "./formDefinition";
+
+// Pure function to create a test builder instance
+const createTestBuilder = () => {
+    const mockReporter = jest.fn();
+    return {
+        builder: makeBuilder(mockReporter),
+        mockReporter,
+    };
+};
+
+describe("FormBuilder", () => {
+    describe("Basic Form Creation", () => {
+        it("should create a form with basic fields", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form", "Example Form")
+                .text({ name: "username", label: "Username" })
+                .email({ name: "email", label: "Email" })
+                .build();
+
+            const expected: FormDefinition = {
+                name: "example-form",
+                title: "Example Form",
+                version: "1",
+                fields: [
+                    {
+                        name: "username",
+                        label: "Username",
+                        description: "",
+                        input: { type: "text", hidden: false },
+                    },
+                    {
+                        name: "email",
+                        label: "Email",
+                        description: "",
+                        input: { type: "email", hidden: false },
+                    },
+                ],
+            };
+
+            expect(form).toEqual(expected);
+        });
+
+        it("should use name as title if title is not provided", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form").text({ name: "field" }).build();
+
+            expect(form.title).toBe("example-form");
+        });
+    });
+
+    describe("Field Properties", () => {
+        it("should handle optional field properties", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .text({
+                    name: "username",
+                    label: "Username",
+                    description: "Enter your username",
+                    hidden: true,
+                })
+                .build();
+
+            const expected = {
+                name: "username",
+                label: "Username",
+                description: "Enter your username",
+                input: { type: "text", hidden: true },
+            };
+
+            expect(form.fields[0]).toEqual(expected);
+        });
+
+        it("should set empty string as default description", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form").text({ name: "field" }).build();
+
+            expect(form.fields[0]?.description).toBe("");
+        });
+    });
+
+    describe("Field Types", () => {
+        it("should create number fields with min/max", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form").slider({ name: "rating", min: 1, max: 5 }).build();
+
+            const expected = {
+                type: "slider" as const,
+                min: 1,
+                max: 5,
+            };
+
+            expect(form.fields[0]!.input).toEqual(expected);
+        });
+
+        it("should create select fields with options", () => {
+            const { builder } = createTestBuilder();
+            const options = ["Low", "Medium", "High"];
+            const form = builder("example-form")
+                .select({
+                    name: "priority",
+                    options,
+                })
+                .build();
+
+            const expected = {
+                type: "select" as const,
+                source: "fixed" as const,
+                options: options.map((value) => ({ value, label: value })),
+            };
+
+            expect(form.fields[0]?.input).toEqual(expected);
+        });
+
+        it("should create multiselect fields with options", () => {
+            const { builder } = createTestBuilder();
+            const options = ["work", "personal"];
+            const form = builder("example-form")
+                .multiselect({
+                    name: "tags",
+                    options,
+                    allowUnknownValues: true,
+                })
+                .build();
+
+            const expected = {
+                type: "multiselect" as const,
+                source: "fixed" as const,
+                multi_select_options: options,
+                allowUnknownValues: true,
+            };
+
+            expect(form.fields[0]?.input).toEqual(expected);
+        });
+
+        it("should create note fields with folder", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form").note({ name: "ref", folder: "Notes" }).build();
+
+            const expected = {
+                type: "note" as const,
+                folder: "Notes",
+            };
+
+            expect(form.fields[0]!.input).toEqual(expected);
+        });
+
+        it("should create file fields with extensions", () => {
+            const { builder } = createTestBuilder();
+            const extensions = [".pdf"];
+            const form = builder("example-form")
+                .file({
+                    name: "attachment",
+                    folder: "uploads",
+                    allowedExtensions: extensions,
+                })
+                .build();
+
+            const expected = {
+                type: "file" as const,
+                folder: "uploads",
+                allowedExtensions: extensions,
+            };
+
+            expect(form.fields[0]!.input).toEqual(expected);
+        });
+    });
+
+    describe("Form Validation", () => {
+        it("should report validation errors", () => {
+            const { builder, mockReporter } = createTestBuilder();
+            builder("example-form")
+                // @ts-expect-error I want this to fail
+                .slider({ name: "rating" }) // Invalid: min > max
+                .build();
+
+            expect(mockReporter).toHaveBeenCalledWith(
+                "🚧 Error building form 🚧",
+                expect.stringContaining("Invalid type"),
+            );
+        });
+
+        it("should maintain immutability", () => {
+            const { builder } = createTestBuilder();
+            const builder1 = builder("form1").text({ name: "field1" });
+            const builder2 = builder1.text({ name: "field2" });
+
+            const form1 = builder1.build();
+            const form2 = builder2.build();
+
+            // Verify immutability by checking that form1 was not modified
+            expect(form1.fields).toHaveLength(1);
+            expect(form2.fields).toHaveLength(2);
+            expect(form1.fields[0]!.name).toBe("field1");
+            expect(form2.fields[1]!.name).toBe("field2");
+        });
+    });
+
+    describe("Convenience Methods", () => {
+        it("should support shorthand methods", () => {
+            const { builder } = createTestBuilder();
+            const formWithShorthand = builder("example-form").text({ name: "name" }).build();
+            const formWithLong = builder("example-form").addTextField({ name: "name" }).build();
+
+            expect(formWithShorthand).toEqual(formWithLong);
+        });
+    });
+});
