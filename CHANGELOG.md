@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.59.0](https://github.com/danielo515/obsidian-modal-form/compare/1.58.0...1.59.0) (2025-02-01)
+
+
+### Features
+
+* add tests ([0aea8dd](https://github.com/danielo515/obsidian-modal-form/commit/0aea8ddba6506ab69747cb53983dd7fe630d4a00))
+* build forms programmatically ([5701614](https://github.com/danielo515/obsidian-modal-form/commit/5701614b27265672eab53a878db92e34c61eae89))
+* ensure at the type level the builder implements all the fields ([d9f3c4a](https://github.com/danielo515/obsidian-modal-form/commit/d9f3c4af45f7b31596c538e0855f709b9ba1e922))
+
 ## [1.58.0](https://github.com/danielo515/obsidian-modal-form/compare/1.57.0...1.58.0) (2025-01-31)
 
 
