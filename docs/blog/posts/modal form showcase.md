@@ -2,7 +2,7 @@
 title: Modal form showcase thread
 Author: Danielo
 date: 2024-12-12
-tags: announcement
+tags: ["announcement"]
 ---
 
 Hello everyone.
