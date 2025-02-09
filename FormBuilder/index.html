@@ -11,6 +11,10 @@
       
       
       
+        <link rel="prev" href="../templates/">
+      
+      
+        <link rel="next" href="../blog/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -18,7 +22,7 @@
     
     
       
-        <title>TIP: How to put a long list of values in a select without having to type them one by one - Obsidian Modal Form docs</title>
+        <title>Form builder API - Obsidian Modal Form docs</title>
       
     
     
@@ -70,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tip-how-to-put-a-long-list-of-values-in-a-select-without-having-to-type-them-one-by-one" class="md-skip">
+        <a href="#formbuilder-helper" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              TIP: How to put a long list of values in a select without having to type them one by one
+              Form builder API
             
           </span>
         </div>
@@ -336,9 +340,11 @@
         
   
   
+    
   
-    <li class="md-tabs__item">
-      <a href="../FormBuilder/" class="md-tabs__link">
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
         
   
     
@@ -572,10 +578,31 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../FormBuilder/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Form builder API
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -585,6 +612,272 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      Getting Started
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Core Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#buildername-string-title-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      builder(name: string, title?: string)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build" class="md-nav__link">
+    <span class="md-ellipsis">
+      build()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#field-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Field Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Field Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#text" class="md-nav__link">
+    <span class="md-ellipsis">
+      text
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#number" class="md-nav__link">
+    <span class="md-ellipsis">
+      number
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#date" class="md-nav__link">
+    <span class="md-ellipsis">
+      date
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#time" class="md-nav__link">
+    <span class="md-ellipsis">
+      time
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#datetime" class="md-nav__link">
+    <span class="md-ellipsis">
+      datetime
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#textarea" class="md-nav__link">
+    <span class="md-ellipsis">
+      textarea
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toggle" class="md-nav__link">
+    <span class="md-ellipsis">
+      toggle
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#email" class="md-nav__link">
+    <span class="md-ellipsis">
+      email
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tel" class="md-nav__link">
+    <span class="md-ellipsis">
+      tel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#note" class="md-nav__link">
+    <span class="md-ellipsis">
+      note
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#folder" class="md-nav__link">
+    <span class="md-ellipsis">
+      folder
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#slider" class="md-nav__link">
+    <span class="md-ellipsis">
+      slider
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tag" class="md-nav__link">
+    <span class="md-ellipsis">
+      tag
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#select" class="md-nav__link">
+    <span class="md-ellipsis">
+      select
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dataview" class="md-nav__link">
+    <span class="md-ellipsis">
+      dataview
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiselect" class="md-nav__link">
+    <span class="md-ellipsis">
+      multiselect
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#document_block" class="md-nav__link">
+    <span class="md-ellipsis">
+      document_block
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#markdown_block" class="md-nav__link">
+    <span class="md-ellipsis">
+      markdown_block
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image" class="md-nav__link">
+    <span class="md-ellipsis">
+      image
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file" class="md-nav__link">
+    <span class="md-ellipsis">
+      file
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complete Example
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -752,6 +1045,260 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      Getting Started
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Core Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#buildername-string-title-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      builder(name: string, title?: string)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build" class="md-nav__link">
+    <span class="md-ellipsis">
+      build()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#field-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Field Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Field Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#text" class="md-nav__link">
+    <span class="md-ellipsis">
+      text
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#number" class="md-nav__link">
+    <span class="md-ellipsis">
+      number
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#date" class="md-nav__link">
+    <span class="md-ellipsis">
+      date
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#time" class="md-nav__link">
+    <span class="md-ellipsis">
+      time
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#datetime" class="md-nav__link">
+    <span class="md-ellipsis">
+      datetime
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#textarea" class="md-nav__link">
+    <span class="md-ellipsis">
+      textarea
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toggle" class="md-nav__link">
+    <span class="md-ellipsis">
+      toggle
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#email" class="md-nav__link">
+    <span class="md-ellipsis">
+      email
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tel" class="md-nav__link">
+    <span class="md-ellipsis">
+      tel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#note" class="md-nav__link">
+    <span class="md-ellipsis">
+      note
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#folder" class="md-nav__link">
+    <span class="md-ellipsis">
+      folder
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#slider" class="md-nav__link">
+    <span class="md-ellipsis">
+      slider
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tag" class="md-nav__link">
+    <span class="md-ellipsis">
+      tag
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#select" class="md-nav__link">
+    <span class="md-ellipsis">
+      select
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dataview" class="md-nav__link">
+    <span class="md-ellipsis">
+      dataview
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiselect" class="md-nav__link">
+    <span class="md-ellipsis">
+      multiselect
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#document_block" class="md-nav__link">
+    <span class="md-ellipsis">
+      document_block
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#markdown_block" class="md-nav__link">
+    <span class="md-ellipsis">
+      markdown_block
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image" class="md-nav__link">
+    <span class="md-ellipsis">
+      image
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file" class="md-nav__link">
+    <span class="md-ellipsis">
+      file
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complete Example
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -766,7 +1313,7 @@
 
 
   
-    <a href="https://github.com/danielo515/obsidian-modal-form/edit/master/docs/long-list-tip.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/danielo515/obsidian-modal-form/edit/master/docs/FormBuilder.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -775,33 +1322,193 @@
     
       
     
-    <a href="https://github.com/danielo515/obsidian-modal-form/raw/master/docs/long-list-tip.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/danielo515/obsidian-modal-form/raw/master/docs/FormBuilder.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
     </a>
   
 
 
-<h1 id="tip-how-to-put-a-long-list-of-values-in-a-select-without-having-to-type-them-one-by-one">TIP: How to put a long list of values in a select without having to type them one by one</h1>
-<p>When you already have a long list of values that you want in a select input, instead of putting them one by one in the fixed list, you can use the <code>dataview</code> input type and just return the values as an array in the dataview query.</p>
-<p>For example, you can put the following in a select input with <code>dataview</code> as the source:</p>
-<pre><code class="language-ts">return [
-    'Wash the dishes',
-    'Take out the trash',
-    'Do the laundry',
-    'Mow the lawn',
-    'Feed the cat',
-    'Feed the dog',
-    'Feed the fish',
-    'Feed the birds',
-    'Feed the turtles',
-    'Feed the rabbits',
-    'Feed the turtles',]
+<h1 id="formbuilder-helper">FormBuilder Helper</h1>
+<p>The FormBuilder is a utility that helps you create forms programmatically using a fluent API. It's accessible through the Modal Form plugin API.</p>
+<h2 id="getting-started">Getting Started</h2>
+<p>Access the form builder through the plugin API:</p>
+<pre><code class="language-typescript">
+const modalForm = app.plugins.plugins.modalforms.api;
+const builder = modalForm.builder;
+
+// Create a new form
+const form = builder(&quot;example-contact-form&quot;, &quot;Example Contact Form&quot;)
+  .text({ name: &quot;username&quot;, label: &quot;Username&quot; })
+  .email({ name: &quot;email&quot;, label: &quot;Email&quot; })
+  .build();
+
+// Open the form modal
+modalForm.openForm(form);
 </code></pre>
-<p>And the result will be:
-<img alt="demo modal" src="../long-list-tip.png" /></p>
-<p>Here is an screenshot of how it looks in the form builder:
-<img alt="demo modal" src="../media/long-list-builder.png" /></p>
+<h2 id="core-methods">Core Methods</h2>
+<h3 id="buildername-string-title-string">builder(name: string, title?: string)</h3>
+<p>Creates a new form builder instance. The <code>name</code> parameter is required and must be unique. The <code>title</code> parameter is optional and defaults to the name.</p>
+<pre><code class="language-typescript">const form = builder(&quot;example-form&quot;, &quot;Example Form&quot;)
+  // ... add fields
+  .build();
+</code></pre>
+<h3 id="build">build()</h3>
+<p>Finalizes the form creation and returns a form definition that can be used with <code>openModalForm</code>.</p>
+<pre><code class="language-typescript">const form = builder(&quot;example-form&quot;)
+  .text({ name: &quot;username&quot; })
+  .build();
+</code></pre>
+<h2 id="field-methods">Field Methods</h2>
+<p>Each field method accepts these common parameters:</p>
+<ul>
+<li><code>name</code>: (required) Unique identifier for the field</li>
+<li><code>label</code>: (optional) Display label for the field</li>
+<li><code>description</code>: (optional) Help text or description</li>
+<li><code>hidden</code>: (optional) Whether the field should be hidden</li>
+</ul>
+<h3 id="text">text</h3>
+<p>Adds a text input field.</p>
+<pre><code class="language-typescript">builder(&quot;example-form&quot;)
+  .text({ name: &quot;username&quot;, label: &quot;Username&quot; })
+</code></pre>
+<h3 id="number">number</h3>
+<p>Adds a number input field.</p>
+<pre><code class="language-typescript">builder(&quot;example-age-form&quot;)
+  .number({ name: &quot;age&quot;, label: &quot;Age&quot; })
+</code></pre>
+<h3 id="date">date</h3>
+<p>Adds a date input field.</p>
+<pre><code class="language-typescript">builder(&quot;example-birthday-form&quot;)
+  .date({ name: &quot;birthdate&quot;, label: &quot;Birth Date&quot; })
+</code></pre>
+<h3 id="time">time</h3>
+<p>Adds a time input field.</p>
+<pre><code class="language-typescript">builder(&quot;example-meeting-form&quot;)
+  .time({ name: &quot;meeting&quot;, label: &quot;Meeting Time&quot; })
+</code></pre>
+<h3 id="datetime">datetime</h3>
+<p>Adds a datetime input field.</p>
+<pre><code class="language-typescript">builder(&quot;example-appointment-form&quot;)
+  .datetime({ name: &quot;appointment&quot;, label: &quot;Appointment&quot; })
+</code></pre>
+<h3 id="textarea">textarea</h3>
+<p>Adds a multi-line text input field.</p>
+<pre><code class="language-typescript">builder(&quot;example-notes-form&quot;)
+  .textarea({ name: &quot;notes&quot;, label: &quot;Notes&quot; })
+</code></pre>
+<h3 id="toggle">toggle</h3>
+<p>Adds a toggle/switch input field.</p>
+<pre><code class="language-typescript">builder(&quot;example-settings-form&quot;)
+  .toggle({ name: &quot;active&quot;, label: &quot;Active&quot; })
+</code></pre>
+<h3 id="email">email</h3>
+<p>Adds an email input field.</p>
+<pre><code class="language-typescript">builder(&quot;example-contact-form&quot;)
+  .email({ name: &quot;contact&quot;, label: &quot;Contact Email&quot; })
+</code></pre>
+<h3 id="tel">tel</h3>
+<p>Adds a telephone number input field.</p>
+<pre><code class="language-typescript">builder(&quot;example-phone-form&quot;)
+  .tel({ name: &quot;phone&quot;, label: &quot;Phone Number&quot; })
+</code></pre>
+<h3 id="note">note</h3>
+<p>Adds a note field that references an Obsidian note.</p>
+<pre><code class="language-typescript">builder(&quot;example-reference-form&quot;)
+  .note({ name: &quot;reference&quot;, label: &quot;Reference&quot;, folder: &quot;Notes&quot; })
+</code></pre>
+<h3 id="folder">folder</h3>
+<p>Adds a folder selection field.</p>
+<pre><code class="language-typescript">builder(&quot;example-save-location-form&quot;)
+  .folder({ name: &quot;destination&quot;, label: &quot;Save Location&quot; })
+</code></pre>
+<h3 id="slider">slider</h3>
+<p>Adds a numeric slider input field.</p>
+<pre><code class="language-typescript">builder(&quot;example-rating-form&quot;)
+  .slider({ name: &quot;rating&quot;, label: &quot;Rating&quot;, min: 0, max: 5 })
+</code></pre>
+<h3 id="tag">tag</h3>
+<p>Adds a tag selection field.</p>
+<pre><code class="language-typescript">builder(&quot;example-categories-form&quot;)
+  .tag({ name: &quot;categories&quot;, label: &quot;Categories&quot; })
+</code></pre>
+<h3 id="select">select</h3>
+<p>Adds a dropdown selection field.</p>
+<pre><code class="language-typescript">builder(&quot;example-priority-form&quot;)
+  .select({ 
+    name: &quot;priority&quot;, 
+    label: &quot;Priority&quot;, 
+    options: [&quot;Low&quot;, &quot;Medium&quot;, &quot;High&quot;] 
+  })
+</code></pre>
+<h3 id="dataview">dataview</h3>
+<p>Adds a field populated by a Dataview query.</p>
+<pre><code class="language-typescript">builder(&quot;example-tasks-form&quot;)
+  .dataview({ 
+    name: &quot;tasks&quot;, 
+    label: &quot;Tasks&quot;,
+    query: &quot;task from #project&quot; 
+  })
+</code></pre>
+<h3 id="multiselect">multiselect</h3>
+<p>Adds a multiple selection field.</p>
+<pre><code class="language-typescript">builder(&quot;example-tags-form&quot;)
+  .multiselect({ 
+    name: &quot;tags&quot;, 
+    label: &quot;Tags&quot;,
+    options: [&quot;work&quot;, &quot;personal&quot;, &quot;urgent&quot;]
+  })
+</code></pre>
+<h3 id="document_block">document_block</h3>
+<p>Adds a document block field.</p>
+<pre><code class="language-typescript">builder(&quot;example-document-form&quot;)
+  .document_block({ 
+    name: &quot;content&quot;, 
+    label: &quot;Content&quot;,
+    body: &quot;Initial content&quot; 
+  })
+</code></pre>
+<h3 id="markdown_block">markdown_block</h3>
+<p>Adds a markdown block field.</p>
+<pre><code class="language-typescript">builder(&quot;example-markdown-form&quot;)
+  .markdown_block({ 
+    name: &quot;notes&quot;, 
+    label: &quot;Notes&quot;,
+    body: &quot;# Notes&quot; 
+  })
+</code></pre>
+<h3 id="image">image</h3>
+<p>Adds an image upload field.</p>
+<pre><code class="language-typescript">builder(&quot;example-avatar-form&quot;)
+  .image({ 
+    name: &quot;avatar&quot;, 
+    label: &quot;Avatar&quot;,
+    filenameTemplate: &quot;avatar-${date}&quot;,
+    saveLocation: &quot;assets/images&quot; 
+  })
+</code></pre>
+<h3 id="file">file</h3>
+<p>Adds a file upload field.</p>
+<pre><code class="language-typescript">builder(&quot;example-attachment-form&quot;)
+  .file({ 
+    name: &quot;attachment&quot;, 
+    label: &quot;Attachment&quot;,
+    folder: &quot;attachments&quot;,
+    allowedExtensions: [&quot;.pdf&quot;, &quot;.doc&quot;, &quot;.docx&quot;] 
+  })
+</code></pre>
+<h2 id="complete-example">Complete Example</h2>
+<p>Here's a complete example of creating and opening a contact form:</p>
+<pre><code class="language-typescript">const modalForm = app.plugins.plugins.modalforms.api;
+const form = modalForm.builder(&quot;example-contact-form&quot;, &quot;Example Contact Form&quot;)
+  .text({ name: &quot;name&quot;, label: &quot;Full Name&quot; })
+  .email({ name: &quot;email&quot;, label: &quot;Email Address&quot; })
+  .tel({ name: &quot;phone&quot;, label: &quot;Phone Number&quot; })
+  .textarea({ name: &quot;message&quot;, label: &quot;Message&quot; })
+  .build();
+
+modalForm.openForm(form);
+</code></pre>
 
 
 
@@ -832,6 +1539,44 @@
       
         <footer class="md-footer">
   
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../templates/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Templates">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Templates
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../blog/" class="md-footer__link md-footer__link--next" aria-label="Next: Blog">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Blog
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
     
   
   <div class="md-footer-meta md-typeset">
