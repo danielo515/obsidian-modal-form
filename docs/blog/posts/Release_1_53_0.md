@@ -1,7 +1,7 @@
 ---
 title: Release notes for 1.53.0
 date: 2024-12-09
-tags: release-notes
+tags: [ "release-notes" ]
 ---
 
 ## Introducing Image Input

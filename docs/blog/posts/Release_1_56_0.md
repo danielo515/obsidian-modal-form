@@ -1,7 +1,7 @@
 ---
 title: Release notes for 1.56.0
 date: 2024-12-19
-tags: release-notes
+tags: [ "release-notes" ]
 ---
 
 ## Templates now support Templater syntax

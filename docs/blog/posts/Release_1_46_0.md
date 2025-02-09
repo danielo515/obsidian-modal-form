@@ -1,7 +1,7 @@
 ---
 title: Release notes for 1.46.0
 date: 2024-06-15
-tags: release-notes
+tags:  [ "release-notes" ]
 ---
 
 This release contains one little change that was easy to make, but I think that it unlocks a very interesting use case for modal forms.

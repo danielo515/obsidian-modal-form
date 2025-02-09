@@ -1,7 +1,7 @@
 ---
 title: Release notes for 1.52.0
 date: 2024-09-29
-tags: release-notes
+tags: [ "release-notes" ]
 ---
 
 ## Markdown block

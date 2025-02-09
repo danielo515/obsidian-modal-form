@@ -17,7 +17,7 @@ function generateReleaseNotes(notes: ReleaseNotes): string {
     return `---
 title: Release notes for ${notes.version}
 date: ${notes.date}
-tags: release-notes
+tags: [ "release-notes" ]
 ---
     
 ## What's New

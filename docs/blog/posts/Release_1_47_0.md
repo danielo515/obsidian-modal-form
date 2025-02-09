@@ -1,7 +1,7 @@
 ---
 title: Release notes for 1.47.0 and a statement of intent
 date: 2024-06-22
-tags: release-notes
+tags: [ "release-notes" ]
 ---
 
 ## Release notes for 1.47.0

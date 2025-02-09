@@ -1,7 +1,7 @@
 ---
 title: Release notes for 1.48.0
 date: 2024-07-02
-tags: release-notes
+tags: [ "release-notes" ]
 ---
 
 This is a very exciting release for me, because it includes one of the features that I have been wanting to implement for a long time, and also one of the most requested features. But it also includes some minor improvements, so let's take those first:
