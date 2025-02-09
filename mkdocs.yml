@@ -10,6 +10,7 @@ nav:
     - Change log: changelog.md
     - Importing a form: import-forms.md
     - Templates: templates.md
+    - Form builder API: FormBuilder.md
     - Blog:
           - blog/index.md
 plugins:
