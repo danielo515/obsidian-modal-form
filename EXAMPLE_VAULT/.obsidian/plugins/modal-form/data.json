@@ -204,7 +204,8 @@
           "name": "Tags",
           "description": "Tags input example",
           "input": {
-            "type": "tag"
+            "type": "tag",
+            "hidden": false
           }
         },
         {
@@ -360,7 +361,8 @@
           "description": "",
           "isRequired": false,
           "input": {
-            "type": "tag"
+            "type": "tag",
+            "hidden": false
           }
         }
       ],

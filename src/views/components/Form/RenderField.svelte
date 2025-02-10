@@ -63,7 +63,7 @@
             {app}
         />
     {:else if definition.input.type === "dataview"}
-        <InputDataview field={definition} input={definition.input} {value} {errors} {app} />
+        <InputDataview field={definition} input={definition.input} {value} {errors} {app} form={formEngine} />
     {:else if definition.input.type === "note"}
         <InputNote field={definition} input={definition.input} {value} {errors} {app} />
     {:else if definition.input.type === "textarea"}
