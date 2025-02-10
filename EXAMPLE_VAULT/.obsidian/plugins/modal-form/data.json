@@ -581,6 +581,111 @@
           }
         ]
       }
+    },
+    {
+      "title": "Add New Book",
+      "name": "book-form",
+      "fields": [
+        {
+          "name": "title",
+          "label": "Book Title",
+          "description": "Enter the title of the book",
+          "isRequired": false,
+          "input": {
+            "type": "text",
+            "hidden": false
+          }
+        },
+        {
+          "name": "genre",
+          "label": "Genre",
+          "description": "Select or enter the book's genre",
+          "isRequired": false,
+          "input": {
+            "type": "multiselect",
+            "source": "dataview",
+            "query": "dv.pages('#book').genre.distinct()",
+            "allowUnknownValues": true
+          }
+        },
+        {
+          "name": "author",
+          "label": "Author",
+          "description": "Select an existing author or enter a new one",
+          "isRequired": false,
+          "input": {
+            "type": "dataview",
+            "query": "dv.pages('#book').author.distinct()"
+          }
+        },
+        {
+          "name": "series",
+          "label": "Series",
+          "description": "Select a series (if the book belongs to one)",
+          "isRequired": false,
+          "input": {
+            "type": "dataview",
+            "query": "dv.pages('#book').where(p => p.genre == form.genre).series.distinct()"
+          }
+        },
+        {
+          "name": "rating",
+          "label": "Rating",
+          "description": "Rate the book from 1 to 5",
+          "input": {
+            "type": "slider",
+            "min": 1,
+            "max": 5
+          }
+        },
+        {
+          "name": "preview",
+          "label": "Similar Books Preview",
+          "description": "Books in the same genre and series",
+          "input": {
+            "type": "document_block",
+            "body": "const series = form?.series ? `&& p.series == '${form.series}'` : '';\nconst query = `#book and \"${form?.genre}\"`;\n\nconst res = dv.pages(query)\n  .where(p => p.rating >= (form?.rating ?? 1))\n  .sort(p => p.rating, 'desc')\n  .limit(3)\n  .map(p => `<li> <a href='obsidian://open?vault=${p.vault}&file=${p.file.path}'>${p.file.name}</a> (${p.rating} ) - ${p.status}</li>`)\n  .join('\\n')\n\nconsole.log(res)\n\nreturn `<ul>${res}</ul>`"
+          }
+        },
+        {
+          "name": "stats",
+          "label": "Genre Statistics",
+          "description": "Statistics about books in this genre",
+          "input": {
+            "type": "markdown_block",
+            "body": "if (!form.genre) return 'Select a genre to see statistics';\n\nconst books = dv.pages('#book').where(p => p.genre == form.genre);\nconst avgRating = books.rating.array().reduce((a, b) => a + b, 0) / books.length;\n\nreturn `## ${form.genre} Statistics\n- Total Books: ${books.length}\n- Average Rating: ${avgRating.toFixed(1)}⭐\n- Status Breakdown:\n  - Reading: ${books.where(p => p.status == 'reading').length}\n  - Read: ${books.where(p => p.status == 'read').length}\n  - To Read: ${books.where(p => p.status == 'to-read').length}\n  - DNF: ${books.where(p => p.status == 'dnf').length}`"
+          }
+        },
+        {
+          "name": "status",
+          "label": "Reading Status",
+          "description": "",
+          "isRequired": false,
+          "input": {
+            "type": "select",
+            "source": "fixed",
+            "options": [
+              {
+                "value": "unread",
+                "label": "unread"
+              },
+              {
+                "value": "reading",
+                "label": "reading"
+              },
+              {
+                "value": "read",
+                "label": "read"
+              },
+              {
+                "value": "WTF",
+                "label": "dfn"
+              }
+            ]
+          }
+        }
+      ],
+      "version": "1"
     }
   ]
 }
