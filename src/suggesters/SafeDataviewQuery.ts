@@ -9,6 +9,7 @@ import { ModalFormError } from "src/utils/ModalFormError";
 export type SafeDataviewQuery = (
     dv: unknown,
     pages: unknown,
+    form: Record<string, unknown>,
 ) => TE.TaskEither<ModalFormError, string[]>;
 /**
  * From a string representing a dataview query, it returns the safest possible
@@ -22,15 +23,15 @@ export function sandboxedDvQuery(query: string): SafeDataviewQuery {
     if (!query.startsWith("return")) {
         query = "return " + query;
     }
-    const parsed = parseFunctionBody<[unknown, unknown], unknown>(query, "dv", "pages");
-    return (dv: unknown, pages: unknown) =>
+    const parsed = parseFunctionBody<[unknown, unknown, Record<string, unknown>], unknown>(query, "dv", "pages", "form");
+    return (dv: unknown, pages: unknown, form: Record<string, unknown>) =>
         pipe(
             parsed,
             TE.fromEither,
             TE.mapLeft(
                 (err) => new ModalFormError("Error evaluating the dataview query", err.message),
             ),
-            TE.flatMap((fn) => fn(dv, pages)),
+            TE.flatMap((fn) => fn(dv, pages, form)),
             TE.flatMap((result) => {
                 if (!Array.isArray(result)) {
                     return TE.left(
@@ -55,6 +56,7 @@ type logger = typeof log_error;
 export function executeSandboxedDvQuery(
     query: SafeDataviewQuery,
     app: App,
+    form: Record<string, unknown> = {},
     logger: logger = log_error,
 ): T.Task<string[]> {
     const dv = app.plugins.plugins.dataview?.api;
@@ -65,7 +67,7 @@ export function executeSandboxedDvQuery(
     }
     const pages = dv.pages;
     return pipe(
-        query(dv, pages),
+        query(dv, pages, form),
         TE.getOrElse((e) => {
             logger(e);
             return T.of([] as string[]);
