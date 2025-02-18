@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.60.0](https://github.com/danielo515/obsidian-modal-form/compare/1.59.0...1.60.0) (2025-02-18)
+
+
+### Features
+
+* **fields:** provide form fields to dataview inputs ([4f209ce](https://github.com/danielo515/obsidian-modal-form/commit/4f209ce4eb205224608587b32a9e06efd6afaccd))
+
 ## [1.59.0](https://github.com/danielo515/obsidian-modal-form/compare/1.58.0...1.59.0) (2025-02-01)
 
 
