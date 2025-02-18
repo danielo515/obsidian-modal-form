@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.3">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.4">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.d7758b05.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.8608ea7d.min.css">
       
         
         <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
@@ -1548,6 +1548,13 @@ The form is self-explanatory, but here are some key points you need to keep in m
 </ul>
 <p><img alt="form editor/creator" src="media/editor.png" /></p>
 <h4 id="dataview-integration">Dataview integration</h4>
+<p>Modal Form integrates with <a href="https://blacksmithgu.github.io/obsidian-dataview/">Dataview</a> to provide powerful data querying capabilities in your forms. You can use Dataview queries to:</p>
+<ul>
+<li>Create dynamic input fields with suggestions from your vault</li>
+<li>Generate dynamic content in document and markdown blocks based on form data</li>
+<li>Create interactive previews that update as users fill out the form</li>
+</ul>
+<p>For detailed documentation and examples, see <a href="dataview-integration/">Dataview Integration</a>.</p>
 <p><img alt="dataview" src="media/dataview.png" /></p>
 <h4 id="inline-forms">Inline forms</h4>
 <p>The plugin also supports inline forms, which are forms that are defined when you call the openForm method. This is useful when you want to create a form that is only used in one place and it is simple enough. However, note the format is a bit verbose for typing it manually and it is error-prone, so unless it is a very small form, you will most likely prefer to use a named form.</p>
@@ -1623,8 +1630,8 @@ const result = await modalForm.openForm({
 <h3 id="publish-docs">Publish docs</h3>
 <p>We use <a href="https://www.mkdocs.org/">mkdocs</a> to generate the documentation.
 To publish the docs, run:</p>
-<pre><code class="language-bash">./build-docs.sh
-</code></pre>
+<p>```bash
+./build-docs.sh</p>
 
 
 
