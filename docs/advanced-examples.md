@@ -33,7 +33,7 @@ const modalForm = app.plugins.plugins.modalforms.api;
 Please be aware that this is not atomic, so if if something edits the frontmatter while you are editing it within the form,
 the form values will not reflect this change and you may be overwriting some changes. Although this is unlikely to happen, it is better to be aware of it.
 
-The values the form understand and that are pressent in the frontmatter, will be populated with the values on the frontmatter.
+The values the form understand and that are present in the frontmatter, will be populated with the values on the frontmatter.
 Then, when you submit the form, the new values will overwrite the old ones, leaving the rest untouched.
 
 ## Making calling forms more convenient
