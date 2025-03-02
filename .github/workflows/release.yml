@@ -1,4 +1,5 @@
 on:
+    workflow_dispatch:
     push:
         branches:
             - master
@@ -22,7 +23,7 @@ jobs:
               run: npm run build
 
             - name: Release Please
-              uses: google-github-actions/release-please-action@v3
+              uses: google-github-actions/release-please-action@v4
               id: release
               with:
                   command: manifest
