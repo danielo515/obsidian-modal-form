@@ -52,7 +52,7 @@
     </ObsidianInputWrapper>
 {:else if $isVisible.right}
     {#if definition.input.type === "select"}
-        <ObsidianSelect input={definition.input} field={definition} {value} {errors} />
+        <ObsidianSelect input={definition.input} field={definition} {value} {errors} {app} />
     {:else if definition.input.type === "toggle"}
         <ObsidianToggle field={definition} {value} />
     {:else if definition.input.type === "folder"}
@@ -63,7 +63,14 @@
             {app}
         />
     {:else if definition.input.type === "dataview"}
-        <InputDataview field={definition} input={definition.input} {value} {errors} {app} form={formEngine} />
+        <InputDataview
+            field={definition}
+            input={definition.input}
+            {value}
+            {errors}
+            {app}
+            form={formEngine}
+        />
     {:else if definition.input.type === "note"}
         <InputNote field={definition} input={definition.input} {value} {errors} {app} />
     {:else if definition.input.type === "textarea"}
