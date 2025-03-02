@@ -13,7 +13,9 @@
     const makePreview = function (query: string) {
         error = "";
         return pipe(query, sandboxedDvQuery, (query) =>
-            executeSandboxedDvQuery(query, app, logger),
+            // This is just for the preview, in the form builder,
+            // so there is no form to provide
+            executeSandboxedDvQuery(query, app, {}, logger),
         );
     };
     $: id = `dataview_${index}`;

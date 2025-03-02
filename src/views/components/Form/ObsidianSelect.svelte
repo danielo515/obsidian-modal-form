@@ -1,5 +1,6 @@
 <script lang="ts">
     import { E, pipe } from "@std";
+    import { App } from "obsidian";
     import { input as I } from "src/core";
     import { FieldDefinition } from "src/core/formDefinition";
     import { FieldValue } from "src/store/formEngine";
@@ -10,6 +11,7 @@
     export let field: FieldDefinition;
     export let input: I.Select;
     export let value: Writable<FieldValue>;
+    export let app: App;
     export let errors: Readable<string[]>;
     function getNoteOptions(folder: string): Record<string, string> {
         const files = get_tfiles_from_folder(folder, app);
