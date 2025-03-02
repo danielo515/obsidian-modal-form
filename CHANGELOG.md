@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.60.1](https://github.com/danielo515/obsidian-modal-form/compare/1.60.0...1.60.1) (2025-03-02)
+
+
+### Bug Fixes
+
+* update release-please and try to force it ([96f93c0](https://github.com/danielo515/obsidian-modal-form/commit/96f93c0570368e8dadc6036ca1b9e22c6320e5af))
+
 ## [1.60.0](https://github.com/danielo515/obsidian-modal-form/compare/1.59.0...1.60.0) (2025-02-18)
 
 
