@@ -19,6 +19,8 @@ export class FormModal extends Modal {
     initialFormValues: ModalFormData;
     subscriptions: (() => void)[] = [];
     formEngine: FormEngine;
+    private hasBeenHandled = false;
+    
     constructor(
         app: App,
         private modalDefinition: FormDefinition,
@@ -32,16 +34,27 @@ export class FormModal extends Modal {
         );
         this.formEngine = makeFormEngine({
             onSubmit: (result) => {
+                this.hasBeenHandled = true;
                 this.onSubmit(FormResult.make(result, "ok"));
-                this.close();
+                super.close();
             },
             onCancel: () => {
+                this.hasBeenHandled = true;
                 this.onSubmit(FormResult.make({}, "cancelled"));
-                this.close();
+                super.close();
             },
             defaultValues: this.initialFormValues,
         });
         // this.formEngine.subscribe(console.log);
+    }
+    
+    // Override the close method to handle X button and outside clicks
+    close() {
+        if (!this.hasBeenHandled) {
+            this.hasBeenHandled = true;
+            this.onSubmit(FormResult.make({}, "cancelled"));
+        }
+        super.close();
     }
 
     onOpen() {
