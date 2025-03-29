@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.60.2](https://github.com/danielo515/obsidian-modal-form/compare/1.60.1...1.60.2) (2025-03-29)
+
+
+### Bug Fixes
+
+* **form-runtime:** handle outside clicks and X button ([ee383d7](https://github.com/danielo515/obsidian-modal-form/commit/ee383d7d1de5f78f0876698cc8718b178627e773)), closes [#374](https://github.com/danielo515/obsidian-modal-form/issues/374)
+
 ## [1.60.1](https://github.com/danielo515/obsidian-modal-form/compare/1.60.0...1.60.1) (2025-03-02)
 
 
