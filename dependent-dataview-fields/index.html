@@ -18,7 +18,7 @@
     
     
       
-        <title>Dataview Integration - Obsidian Modal Form docs</title>
+        <title>Creating Forms with Dependent Dataview Fields - Obsidian Modal Form docs</title>
       
     
     
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#dataview-integration" class="md-skip">
+        <a href="#creating-forms-with-dependent-dataview-fields" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Dataview Integration
+              Creating Forms with Dependent Dataview Fields
             
           </span>
         </div>
@@ -789,102 +789,108 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      Features
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Features">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-dataview-input-fields" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Dataview Input Fields
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-dynamic-queries-using-form-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Dynamic Queries Using Form Data
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-dataview-in-document-blocks" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Dataview in Document Blocks
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-dataview-in-markdown-blocks" class="md-nav__link">
-    <span class="md-ellipsis">
-      4. Dataview in Markdown Blocks
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Best Practices
+      Prerequisites
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+  <a href="#step-1-understanding-the-basics" class="md-nav__link">
     <span class="md-ellipsis">
-      Examples
+      Step 1: Understanding the Basics
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#book-management-form" class="md-nav__link">
-    <span class="md-ellipsis">
-      Book Management Form
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#project-management-form" class="md-nav__link">
-    <span class="md-ellipsis">
-      Project Management Form
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#related-documentation" class="md-nav__link">
+  <a href="#step-2-creating-a-basic-form-structure" class="md-nav__link">
     <span class="md-ellipsis">
-      Related Documentation
+      Step 2: Creating a Basic Form Structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-adding-primary-selection-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 3: Adding Primary Selection Fields
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-adding-dependent-dataview-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 4: Adding Dependent Dataview Fields
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-5-adding-a-preview-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 5: Adding a Preview Block
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-6-adding-a-book-selection-field" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 6: Adding a Book Selection Field
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-7-using-the-form-in-a-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 7: Using the Form in a Template
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-8-error-handling-for-dependent-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 8: Error Handling for Dependent Fields
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-9-adding-multi-select-dependent-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 9: Adding Multi-select Dependent Fields
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-10-saving-and-using-your-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 10: Saving and Using Your Form
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tips
     </span>
   </a>
   
@@ -906,7 +912,7 @@
 
 
   
-    <a href="https://github.com/danielo515/obsidian-modal-form/edit/master/docs/dataview-integration.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/danielo515/obsidian-modal-form/edit/master/docs/dependent-dataview-fields.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -915,123 +921,152 @@
     
       
     
-    <a href="https://github.com/danielo515/obsidian-modal-form/raw/master/docs/dataview-integration.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/danielo515/obsidian-modal-form/raw/master/docs/dependent-dataview-fields.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
     </a>
   
 
 
-<h1 id="dataview-integration">Dataview Integration</h1>
-<p>Modal Form integrates with <a href="https://blacksmithgu.github.io/obsidian-dataview/">Dataview</a> to provide powerful data querying capabilities within your forms. This integration allows you to create dynamic forms that can interact with your vault's data in real-time.</p>
-<p><strong>Looking for a step-by-step guide on creating forms with dependent dataview fields? Check out our <a href="../dependent-dataview-fields/">Dependent Dataview Fields Guide</a>.</strong></p>
-<h2 id="features">Features</h2>
-<h3 id="1-dataview-input-fields">1. Dataview Input Fields</h3>
-<p>You can create input fields that use Dataview queries to provide suggestions. This is useful when you want to select values from your vault based on certain criteria.</p>
-<p>Example:</p>
-<pre><code class="language-javascript">// Show all files tagged with #book
-dv.pages('#book').file.name
-
-// Show all files in a specific folder
-dv.pages('&quot;Books&quot;').file.name
-
-// Show all unique values of a specific frontmatter field
-dv.pages().author.distinct()
-</code></pre>
-<h3 id="2-dynamic-queries-using-form-data">2. Dynamic Queries Using Form Data</h3>
-<p>When using Dataview queries in your input fields, you can access the current form data using the <code>form</code> variable. This allows you to create dynamic queries that depend on other field values.</p>
-<p>Example:</p>
-<pre><code class="language-javascript">// Show suggestions based on the current value of the 'category' field
-dv.pages('#' + form.category).file.name
-
-// Filter pages based on multiple form fields
-dv.pages()
-  .where(p =&gt; p.type == form.type &amp;&amp; p.status == form.status)
-  .file.name
-</code></pre>
-<h3 id="3-dataview-in-document-blocks">3. Dataview in Document Blocks</h3>
-<p>Document blocks can use Dataview to display dynamic content based on form data. This is useful for showing previews, summaries, or related information as users fill out the form.</p>
-<p>Example:</p>
-<pre><code class="language-javascript">// Show a list of related items based on form data
-return dv.pages('#' + form.category)
-  .where(p =&gt; p.rating &gt;= form.minRating)
-  .sort(p =&gt; p.rating, 'desc')
-  .limit(5)
-  .map(p =&gt; &quot;- &quot; + p.file.link + &quot; (Rating: &quot; + p.rating + &quot;)&quot;)
-  .join(&quot;\n&quot;)
-</code></pre>
-<h3 id="4-dataview-in-markdown-blocks">4. Dataview in Markdown Blocks</h3>
-<p>Markdown blocks can combine Dataview queries with form data to create dynamic markdown content. This is particularly useful for creating previews or generating structured content.</p>
-<p>Example:</p>
-<pre><code class="language-javascript">// Generate a summary table based on form selections
-return dv.markdownTable(
-  [&quot;Name&quot;, &quot;Rating&quot;, &quot;Status&quot;],
-  dv.pages('#' + form.category)
-    .where(p =&gt; p.status == form.status)
-    .sort(p =&gt; p.rating, 'desc')
-    .map(p =&gt; [p.file.link, p.rating, p.status])
-)
-</code></pre>
-<h2 id="best-practices">Best Practices</h2>
+<h1 id="creating-forms-with-dependent-dataview-fields">Creating Forms with Dependent Dataview Fields</h1>
+<p>This guide provides a step-by-step approach to creating forms where dataview fields depend on previous form values to select different result sets.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Modal Form plugin installed</li>
+<li>Dataview plugin installed and enabled</li>
+<li>Optionally Templater plugin installed for triggering the form and create new notes</li>
+</ul>
+<h2 id="step-1-understanding-the-basics">Step 1: Understanding the Basics</h2>
+<p>First, let's understand how the Modal Form plugin works with Dataview:</p>
 <ol>
-<li>
-<p><strong>Error Handling</strong>: Dataview queries in forms are executed in a sandboxed environment. Always ensure your queries handle cases where form fields might be undefined.</p>
-</li>
-<li>
-<p><strong>Performance</strong>: Keep your queries focused and efficient. Use appropriate filters to limit the scope of the query.</p>
-</li>
-<li>
-<p><strong>Accessing values</strong>: The <code>form</code> variable provides access to the values of the form fields. Because users can not have yet filled the field you are trying to access this may lead to errors. Make sure to check for existence before accessing any form fields or use javascript optional chaining (<code>?.</code>).</p>
-</li>
-<li>
-<p><strong>Real-time Updates</strong>: Form data is automatically synchronized with your queries. When a form field changes, any dependent queries will be re-executed with the updated values.</p>
-</li>
+<li>Modal Form allows you to create forms with various field types</li>
+<li>Dataview fields can query your vault data dynamically</li>
+<li>Form values can be accessed using the <code>form</code> variable in dataview queries</li>
+<li>Changes to form fields automatically trigger updates to dependent dataview fields</li>
 </ol>
-<h2 id="examples">Examples</h2>
-<p>Here are some practical examples of how to use Dataview integration in your forms:</p>
-<h3 id="book-management-form">Book Management Form</h3>
-<pre><code class="language-javascript">// In a &quot;Series&quot; field, show suggestions based on the selected genre
-dv.pages('#book')
+<h2 id="step-2-creating-a-basic-form-structure">Step 2: Creating a Basic Form Structure</h2>
+<p>To create a form with dependent fields, start by creating a new form in the form manager. For this guide, we'll create a form named <code>dependent-books-test</code> which we'll reference in later steps.</p>
+<h2 id="step-3-adding-primary-selection-fields">Step 3: Adding Primary Selection Fields</h2>
+<p>Add fields that will influence subsequent dataview queries:</p>
+<p><img alt="genre and rating fields" src="../Screenshot%202025-03-30%20at%2011.46.27.png" /></p>
+<p>For the genre field, use a dataview query to get all unique genres:</p>
+<pre><code class="language-javascript">dv.pages(&quot;#book&quot;).genre.distinct().sort()
+</code></pre>
+<p>For the rating slider, set appropriate min and max values:</p>
+<pre><code class="language-javascript">{
+  &quot;min&quot;: 1,
+  &quot;max&quot;: 5
+}
+</code></pre>
+<h2 id="step-4-adding-dependent-dataview-fields">Step 4: Adding Dependent Dataview Fields</h2>
+<p>Now add fields that depend on the values selected in the previous fields:</p>
+<p><img alt="author field" src="../Screenshot%202025-03-30%20at%2011.48.50.png" /></p>
+<p>For the author field, filter by the selected genre:</p>
+<pre><code class="language-javascript">dv.pages(&quot;#book&quot;)
   .where(p =&gt; p.genre == form.genre)
-  .series
-  .distinct()
-
-// In a document block, show a preview of similar books
-return dv.pages('#book')
+  .author.distinct().sort()
+</code></pre>
+<p><img alt="series field" src="../Screenshot%202025-03-30%20at%2011.50.40.png" /></p>
+<p>For the series field, filter by both genre and author:</p>
+<pre><code class="language-javascript">dv.pages(&quot;#book&quot;)
+  .where(p =&gt; p.genre == form.genre &amp;&amp; p.author == form.author)
+  .series.distinct().sort()
+</code></pre>
+<h2 id="step-5-adding-a-preview-block">Step 5: Adding a Preview Block</h2>
+<p>Add a markdown block to show a preview based on the current selections:</p>
+<p><img alt="preview field" src="../Screenshot%202025-03-30%20at%2011.56.34.png" /></p>
+<p>Use this query to display matching books:</p>
+<pre><code class="language-javascript">return dv.pages(&quot;#book&quot;)
   .where(p =&gt; 
     p.genre == form.genre &amp;&amp; 
-    p.rating &gt;= form.minRating &amp;&amp;
-    p.series == form.series
+    p.rating &gt;= form.minRating &amp;&amp; 
+    (form.author ? p.author == form.author : true) &amp;&amp; 
+    (form.series ? p.series == form.series : true)
   )
-  .sort(p =&gt; p.rating, 'desc')
-  .limit(3)
+  .sort(p =&gt; p.rating, &quot;desc&quot;)
+  .limit(5)
   .map(p =&gt; `- ${p.file.link} (${p.rating}⭐)`)
   .join(&quot;\n&quot;)
 </code></pre>
-<h3 id="project-management-form">Project Management Form</h3>
-<pre><code class="language-javascript">// Show team members based on selected department
-dv.pages('#team-member')
-  .where(p =&gt; p.department == form.department)
+<h2 id="step-6-adding-a-book-selection-field">Step 6: Adding a Book Selection Field</h2>
+<p>Add a field to select a specific book based on all previous selections:</p>
+<pre><code class="language-javascript">dv.pages(&quot;#book&quot;)
+  .where(p =&gt; 
+    p.genre == form.genre &amp;&amp; 
+    p.rating &gt;= form.minRating &amp;&amp; 
+    (form.author ? p.author == form.author : true) &amp;&amp; 
+    (form.series ? p.series == form.series : true)
+  )
+  .sort(p =&gt; p.rating, &quot;desc&quot;)
   .file.name
-
-// In a markdown block, generate a project summary
-return `## Project Summary
-**Team**: ${form.teamName}
-**Department**: ${form.department}
-
-### Team Members
-${dv.pages('#team-member')
-  .where(p =&gt; p.department == form.department)
-  .map(p =&gt; `- ${p.file.link} (${p.role})`)
-  .join(&quot;\n&quot;)}
-`
 </code></pre>
-<h2 id="related-documentation">Related Documentation</h2>
-<ul>
-<li><a href="../FormBuilder/">Form Builder</a> - Learn how to create forms with Dataview integration</li>
-<li><a href="../managing-results/">Managing Results</a> - How to handle form results in your templates</li>
-<li><a href="../advanced-examples/">Advanced Examples</a> - More complex examples of Dataview integration</li>
-</ul>
+<h2 id="step-7-using-the-form-in-a-template">Step 7: Using the Form in a Template</h2>
+<p>Create a template to use your form:</p>
+<pre><code class="language-javascript">&lt;%*
+const result = await MF.openForm('dependent-books-test');
+
+if (result.status === &quot;ok&quot;) {
+  // Generate note content based on form results
+  tR += `# ${result.fields.selectedBook}\n\n`;
+  tR += `## Reading Status\n\n`;
+  tR += `Current status: Reading\n`;
+  tR += `Rating: ${result.fields.minRating}⭐\n\n`;
+  tR += `## Book Details\n\n`;
+  tR += `- **Author**: ${result.fields.author}\n`;
+  tR += `- **Genre**: ${result.fields.genre}\n`;
+  if (result.fields.series) {
+    tR += `- **Series**: ${result.fields.series}\n`;
+  }
+  tR += `\n\n## Notes\n\n`;
+} else {
+  tR += &quot;Form was cancelled&quot;;
+}
+%&gt;
+</code></pre>
+<h2 id="step-8-error-handling-for-dependent-fields">Step 8: Error Handling for Dependent Fields</h2>
+<p>When working with dependent fields, it's recommended to handle cases where previous fields haven't been filled yet. Here's one example of how to modify your queries to handle these cases:</p>
+<p>For the author field:</p>
+<pre><code class="language-javascript">form.genre ? dv.pages(&quot;#book&quot;)
+  .where(p =&gt; p.genre == form.genre)
+  .author.distinct().sort() : []
+</code></pre>
+<p>For the series field:</p>
+<pre><code class="language-javascript">form.genre &amp;&amp; form.author ? dv.pages(&quot;#book&quot;)
+  .where(p =&gt; p.genre == form.genre &amp;&amp; p.author == form.author)
+  .series.distinct().sort() : []
+</code></pre>
+<p>For the book selection field:</p>
+<pre><code class="language-javascript">form.genre ? dv.pages(&quot;#book&quot;)
+  .where(p =&gt; 
+    p.genre == form.genre &amp;&amp; 
+    p.rating &gt;= form.minRating &amp;&amp; 
+    (form.author ? p.author == form.author : true) &amp;&amp; 
+    (form.series ? p.series == form.series : true)
+  )
+  .sort(p =&gt; p.rating, &quot;desc&quot;)
+  .file.name : []
+</code></pre>
+<h2 id="step-9-adding-multi-select-dependent-fields">Step 9: Adding Multi-select Dependent Fields</h2>
+<p>For more complex scenarios, you can use multi-select fields with dependencies:</p>
+<pre><code class="language-javascript">dv.pages(&quot;#book&quot;)
+  .where(p =&gt; p.genre == form.genre)
+  .file.tags
+  .flatMap(t =&gt; t)
+  .distinct()
+  .sort()
+</code></pre>
+<h2 id="step-10-saving-and-using-your-form">Step 10: Saving and Using Your Form</h2>
+<ol>
+<li>Save your template in the Obsidian vault</li>
+<li>Create a button, command or hotkey to trigger the template</li>
+<li>When the template is triggered, it will open the form and create a new note with the selected data</li>
+</ol>
+<h2 id="tips">Tips</h2>
+<ol>
+<li><strong>Cascading Dependencies</strong>: You can create multiple levels of dependencies (genre → author → series → book)</li>
+<li><strong>Error Handling</strong>: Always check if form fields exist before using them in queries</li>
+<li><strong>Real-time Updates</strong>: Form data is automatically synchronized with your queries</li>
+</ol>
 
 
 
