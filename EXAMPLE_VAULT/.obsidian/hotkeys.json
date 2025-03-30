@@ -7,5 +7,13 @@
       "key": "I"
     }
   ],
-  "editor:toggle-italics": []
+  "editor:toggle-italics": [],
+  "templater-obsidian:replace-in-file-templater": [
+    {
+      "modifiers": [
+        "Alt"
+      ],
+      "key": "R"
+    }
+  ]
 }

@@ -686,6 +686,88 @@
         }
       ],
       "version": "1"
+    },
+    {
+      "title": "New book note",
+      "name": "dependent-books-test",
+      "version": "1",
+      "fields": [
+        {
+          "name": "genre",
+          "label": "Book Genre",
+          "description": "",
+          "input": {
+            "type": "dataview",
+            "allowUnknownValues": false,
+            "hidden": false,
+            "query": "dv.pages(\"#book\").genre.distinct().sort()",
+            "options": [],
+            "source": "fixed"
+          },
+          "isRequired": true
+        },
+        {
+          "name": "minRating",
+          "label": "Minimum Rating",
+          "description": "Filter by minimum rating",
+          "input": {
+            "type": "slider",
+            "allowUnknownValues": false,
+            "hidden": false,
+            "min": 1,
+            "max": 5
+          },
+          "isRequired": false
+        },
+        {
+          "name": "author",
+          "label": "Author",
+          "description": "Authors who write in the selected genre",
+          "input": {
+            "type": "dataview",
+            "allowUnknownValues": false,
+            "hidden": false,
+            "query": "dv.pages(\"#book\")\n                .where(p => p.genre == form.genre)\n                .author.distinct().sort()"
+          },
+          "isRequired": false
+        },
+        {
+          "name": "series",
+          "label": "Book Series",
+          "description": "Series available in the selected genre",
+          "input": {
+            "type": "dataview",
+            "allowUnknownValues": false,
+            "hidden": false,
+            "query": "dv.pages(\"#book\")\n                .where(p => p.genre == form.genre && p.author == form.author)\n                .series.distinct().sort()"
+          },
+          "isRequired": false
+        },
+        {
+          "name": "preview",
+          "label": "Similar Books",
+          "description": "Books matching your criteria",
+          "input": {
+            "type": "markdown_block",
+            "allowUnknownValues": false,
+            "hidden": false,
+            "body": "return dv.pages(\"#book\")\n                .where(p => \n                    p.genre == form.genre && \n                    p.rating >= form.minRating && \n                    (form.author ? p.author == form.author : true) && \n                    (form.series ? p.series == form.series : true)\n                )\n                .sort(p => p.rating, \"desc\")\n                .limit(5)\n                .map(p => `- ${p.file.link} (${p.rating}⭐)`)\n                .join(\"\\n\")"
+          },
+          "isRequired": false
+        },
+        {
+          "name": "Select Book",
+          "label": "Select Book",
+          "description": "Choose a book that matches your criteria",
+          "input": {
+            "type": "dataview",
+            "allowUnknownValues": false,
+            "hidden": false,
+            "query": "dv.pages(\"#book\")\n                .where(p => \n                    p.genre == form.genre && \n                    p.rating >= form.minRating && \n                    (form.author ? p.author == form.author : true) && \n                    (form.series ? p.series == form.series : true)\n                )\n                .sort(p => p.rating, \"desc\")\n                .file.name"
+          },
+          "isRequired": false
+        }
+      ]
     }
   ]
 }

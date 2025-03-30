@@ -2,6 +2,8 @@
 
 Modal Form integrates with [Dataview](https://blacksmithgu.github.io/obsidian-dataview/) to provide powerful data querying capabilities within your forms. This integration allows you to create dynamic forms that can interact with your vault's data in real-time.
 
+**Looking for a step-by-step guide on creating forms with dependent dataview fields? Check out our [Dependent Dataview Fields Guide](dependent-dataview-fields.md).**
+
 ## Features
 
 ### 1. Dataview Input Fields
