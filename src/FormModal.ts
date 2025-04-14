@@ -92,7 +92,7 @@ export class FormModal extends Modal {
         };
 
         const cancelEscapeCallback = (evt: KeyboardEvent) => {
-            // We  don't want to hande it if any modfier is pressed
+            // We  don't want to handle it if any modifier is pressed
             if (!(evt.ctrlKey || evt.metaKey) && evt.key === "Escape") {
                 evt.preventDefault();
                 this.formEngine.triggerCancel();
