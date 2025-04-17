@@ -123,10 +123,17 @@
         if (!isValidFormDefinition(definition)) return;
         onSubmit(definition);
     };
-    function saveTemplate(parsedTemplate: ParsedTemplate) {
+    function saveTemplate(
+        parsedTemplate: ParsedTemplate,
+        commandOptions: { createInsertCommand: boolean; createNoteCommand: boolean },
+    ) {
         onSubmit({
             ...definition,
-            template: { parsedTemplate, createCommand: true },
+            template: {
+                parsedTemplate,
+                createInsertCommand: commandOptions.createInsertCommand,
+                createNoteCommand: commandOptions.createNoteCommand,
+            },
         });
     }
     const handlePreview = () => {
@@ -150,6 +157,10 @@
                     templateString={definition.template
                         ? parsedTemplateToString(definition.template.parsedTemplate)
                         : ""}
+                    initialCommandOptions={{
+                        createInsertCommand: definition.template?.createInsertCommand ?? false,
+                        createNoteCommand: definition.template?.createNoteCommand ?? false,
+                    }}
                 />
             </div>
         {:else}

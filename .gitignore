@@ -25,3 +25,6 @@ site/
 docs/index.md
 docs/changelog.md
 coverage
+
+# windsurf rules
+.windsurfrules
