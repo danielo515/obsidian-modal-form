@@ -28,3 +28,5 @@ coverage
 
 # windsurf rules
 .windsurfrules
+
+.direnv
