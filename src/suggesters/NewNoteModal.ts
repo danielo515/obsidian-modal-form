@@ -3,6 +3,9 @@ import { FormWithTemplate } from "src/core/formDefinition";
 import { FolderSuggest } from "./suggestFolder";
 import { GenericSuggest } from "./suggestGeneric";
 import { log_notice } from "src/utils/Log";
+import { pipe } from "fp-ts/function";
+import * as A from "fp-ts/Array";
+import * as O from "fp-ts/Option";
 
 interface OnSelectArgs {
     form: FormWithTemplate
@@ -43,19 +46,47 @@ export class NewNoteModal extends Modal {
     }
 
     onOpen() {
-        let destinationFolder = ''
-        let form: FormWithTemplate
-        let noteName = ''
+        let destinationFolder = '';
+        let noteName = '';
+        let formSelection: FormWithTemplate | undefined;
         const { contentEl } = this;
+        
         // h1 is a title
-        contentEl.createEl('h1', { text: 'New Note from form' })
-
-        // picker of existing forms
-        new Setting(contentEl).addSearch((element) => {
-            formSuggester(this.app, element.inputEl, this.forms, (value) => {
-                form = value
-            })
-        }).setDesc('Pick a form')
+        contentEl.createEl('h1', { text: 'New Note from form' });
+        
+        // Handle form selection based on number of available forms
+        if (this.forms.length === 1) {
+            // If only one form is available, use it directly without showing a picker
+            // Use fp-ts to safely get the first element
+            pipe(
+                this.forms,
+                A.head,
+                O.fold(
+                    () => { /* This should never happen since we checked length === 1 */ },
+                    (form) => {
+                        formSelection = form;
+                        // Show which form is being used
+                        const formInfoEl = contentEl.createEl('div', { 
+                            text: `Using form: ${form.name}`,
+                            cls: 'modal-form-selected-form'
+                        });
+                        
+                        // Add padding to the form info element
+                        formInfoEl.style.padding = '10px';
+                        formInfoEl.style.marginBottom = '15px';
+                    }
+                )
+            );
+        } else {
+            // If multiple forms are available, show a picker
+            new Setting(contentEl)
+                .setDesc('Pick a form')
+                .addSearch((element) => {
+                    formSuggester(this.app, element.inputEl, this.forms, (value) => {
+                        formSelection = value;
+                    });
+                });
+        }
         // picker for destination folder
         new Setting(contentEl).addSearch((element) => {
             new FolderSuggest(element.inputEl, this.app)
@@ -72,13 +103,13 @@ export class NewNoteModal extends Modal {
         new Setting(contentEl).addButton((element) => {
             element.setButtonText('Create new note')
             element.onClick(() => {
-                if (!form || !destinationFolder.trim() || !noteName.trim()) {
+                if (!formSelection || !destinationFolder.trim() || !noteName.trim()) {
                     log_notice('Missing fields', 'Please fill all the fields')
                     return
                 }
                 this.close()
                 this.onSelected({
-                    form,
+                    form: formSelection,
                     folder: destinationFolder.trim(),
                     noteName: noteName.trim(),
                 })
