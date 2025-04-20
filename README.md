@@ -20,6 +20,7 @@ https://github.com/danielo515/obsidian-modal-form/assets/2270425/542974aa-c58b-4
 -   User interface for creating new forms
 -   Create new notes directly from the form using templates
     -   Template editor has a nice UI for creating templates
+-   **Register commands for your forms:** Instantly trigger any form (with a template) from the command palette—no need for QuickAdd or external templates for simple use cases
 -   Many input types
     -   number
     -   date
@@ -57,6 +58,8 @@ All of the mentioned tools are great at their job and unleash super convenient w
 For that reason, rather than offering an alternative, this plugin is designed as a complement to them, offering some basic building blocks that you can integrate with your existing templates and workflows.
 
 ## Friends of modal form
+
+> **Note:** With the ability to register commands for your forms, you no longer need QuickAdd just to trigger a form. QuickAdd remains useful for more advanced workflows, but for simple form-triggering, Modal Forms is now a complete solution.
 
 -   [Templater](https://github.com/SilentVoid13/Templater) to open modals from templates
 -   [QuickAdd](https://github.com/chhoumann/quickadd) to quickly capture data from a modal
