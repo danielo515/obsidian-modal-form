@@ -215,6 +215,85 @@ export default class ModalFormPlugin extends Plugin {
         );
     }
 
+    /**
+     * Register commands for forms with templates based on their command creation options
+     * @returns Number of commands registered
+     */
+    registerTemplateCommands(): number {
+        // Skip if no settings are available
+        if (!this.settings) {
+            logger.error("Cannot register template commands - settings not loaded");
+            return 0;
+        }
+        
+        const formsWithTemplates = this.getFormsWithTemplates();
+        
+        // Track how many commands were registered
+        let commandsRegistered = 0;
+        
+        // Process each form with template
+        formsWithTemplates.forEach((form) => {
+            // Skip forms without template
+            if (!form.template) return;
+            
+            // With withDefault in the schema, these values are guaranteed to be available
+            const { createInsertCommand, createNoteCommand } = form.template;
+            
+            // Register insert template command if needed
+            if (createInsertCommand) {
+                this.addCommand({
+                    id: `insert-template-${form.name}`,
+                    name: `Insert template: ${form.name}`,
+                    editorCallback: (editor, ctx) => {
+                        this.api.openForm(form).then((result) => {
+                            editor.replaceSelection(
+                                executeTemplate(form.template.parsedTemplate, result.getData()),
+                            );
+                            if (ctx instanceof MarkdownView) {
+                                logger.debug("Saving file after inserting form template");
+                                ctx.save().then(() => {
+                                    const file = ctx.file?.path;
+                                    if (!file) {
+                                        return;
+                                    }
+                                    // This gives obsidian some time to process the frontmatter and other things before asking templater to do its job
+                                    setImmediate(this.templateService.replaceVariablesInFile(file));
+                                });
+                            } else {
+                                notifyWarning("Cannot save file, editor is not a markdown view");
+                            }
+                        });
+                    }
+                });
+                commandsRegistered++;
+            }
+            
+            // Register create note command if needed
+            if (createNoteCommand) {
+                this.addCommand({
+                    id: `create-note-from-template-${form.name}`,
+                    name: `Create note from template: ${form.name}`,
+                    callback: () => {
+                        const picker = new NewNoteModal(
+                            this.app,
+                            [form],
+                            ({ form: selectedForm, folder, noteName }) => {
+                                this.api.openForm(selectedForm).then((formData) => {
+                                    const noteContent = executeTemplate(selectedForm.template.parsedTemplate, formData.getData());
+                                    this.createNoteFromTemplate(noteName, noteContent, folder)();
+                                });
+                            },
+                        );
+                        picker.open();
+                    }
+                });
+                commandsRegistered++;
+            }
+        });
+        
+        return commandsRegistered;
+    }
+
     async onload() {
         const settings = await this.getSettings();
         if (settings.formDefinitions.length === 0) {
@@ -224,11 +303,16 @@ export default class ModalFormPlugin extends Plugin {
         this.unsubscribeSettingsStore = settingsStore.subscribe((s) => {
             console.log("settings changed", s);
             this.settings = s;
+            // Register template commands when settings change
+            this.registerTemplateCommands();
             this.saveSettings(s);
         });
         this.api = new API(this.app, this);
         this.attachShortcutToGlobalWindow();
         this.templateService = getTemplateService(this.app, logger);
+        
+        // Register template commands at startup
+        this.registerTemplateCommands();
         this.registerView(EDIT_FORM_VIEW, (leaf) => new EditFormView(leaf, this));
         this.registerView(MANAGE_FORMS_VIEW, (leaf) => new ManageFormsView(leaf, this));
         this.registerView(TEMPLATE_BUILDER_VIEW, (leaf) => new TemplateBuilderView(leaf, this));

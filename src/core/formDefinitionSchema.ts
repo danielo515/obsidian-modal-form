@@ -66,7 +66,8 @@ const FormDefinitionV1Schema = merge([
         fields: FieldListSchema,
         template: optional(
             object({
-                createCommand: boolean(),
+                createInsertCommand: optional(boolean(),() => false),
+                createNoteCommand: optional(boolean(), () => false),
                 parsedTemplate: ParsedTemplateSchema,
             }),
         ),

@@ -16,7 +16,7 @@ A template consists of plain text mixed with variables and commands:
 
 Variables are placeholders that get replaced with form field values. The variable name must match a field name from your form:
 
-```
+```markdown
 Hello {{name}}! Your favorite color is {{color}}.
 ```
 
@@ -36,7 +36,7 @@ Hello {{name}}! Your favorite color is {{color}}.
 
 Note that spaces around the variable name are ignored, allowing for flexibility in formatting.
 
-```plaintext
+```markdown
 This is a {{variableName}}. And this is also a valid {{ variableName }}
 ```
 
@@ -44,7 +44,7 @@ This is a {{variableName}}. And this is also a valid {{ variableName }}
 
 - **Transformation Syntax**: You can apply transformations to a variable by using a pipe `|` followed by the transformation name.
   
-  ```plaintext
+  ```markdown
   {{ variableName | transformation }}
   ```
 
@@ -123,7 +123,7 @@ Here are some examples of how to use the new template syntax:
 
 The frontmatter command controls which form fields appear in the YAML frontmatter section of your note:
 
-```
+```plaintext
 {# frontmatter pick: title, tags #}
 ```
 
@@ -134,13 +134,13 @@ Options:
 
 You can combine both options:
 
-```
+```plaintext
 {# frontmatter pick: title, tags, date omit: draft #}
 ```
 
 If no options are specified, all form fields will be included in the frontmatter:
 
-```
+```plaintext
 {# frontmatter #}
 ```
 
@@ -150,7 +150,7 @@ If you have the [Templater](https://github.com/SilentVoid13/Templater) plugin in
 
 For example:
 
-```
+```plaintext
 Hello {{NAME}},
 Today is <% tp.date.now() %> and you are using form templates!
 ```
@@ -159,11 +159,46 @@ The form will first replace `{{NAME}}` with the value from your form, and then T
 
 Note: This feature is only available if you have the Templater plugin installed and enabled in your vault.
 
+## Template Commands
+
+You can create dedicated Obsidian commands for your templates, making them easily accessible through the command palette. This is useful for frequently used templates that you want to access quickly without navigating through menus.
+
+When editing a form's template, you'll see two command options:
+
+1. **Create command to insert template**: Creates a command that inserts the template content into the current note
+2. **Create command to create note from template**: Creates a command that creates a new note using the template
+
+These commands will be registered with Obsidian when:
+
+- The plugin starts up
+- Settings are changed (e.g., after saving a form with template commands)
+
+### How to Create Template Commands
+
+1. Edit a form and go to the Template tab
+2. Create or edit your template
+3. Check one or both of the command options:
+   - "Create command to insert template"
+   - "Create command to create note from template"
+4. Click "Save template"
+
+### Using Template Commands
+
+Once created, you can access your template commands through Obsidian's command palette (Ctrl+P or Cmd+P):
+
+- Commands for inserting templates will appear as: "Modal Forms: Insert template: [Form Name]"
+- Commands for creating notes will appear as: "Modal Forms: Create note from template: [Form Name]"
+
+When you execute these commands:
+
+- For insert commands: The form will open, and after submission, the template will be inserted at the cursor position
+- For create note commands: The form will open, followed by a dialog to name the note and select a location
+
 ## Example
 
 Here's a complete template example that combines variables and frontmatter:
 
-```
+```plaintext
 {# frontmatter pick: title, tags #}
 
 # {{title}}

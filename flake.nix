@@ -32,9 +32,14 @@
               command = "pnpm dev";
             }
             {
-              help = "Execute tests and checks";
+              help = "Execute type and lint checks";
               name = "check";
               command = "npm run check";
+            }
+            {
+              help = "Execute tests";
+              name = "test";
+              command = "npm run test";
             }
           ];
           packages = [ pkgs.pnpm pkgs.nodejs_22 ];
