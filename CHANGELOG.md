@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.61.0](https://github.com/danielo515/obsidian-modal-form/compare/1.60.2...1.61.0) (2025-04-25)
+
+
+### Features
+
+* add form commands and improve NewNoteModal with auto-selection for single form ([ffe2a1d](https://github.com/danielo515/obsidian-modal-form/commit/ffe2a1d4236c5134f32f277e730858c2fce871f2))
+
 ## [1.60.2](https://github.com/danielo515/obsidian-modal-form/compare/1.60.1...1.60.2) (2025-03-29)
 
 
