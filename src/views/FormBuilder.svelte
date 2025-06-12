@@ -189,56 +189,29 @@
                         id="customClassname"
                         bind:value={definition.customClassname}
                     />
-                    <div class="flex row gap2">
-                        <button
-                            type="button"
-                            on:click={() => {
-                                definition.fields = [
-                                    ...definition.fields,
-                                    {
-                                        name: "",
-                                        label: "",
-                                        description: "",
-                                        input: {
-                                            type: "text",
-                                            allowUnknownValues: false,
-                                            hidden: false,
-                                        },
-                                    },
-                                ];
-                                // onChange();
-                                activeFieldIndex = definition.fields.length - 1;
-                            }}>Add more fields</button
-                        >
-                        <button type="button" on:click={handlePreview} disabled={!isValid}
-                            >Preview</button
-                        >
-                        <button class="mod-cta" type="submit" disabled={!isValid}
-                            >Save and close</button
-                        >
-                        <button type="button" class="mod-warning" on:click={onCancel}>Cancel</button
-                        >
-                    </div>
+
                     {#if errors.length > 0}
-                        <h3 style="margin: 0;">
-                            <span class="error">Form is invalid</span>, check the following:
-                        </h3>
-                        <ul style="margin: 0;">
-                            {#each errors as error}
-                                <li>
-                                    {error.message}
-                                    {#if error.path}
-                                        at {error.path}
-                                    {/if}
-                                    <button
-                                        type="button"
-                                        on:click={() => {
-                                            activeFieldIndex = error.index;
-                                        }}>Go to problem</button
-                                    >
-                                </li>
-                            {/each}
-                        </ul>
+                        <div class="errors-container">
+                            <h3 style="margin: 0;">
+                                <span class="error">Form is invalid</span>, check the following:
+                            </h3>
+                            <ul style="margin: 0;">
+                                {#each errors as error}
+                                    <li>
+                                        {error.message}
+                                        {#if error.path}
+                                            at {error.path}
+                                        {/if}
+                                        <button
+                                            type="button"
+                                            on:click={() => {
+                                                activeFieldIndex = error.index;
+                                            }}>Go to problem</button
+                                        >
+                                    </li>
+                                {/each}
+                            </ul>
+                        </div>
                     {/if}
                 </fieldset>
 
@@ -443,6 +416,35 @@
                         No fields yet
                     {/each}
                 </fieldset>
+
+                <div class="flex row gap2 sticky-buttons">
+                    <button
+                        type="button"
+                        on:click={() => {
+                            definition.fields = [
+                                ...definition.fields,
+                                {
+                                    name: "",
+                                    label: "",
+                                    description: "",
+                                    input: {
+                                        type: "text",
+                                        allowUnknownValues: false,
+                                        hidden: false,
+                                    },
+                                },
+                            ];
+                            // onChange();
+                            activeFieldIndex = definition.fields.length - 1;
+                        }}>Add more fields</button
+                    >
+                    <button type="button" on:click={handlePreview} disabled={!isValid}
+                        >Preview</button
+                    >
+                    <button class="mod-cta" type="submit" disabled={!isValid}>Save and close</button
+                    >
+                    <button type="button" class="mod-warning" on:click={onCancel}>Cancel</button>
+                </div>
             </form>
         {/if}
     </div>
@@ -464,27 +466,20 @@
     :global(.is-mobile .body),
     .body {
         padding-top: 0.5rem;
-        overflow-y: scroll;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
     }
     .header {
         box-shadow: var(--shadow-bottom) var(--divider-color);
         padding: 1rem;
     }
     /* on bigger screens make the headers stick */
-    @media (min-width: 100rem) {
-        .body {
-            overflow-y: hidden;
-        }
-        .fields {
-            flex: 1;
-            height: 100%;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-        }
+    form {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
     }
     .template {
         padding: 1rem;
@@ -519,6 +514,17 @@
     button:disabled {
         opacity: 0.5;
         cursor: forbidden;
+    }
+
+    .sticky-buttons {
+        position: sticky;
+        bottom: 0;
+        background: var(--background-primary);
+        padding: 1rem;
+        margin: 0;
+        box-shadow: var(--shadow-top) var(--divider-color);
+        z-index: 10;
+        border-radius: 0;
     }
     @media (min-width: 58rem) {
         .md-row {
