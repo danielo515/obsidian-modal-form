@@ -7,7 +7,8 @@
 </script>
 
 {#if inputType === "number"}
-    <input type="number" bind:value={$value} />
+    <!-- Step is required to allow decimals, see #430 & #186 -->
+    <input type="number" step="any" bind:value={$value} />
 {:else if inputType === "text"}
     <input type="text" bind:value={$value} />
 {:else if inputType === "email"}
