@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.61.1](https://github.com/danielo515/obsidian-modal-form/compare/1.61.0...1.61.1) (2025-11-20)
+
+
+### Bug Fixes
+
+* allow decimal inputs for number fields ([54ded20](https://github.com/danielo515/obsidian-modal-form/commit/54ded20b00e0180df9f84499c7b76994d33ddca9))
+
 ## [1.61.0](https://github.com/danielo515/obsidian-modal-form/compare/1.60.2...1.61.0) (2025-04-25)
 
 
