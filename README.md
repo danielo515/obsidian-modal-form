@@ -167,7 +167,7 @@ This method returns the form data formatted as a string matching the provided te
 <%*
 const modalForm = app.plugins.plugins.modalforms.api;
 const result = await modalForm.openForm('example-form');
-tR += result.asString('{{Name}} is {{age}} years old and his/her favorite food is {{favorite_meal}}. Family status: {{is_family}}');
+tR += result.asString('{{name}} is {{age}} years old and his/her favorite food is {{favorite_meal}}. Family status: {{is_family}}');
 -%>
 ```
 
