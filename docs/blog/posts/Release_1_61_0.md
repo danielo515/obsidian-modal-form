@@ -1,3 +1,9 @@
+---
+title: Release notes for 1.61.0
+date: 2025-04-25
+tags: [ "release-notes" ]
+---
+
 # Release 1.61.0: Form Commands
 
 I'm excited to announce **Release 1.61.0** of Modal Forms, focused on making triggering forms easier and more seamless to use. You can now create Obsidian commands for your forms, making them instantly accessible from the command palette, and eliminating the need to maintain external templates just to use a form.
