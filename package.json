@@ -1,6 +1,6 @@
 {
     "name": "obsidian-modal-form",
-    "version": "1.61.0",
+    "version": "1.61.1",
     "description": "Define forms for filling data that you will be able to open from anywhere you can run JS",
     "main": "main.js",
     "scripts": {
