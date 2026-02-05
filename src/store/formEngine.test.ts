@@ -240,6 +240,20 @@ describe("Form Engine", () => {
       formEngine.triggerSubmit();
       expect(onSubmitMock).toHaveBeenCalledWith({ age: 42 });
     });
+
+    it("should return original string value when coercion to number fails", () => {
+      const onSubmitMock = jest.fn();
+      const formEngine = makeFormEngine({
+        onSubmit: onSubmitMock,
+        onCancel: console.log,
+      });
+
+      const field = formEngine.addField(numberField);
+      field.value.set("not-a-number");
+
+      formEngine.triggerSubmit();
+      expect(onSubmitMock).toHaveBeenCalledWith({ age: "not-a-number" });
+    });
   });
 
   it("should flag the form as cancelled and call the onCancel callback when the cancel button is clicked", () => {
