@@ -148,6 +148,114 @@ describe("Form Engine", () => {
       fieldName1: "default1",
     });
   });
+  describe("number field coercion", () => {
+    // The addField interface type doesn't include `input`, but the implementation
+    // (which accepts FieldDefinition) uses it for type coercion at runtime.
+    // We use variables to avoid TypeScript excess property checking on object literals.
+    const numberField = { name: "age", input: { type: "number" } };
+    const sliderField = { name: "rating", input: { type: "slider", min: 0, max: 10 } };
+    const textField = { name: "zipcode", input: { type: "text" } };
+    const priceField = { name: "price", input: { type: "number" } };
+
+    it("should coerce string values to numbers for number fields on setValue", () => {
+      const onSubmitMock = jest.fn();
+      const formEngine = makeFormEngine({
+        onSubmit: onSubmitMock,
+        onCancel: console.log,
+      });
+
+      const field = formEngine.addField(numberField);
+      field.value.set("123");
+
+      formEngine.triggerSubmit();
+      expect(onSubmitMock).toHaveBeenCalledWith({ age: 123 });
+    });
+
+    it("should coerce string default values to numbers for number fields", () => {
+      const onSubmitMock = jest.fn();
+      const formEngine = makeFormEngine({
+        onSubmit: onSubmitMock,
+        onCancel: console.log,
+        defaultValues: { age: "30" },
+      });
+
+      formEngine.addField(numberField);
+
+      formEngine.triggerSubmit();
+      expect(onSubmitMock).toHaveBeenCalledWith({ age: 30 });
+    });
+
+    it("should coerce string values to numbers for slider fields", () => {
+      const onSubmitMock = jest.fn();
+      const formEngine = makeFormEngine({
+        onSubmit: onSubmitMock,
+        onCancel: console.log,
+      });
+
+      const field = formEngine.addField(sliderField);
+      field.value.set("7");
+
+      formEngine.triggerSubmit();
+      expect(onSubmitMock).toHaveBeenCalledWith({ rating: 7 });
+    });
+
+    it("should not coerce string values for text fields", () => {
+      const onSubmitMock = jest.fn();
+      const formEngine = makeFormEngine({
+        onSubmit: onSubmitMock,
+        onCancel: console.log,
+      });
+
+      const field = formEngine.addField(textField);
+      field.value.set("12345");
+
+      formEngine.triggerSubmit();
+      expect(onSubmitMock).toHaveBeenCalledWith({ zipcode: "12345" });
+    });
+
+    it("should handle decimal number strings", () => {
+      const onSubmitMock = jest.fn();
+      const formEngine = makeFormEngine({
+        onSubmit: onSubmitMock,
+        onCancel: console.log,
+      });
+
+      const field = formEngine.addField(priceField);
+      field.value.set("19.99");
+
+      formEngine.triggerSubmit();
+      expect(onSubmitMock).toHaveBeenCalledWith({ price: 19.99 });
+    });
+
+    it("should pass through actual number values unchanged for number fields", () => {
+      const onSubmitMock = jest.fn();
+      const formEngine = makeFormEngine({
+        onSubmit: onSubmitMock,
+        onCancel: console.log,
+      });
+
+      const field = formEngine.addField(numberField);
+      field.value.set(42);
+
+      formEngine.triggerSubmit();
+      expect(onSubmitMock).toHaveBeenCalledWith({ age: 42 });
+    });
+
+    it("should return original string value when coercion to number fails", () => {
+      const onSubmitMock = jest.fn();
+      const formEngine = makeFormEngine({
+        onSubmit: onSubmitMock,
+        onCancel: console.log,
+      });
+
+      const field = formEngine.addField(numberField);
+      field.value.set("not-a-number");
+
+      formEngine.triggerSubmit();
+      expect(onSubmitMock).toHaveBeenCalledWith({ age: "not-a-number" });
+    });
+  });
+
   it("should flag the form as cancelled and call the onCancel callback when the cancel button is clicked", () => {
     const onCancelMock = jest.fn();
     const formEngine = makeFormEngine({

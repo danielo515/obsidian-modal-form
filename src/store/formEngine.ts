@@ -164,17 +164,37 @@ export function makeFormEngine({
     const formStore: Writable<FormStore<FieldValue>> = writable({ fields: {}, status: "draft" });
     /** Creates helper functions to modify the store immutably*/
     function setFormField({ name, input }: FieldDefinition) {
+        const isNumericField = input?.type === "number" || input?.type === "slider";
+
+        /** Coerce string values to numbers for numeric field types */
+        function coerceValue(value: FieldValue): FieldValue {
+            if (isNumericField && typeof value === "string" && value !== "") {
+                const num = Number(value);
+                if (!isNaN(num)) return num;
+            }
+            return value;
+        }
+
         /**
          * Initializes a field in the form store with the provided errors, rules
          * and default values (read from the defaultValues object passed to the form engine)
          */
         function initField(errors = [], rules?: Rule) {
+            const defaultValue = defaultValues[name];
             formStore.update((form) => {
                 return {
                     ...form,
                     fields: {
                         ...form.fields,
-                        [name]: { value: O.fromNullable(defaultValues[name]), name, errors, rules },
+                        [name]: {
+                            value: pipe(
+                                O.fromNullable(defaultValue),
+                                O.map(coerceValue),
+                            ),
+                            name,
+                            errors,
+                            rules,
+                        },
                     },
                 };
             });
@@ -190,7 +210,7 @@ export function makeFormEngine({
                     ...form,
                     fields: {
                         ...form.fields,
-                        [name]: { ...field, value: O.some(value), errors: [] },
+                        [name]: { ...field, value: O.some(coerceValue(value)), errors: [] },
                     },
                 };
             });
