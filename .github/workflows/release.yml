@@ -1,3 +1,19 @@
+# Automated release pipeline for the Obsidian plugin.
+#
+# Trigger: push to master or manual dispatch.
+#
+# What it does:
+#   1. Builds & tests the project.
+#   2. Runs scripts/release.mjs to determine the next version from commit history.
+#   3. Commits the version-bumped files and creates a git tag.
+#   4. Creates a GitHub Release with auto-generated notes.
+#   5. Uploads main.js, manifest.json, and styles.css as release assets.
+#
+# The script reads conventional-commit prefixes (feat, fix, BREAKING CHANGE)
+# to decide whether to bump major, minor, or patch.
+
+name: Release
+
 on:
     workflow_dispatch:
     push:
@@ -6,32 +22,64 @@ on:
 
 permissions:
     contents: write
-    pull-requests: write
 
-name: Release
 jobs:
     release:
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout Repo
-              uses: actions/checkout@v3
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0 # full history needed for commit analysis
 
-            - name: Install Dependencies
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "npm"
+
+            - name: Install dependencies
               run: npm ci
 
             - name: Build
               run: npm run build
 
-            - name: Release Please
-              uses: google-github-actions/release-please-action@v4
-              id: release
-              with:
-                  command: manifest
-                  token: ${{secrets.GITHUB_TOKEN}}
-            - name: Upload Release Assets
-              if: ${{ steps.release.outputs.release_created }}
+            - name: Test
+              run: npm run test
+
+            - name: Determine next version
+              id: version
+              run: node scripts/release.mjs
+
+            - name: Check if release is needed
+              id: check
+              run: |
+                  if [ -z "${{ steps.version.outputs.new_version }}" ]; then
+                    echo "skip=true" >> "$GITHUB_OUTPUT"
+                  else
+                    echo "skip=false" >> "$GITHUB_OUTPUT"
+                  fi
+
+            - name: Commit version bump
+              if: steps.check.outputs.skip == 'false'
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git add package.json manifest.json versions.json
+                  git commit -m "chore: release ${{ steps.version.outputs.new_version }}"
+                  git tag "${{ steps.version.outputs.new_version }}"
+                  git push origin master --tags
+
+            - name: Rebuild with updated manifest
+              if: steps.check.outputs.skip == 'false'
+              run: npm run build
+
+            - name: Create GitHub Release
+              if: steps.check.outputs.skip == 'false'
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  TAG_NAME: ${{ steps.release.outputs.tag_name }}
               run: |
-                  gh release upload $TAG_NAME main.js manifest.json styles.css
+                  gh release create "${{ steps.version.outputs.new_version }}" \
+                    --title "${{ steps.version.outputs.new_version }}" \
+                    --notes "${{ steps.version.outputs.release_notes }}" \
+                    main.js manifest.json styles.css
