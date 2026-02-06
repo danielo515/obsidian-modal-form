@@ -176,6 +176,36 @@ Each method returns a new `FormBuilder` instance (immutable/functional style).
 - Key test areas: form definition validation, template parsing, form engine state, FormResult formatting, FP utilities
 - Run tests before submitting: `npm run test`
 
+## Commit Conventions
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) and **release-please** for automated releases. Commit messages **must** follow this format or releases will not be triggered.
+
+### Format
+
+```
+<type>: <short description>
+
+<optional body>
+```
+
+### Types that trigger a release
+
+| Type | Release | Example |
+|------|---------|---------|
+| `fix:` | Patch (1.0.x) | `fix: preserve number types in frontmatter output` |
+| `feat:` | Minor (1.x.0) | `feat: add form commands for individual forms` |
+
+### Types that do NOT trigger a release
+
+`test:`, `chore:`, `docs:`, `refactor:`, `style:`, `ci:`, `build:`, `perf:`
+
+### Rules
+
+- **One commit per logical change.** Bundle the fix and its tests into a single `fix:` or `feat:` commit. Do not split tests, refactors, or chore tasks into separate commits.
+- **No scopes** are used in this project (i.e., `fix:` not `fix(core):`).
+- Use `Closes #<issue>` in the commit body to auto-close GitHub issues.
+- Do not include PR-style references like `(#123)` in the subject line unless it is an actual PR number added by GitHub.
+
 ## CI/CD
 
 - **Pull requests**: GitHub Actions runs `npm run build && npm run test`
