@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.61.2](https://github.com/danielo515/obsidian-modal-form/compare/1.61.1...1.61.2) (2026-02-06)
+
+
+### Bug Fixes
+
+* coerce number/slider field values to numeric type ([819756c](https://github.com/danielo515/obsidian-modal-form/commit/819756cb9534acec32a5547fab80fdc14719dd29)), closes [#170](https://github.com/danielo515/obsidian-modal-form/issues/170)
+
 ## [1.61.1](https://github.com/danielo515/obsidian-modal-form/compare/1.61.0...1.61.1) (2025-11-20)
 
 
