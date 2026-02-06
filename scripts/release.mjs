@@ -11,11 +11,13 @@ import { execSync } from "child_process";
  *   4. Updates package.json, manifest.json, and versions.json.
  *   5. Outputs the new version and generated release notes for the workflow.
  *
- * Conventional commit prefixes recognised:
+ * Conventional commit prefixes recognised (conventionalcommits.org/en/v1.0.0):
  *   feat:     → minor bump
  *   fix:      → patch bump
- *   BREAKING CHANGE / !: → major bump
- *   Everything else (chore, docs, refactor, …) → patch bump (if any)
+ *   <type>!:  → major bump (e.g. feat!:, fix(scope)!:, refactor!:)
+ *   BREAKING CHANGE / BREAKING-CHANGE in footer → major bump
+ *   chore:    → excluded from release notes entirely
+ *   Everything else (docs, refactor, …) → patch bump (if any)
  *
  * Usage:
  *   node scripts/release.mjs            # normal run
@@ -78,6 +80,9 @@ const commits = log.split("\n").map((line) => {
 // 3. Categorise commits and decide bump level
 // ---------------------------------------------------------------------------
 
+// Breaking change: <type>(<scope>)?!: or BREAKING CHANGE / BREAKING-CHANGE in body/footer
+const BREAKING_RE = /^[a-z]+(\(.+\))?!:/;
+
 const categories = {
     breaking: [],
     features: [],
@@ -88,12 +93,21 @@ const categories = {
 for (const { message, hash } of commits) {
     const lower = message.toLowerCase();
 
-    if (lower.includes("breaking change") || /^[a-z]+(\(.+\))?!:/.test(lower)) {
+    // Detect breaking changes per conventional commits spec
+    const isBreaking =
+        BREAKING_RE.test(lower) ||
+        lower.includes("breaking change") ||
+        lower.includes("breaking-change");
+
+    if (isBreaking) {
         categories.breaking.push({ message, hash });
     } else if (lower.startsWith("feat")) {
         categories.features.push({ message, hash });
     } else if (lower.startsWith("fix")) {
         categories.fixes.push({ message, hash });
+    } else if (lower.startsWith("chore")) {
+        // Skip chore commits — they are not relevant to release notes
+        continue;
     } else {
         categories.other.push({ message, hash });
     }
