@@ -10,8 +10,8 @@
         "check": "npm run lint && svelte-check --tsconfig tsconfig.json",
         "test": "jest --detectOpenHandles",
         "test-w": "jest --watch --no-cache",
-        "version": "node version-bump.mjs && git add manifest.json versions.json",
-        "release-notes": "tsx scripts/generate-release-notes.ts"
+        "release": "node scripts/release.mjs",
+        "release:dry": "node scripts/release.mjs --dry-run"
     },
     "keywords": [],
     "author": "",
