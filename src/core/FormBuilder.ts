@@ -1,6 +1,6 @@
 import { AllFieldTypes, FieldDefinition, FormDefinition, validateFields } from "./formDefinition";
 
-type FieldArgs = { name: string; label?: string; description?: string };
+type FieldArgs = { name: string; label?: string; description?: string; required?: boolean };
 
 type FieldBuilderMethods = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -8,6 +8,7 @@ type FieldBuilderMethods = {
 };
 
 export class FormBuilder implements FieldBuilderMethods {
+    [key: string]: any;
     definition: FormDefinition;
 
     constructor(
@@ -18,7 +19,7 @@ export class FormBuilder implements FieldBuilderMethods {
     }
 
     private addField = (
-        { name, label, description }: FieldArgs,
+        { name, label, description, required }: FieldArgs,
         input: FormDefinition["fields"][0]["input"],
     ) => {
         const textField: FieldDefinition = {
@@ -26,6 +27,7 @@ export class FormBuilder implements FieldBuilderMethods {
             label,
             description: description || "",
             input,
+            isRequired: required,
         };
         return new FormBuilder(
             {
@@ -36,45 +38,46 @@ export class FormBuilder implements FieldBuilderMethods {
         );
     };
 
-    addTextField = ({ name, label, description, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description }, { type: "text", hidden: Boolean(hidden) });
+    addTextField = ({ name, label, description, hidden, required }: FieldArgs & { hidden?: boolean }) =>
+        this.addField({ name, label, description, required }, { type: "text", hidden: Boolean(hidden) });
 
     text = this.addTextField;
 
-    addNumberField = ({ name, label, description, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description }, { type: "number", hidden: Boolean(hidden) });
+    addNumberField = ({ name, label, description, hidden, required }: FieldArgs & { hidden?: boolean }) =>
+        this.addField({ name, label, description, required }, { type: "number", hidden: Boolean(hidden) });
 
-    addDateField = ({ name, label, description, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description }, { type: "date", hidden: Boolean(hidden) });
+    addDateField = ({ name, label, description, hidden, required }: FieldArgs & { hidden?: boolean }) =>
+        this.addField({ name, label, description, required }, { type: "date", hidden: Boolean(hidden) });
 
-    addTimeField = ({ name, label, description, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description }, { type: "time", hidden: Boolean(hidden) });
+    addTimeField = ({ name, label, description, hidden, required }: FieldArgs & { hidden?: boolean }) =>
+        this.addField({ name, label, description, required }, { type: "time", hidden: Boolean(hidden) });
 
-    addDateTimeField = ({ name, label, description, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description }, { type: "datetime", hidden: Boolean(hidden) });
+    addDateTimeField = ({ name, label, description, hidden, required }: FieldArgs & { hidden?: boolean }) =>
+        this.addField({ name, label, description, required }, { type: "datetime", hidden: Boolean(hidden) });
 
-    addTextareaField = ({ name, label, description, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description }, { type: "textarea", hidden: Boolean(hidden) });
+    addTextareaField = ({ name, label, description, hidden, required }: FieldArgs & { hidden?: boolean }) =>
+        this.addField({ name, label, description, required }, { type: "textarea", hidden: Boolean(hidden) });
 
-    addToggleField = ({ name, label, description, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description }, { type: "toggle", hidden: Boolean(hidden) });
+    addToggleField = ({ name, label, description, hidden, required }: FieldArgs & { hidden?: boolean }) =>
+        this.addField({ name, label, description, required }, { type: "toggle", hidden: Boolean(hidden) });
 
-    addEmailField = ({ name, label, description, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description }, { type: "email", hidden: Boolean(hidden) });
+    addEmailField = ({ name, label, description, hidden, required }: FieldArgs & { hidden?: boolean }) =>
+        this.addField({ name, label, description, required }, { type: "email", hidden: Boolean(hidden) });
 
-    addTelField = ({ name, label, description, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description }, { type: "tel", hidden: Boolean(hidden) });
+    addTelField = ({ name, label, description, hidden, required }: FieldArgs & { hidden?: boolean }) =>
+        this.addField({ name, label, description, required }, { type: "tel", hidden: Boolean(hidden) });
 
-    addNoteField = ({ name, label, description, folder }: FieldArgs & { folder: string }) =>
-        this.addField({ name, label, description }, { type: "note", folder });
+    addNoteField = ({ name, label, description, folder, required }: FieldArgs & { folder: string }) =>
+        this.addField({ name, label, description, required }, { type: "note", folder });
 
     addFolderField = ({
         name,
         label,
         description,
         parentFolder,
+        required,
     }: FieldArgs & { parentFolder?: string }) =>
-        this.addField({ name, label, description }, { type: "folder", parentFolder });
+        this.addField({ name, label, description, required }, { type: "folder", parentFolder });
 
     addSliderField = ({
         name,
@@ -82,20 +85,23 @@ export class FormBuilder implements FieldBuilderMethods {
         description,
         min,
         max,
+        required,
     }: FieldArgs & { min?: number; max: number }) =>
-        this.addField({ name, label, description }, { type: "slider", min: min ?? 0, max });
+        this.addField({ name, label, description, required }, { type: "slider", min: min ?? 0, max });
 
-    addTagField = ({ name, label, description, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description }, { type: "tag", hidden: Boolean(hidden) });
+    addTagField = ({ name, label, description, hidden, required }: FieldArgs & { hidden?: boolean }) =>
+        this.addField({ name, label, description, required }, { type: "tag", hidden: Boolean(hidden) });
 
     addSelectField = ({
         name,
         label,
         description,
         options,
+        hidden,
+        required,
     }: FieldArgs & { hidden?: boolean; options: (string | { value: string; label: string })[] }) =>
         this.addField(
-            { name, label, description },
+            { name, label, description, required },
             {
                 type: "select",
                 source: "fixed",
@@ -103,8 +109,8 @@ export class FormBuilder implements FieldBuilderMethods {
             },
         );
 
-    addDataviewField = ({ name, label, description, query }: FieldArgs & { query: string }) =>
-        this.addField({ name, label, description }, { type: "dataview", query });
+    addDataviewField = ({ name, label, description, query, required }: FieldArgs & { query: string }) =>
+        this.addField({ name, label, description, required }, { type: "dataview", query });
 
     addMultiselectField = ({
         name,
@@ -112,9 +118,10 @@ export class FormBuilder implements FieldBuilderMethods {
         description,
         allowUnknownValues,
         options,
+        required,
     }: FieldArgs & { allowUnknownValues?: boolean; options: string[] }) =>
         this.addField(
-            { name, label, description },
+            { name, label, description, required },
             {
                 type: "multiselect",
                 source: "fixed",
@@ -123,11 +130,11 @@ export class FormBuilder implements FieldBuilderMethods {
             },
         );
 
-    addDocumentBlockField = ({ name, label, description, body }: FieldArgs & { body: string }) =>
-        this.addField({ name, label, description }, { type: "document_block", body });
+    addDocumentBlockField = ({ name, label, description, body, required }: FieldArgs & { body: string }) =>
+        this.addField({ name, label, description, required }, { type: "document_block", body });
 
-    addMarkdownBlockField = ({ name, label, description, body }: FieldArgs & { body: string }) =>
-        this.addField({ name, label, description }, { type: "markdown_block", body });
+    addMarkdownBlockField = ({ name, label, description, body, required }: FieldArgs & { body: string }) =>
+        this.addField({ name, label, description, required }, { type: "markdown_block", body });
 
     addImageField = ({
         name,
@@ -135,9 +142,10 @@ export class FormBuilder implements FieldBuilderMethods {
         description,
         filenameTemplate,
         saveLocation,
+        required,
     }: FieldArgs & { filenameTemplate: string; saveLocation: string }) =>
         this.addField(
-            { name, label, description },
+            { name, label, description, required },
             { type: "image", filenameTemplate, saveLocation },
         );
 
@@ -147,8 +155,9 @@ export class FormBuilder implements FieldBuilderMethods {
         description,
         folder,
         allowedExtensions,
+        required,
     }: FieldArgs & { folder: string; allowedExtensions: string[] }) =>
-        this.addField({ name, label, description }, { type: "file", folder, allowedExtensions });
+        this.addField({ name, label, description, required }, { type: "file", folder, allowedExtensions });
 
     number = this.addNumberField;
     date = this.addDateField;
@@ -175,7 +184,7 @@ export class FormBuilder implements FieldBuilderMethods {
         if (fieldsValidation.length > 0) {
             this.reporter(
                 "🚧 Error building form 🚧",
-                fieldsValidation.map((x) => `${x.path}: ${x.message}`).join("\n"),
+                fieldsValidation.map((x: { path?: string; message: string }) => `${x.path}: ${x.message}`).join("\n"),
             );
         }
         return this.definition;
