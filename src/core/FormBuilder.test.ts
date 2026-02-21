@@ -197,6 +197,55 @@ describe("FormBuilder", () => {
         });
     });
 
+    describe("Required Fields", () => {
+        it("should set isRequired on a text field", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .text({ name: "username", required: true })
+                .build();
+
+            expect(form.fields[0]?.isRequired).toBe(true);
+        });
+
+        it("should leave isRequired undefined when not specified", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .text({ name: "username" })
+                .build();
+
+            expect(form.fields[0]?.isRequired).toBeUndefined();
+        });
+
+        it("should support required on all field types", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .text({ name: "f1", required: true })
+                .number({ name: "f2", required: true })
+                .date({ name: "f3", required: true })
+                .select({ name: "f4", required: true, options: ["a"] })
+                .textarea({ name: "f5", required: true })
+                .email({ name: "f6", required: true })
+                .build();
+
+            for (const field of form.fields) {
+                expect(field.isRequired).toBe(true);
+            }
+        });
+
+        it("should allow mixing required and optional fields", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .text({ name: "required_field", required: true })
+                .text({ name: "optional_field" })
+                .text({ name: "explicitly_optional", required: false })
+                .build();
+
+            expect(form.fields[0]?.isRequired).toBe(true);
+            expect(form.fields[1]?.isRequired).toBeUndefined();
+            expect(form.fields[2]?.isRequired).toBe(false);
+        });
+    });
+
     describe("Convenience Methods", () => {
         it("should support shorthand methods", () => {
             const { builder } = createTestBuilder();
