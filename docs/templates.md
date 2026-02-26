@@ -121,10 +121,12 @@ Here are some examples of how to use the new template syntax:
 
 #### Frontmatter Command
 
-The frontmatter command controls which form fields appear in the YAML frontmatter section of your note. It automatically wraps the output in `---` delimiters, producing valid YAML frontmatter:
+The frontmatter command controls which form fields appear in the YAML frontmatter section of your note. It outputs raw YAML, so you need to wrap it in `---` delimiters for valid frontmatter:
 
 ```plaintext
+---
 {# frontmatter pick: title, tags #}
+---
 ```
 
 Options:
@@ -135,16 +137,18 @@ Options:
 You can combine both options:
 
 ```plaintext
+---
 {# frontmatter pick: title, tags, date omit: draft #}
+---
 ```
 
 If no options are specified, all form fields will be included in the frontmatter:
 
 ```plaintext
+---
 {# frontmatter #}
+---
 ```
-
-> **Note:** You do not need to manually add `---` around the frontmatter command — the delimiters are included automatically in the output.
 
 ## Templater Support
 
@@ -201,7 +205,9 @@ When you execute these commands:
 Here's a complete template example that combines variables and frontmatter:
 
 ```plaintext
+---
 {# frontmatter pick: title, tags #}
+---
 
 # {{title}}
 

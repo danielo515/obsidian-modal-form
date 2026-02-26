@@ -246,7 +246,7 @@ describe("parseTemplate", () => {
             E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "John", age: 18 })),
             E.map(tap("executed")),
         );
-        expect(result).toEqual(E.of(`---\n${stringifyYaml({ name: "John", age: 18 })}---\n`));
+        expect(result).toEqual(E.of(stringifyYaml({ name: "John", age: 18 })));
     });
     it("Should properly execute a template with a frontmatter command that specifies a pick", () => {
         const template = "{# frontmatter pick: name #}";
@@ -256,6 +256,6 @@ describe("parseTemplate", () => {
             E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "John", age: 18 })),
             E.map(tap("executed")),
         );
-        expect(result).toEqual(E.of(`---\n${stringifyYaml({ name: "John" })}---\n`));
+        expect(result).toEqual(E.of(stringifyYaml({ name: "John" })));
     });
 });
