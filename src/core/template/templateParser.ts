@@ -221,6 +221,8 @@ export function parsedTemplateToString(parsedTemplate: ParsedTemplate): string {
     );
 }
 
+// Outputs raw YAML without `---` delimiters so it can be placed inside existing frontmatter.
+// Users are expected to wrap the command in `---` in their templates.
 function asFrontmatterString(data: Record<string, unknown>) {
     return ({ pick, omit }: { pick: string[]; omit: string[] }): string =>
         pipe(
