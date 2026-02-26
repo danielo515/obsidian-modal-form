@@ -231,6 +231,7 @@ function asFrontmatterString(data: Record<string, unknown>) {
             }),
             R.filterMapWithIndex((key, value) => (!omit.includes(key) ? O.some(value) : O.none)),
             stringifyYaml,
+            (yaml) => `---\n${yaml}---\n`,
         );
 }
 
