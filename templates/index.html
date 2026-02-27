@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
     
     
       
@@ -1426,8 +1426,10 @@ After the form template is processed, if you have the templater plugin installed
   {{ name | trim }} or {{ name|trim }} are both valid.</code></p>
 <h3 id="available-commands">Available Commands</h3>
 <h4 id="frontmatter-command">Frontmatter Command</h4>
-<p>The frontmatter command controls which form fields appear in the YAML frontmatter section of your note:</p>
-<pre><code class="language-plaintext">{# frontmatter pick: title, tags #}
+<p>The frontmatter command controls which form fields appear in the YAML frontmatter section of your note. It outputs raw YAML, so you need to wrap it in <code>---</code> delimiters for valid frontmatter:</p>
+<pre><code class="language-plaintext">---
+{# frontmatter pick: title, tags #}
+---
 </code></pre>
 <p>Options:</p>
 <ul>
@@ -1435,10 +1437,14 @@ After the form template is processed, if you have the templater plugin installed
 <li><code>omit</code>: Exclude these fields from the frontmatter</li>
 </ul>
 <p>You can combine both options:</p>
-<pre><code class="language-plaintext">{# frontmatter pick: title, tags, date omit: draft #}
+<pre><code class="language-plaintext">---
+{# frontmatter pick: title, tags, date omit: draft #}
+---
 </code></pre>
 <p>If no options are specified, all form fields will be included in the frontmatter:</p>
-<pre><code class="language-plaintext">{# frontmatter #}
+<pre><code class="language-plaintext">---
+{# frontmatter #}
+---
 </code></pre>
 <h2 id="templater-support">Templater Support</h2>
 <p>If you have the <a href="https://github.com/SilentVoid13/Templater">Templater</a> plugin installed, Modal Form will also process any templater syntax in your form templates. This means you can combine both the form template variables and templater syntax in your templates.</p>
@@ -1482,7 +1488,9 @@ Today is &lt;% tp.date.now() %&gt; and you are using form templates!
 </ul>
 <h2 id="example">Example</h2>
 <p>Here's a complete template example that combines variables and frontmatter:</p>
-<pre><code class="language-plaintext">{# frontmatter pick: title, tags #}
+<pre><code class="language-plaintext">---
+{# frontmatter pick: title, tags #}
+---
 
 # {{title}}
 
