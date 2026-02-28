@@ -90,35 +90,29 @@ export function get_tfiles_from_folders(
     folders: string[],
     app: App,
 ): Either<FolderError, Array<TFile>> {
-    const results = folders.map((f) => get_tfiles_from_folder(f, app));
-    const seen = new Set<string>();
-    const files: Array<TFile> = [];
-    let lastError: FolderError | undefined;
+    const { left: errors, right: fileArrays } = pipe(
+        folders,
+        A.map((f) => get_tfiles_from_folder(f, app)),
+        A.separate,
+    );
 
-    for (const result of results) {
-        pipe(
-            result,
-            E.match(
-                (err) => {
-                    lastError = err;
-                },
-                (folderFiles) => {
-                    for (const file of folderFiles) {
-                        if (!seen.has(file.path)) {
-                            seen.add(file.path);
-                            files.push(file);
-                        }
-                    }
-                },
+    if (fileArrays.length === 0) {
+        return pipe(
+            A.last(errors),
+            O.match(
+                () => E.right<FolderError, Array<TFile>>([]),
+                E.left,
             ),
         );
     }
 
-    if (files.length === 0 && lastError != null) {
-        return E.left(lastError);
-    }
-
-    return E.right(files.sort((a, b) => a.basename.localeCompare(b.basename)));
+    return pipe(
+        fileArrays,
+        A.flatten,
+        A.uniq({ equals: (a: TFile, b: TFile) => a.path === b.path }),
+        (files) => files.sort((a, b) => a.basename.localeCompare(b.basename)),
+        E.right,
+    );
 }
 
 function isArrayOfStrings(value: unknown): value is string[] {
