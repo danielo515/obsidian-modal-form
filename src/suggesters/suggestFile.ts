@@ -1,5 +1,5 @@
 import { AbstractInputSuggest, App, TFile, setIcon } from "obsidian";
-import { enrich_tfile, get_tfiles_from_folder, get_tfiles_from_folders } from "../utils/files";
+import { enrich_tfile, get_tfiles_from_folders } from "../utils/files";
 import { E, pipe, A } from "@std";
 import Fuse from "fuse.js";
 
@@ -26,9 +26,7 @@ export class FileSuggest extends AbstractInputSuggest<TFile> {
 
     getSuggestions(input_str: string): TFile[] {
         const all_files = pipe(
-            this.folders.length === 1
-                ? get_tfiles_from_folder(this.folders[0]!, this.app)
-                : get_tfiles_from_folders(this.folders, this.app),
+            get_tfiles_from_folders(this.folders, this.app),
             E.map(A.map((file) => enrich_tfile(file, this.app))),
         );
         if (E.isLeft(all_files)) {
