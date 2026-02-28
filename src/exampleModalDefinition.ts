@@ -56,6 +56,17 @@ export const exampleModalDefinition: FormDefinition = {
             input: { type: "multiselect", source: "notes", folder: "Books" },
         },
         {
+            name: "multi_example_folders",
+            label: "Multi select multiple folders",
+            description: "Allows to pick many notes from multiple folders",
+            input: {
+                type: "multiselect",
+                source: "notes",
+                folder: "Books",
+                folders: ["People"],
+            },
+        },
+        {
             name: "multi_example_2",
             label: "Multi select fixed",
             description: "Allows to pick many notes from a fixed list",

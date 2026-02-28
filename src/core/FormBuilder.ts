@@ -128,6 +128,24 @@ export class FormBuilder implements FieldBuilderMethods {
             },
         );
 
+    addMultiselectNotesField = ({
+        name,
+        label,
+        description,
+        required,
+        folder,
+        folders,
+    }: FieldArgs & { folder: string; folders?: string[] }) =>
+        this.addField(
+            { name, label, description, required },
+            {
+                type: "multiselect",
+                source: "notes",
+                folder,
+                ...(folders != null && folders.length > 0 ? { folders } : {}),
+            },
+        );
+
     addDocumentBlockField = ({ name, label, description, required, body }: FieldArgs & { body: string }) =>
         this.addField({ name, label, description, required }, { type: "document_block", body });
 

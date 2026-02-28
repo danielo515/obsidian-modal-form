@@ -100,6 +100,7 @@ export type EditableInput = {
     type: AllFieldTypes;
     source?: AllSources;
     folder?: string;
+    folders?: string[];
     min?: number;
     max?: number;
     options?: { value: string; label: string }[];

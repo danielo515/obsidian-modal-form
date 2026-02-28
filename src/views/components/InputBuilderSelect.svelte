@@ -16,6 +16,7 @@
     export let source: AllSources = "fixed";
     export let query: string = "";
     export let folder: string | undefined;
+    export let folders: string[] | undefined = undefined;
     export let allowUnknownValues: boolean = false;
     export let options: option[] = [];
     export let app: App;
@@ -137,6 +138,35 @@
     </FormRow>
 {:else if source === "notes"}
     <InputFolder {index} bind:folder {notifyChange} {app} />
+    {#if is_multi}
+        {#if folders != null}
+            {#each folders as _, idx}
+                <div class="modal-form flex row gap1 align-center">
+                    <InputFolder
+                        index={index * 100 + idx + 1}
+                        bind:folder={folders[idx]}
+                        {notifyChange}
+                        {app}
+                    />
+                    <button
+                        type="button"
+                        use:setIcon={"trash"}
+                        on:click={() => {
+                            folders = (folders ?? []).filter((_, i) => i !== idx);
+                            notifyChange();
+                        }}
+                    />
+                </div>
+            {/each}
+        {/if}
+        <button
+            type="button"
+            on:click={() => {
+                folders = [...(folders ?? []), ""];
+                notifyChange();
+            }}>Add folder</button
+        >
+    {/if}
 {:else if source === "dataview"}
     <InputBuilderDataview {index} bind:value={query} {app} />
 {/if}

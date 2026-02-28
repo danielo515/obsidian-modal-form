@@ -6,7 +6,7 @@ import {
     isInputSlider,
     isSelectFromNotes,
 } from "./formDefinition";
-import { MultiselectSchema } from "./input/InputDefinitionSchema";
+import { MultiselectSchema, getMultiselectNoteFolders, multiselectNotes } from "./input/InputDefinitionSchema";
 
 describe("isDataViewSource", () => {
     it("should return true for valid inputDataviewSource objects", () => {
@@ -147,5 +147,76 @@ describe("MultiSelectNotesSchema", () => {
             folder: 123,
         };
         expect(() => parse(MultiselectSchema, invalidSchema)).toThrow();
+    });
+
+    it("should validate a multiselect notes schema with additional folders", () => {
+        const validSchema = {
+            type: "multiselect",
+            source: "notes",
+            folder: "Books",
+            folders: ["People", "Projects"],
+        };
+        expect(parse(MultiselectSchema, validSchema)).toEqual(validSchema);
+    });
+
+    it("should validate a multiselect notes schema with empty folders array", () => {
+        const validSchema = {
+            type: "multiselect",
+            source: "notes",
+            folder: "Books",
+            folders: [],
+        };
+        expect(parse(MultiselectSchema, validSchema)).toEqual(validSchema);
+    });
+
+    it("should not validate a multiselect notes schema with non-string folders", () => {
+        const invalidSchema = {
+            type: "multiselect",
+            source: "notes",
+            folder: "Books",
+            folders: [123],
+        };
+        expect(() => parse(MultiselectSchema, invalidSchema)).toThrow();
+    });
+
+    it("should not validate a multiselect notes schema with empty string in folders", () => {
+        const invalidSchema = {
+            type: "multiselect",
+            source: "notes",
+            folder: "Books",
+            folders: ["People", ""],
+        };
+        expect(() => parse(MultiselectSchema, invalidSchema)).toThrow();
+    });
+});
+
+describe("getMultiselectNoteFolders", () => {
+    it("should return only primary folder when no additional folders", () => {
+        const input: multiselectNotes = {
+            type: "multiselect",
+            source: "notes",
+            folder: "Books",
+        };
+        expect(getMultiselectNoteFolders(input)).toEqual(["Books"]);
+    });
+
+    it("should return primary folder followed by additional folders", () => {
+        const input: multiselectNotes = {
+            type: "multiselect",
+            source: "notes",
+            folder: "Books",
+            folders: ["People", "Projects"],
+        };
+        expect(getMultiselectNoteFolders(input)).toEqual(["Books", "People", "Projects"]);
+    });
+
+    it("should return only primary folder when folders is empty array", () => {
+        const input: multiselectNotes = {
+            type: "multiselect",
+            source: "notes",
+            folder: "Books",
+            folders: [],
+        };
+        expect(getMultiselectNoteFolders(input)).toEqual(["Books"]);
     });
 });
