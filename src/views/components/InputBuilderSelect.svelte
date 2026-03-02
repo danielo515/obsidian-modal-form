@@ -137,35 +137,39 @@
         {/each}
     </FormRow>
 {:else if source === "notes"}
-    <InputFolder {index} bind:folder {notifyChange} {app} />
-    {#if is_multi}
-        {#if folders != null}
-            {#each folders as _, idx}
-                <div class="modal-form flex row gap1 align-center">
-                    <InputFolder
-                        index={index * 100 + idx + 1}
-                        bind:folder={folders[idx]}
-                        {notifyChange}
-                        {app}
-                    />
-                    <button
-                        type="button"
-                        use:setIcon={"trash"}
-                        on:click={() => {
-                            folders = (folders ?? []).filter((_, i) => i !== idx);
-                            notifyChange();
-                        }}
-                    />
-                </div>
-            {/each}
+    <div class="modal-form-folder-row">
+        <InputFolder {index} bind:folder {notifyChange} {app} />
+        {#if is_multi}
+            <button
+                class="modal-form-folder-action"
+                type="button"
+                on:click={() => {
+                    folders = [...(folders ?? []), ""];
+                    notifyChange();
+                }}>Add folder</button
+            >
         {/if}
-        <button
-            type="button"
-            on:click={() => {
-                folders = [...(folders ?? []), ""];
-                notifyChange();
-            }}>Add folder</button
-        >
+    </div>
+    {#if is_multi && folders != null}
+        {#each folders as _, idx}
+            <div class="modal-form-folder-row">
+                <InputFolder
+                    index={index * 100 + idx + 1}
+                    bind:folder={folders[idx]}
+                    {notifyChange}
+                    {app}
+                />
+                <button
+                    class="modal-form-folder-action"
+                    type="button"
+                    use:setIcon={"trash"}
+                    on:click={() => {
+                        folders = (folders ?? []).filter((_, i) => i !== idx);
+                        notifyChange();
+                    }}
+                />
+            </div>
+        {/each}
     {/if}
 {:else if source === "dataview"}
     <InputBuilderDataview {index} bind:value={query} {app} />
@@ -180,5 +184,17 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+    }
+    .modal-form-folder-row {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        align-items: flex-end;
+    }
+    .modal-form-folder-row :global(.modal-form) {
+        flex: 1;
+    }
+    .modal-form-folder-action {
+        margin-bottom: 0.4rem;
     }
 </style>
