@@ -136,13 +136,17 @@ export default class ModalFormPlugin extends Plugin {
         } else if (Platform.isMobile || this.settings?.editorPosition === "mainView") {
             leaf = this.app.workspace.getLeaf("tab");
         } else if (this.settings?.editorPosition === "right") {
-            leaf = this.app.workspace.getRightLeaf(false);
+            leaf = this.app.workspace.getRightLeaf(false) ?? undefined;
         } else if (this.settings?.editorPosition === "left") {
-            leaf = this.app.workspace.getLeftLeaf(false);
+            leaf = this.app.workspace.getLeftLeaf(false) ?? undefined;
         } else if (this.settings?.editorPosition === "modal") {
             leaf = this.app.workspace.getLeaf(false);
         } else {
-            leaf = this.app.workspace.getRightLeaf(false);
+            leaf = this.app.workspace.getRightLeaf(false) ?? undefined;
+        }
+
+        if (!leaf) {
+            leaf = this.app.workspace.getLeaf("tab");
         }
 
         await leaf.setViewState({
@@ -225,20 +229,20 @@ export default class ModalFormPlugin extends Plugin {
             logger.error("Cannot register template commands - settings not loaded");
             return 0;
         }
-        
+
         const formsWithTemplates = this.getFormsWithTemplates();
-        
+
         // Track how many commands were registered
         let commandsRegistered = 0;
-        
+
         // Process each form with template
         formsWithTemplates.forEach((form) => {
             // Skip forms without template
             if (!form.template) return;
-            
+
             // With withDefault in the schema, these values are guaranteed to be available
             const { createInsertCommand, createNoteCommand } = form.template;
-            
+
             // Register insert template command if needed
             if (createInsertCommand) {
                 this.addCommand({
@@ -267,7 +271,7 @@ export default class ModalFormPlugin extends Plugin {
                 });
                 commandsRegistered++;
             }
-            
+
             // Register create note command if needed
             if (createNoteCommand) {
                 this.addCommand({
@@ -290,7 +294,7 @@ export default class ModalFormPlugin extends Plugin {
                 commandsRegistered++;
             }
         });
-        
+
         return commandsRegistered;
     }
 
@@ -310,7 +314,7 @@ export default class ModalFormPlugin extends Plugin {
         this.api = new API(this.app, this);
         this.attachShortcutToGlobalWindow();
         this.templateService = getTemplateService(this.app, logger);
-        
+
         // Register template commands at startup
         this.registerTemplateCommands();
         this.registerView(EDIT_FORM_VIEW, (leaf) => new EditFormView(leaf, this));

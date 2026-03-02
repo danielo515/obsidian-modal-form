@@ -84,7 +84,7 @@ export function makeImageInputModel({
             TE.chainW(({ extension, bytes }) => {
                 const filename = createFilename(input.filenameTemplate);
                 return pipe(
-                    fileService.saveFile(`${filename}.${extension}`, input.saveLocation, bytes),
+                    fileService.saveFile(`${filename}.${extension}`, input.saveLocation, bytes.buffer),
                     TE.map((file) => new FileProxy(file)),
                 );
             }),
