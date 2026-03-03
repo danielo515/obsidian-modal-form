@@ -94,7 +94,18 @@ const MultiSelectNotesSchema = object({
     type: literal("multiselect"),
     source: literal("notes"),
     folder: nonEmptyString("multi select source folder"),
+    folders: optional(array(nonEmptyString("multi select additional source folder"))),
 });
+
+export type multiselectNotes = Output<typeof MultiSelectNotesSchema>;
+
+/**
+ * Returns all folders for a multiselect notes input.
+ * The primary `folder` is always first, followed by any additional `folders`.
+ */
+export function getMultiselectNoteFolders(input: multiselectNotes): string[] {
+    return [input.folder, ...(input.folders ?? [])];
+}
 const MultiSelectFixedSchema = object({
     type: literal("multiselect"),
     source: literal("fixed"),

@@ -1,4 +1,5 @@
 import { A, E, Either, O, pipe } from "@std";
+import { Separated } from "fp-ts/Separated";
 import * as S from "fp-ts/string";
 import { App, CachedMetadata, TAbstractFile, TFile, TFolder, Vault, normalizePath } from "obsidian";
 export class FolderDoesNotExistError extends Error {
@@ -77,6 +78,31 @@ export function get_tfiles_from_folder(
             return files.sort((a, b) => {
                 return a.basename.localeCompare(b.basename);
             });
+        }),
+    );
+}
+
+/**
+ * Gathers files from multiple folders, deduplicating by file path.
+ * Returns a Separated with all folder errors on the left and all
+ * deduplicated files on the right, so callers can handle both.
+ */
+export function get_tfiles_from_folders(
+    folders: string[],
+    app: App,
+): Separated<FolderError[], Array<TFile>> {
+    return pipe(
+        folders,
+        A.map((f) => get_tfiles_from_folder(f, app)),
+        A.separate,
+        ({ left: errors, right: fileArrays }) => ({
+            left: errors,
+            right: pipe(
+                fileArrays,
+                A.flatten,
+                A.uniq({ equals: (a: TFile, b: TFile) => a.path === b.path }),
+                (files) => files.sort((a, b) => a.basename.localeCompare(b.basename)),
+            ),
         }),
     );
 }

@@ -1,7 +1,7 @@
 import { A, pipe } from "@std";
 import { absurd } from "fp-ts/function";
 import { App } from "obsidian";
-import { inputTag, multiselect } from "src/core/input/InputDefinitionSchema";
+import { getMultiselectNoteFolders, inputTag, multiselect } from "src/core/input/InputDefinitionSchema";
 import { executeSandboxedDvQuery, sandboxedDvQuery } from "src/suggesters/SafeDataviewQuery";
 import { StringSuggest } from "src/suggesters/StringSuggest";
 import { FileSuggest } from "src/suggesters/suggestFile";
@@ -53,6 +53,7 @@ export async function MultiSelectModel(
             };
         }
         case "notes": {
+            const folders = getMultiselectNoteFolders(fieldInput);
             return {
                 createInput(element: HTMLInputElement) {
                     new FileSuggest(
@@ -67,7 +68,7 @@ export async function MultiSelectModel(
                                 return "";
                             },
                         },
-                        fieldInput.folder,
+                        folders,
                     );
                 },
                 removeValue,

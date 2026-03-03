@@ -44,7 +44,7 @@ export class TemplateBuilderView extends ItemView {
         });
     }
     getState() {
-        return this.model;
+        return this.model ?? {};
     }
     async setState(state: FormDefinition, result: ViewStateResult): Promise<void> {
         console.log("Setting state", state);

@@ -1,6 +1,7 @@
 import { AbstractInputSuggest, App, TFile, setIcon } from "obsidian";
-import { enrich_tfile, get_tfiles_from_folder } from "../utils/files";
-import { E, pipe, A } from "@std";
+import { enrich_tfile, get_tfiles_from_folders } from "../utils/files";
+import { pipe, A } from "@std";
+import { log_error } from "../utils/Log";
 import Fuse from "fuse.js";
 
 // Instead of hardcoding the logic in separate and almost identical classes,
@@ -12,27 +13,34 @@ export interface FileStrategy {
 }
 
 export class FileSuggest extends AbstractInputSuggest<TFile> {
+    private folders: string[];
+    private reportedErrors = new Set<string>();
+
     constructor(
         public app: App,
         public inputEl: HTMLInputElement,
         private strategy: FileStrategy,
-        private folder: string,
+        folder: string | string[],
     ) {
         super(app, inputEl);
+        this.folders = Array.isArray(folder) ? folder : [folder];
     }
 
     getSuggestions(input_str: string): TFile[] {
-        const all_files = pipe(
-            get_tfiles_from_folder(this.folder, this.app),
-            E.map(A.map((file) => enrich_tfile(file, this.app))),
+        const { left: errors, right: files } = get_tfiles_from_folders(this.folders, this.app);
+        errors.forEach((err) => {
+            if (!this.reportedErrors.has(err.message)) {
+                this.reportedErrors.add(err.message);
+                log_error(err);
+            }
+        });
+        const enriched = pipe(
+            files,
+            A.map((file) => enrich_tfile(file, this.app)),
         );
-        if (E.isLeft(all_files)) {
-            return [];
-        }
 
-        const lower_input_str = input_str.toLowerCase();
-        if (input_str === "") return all_files.right;
-        const fuse = new Fuse(all_files.right, {
+        if (input_str === "") return enriched;
+        const fuse = new Fuse(enriched, {
             includeMatches: false,
             includeScore: true,
             shouldSort: true,
@@ -43,7 +51,7 @@ export class FileSuggest extends AbstractInputSuggest<TFile> {
                 { name: "tags", weight: 1 }
             ],
         });
-        return fuse.search(lower_input_str).map((result) => {
+        return fuse.search(input_str.toLowerCase()).map((result) => {
             //console.log(result);
             return result.item;
         });

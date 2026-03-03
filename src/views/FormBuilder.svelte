@@ -300,6 +300,7 @@
                                     bind:source={field.input.source}
                                     bind:options={field.input.multi_select_options}
                                     bind:folder={field.input.folder}
+                                    bind:folders={field.input.folders}
                                     bind:query={field.input.query}
                                     bind:allowUnknownValues={field.input.allowUnknownValues}
                                     notifyChange={onChange}
