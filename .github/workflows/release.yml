@@ -78,8 +78,10 @@ jobs:
               if: steps.check.outputs.skip == 'false'
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  RELEASE_NOTES: ${{ steps.version.outputs.release_notes }}
               run: |
+                  printf '%s\n' "$RELEASE_NOTES" > /tmp/release-notes.md
                   gh release create "${{ steps.version.outputs.new_version }}" \
                     --title "${{ steps.version.outputs.new_version }}" \
-                    --notes "${{ steps.version.outputs.release_notes }}" \
+                    --notes-file /tmp/release-notes.md \
                     main.js manifest.json styles.css
