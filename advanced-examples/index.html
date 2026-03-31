@@ -382,6 +382,25 @@
   
   
   
+    <li class="md-tabs__item">
+      <a href="../self-contained-forms/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Self-contained forms
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
     
     
       <li class="md-tabs__item">
@@ -774,6 +793,33 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../self-contained-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Self-contained forms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
       
@@ -796,7 +842,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -818,14 +864,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_10" id="__nav_10_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -863,10 +909,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
         
           
-          <label class="md-nav__link" for="__nav_9_2" id="__nav_9_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
             
   
   
@@ -884,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1113,6 +1159,8 @@ const modalForm = app.plugins.plugins.modalforms.api;
 the form values will not reflect this change and you may be overwriting some changes. Although this is unlikely to happen, it is better to be aware of it.</p>
 <p>The values the form understand and that are present in the frontmatter, will be populated with the values on the frontmatter.
 Then, when you submit the form, the new values will overwrite the old ones, leaving the rest untouched.</p>
+<p>!!! tip
+    If you want the form definition to live inside the template itself instead of in the plugin settings, you can use the Builder API to create fully <a href="../self-contained-forms/">self-contained forms in Templater templates</a>.</p>
 <h2 id="making-calling-forms-more-convenient">Making calling forms more convenient</h2>
 <p>If you are using templater, you can make calling forms more convenient by using the following snippet:</p>
 <pre><code class="language-js">const modalForm = app.plugins.plugins.modalforms.api;
