@@ -277,3 +277,6 @@ const form = modalForm.builder("example-contact-form", "Example Contact Form")
 
 modalForm.openForm(form);
 ```
+
+!!! tip
+    You can use the builder to define forms entirely inside a Templater template, making them fully self-contained and easy to share. See [Self-contained forms in Templater templates](self-contained-forms.md) for complete examples.
