@@ -11,6 +11,7 @@ nav:
     - Importing a form: import-forms.md
     - Templates: templates.md
     - Form builder API: FormBuilder.md
+    - Self-contained forms: self-contained-forms.md
     - Blog:
           - blog/index.md
 plugins:

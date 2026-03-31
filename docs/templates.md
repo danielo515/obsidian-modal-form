@@ -165,6 +165,9 @@ The form will first replace `{{NAME}}` with the value from your form, and then T
 
 Note: This feature is only available if you have the Templater plugin installed and enabled in your vault.
 
+!!! tip
+    You can also use the [Builder API](FormBuilder.md) to define forms directly inside your Templater templates, making them fully self-contained. See [Self-contained forms in Templater templates](self-contained-forms.md) for examples.
+
 ## Template Commands
 
 You can create dedicated Obsidian commands for your templates, making them easily accessible through the command palette. This is useful for frequently used templates that you want to access quickly without navigating through menus.

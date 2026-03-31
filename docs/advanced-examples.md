@@ -36,6 +36,9 @@ the form values will not reflect this change and you may be overwriting some cha
 The values the form understand and that are present in the frontmatter, will be populated with the values on the frontmatter.
 Then, when you submit the form, the new values will overwrite the old ones, leaving the rest untouched.
 
+!!! tip
+    If you want the form definition to live inside the template itself instead of in the plugin settings, you can use the Builder API to create fully [self-contained forms in Templater templates](self-contained-forms.md).
+
 ## Making calling forms more convenient
 
 If you are using templater, you can make calling forms more convenient by using the following snippet:
