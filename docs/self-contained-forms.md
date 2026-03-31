@@ -49,6 +49,12 @@ const result = await modalForm.openForm(
   { values: { date: tp.date.now("YYYY-MM-DD") } }
 );
 -%>
+# Meeting – <% result.getValue("date").value %>
+
+Attendees:: <% result.getValue("attendees").value %>
+
+## Agenda
+<% result.getValue("agenda").value %>
 ```
 
 ## Tips
