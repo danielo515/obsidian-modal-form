@@ -21,6 +21,7 @@
 </script>
 
 <div
+    data-field-name={field.name}
     use:useSetting={{
         name: field.label || field.name,
         description: field.description || "",
