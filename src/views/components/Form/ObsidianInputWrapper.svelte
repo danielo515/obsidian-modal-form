@@ -1,10 +1,13 @@
 <script lang="ts">
+    import { App } from "obsidian";
     import { readable } from "svelte/store";
+    import MarkdownDescription from "./MarkdownDescription.svelte";
     export let errors = readable([] as string[]);
     export let label = "";
     export let description = "";
     export let required = false;
     export let className = "";
+    export let app: App | undefined = undefined;
 </script>
 
 <!-- Trying to emulate native Obsidian settings -->
@@ -16,7 +19,11 @@
                 <span class="required">*</span>
             {/if}
         </div>
-        <div class="setting-item-description">{description}</div>
+        {#if app && description}
+            <MarkdownDescription {app} text={description} />
+        {:else}
+            <div class="setting-item-description">{description}</div>
+        {/if}
         {#each $errors as error}
             <div class="setting-item-description error">{error}</div>
         {/each}

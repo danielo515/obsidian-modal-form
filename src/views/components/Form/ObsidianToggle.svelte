@@ -1,11 +1,12 @@
 <script lang="ts">
-    import { Setting, ToggleComponent } from "obsidian";
+    import { App, Setting, ToggleComponent } from "obsidian";
     import { FieldDefinition } from "src/core/formDefinition";
     import { FieldValue } from "src/store/formEngine";
     import { Writable } from "svelte/store";
     import { useSetting } from "./useObsidianSetting";
     export let field: FieldDefinition;
     export let value: Writable<FieldValue>;
+    export let app: App | undefined = undefined;
     let toggle_: ToggleComponent | undefined;
     function customizer(setting: Setting) {
         setting.addToggle((toggle) => {
@@ -25,6 +26,7 @@
         name: field.label || field.name,
         description: field.description || "",
         customizer,
+        app,
     }}
 >
     <span style="display: none;">dummy to prevent the setting from being the first child</span>

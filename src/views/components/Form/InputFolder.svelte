@@ -35,6 +35,7 @@
         name: field.label || field.name,
         description: field.description || "",
         customizer,
+        app,
     }}
 >
     <span style="display: none;">dummy to prevent the setting from being the first child</span>

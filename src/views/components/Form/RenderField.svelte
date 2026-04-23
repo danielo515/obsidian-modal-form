@@ -47,6 +47,7 @@
         label={definition.label || definition.name}
         description={definition.description}
         errors={visibleError}
+        {app}
     >
         <input type="text" class="input" disabled placeholder="Condition error" />
     </ObsidianInputWrapper>
@@ -54,7 +55,7 @@
     {#if definition.input.type === "select"}
         <ObsidianSelect input={definition.input} field={definition} {value} {errors} {app} />
     {:else if definition.input.type === "toggle"}
-        <ObsidianToggle field={definition} {value} />
+        <ObsidianToggle field={definition} {value} {app} />
     {:else if definition.input.type === "folder"}
         <InputFolder
             field={definition}
@@ -74,7 +75,7 @@
     {:else if definition.input.type === "note"}
         <InputNote field={definition} input={definition.input} {value} {errors} {app} />
     {:else if definition.input.type === "textarea"}
-        <InputTextArea field={definition} {value} {errors} />
+        <InputTextArea field={definition} {value} {errors} {app} />
     {:else if definition.input.type === "markdown_block"}
         <MarkdownBlock field={definition.input} form={formEngine} {app} />
     {:else if definition.input.type === "document_block"}
@@ -82,6 +83,7 @@
         <ObsidianInputWrapper
             label={definition.label || definition.name}
             description={definition.description}
+            {app}
         >
             <DocumentBlock field={definition.input} form={formEngine} slot="info" {app} />
         </ObsidianInputWrapper>
@@ -91,6 +93,7 @@
             label={definition.label || definition.name}
             description={definition.description}
             required={definition.isRequired}
+            {app}
         >
             {#if $value == null || $value instanceof FileProxy}
                 {@const imageModel = makeImageInputModel({ fileService, input: definition.input })}
@@ -103,6 +106,7 @@
             label={definition.label || definition.name}
             description={definition.description}
             required={definition.isRequired}
+            {app}
         >
             {#if $value == null || $value instanceof FileProxy}
                 {@const fileModel = makeFileInputModel({ fileService, input: definition.input })}
@@ -115,6 +119,7 @@
             label={definition.label || definition.name}
             description={definition.description}
             required={definition.isRequired}
+            {app}
         >
             {#if definition.input.type === "multiselect"}
                 <MultiSelectField input={definition.input} {value} {errors} {app} />

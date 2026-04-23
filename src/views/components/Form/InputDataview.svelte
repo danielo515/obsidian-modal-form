@@ -36,6 +36,6 @@
     }
 </script>
 
-<ObsidianInputWrapper {errors} label={field.label || field.name} description={field.description}>
+<ObsidianInputWrapper {errors} label={field.label || field.name} description={field.description} {app}>
     <input type="text" bind:value={$value} use:dataviewSuggest />
 </ObsidianInputWrapper>
