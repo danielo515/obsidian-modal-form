@@ -7,13 +7,18 @@
     const component = new Component();
     component.load();
     onDestroy(() => component.unload());
-    function render(el: HTMLElement, currentText: string) {
+    function renderInto(el: HTMLElement, md: string) {
         el.empty();
-        if (currentText) MarkdownRenderer.render(app, currentText, el, "/", component);
+        if (!md) return;
+        MarkdownRenderer.render(app, md, el, "/", component).catch((e) =>
+            console.error("Failed to render markdown description", e),
+        );
+    }
+    function render(el: HTMLElement, currentText: string) {
+        renderInto(el, currentText);
         return {
             update(newText: string) {
-                el.empty();
-                if (newText) MarkdownRenderer.render(app, newText, el, "/", component);
+                renderInto(el, newText);
             },
         };
     }
