@@ -88,8 +88,24 @@ export class FormBuilder implements FieldBuilderMethods {
     }: FieldArgs & { min?: number; max: number }) =>
         this.addField({ name, label, description, required }, { type: "slider", min: min ?? 0, max });
 
-    addTagField = ({ name, label, description, required, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description, required }, { type: "tag", hidden: Boolean(hidden) });
+    addTagField = ({
+        name,
+        label,
+        description,
+        required,
+        hidden,
+        include,
+        exclude,
+    }: FieldArgs & { hidden?: boolean; include?: string; exclude?: string }) =>
+        this.addField(
+            { name, label, description, required },
+            {
+                type: "tag",
+                hidden: Boolean(hidden),
+                ...(include ? { include } : {}),
+                ...(exclude ? { exclude } : {}),
+            },
+        );
 
     addSelectField = ({
         name,
