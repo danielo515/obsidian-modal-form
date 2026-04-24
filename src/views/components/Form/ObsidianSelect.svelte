@@ -32,7 +32,7 @@
     }
 </script>
 
-<ObsidianInput {errors} label={field.label || field.name} description={field.description}>
+<ObsidianInput {errors} label={field.label || field.name} description={field.description} {app}>
     {#if input.source === "fixed"}
         <select bind:value={$value} class="dropdown">
             {#each input.options as option}
