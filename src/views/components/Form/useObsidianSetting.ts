@@ -7,6 +7,16 @@ type SettingField = {
     app?: App;
 };
 
+function showRenderError(el: HTMLElement, err: unknown) {
+    el.empty();
+    console.error("Failed to render markdown description", err);
+    const msg = err instanceof Error ? err.message : String(err);
+    el.createDiv({
+        cls: "modal-form-description-error",
+        text: `Failed to render description: ${msg}`,
+    });
+}
+
 export function useSetting(element: HTMLElement, field: SettingField) {
     const setting = new Setting(element)
         .setName(field.name)
@@ -21,7 +31,7 @@ export function useSetting(element: HTMLElement, field: SettingField) {
             }
             setting.descEl.empty();
             MarkdownRenderer.render(next.app, next.description, setting.descEl, "/", component)
-                .catch((e) => console.error("Failed to render markdown description", e));
+                .catch((e) => showRenderError(setting.descEl, e));
         } else {
             setting.descEl.empty();
             setting.setDesc(next.description);

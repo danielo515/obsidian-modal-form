@@ -98,6 +98,10 @@ If your plugin does not need CSS, delete this file.
 .modal-form .setting-item-description > p + p {
     margin-top: 0.25rem;
 }
+.modal-form .modal-form-description-error {
+    color: var(--text-error);
+    font-style: italic;
+}
 
 .modal-form {
     &.flex,
