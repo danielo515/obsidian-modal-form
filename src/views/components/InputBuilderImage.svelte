@@ -29,6 +29,7 @@
     const date = "{{date}}";
     const time = "{{time}}";
     const datetime = "{{datetime}}";
+    const filename = "{{filename}}";
 </script>
 
 <div class="modal-form flex column gap1">
@@ -59,6 +60,9 @@
                 <li><code>{time}</code> - Current time (HH-mm-ss)</li>
                 <li>
                     <code>{datetime}</code> - Current date and time (YYYY-MM-DD-HH-mm-ss)
+                </li>
+                <li>
+                    <code>{filename}</code> - Original filename of the uploaded image (without extension)
                 </li>
             </ul>
             Example:<code>screenshot-{datetime}.png</code> will create:
