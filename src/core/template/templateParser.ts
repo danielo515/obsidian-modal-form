@@ -236,6 +236,10 @@ function asFrontmatterString(data: Record<string, unknown>) {
         );
 }
 
+function toWikilink(s: string): string {
+    return `[[${s}]]`;
+}
+
 function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
@@ -252,6 +256,14 @@ function executeTransformation(
                 return JSON.stringify(value);
             case "trim":
                 return String(value).trim();
+            case "link":
+                if (Array.isArray(value)) {
+                    return value
+                        .filter((v) => String(v).length > 0)
+                        .map((v) => toWikilink(String(v)))
+                        .join(", ");
+                }
+                return toWikilink(String(value));
             default:
                 return absurd(transformation);
         }

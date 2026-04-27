@@ -86,6 +86,20 @@ The following transformations can be applied to variables:
      {{ name | stringify }}
      ```
 
+5. **`link`**: Wraps the variable's value in Obsidian wikilink brackets `[[ ]]`.
+   When applied to a multi-value field (like `multiselect`), each entry is
+   wrapped individually and the results are joined with `, `.
+   - Usage:
+
+     ```plaintext
+     {{ person | link }}
+     ```
+
+     With `person = "Jane Doe"` produces `[[Jane Doe]]`.
+
+     With `attendees = ["Alice", "Bob"]` and template `{{ attendees | link }}`
+     produces `[[Alice]], [[Bob]]`.
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:

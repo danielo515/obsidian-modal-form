@@ -178,6 +178,42 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of('Hello, "John"!'));
     });
 
+    it("Should execute a template with link transformation on a string value", () => {
+        const template = "Meeting with {{ name | link }} today.";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { name: "John Doe" }),
+            ),
+        );
+        expect(result).toEqual(E.of("Meeting with [[John Doe]] today."));
+    });
+
+    it("Should execute a template with link transformation on an array value", () => {
+        const template = "Attendees: {{ people | link }}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { people: ["Alice", "Bob"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("Attendees: [[Alice]], [[Bob]]"));
+    });
+
+    it("link transformation should drop empty entries from an array", () => {
+        const template = "{{ people | link }}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { people: ["Alice", "", "Bob"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("[[Alice]], [[Bob]]"));
+    });
+
     it("Spaces around transformations should be ignored", () => {
         const template = "Hello, {{name | stringify }}!";
         const parsed = parseTemplate(template);
