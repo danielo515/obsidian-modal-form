@@ -644,6 +644,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#styling-specific-fields-with-css" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Styling specific fields with CSS
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1097,6 +1108,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#styling-specific-fields-with-css" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Styling specific fields with CSS
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1187,6 +1209,23 @@ It can be a single <code>dataview</code> command, or it can be more things, like
 <p><img alt="demo modal" src="../Screenshot%202024-05-08%20at%2015.08.02.png" /></p>
 <p>You can take advantage of the preview to experiment a bit with what you will get in the input</p>
 <p><img alt="preview" src="../Screenshot%202024-05-08%20at%2015.07.15.png" /></p>
+<h2 id="styling-specific-fields-with-css">Styling specific fields with CSS</h2>
+<p>Every rendered field exposes its form-field name so you can target it from a CSS snippet.
+The wrapper element around each field gets a <code>data-field-name</code> attribute, and basic
+inputs (<code>text</code>, <code>number</code>, <code>textarea</code>, <code>select</code>, ...) also get a matching <code>name</code> attribute.</p>
+<p>Given a field called <code>rating</code>, both of these selectors will work in an Obsidian CSS snippet:</p>
+<pre><code class="language-css">/* Target the whole row (label + input) */
+.modal-form .setting-item[data-field-name=&quot;rating&quot;] {
+    background: var(--background-secondary);
+}
+
+/* Target only the input element */
+.modal-form input[name=&quot;rating&quot;] {
+    font-weight: bold;
+}
+</code></pre>
+<p>This is useful, for example, to render a slider as a star-rating component, or to
+highlight a specific field without affecting the rest of the form.</p>
 
 
 
