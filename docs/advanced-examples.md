@@ -84,3 +84,26 @@ Which will look like this in the form:
 You can take advantage of the preview to experiment a bit with what you will get in the input
 
 ![preview](Screenshot 2024-05-08 at 15.07.15.png)
+
+## Styling specific fields with CSS
+
+Every rendered field exposes its form-field name so you can target it from a CSS snippet.
+The wrapper element around each field gets a `data-field-name` attribute, and basic
+inputs (`text`, `number`, `textarea`, `select`, ...) also get a matching `name` attribute.
+
+Given a field called `rating`, both of these selectors will work in an Obsidian CSS snippet:
+
+```css
+/* Target the whole row (label + input) */
+.modal-form .setting-item[data-field-name="rating"] {
+    background: var(--background-secondary);
+}
+
+/* Target only the input element */
+.modal-form input[name="rating"] {
+    font-weight: bold;
+}
+```
+
+This is useful, for example, to render a slider as a star-rating component, or to
+highlight a specific field without affecting the rest of the form.
