@@ -284,6 +284,33 @@ describe("ResultValue", () => {
             expect(trimmed.toString()).toEqual("test");
         });
     })
+    describe("link", () => {
+        it("should wrap a string value in wikilink brackets", () => {
+            const resultValue = ResultValue.from("Jane Doe", "person");
+
+            expect(resultValue.link).toEqual("[[Jane Doe]]");
+        });
+        it("should wrap each entry of an array in wikilink brackets and join them with ', '", () => {
+            const resultValue = ResultValue.from(["Alice", "Bob"], "attendees");
+
+            expect(resultValue.link).toEqual("[[Alice]], [[Bob]]");
+        });
+        it("should drop empty entries from an array so the output never contains '[[]]'", () => {
+            const resultValue = ResultValue.from(["Alice", "", "Bob"], "attendees");
+
+            expect(resultValue.link).toEqual("[[Alice]], [[Bob]]");
+        });
+        it("should return an empty string for an empty array", () => {
+            const resultValue = ResultValue.from([], "attendees");
+
+            expect(resultValue.link).toEqual("");
+        });
+        it("should return an empty string for non-string, non-array, non-FileProxy values", () => {
+            expect(ResultValue.from(42, "n").link).toEqual("");
+            expect(ResultValue.from(true, "b").link).toEqual("");
+            expect(ResultValue.from(null, "x").link).toEqual("");
+        });
+    });
     describe("chaining shortcuts", () => {
         it("should be possible to chain upper, lower and trim", () => {
             // Arrange

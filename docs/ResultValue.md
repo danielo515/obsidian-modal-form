@@ -116,7 +116,8 @@ All of this shortcuts are able to handle single values and lists, so you can use
 ### `link` method
 
 The `link` method is a convenience method to render the value as a markdown link.
-If the value is a string, it will be rendered as a markdown link.
+If the value is a string, it will be rendered as a wikilink.
+If the value is an array (e.g. a multiselect or tag field), each non-empty entry is wrapped in wikilink brackets and the result is joined with `, `.
 If the value is a FileProxy (right now just used for images), it will be rendered as an embedded link.
 Any other type of value will be rendered as an empty string.
 
@@ -125,5 +126,11 @@ Any other type of value will be rendered as an empty string.
 ```
 
 You can also use the shorthand way of accessing values directly from the form result object, like `result.myField.link`.
+
+For an array field like a multiselect of notes, `result.attendees.link` produces `[[Alice]], [[Bob]]`. If you'd rather render each link on its own line (e.g. a YAML list), combine `map` with `bullets`:
+
+```typescript
+<% result.getValue('attendees').map((arr) => arr.map((v) => `[[${v}]]`)).bullets %>
+```
 
 Take a look at the example vault to see how it is used.
