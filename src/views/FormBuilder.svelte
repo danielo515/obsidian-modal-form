@@ -21,6 +21,7 @@
     import InputFolder from "./components/InputBuilderFolder.svelte";
     import InputBuilderImage from "./components/InputBuilderImage.svelte";
     import InputBuilderSelect from "./components/InputBuilderSelect.svelte";
+    import InputBuilderTag from "./components/InputBuilderTag.svelte";
     import Tabs from "./components/Tabs.svelte";
     import TemplateEditor from "./components/TemplateEditor.svelte";
     import Toggle from "./components/Toggle.svelte";
@@ -372,7 +373,14 @@
                                     notifyChange={onChange}
                                     {app}
                                 />
-                            {:else if field.input.type === "number" || field.input.type === "email" || field.input.type === "tel" || field.input.type === "date" || field.input.type === "time" || field.input.type === "datetime" || field.input.type === "toggle" || field.input.type === "textarea" || field.input.type === "text" || field.input.type === "tag"}
+                            {:else if field.input.type === "tag"}
+                                <InputBuilderTag
+                                    {index}
+                                    bind:include={field.input.include}
+                                    bind:exclude={field.input.exclude}
+                                    notifyChange={onChange}
+                                />
+                            {:else if field.input.type === "number" || field.input.type === "email" || field.input.type === "tel" || field.input.type === "date" || field.input.type === "time" || field.input.type === "datetime" || field.input.type === "toggle" || field.input.type === "textarea" || field.input.type === "text"}
                                 <!-- * empty  -->
                             {:else}
                                 {absurd(field.input.type)}

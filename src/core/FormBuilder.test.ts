@@ -146,6 +146,34 @@ describe("FormBuilder", () => {
             expect(form.fields[0]!.input).toEqual(expected);
         });
 
+        it("should create tag fields with include/exclude regex", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .tag({
+                    name: "tags",
+                    include: "^Setting/",
+                    exclude: "^archive/",
+                })
+                .build();
+
+            expect(form.fields[0]!.input).toEqual({
+                type: "tag",
+                hidden: false,
+                include: "^Setting/",
+                exclude: "^archive/",
+            });
+        });
+
+        it("should create tag fields without include/exclude when not provided", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form").tag({ name: "tags" }).build();
+
+            expect(form.fields[0]!.input).toEqual({
+                type: "tag",
+                hidden: false,
+            });
+        });
+
         it("should create file fields with extensions", () => {
             const { builder } = createTestBuilder();
             const extensions = [".pdf"];
