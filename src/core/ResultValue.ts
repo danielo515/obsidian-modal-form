@@ -203,18 +203,27 @@ export class ResultValue<T = unknown> {
 
     /**
      * renders the value as a markdown link.
-     * If the value is a string, it will be rendered as a markdown link.
+     * If the value is a string, it will be rendered as a wikilink.
+     * If the value is an array of strings (e.g. a multiselect or tag field),
+     * each non-empty string is wrapped in wikilink brackets and the result is
+     * joined with ", " (matches the joining used by `toString`).
      * If the value is a FileProxy (right now just used for images), it will be rendered as an embedded link.
      * Any other type of value will be rendered as an empty string.
      */
     get link() {
-        switch (true) {
-            case typeof this.value === "string":
-                return `[[${this.value}]]`;
-            case this.value instanceof FileProxy:
-                return `![[${this.value.path}]]`;
-            default:
-                return "";
+        const value = this.value;
+        if (typeof value === "string") {
+            return `[[${value}]]`;
         }
+        if (value instanceof FileProxy) {
+            return `![[${value.path}]]`;
+        }
+        if (Array.isArray(value)) {
+            return value
+                .filter((v): v is string => typeof v === "string" && v.length > 0)
+                .map((v) => `[[${v}]]`)
+                .join(", ");
+        }
+        return "";
     }
 }
