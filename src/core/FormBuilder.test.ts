@@ -94,6 +94,29 @@ describe("FormBuilder", () => {
             expect(form.fields[0]!.input).toEqual(expected);
         });
 
+        it("should create slider fields with a custom step", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .slider({ name: "rating", min: 0, max: 5, step: 0.5 })
+                .build();
+
+            const expected = {
+                type: "slider" as const,
+                min: 0,
+                max: 5,
+                step: 0.5,
+            };
+
+            expect(form.fields[0]!.input).toEqual(expected);
+        });
+
+        it("should omit step from slider input when not provided", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form").slider({ name: "rating", max: 10 }).build();
+
+            expect(form.fields[0]!.input).not.toHaveProperty("step");
+        });
+
         it("should create select fields with options", () => {
             const { builder } = createTestBuilder();
             const options = ["Low", "Medium", "High"];
