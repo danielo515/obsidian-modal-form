@@ -86,6 +86,22 @@ The following transformations can be applied to variables:
      {{ name | stringify }}
      ```
 
+5. **`bullets`**: Renders the variable's value as a markdown bullet list. For array values (e.g. multiselect fields), each entry becomes its own bullet, and empty entries are dropped. For single values, a one-item list is produced.
+   - Usage:
+
+     ```plaintext
+     Attendees:
+     {{ attendees | bullets }}
+     ```
+
+   - Example output for `attendees = ["Alice", "Bob"]`:
+
+     ```plaintext
+     Attendees:
+     - Alice
+     - Bob
+     ```
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:

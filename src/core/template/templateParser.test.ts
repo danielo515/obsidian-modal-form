@@ -167,6 +167,40 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("Hello, John!"));
     });
 
+    it("Should execute a template with bullets transformation on a single value", () => {
+        const template = "Tags:\n{{tag|bullets}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { tag: "obsidian" })),
+        );
+        expect(result).toEqual(E.of("Tags:\n- obsidian"));
+    });
+
+    it("Should execute a template with bullets transformation on an array", () => {
+        const template = "Attendees:\n{{attendees|bullets}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { attendees: ["Alice", "Bob", "Carol"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("Attendees:\n- Alice\n- Bob\n- Carol"));
+    });
+
+    it("Should drop empty entries from bullets transformation", () => {
+        const template = "{{tags|bullets}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { tags: ["one", "", "two"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("- one\n- two"));
+    });
+
     it("Should execute a template with stringify transformations", () => {
         const template = "Hello, {{name|stringify}}!";
         const parsed = parseTemplate(template);
