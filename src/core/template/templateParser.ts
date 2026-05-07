@@ -236,6 +236,16 @@ function asFrontmatterString(data: Record<string, unknown>) {
         );
 }
 
+function toBullets(value: Val): string {
+    if (Array.isArray(value)) {
+        return value
+            .filter((entry) => entry !== "" && entry != null)
+            .map((entry) => `- ${entry}`)
+            .join("\n");
+    }
+    return `- ${String(value)}`;
+}
+
 function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
@@ -252,6 +262,8 @@ function executeTransformation(
                 return JSON.stringify(value);
             case "trim":
                 return String(value).trim();
+            case "bullets":
+                return toBullets(value);
             default:
                 return absurd(transformation);
         }
