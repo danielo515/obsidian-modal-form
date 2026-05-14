@@ -252,6 +252,10 @@ function executeTransformation(
                 return JSON.stringify(value);
             case "trim":
                 return String(value).trim();
+            case "count":
+                if (Array.isArray(value)) return String(value.length);
+                if (typeof value === "string") return String(value.length);
+                return "1";
             default:
                 return absurd(transformation);
         }

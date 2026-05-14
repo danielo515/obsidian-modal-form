@@ -284,6 +284,28 @@ describe("ResultValue", () => {
             expect(trimmed.toString()).toEqual("test");
         });
     })
+    describe("count", () => {
+        it("returns the array length for array values", () => {
+            const resultValue = ResultValue.from(["foo", "bar", "baz"], "Test");
+            expect(resultValue.count).toEqual("3");
+        });
+        it("returns 0 for an empty array", () => {
+            const resultValue = ResultValue.from([], "Test");
+            expect(resultValue.count).toEqual("0");
+        });
+        it("returns the character length for string values", () => {
+            const resultValue = ResultValue.from("hello", "Test");
+            expect(resultValue.count).toEqual("5");
+        });
+        it("returns 1 for primitive non-string values", () => {
+            expect(ResultValue.from(42, "Test").count).toEqual("1");
+            expect(ResultValue.from(true, "Test").count).toEqual("1");
+        });
+        it("returns 0 for null and undefined", () => {
+            expect(ResultValue.from(null, "Test").count).toEqual("0");
+            expect(ResultValue.from(undefined, "Test").count).toEqual("0");
+        });
+    });
     describe("chaining shortcuts", () => {
         it("should be possible to chain upper, lower and trim", () => {
             // Arrange

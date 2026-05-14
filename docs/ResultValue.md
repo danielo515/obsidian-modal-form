@@ -113,6 +113,21 @@ The most common use is probably just to use one of them, like `trimmed` or `uppe
 
 All of this shortcuts are able to handle single values and lists, so you can use them with any value.
 
+### `count` shortcut
+
+The `count` shortcut returns the number of items represented by the value as a string. It's particularly useful for rendering "X items selected" snippets in templates, but works on any value type.
+
+- Arrays return their length.
+- Strings return their character length.
+- `null` and `undefined` return `0`.
+- Any other value returns `1`.
+
+```typescript
+You picked <% result.getValue('tags').count %> tags.
+```
+
+If the value of `tags` is `["work", "urgent"]`, the above will print `You picked 2 tags.`.
+
 ### `link` method
 
 The `link` method is a convenience method to render the value as a markdown link.
