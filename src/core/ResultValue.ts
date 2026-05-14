@@ -202,6 +202,23 @@ export class ResultValue<T = unknown> {
     }
 
     /**
+     * Returns the number of items represented by the value as a string.
+     * Useful for templates that need to render counts, e.g. how many items
+     * were selected in a multiselect: `{{ tags | count }}`.
+     * - Arrays return their length.
+     * - Strings return their character length.
+     * - `null` and `undefined` return `0`.
+     * - Any other value returns `1` (a single item).
+     */
+    get count(): string {
+        const value = this.value;
+        if (value == null) return "0";
+        if (Array.isArray(value)) return String(value.length);
+        if (typeof value === "string") return String(value.length);
+        return "1";
+    }
+
+    /**
      * renders the value as a markdown link.
      * If the value is a string, it will be rendered as a markdown link.
      * If the value is a FileProxy (right now just used for images), it will be rendered as an embedded link.

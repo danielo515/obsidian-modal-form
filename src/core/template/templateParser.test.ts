@@ -211,6 +211,38 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("Hello, John! You are 18 years old."));
     });
 
+    it("Should execute a template with count transformation on an array", () => {
+        const template = "You picked {{ items | count }} items.";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { items: ["a", "b", "c"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("You picked 3 items."));
+    });
+
+    it("Count on a string returns its character length", () => {
+        const template = "{{ name | count }}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "hello" })),
+        );
+        expect(result).toEqual(E.of("5"));
+    });
+
+    it("Count on a non-array, non-string value returns 1", () => {
+        const template = "{{ age | count }}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { age: 42 })),
+        );
+        expect(result).toEqual(E.of("1"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);

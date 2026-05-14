@@ -22,6 +22,7 @@ export const transformations = union([
     literal("lower"),
     literal("trim"),
     literal("stringify"),
+    literal("count"),
 ]);
 
 export type Transformations = Output<typeof transformations>;

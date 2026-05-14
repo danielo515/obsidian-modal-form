@@ -86,6 +86,15 @@ The following transformations can be applied to variables:
      {{ name | stringify }}
      ```
 
+5. **`count`**: Returns the number of items represented by the value.
+   - Arrays return their length, strings return their character length, and any other value returns `1`.
+   - Useful for rendering things like "X items selected" from a multiselect.
+   - Usage:
+
+     ```plaintext
+     You picked {{ tags | count }} tags.
+     ```
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:
