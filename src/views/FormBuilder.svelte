@@ -4,6 +4,7 @@
     import { App, setIcon } from "obsidian";
     import {
         InputTypeReadable,
+        inputUsesPlaceholder,
         isValidFormDefinition,
         validateFields,
         type EditableFormDefinition,
@@ -281,6 +282,18 @@
                                     {/each}
                                 </select>
                             </div>
+                            {#if inputUsesPlaceholder(field.input.type)}
+                                {@const placeholder_id = `placeholder_${index}`}
+                                <div class="flex column gap1">
+                                    <label for={placeholder_id}>Placeholder</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Shown when the field is empty"
+                                        bind:value={field.placeholder}
+                                        id={placeholder_id}
+                                    />
+                                </div>
+                            {/if}
                         </div>
                         <div class="flex gap1">
                             {#if field.input.type === "select"}

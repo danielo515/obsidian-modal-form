@@ -78,6 +78,24 @@ describe("FormBuilder", () => {
 
             expect(form.fields[0]?.description).toBe("");
         });
+
+        it("should set the placeholder on text-entry fields when provided", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .text({ name: "title", placeholder: "e.g. My note" })
+                .number({ name: "amount", placeholder: "0.0" })
+                .build();
+
+            expect(form.fields[0]?.placeholder).toBe("e.g. My note");
+            expect(form.fields[1]?.placeholder).toBe("0.0");
+        });
+
+        it("should omit the placeholder key when none is provided", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form").text({ name: "title" }).build();
+
+            expect(form.fields[0]).not.toHaveProperty("placeholder");
+        });
     });
 
     describe("Field Types", () => {

@@ -30,6 +30,7 @@ export const FieldDefinitionSchema = object({
     name: nonEmptyString("field name"),
     label: optional(string()),
     description: string(),
+    placeholder: optional(string()),
     isRequired: optional(boolean()),
     condition: optional(input.ConditionSchema),
     input: InputTypeSchema,
