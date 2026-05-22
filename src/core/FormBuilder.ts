@@ -26,7 +26,7 @@ export class FormBuilder implements FieldBuilderMethods {
     }
 
     private addField = (
-        { name, label, description, required, placeholder }: FieldArgs & { placeholder?: string },
+        { name, label, description, required }: FieldArgs,
         input: FormDefinition["fields"][0]["input"],
     ) => {
         const textField: FieldDefinition = {
@@ -35,7 +35,6 @@ export class FormBuilder implements FieldBuilderMethods {
             description: description || "",
             isRequired: required,
             input,
-            ...(placeholder ? { placeholder } : {}),
         };
         return new FormBuilder(
             {
@@ -47,12 +46,18 @@ export class FormBuilder implements FieldBuilderMethods {
     };
 
     addTextField = ({ name, label, description, required, hidden, placeholder }: TextEntryFieldArgs) =>
-        this.addField({ name, label, description, required, placeholder }, { type: "text", hidden: Boolean(hidden) });
+        this.addField(
+            { name, label, description, required },
+            { type: "text", hidden: Boolean(hidden), ...(placeholder ? { placeholder } : {}) },
+        );
 
     text = this.addTextField;
 
     addNumberField = ({ name, label, description, required, hidden, placeholder }: TextEntryFieldArgs) =>
-        this.addField({ name, label, description, required, placeholder }, { type: "number", hidden: Boolean(hidden) });
+        this.addField(
+            { name, label, description, required },
+            { type: "number", hidden: Boolean(hidden), ...(placeholder ? { placeholder } : {}) },
+        );
 
     addDateField = ({ name, label, description, required, hidden }: FieldArgs & { hidden?: boolean }) =>
         this.addField({ name, label, description, required }, { type: "date", hidden: Boolean(hidden) });
@@ -64,16 +69,25 @@ export class FormBuilder implements FieldBuilderMethods {
         this.addField({ name, label, description, required }, { type: "datetime", hidden: Boolean(hidden) });
 
     addTextareaField = ({ name, label, description, required, hidden, placeholder }: TextEntryFieldArgs) =>
-        this.addField({ name, label, description, required, placeholder }, { type: "textarea", hidden: Boolean(hidden) });
+        this.addField(
+            { name, label, description, required },
+            { type: "textarea", hidden: Boolean(hidden), ...(placeholder ? { placeholder } : {}) },
+        );
 
     addToggleField = ({ name, label, description, required, hidden }: FieldArgs & { hidden?: boolean }) =>
         this.addField({ name, label, description, required }, { type: "toggle", hidden: Boolean(hidden) });
 
     addEmailField = ({ name, label, description, required, hidden, placeholder }: TextEntryFieldArgs) =>
-        this.addField({ name, label, description, required, placeholder }, { type: "email", hidden: Boolean(hidden) });
+        this.addField(
+            { name, label, description, required },
+            { type: "email", hidden: Boolean(hidden), ...(placeholder ? { placeholder } : {}) },
+        );
 
     addTelField = ({ name, label, description, required, hidden, placeholder }: TextEntryFieldArgs) =>
-        this.addField({ name, label, description, required, placeholder }, { type: "tel", hidden: Boolean(hidden) });
+        this.addField(
+            { name, label, description, required },
+            { type: "tel", hidden: Boolean(hidden), ...(placeholder ? { placeholder } : {}) },
+        );
 
     addNoteField = ({ name, label, description, required, folder }: FieldArgs & { folder: string }) =>
         this.addField({ name, label, description, required }, { type: "note", folder });

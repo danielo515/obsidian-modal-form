@@ -75,7 +75,12 @@
     {:else if definition.input.type === "note"}
         <InputNote field={definition} input={definition.input} {value} {errors} {app} />
     {:else if definition.input.type === "textarea"}
-        <InputTextArea field={definition} {value} {errors} placeholder={definition.placeholder ?? ""} />
+        <InputTextArea
+            field={definition}
+            {value}
+            {errors}
+            placeholder={definition.input.placeholder ?? ""}
+        />
     {:else if definition.input.type === "markdown_block"}
         <MarkdownBlock field={definition.input} form={formEngine} {app} />
     {:else if definition.input.type === "document_block"}
@@ -132,7 +137,7 @@
                     name={definition.name}
                     {value}
                     inputType={definition.input.type}
-                    placeholder={definition.placeholder ?? ""}
+                    placeholder={definition.input.placeholder ?? ""}
                 />
             {/if}
         </ObsidianInputWrapper>

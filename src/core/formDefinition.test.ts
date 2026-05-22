@@ -7,8 +7,12 @@ import {
     isInputSlider,
     isSelectFromNotes,
 } from "./formDefinition";
-import { FieldDefinitionSchema } from "./formDefinitionSchema";
-import { MultiselectSchema, getMultiselectNoteFolders, multiselectNotes } from "./input/InputDefinitionSchema";
+import {
+    InputBasicSchema,
+    MultiselectSchema,
+    getMultiselectNoteFolders,
+    multiselectNotes,
+} from "./input/InputDefinitionSchema";
 
 describe("isDataViewSource", () => {
     it("should return true for valid inputDataviewSource objects", () => {
@@ -243,35 +247,21 @@ describe("inputUsesPlaceholder", () => {
     });
 });
 
-describe("FieldDefinitionSchema placeholder", () => {
-    it("should accept a field with a placeholder", () => {
-        const field = {
-            name: "title",
-            description: "",
-            placeholder: "e.g. My note",
-            input: { type: "text", hidden: false },
-        };
-        expect(is(FieldDefinitionSchema, field)).toBe(true);
-        expect(parse(FieldDefinitionSchema, field).placeholder).toBe("e.g. My note");
+describe("InputBasicSchema placeholder", () => {
+    it("should accept an input with a placeholder", () => {
+        const input = { type: "text", hidden: false, placeholder: "e.g. My note" };
+        expect(is(InputBasicSchema, input)).toBe(true);
+        expect(parse(InputBasicSchema, input).placeholder).toBe("e.g. My note");
     });
 
-    it("should accept a field without a placeholder", () => {
-        const field = {
-            name: "title",
-            description: "",
-            input: { type: "text", hidden: false },
-        };
-        expect(is(FieldDefinitionSchema, field)).toBe(true);
-        expect(parse(FieldDefinitionSchema, field).placeholder).toBeUndefined();
+    it("should accept an input without a placeholder", () => {
+        const input = { type: "text", hidden: false };
+        expect(is(InputBasicSchema, input)).toBe(true);
+        expect(parse(InputBasicSchema, input).placeholder).toBeUndefined();
     });
 
     it("should reject a non-string placeholder", () => {
-        const field = {
-            name: "title",
-            description: "",
-            placeholder: 123,
-            input: { type: "text", hidden: false },
-        };
-        expect(is(FieldDefinitionSchema, field)).toBe(false);
+        const input = { type: "text", hidden: false, placeholder: 123 };
+        expect(is(InputBasicSchema, input)).toBe(false);
     });
 });

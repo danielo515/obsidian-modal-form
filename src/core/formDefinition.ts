@@ -103,6 +103,7 @@ export type EditableInput = {
     folders?: string[];
     min?: number;
     max?: number;
+    placeholder?: string;
     options?: { value: string; label: string }[];
     multi_select_options?: string[];
     query?: string;
@@ -113,7 +114,6 @@ export type EditableField = {
     name: string;
     label?: string;
     description: string;
-    placeholder?: string;
     input: EditableInput;
     folder?: string;
     options?: { value: string; label: string }[];

@@ -79,6 +79,7 @@ export const InputDataviewSourceSchema = object({
 export const InputBasicSchema = object({
     type: InputBasicTypeSchema,
     hidden: optional(boolean(), false),
+    placeholder: optional(string()),
 });
 export const InputSelectFixedSchema = object({
     type: literal("select"),

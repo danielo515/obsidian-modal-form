@@ -289,7 +289,7 @@
                                     <input
                                         type="text"
                                         placeholder="Shown when the field is empty"
-                                        bind:value={field.placeholder}
+                                        bind:value={field.input.placeholder}
                                         id={placeholder_id}
                                     />
                                 </div>
