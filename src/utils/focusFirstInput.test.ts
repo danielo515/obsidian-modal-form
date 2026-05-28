@@ -9,6 +9,9 @@ describe("focusFirstInput", () => {
         expect(INPUT_FOCUS_SELECTOR).toContain('input[type="date"]:not([disabled])');
         expect(INPUT_FOCUS_SELECTOR).toContain('input[type="time"]:not([disabled])');
         expect(INPUT_FOCUS_SELECTOR).toContain('input[type="datetime-local"]:not([disabled])');
+        expect(INPUT_FOCUS_SELECTOR).toContain('input[type="search"]:not([disabled])');
+        expect(INPUT_FOCUS_SELECTOR).toContain('input[type="url"]:not([disabled])');
+        expect(INPUT_FOCUS_SELECTOR).toContain('input[type="password"]:not([disabled])');
         expect(INPUT_FOCUS_SELECTOR).toContain("textarea:not([disabled])");
         expect(INPUT_FOCUS_SELECTOR).toContain("select:not([disabled])");
     });
