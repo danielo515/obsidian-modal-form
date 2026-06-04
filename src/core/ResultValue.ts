@@ -207,7 +207,8 @@ export class ResultValue<T = unknown> {
      * values are returned unchanged. Empty strings stay empty.
      */
     get capitalized(): ResultValue<unknown> {
-        const cap = (s: string) => (s.length === 0 ? s : s.charAt(0).toUpperCase() + s.slice(1));
+        const cap = (s: string) =>
+            s.length === 0 ? s : s.charAt(0).toLocaleUpperCase() + s.slice(1);
         if (this.value instanceof FileProxy) {
             return new ResultValue(cap(this.value.name), this.name, this.notify);
         }
