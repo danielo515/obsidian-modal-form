@@ -252,6 +252,11 @@ function executeTransformation(
                 return JSON.stringify(value);
             case "trim":
                 return String(value).trim();
+            case "capitalize": {
+                const str = String(value);
+                const first = str.charAt(0).toUpperCase();
+                return first + str.slice(1);
+            }
             default:
                 return absurd(transformation);
         }

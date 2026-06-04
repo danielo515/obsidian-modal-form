@@ -86,6 +86,15 @@ The following transformations can be applied to variables:
      {{ name | stringify }}
      ```
 
+5. **`capitalize`**: Uppercases the first character of the variable's value and leaves the rest untouched.
+   - Usage:
+
+     ```plaintext
+     {{ name | capitalize }}
+     ```
+
+   - Input `john doe` produces `John doe`; input `jOHN doe` produces `JOHN doe`. To force a clean Title-style start (first letter uppercased, rest lowercased), use the `capitalized` getter on `ResultValue` together with `lower` — e.g. `result.getValue('name').lower.capitalized` — since templates accept only one transformation per variable.
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:

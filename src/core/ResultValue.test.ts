@@ -284,6 +284,32 @@ describe("ResultValue", () => {
             expect(trimmed.toString()).toEqual("test");
         });
     })
+    describe("capitalized", () => {
+        it("should uppercase the first character of a string", () => {
+            const resultValue = ResultValue.from("hello world", "Test");
+            expect(resultValue.capitalized.toString()).toEqual("Hello world");
+        });
+        it("should leave the rest of the string untouched", () => {
+            const resultValue = ResultValue.from("jOHN doe", "Test");
+            expect(resultValue.capitalized.toString()).toEqual("JOHN doe");
+        });
+        it("should capitalize each string in an array individually", () => {
+            const resultValue = ResultValue.from(["foo", "bar"], "Test");
+            expect(resultValue.capitalized.toString()).toEqual("Foo, Bar");
+        });
+        it("should leave non-string values unchanged in mixed arrays", () => {
+            const resultValue = ResultValue.from(["foo", 42], "Test");
+            expect(resultValue.capitalized.bullets).toEqual("- Foo\n- 42");
+        });
+        it("should handle an empty string without crashing", () => {
+            const resultValue = ResultValue.from("", "Test");
+            expect(resultValue.capitalized.toString()).toEqual("");
+        });
+        it("should be chainable", () => {
+            const resultValue = ResultValue.from(" hello", "Test");
+            expect(resultValue.trimmed.capitalized.toString()).toEqual("Hello");
+        });
+    });
     describe("chaining shortcuts", () => {
         it("should be possible to chain upper, lower and trim", () => {
             // Arrange
