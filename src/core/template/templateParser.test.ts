@@ -211,6 +211,41 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("Hello, John! You are 18 years old."));
     });
 
+    it("Should execute a template with capitalize transformation", () => {
+        const template = "Hello, {{name|capitalize}}!";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { name: "john", age: 18 }),
+            ),
+            E.map(tap("executed")),
+        );
+        expect(result).toEqual(E.of("Hello, John!"));
+    });
+
+    it("capitalize should leave the rest of the string untouched", () => {
+        const template = "{{name|capitalize}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { name: "jOHN doe" }),
+            ),
+        );
+        expect(result).toEqual(E.of("JOHN doe"));
+    });
+
+    it("capitalize should handle an empty string without crashing", () => {
+        const template = "[{{name|capitalize}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);

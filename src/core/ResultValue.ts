@@ -202,6 +202,20 @@ export class ResultValue<T = unknown> {
     }
 
     /**
+     * getter that returns the value with the first character uppercased.
+     * Strings nested in arrays/objects are capitalized individually; non-string
+     * values are returned unchanged. Empty strings stay empty.
+     */
+    get capitalized(): ResultValue<unknown> {
+        const cap = (s: string) =>
+            s.length === 0 ? s : s.charAt(0).toLocaleUpperCase() + s.slice(1);
+        if (this.value instanceof FileProxy) {
+            return new ResultValue(cap(this.value.name), this.name, this.notify);
+        }
+        return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? cap(it) : it)));
+    }
+
+    /**
      * renders the value as a markdown link.
      * If the value is a string, it will be rendered as a markdown link.
      * If the value is a FileProxy (right now just used for images), it will be rendered as an embedded link.
