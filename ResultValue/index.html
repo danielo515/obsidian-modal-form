@@ -619,10 +619,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trimmedlowerupper-shortcuts" class="md-nav__link">
+  <a href="#trimmedloweruppercapitalized-shortcuts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        trimmed,lower,upper shortcuts
+        trimmed,lower,upper,capitalized shortcuts
       
     </span>
   </a>
@@ -1127,10 +1127,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trimmedlowerupper-shortcuts" class="md-nav__link">
+  <a href="#trimmedloweruppercapitalized-shortcuts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        trimmed,lower,upper shortcuts
+        trimmed,lower,upper,capitalized shortcuts
       
     </span>
   </a>
@@ -1236,13 +1236,14 @@ Or alias:
 <p>The above code will print the list field as a bullet list, but all the values will be uppercased.</p>
 <p>The map method takes a function that takes the value and returns a new value.
 It can be used when none of the provided printing are enough for your use case, or when one of them is almost what you need but you need to transform the value a bit more.</p>
-<h3 id="trimmedlowerupper-shortcuts"><code>trimmed</code>,<code>lower</code>,<code>upper</code> shortcuts</h3>
+<h3 id="trimmedloweruppercapitalized-shortcuts"><code>trimmed</code>,<code>lower</code>,<code>upper</code>,<code>capitalized</code> shortcuts</h3>
 <p>The ResultValue class provides some shortcuts to common transformations of the value.
 They are:</p>
 <ul>
 <li><code>trimmed</code>: Trims the value, removing any leading or trailing whitespace.</li>
 <li><code>lower</code>: Converts the value to lowercase.</li>
 <li><code>upper</code>: Converts the value to uppercase.</li>
+<li><code>capitalized</code>: Uppercases the first character and leaves the rest untouched. Chain after <code>lower</code> (e.g. <code>result.getValue('name').lower.capitalized</code>) if you also want the remaining characters lowercased.</li>
 </ul>
 <p>All of these shortcuts return a new ResultValue object, so you can chain them with other methods.</p>
 <pre><code class="language-typescript">&lt;% result.getValue('listField').trimmed.upper.bullets %&gt;

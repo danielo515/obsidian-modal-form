@@ -1445,6 +1445,17 @@ After the form template is processed, if you have the templater plugin installed
 <p><code>plaintext
  {{ name | stringify }}</code></p>
 </li>
+<li>
+<p><strong><code>capitalize</code></strong>: Uppercases the first character of the variable's value and leaves the rest untouched.</p>
+</li>
+<li>
+<p>Usage:</p>
+<p><code>plaintext
+ {{ name | capitalize }}</code></p>
+</li>
+<li>
+<p>Input <code>john doe</code> produces <code>John doe</code>; input <code>jOHN doe</code> produces <code>JOHN doe</code>. To force a clean Title-style start (first letter uppercased, rest lowercased), use the <code>capitalized</code> getter on <code>ResultValue</code> together with <code>lower</code> — e.g. <code>result.getValue('name').lower.capitalized</code> — since templates accept only one transformation per variable.</p>
+</li>
 </ol>
 <h3 id="example-templates">Example Templates</h3>
 <p>Here are some examples of how to use the new template syntax:</p>
