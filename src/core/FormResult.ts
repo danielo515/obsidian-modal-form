@@ -46,6 +46,11 @@ export default class FormResult {
      */
     asFrontmatterString(options?: unknown) {
         const data = objectSelect(this.data, options);
+        // stringifyYaml renders an empty object as the literal "{}",
+        // which is invalid when embedded inside a frontmatter block
+        if (Object.keys(data).length === 0) {
+            return "";
+        }
         return stringifyYaml(data);
     }
 

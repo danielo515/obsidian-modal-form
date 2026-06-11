@@ -293,4 +293,13 @@ describe("parseTemplate", () => {
         );
         expect(result).toEqual(E.of(stringifyYaml({ name: "John" })));
     });
+    it("Should produce an empty string when a frontmatter command picks fields missing from the data", () => {
+        const template = "{# frontmatter pick: doesNotExist #}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "John", age: 18 })),
+        );
+        expect(result).toEqual(E.of(""));
+    });
 });

@@ -232,7 +232,9 @@ function asFrontmatterString(data: Record<string, unknown>) {
                 return pick.includes(key) ? O.some(value) : O.none;
             }),
             R.filterMapWithIndex((key, value) => (!omit.includes(key) ? O.some(value) : O.none)),
-            stringifyYaml,
+            // stringifyYaml renders an empty object as the literal "{}",
+            // which is invalid when embedded inside a frontmatter block
+            (selected) => (Object.keys(selected).length === 0 ? "" : stringifyYaml(selected)),
         );
 }
 
