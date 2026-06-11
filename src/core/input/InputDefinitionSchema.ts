@@ -62,6 +62,7 @@ export const InputSliderSchema = object({
     type: literal("slider"),
     min: number(),
     max: number(),
+    step: optional(number()),
 });
 export const InputNoteFromFolderSchema = object({
     type: literal("note"),
