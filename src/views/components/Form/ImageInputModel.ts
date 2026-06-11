@@ -61,7 +61,7 @@ export function makeImageInputModel({
     const previewUrl = writable<string | null>(null);
     const result = writable<Either<Error, FileProxy | null>>(E.right(null));
 
-    function saveImage(dataUrl: string): TE.TaskEither<Error, FileProxy> {
+    function saveImage(dataUrl: string, originalName: string): TE.TaskEither<Error, FileProxy> {
         return pipe(
             // Get image extension
             getImageExtension(dataUrl),
@@ -82,9 +82,13 @@ export function makeImageInputModel({
 
             // Save the file
             TE.chainW(({ extension, bytes }) => {
-                const filename = createFilename(input.filenameTemplate);
+                const filename = createFilename(input.filenameTemplate, { originalName });
                 return pipe(
-                    fileService.saveFile(`${filename}.${extension}`, input.saveLocation, bytes.buffer),
+                    fileService.saveFile(
+                        `${filename}.${extension}`,
+                        input.saveLocation,
+                        bytes.buffer,
+                    ),
                     TE.map((file) => new FileProxy(file)),
                 );
             }),
@@ -109,7 +113,7 @@ export function makeImageInputModel({
 
             previewUrl.set(dataUrl);
             await pipe(
-                saveImage(dataUrl),
+                saveImage(dataUrl, file.name),
                 TE.mapBoth(
                     (err) => {
                         error.set(err.message);
