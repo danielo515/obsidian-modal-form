@@ -8,7 +8,7 @@ import { stringifyYaml } from "obsidian";
 import * as P from "parser-ts/Parser";
 import * as C from "parser-ts/char";
 import * as S from "parser-ts/string";
-import { ModalFormData, Val } from "../FormResult";
+import { ModalFormData, Val } from "../formResultTypes";
 import {
     transformations,
     type FrontmatterCommand,

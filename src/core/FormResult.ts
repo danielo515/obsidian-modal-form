@@ -1,23 +1,19 @@
 import { E, parse } from "@std";
 import { stringifyYaml } from "obsidian";
 import { ResultValue } from "./ResultValue";
-import { FileProxy } from "./files/FileProxy";
 import { objectSelect } from "./objectSelect";
 import { executeTransformation } from "./template/templateParser";
 import { transformations, type Transformations } from "./template/templateSchema";
+import {
+    isPrimitive,
+    isPrimitiveArray,
+    type ModalFormData,
+    type Val,
+} from "./formResultTypes";
 
 type ResultStatus = "ok" | "cancelled";
-export type Val = string | boolean | number | FileProxy | string[];
-// We don't use the name "FormData" because that is already take by a builtin browser API
-export type ModalFormData = { [key: string]: Val };
-
-export function isPrimitive(value: unknown): value is string | boolean | number {
-    return typeof value === "string" || typeof value === "boolean" || typeof value === "number";
-}
-
-export function isPrimitiveArray(value: unknown): value is string[] {
-    return Array.isArray(value) && value.every(isPrimitive);
-}
+export { isPrimitive, isPrimitiveArray };
+export type { ModalFormData, Val };
 
 export default class FormResult {
     private constructor(
