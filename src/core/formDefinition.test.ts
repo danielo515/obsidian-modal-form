@@ -1,12 +1,18 @@
-import { parse } from "valibot";
+import { is, parse } from "valibot";
 import {
+    inputUsesPlaceholder,
     isDataViewSource,
     isInputNoteFromFolder,
     isInputSelectFixed,
     isInputSlider,
     isSelectFromNotes,
 } from "./formDefinition";
-import { MultiselectSchema, getMultiselectNoteFolders, multiselectNotes } from "./input/InputDefinitionSchema";
+import {
+    InputBasicSchema,
+    MultiselectSchema,
+    getMultiselectNoteFolders,
+    multiselectNotes,
+} from "./input/InputDefinitionSchema";
 
 describe("isDataViewSource", () => {
     it("should return true for valid inputDataviewSource objects", () => {
@@ -218,5 +224,44 @@ describe("getMultiselectNoteFolders", () => {
             folders: [],
         };
         expect(getMultiselectNoteFolders(input)).toEqual(["Books"]);
+    });
+});
+
+describe("inputUsesPlaceholder", () => {
+    it("should return true for free-text entry input types", () => {
+        expect(inputUsesPlaceholder("text")).toBe(true);
+        expect(inputUsesPlaceholder("textarea")).toBe(true);
+        expect(inputUsesPlaceholder("number")).toBe(true);
+        expect(inputUsesPlaceholder("email")).toBe(true);
+        expect(inputUsesPlaceholder("tel")).toBe(true);
+    });
+
+    it("should return false for input types that ignore a placeholder", () => {
+        expect(inputUsesPlaceholder("date")).toBe(false);
+        expect(inputUsesPlaceholder("time")).toBe(false);
+        expect(inputUsesPlaceholder("datetime")).toBe(false);
+        expect(inputUsesPlaceholder("toggle")).toBe(false);
+        expect(inputUsesPlaceholder("select")).toBe(false);
+        expect(inputUsesPlaceholder("multiselect")).toBe(false);
+        expect(inputUsesPlaceholder("slider")).toBe(false);
+    });
+});
+
+describe("InputBasicSchema placeholder", () => {
+    it("should accept an input with a placeholder", () => {
+        const input = { type: "text", hidden: false, placeholder: "e.g. My note" };
+        expect(is(InputBasicSchema, input)).toBe(true);
+        expect(parse(InputBasicSchema, input).placeholder).toBe("e.g. My note");
+    });
+
+    it("should accept an input without a placeholder", () => {
+        const input = { type: "text", hidden: false };
+        expect(is(InputBasicSchema, input)).toBe(true);
+        expect(parse(InputBasicSchema, input).placeholder).toBeUndefined();
+    });
+
+    it("should reject a non-string placeholder", () => {
+        const input = { type: "text", hidden: false, placeholder: 123 };
+        expect(is(InputBasicSchema, input)).toBe(false);
     });
 });

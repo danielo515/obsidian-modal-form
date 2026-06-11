@@ -5,17 +5,18 @@
     export let value: Writable<FieldValue>;
     export let inputType: "number" | "text" | "date" | "time" | "datetime" | "email" | "tel";
     export let name = "";
+    export let placeholder = "";
 </script>
 
 {#if inputType === "number"}
     <!-- Step is required to allow decimals, see #430 & #186 -->
-    <input type="number" step="any" {name} bind:value={$value} />
+    <input type="number" step="any" {name} {placeholder} bind:value={$value} />
 {:else if inputType === "text"}
-    <input type="text" {name} bind:value={$value} />
+    <input type="text" {name} {placeholder} bind:value={$value} />
 {:else if inputType === "email"}
-    <input type="email" {name} bind:value={$value} />
+    <input type="email" {name} {placeholder} bind:value={$value} />
 {:else if inputType === "tel"}
-    <input type="tel" {name} bind:value={$value} />
+    <input type="tel" {name} {placeholder} bind:value={$value} />
 {:else if inputType === "date"}
     <input type="date" {name} bind:value={$value} />
 {:else if inputType === "time"}

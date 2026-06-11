@@ -50,6 +50,8 @@ Each field method accepts these common parameters:
 - `name`: (required) Unique identifier for the field
 - `label`: (optional) Display label for the field
 - `description`: (optional) Help text or description
+- `placeholder`: (optional) Hint text shown while the field is empty. Only the
+  free-text inputs render it: `text`, `textarea`, `number`, `email` and `tel`.
 - `hidden`: (optional) Whether the field should be hidden
 
 ### text
@@ -58,7 +60,7 @@ Adds a text input field.
 
 ```typescript
 builder("example-form")
-  .text({ name: "username", label: "Username" })
+  .text({ name: "username", label: "Username", placeholder: "e.g. ada.lovelace" })
 ```
 
 ### number
