@@ -254,5 +254,128 @@ describe("FormBuilder", () => {
 
             expect(formWithShorthand).toEqual(formWithLong);
         });
+
+        it("should support multiselectNotes shorthand", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .multiselectNotes({
+                    name: "people",
+                    folder: "People",
+                    folders: ["Extra"],
+                })
+                .build();
+
+            expect(form.fields[0]?.input).toEqual({
+                type: "multiselect",
+                source: "notes",
+                folder: "People",
+                folders: ["Extra"],
+            });
+        });
+
+        it("should omit empty folders array for multiselectNotes", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .multiselectNotes({ name: "people", folder: "People" })
+                .build();
+
+            expect(form.fields[0]?.input).toEqual({
+                type: "multiselect",
+                source: "notes",
+                folder: "People",
+            });
+        });
+    });
+
+    describe("Dataview multiselect", () => {
+        it("should create a multiselect with dataview source", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .multiselectQuery({
+                    name: "spells",
+                    query: "dv.pages('\"Spells\"').map((p) => p.file.name)",
+                    allowUnknownValues: true,
+                })
+                .build();
+
+            expect(form.fields[0]?.input).toEqual({
+                type: "multiselect",
+                source: "dataview",
+                query: "dv.pages('\"Spells\"').map((p) => p.file.name)",
+                allowUnknownValues: true,
+            });
+        });
+
+        it("should default allowUnknownValues to false", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .multiselectQuery({ name: "spells", query: "dv.pages()" })
+                .build();
+
+            expect(form.fields[0]?.input).toEqual({
+                type: "multiselect",
+                source: "dataview",
+                query: "dv.pages()",
+                allowUnknownValues: false,
+            });
+        });
+    });
+
+    describe("Select from notes", () => {
+        it("should create a select with notes source", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .selectFromNotes({ name: "author", folder: "People" })
+                .build();
+
+            expect(form.fields[0]?.input).toEqual({
+                type: "select",
+                source: "notes",
+                folder: "People",
+            });
+        });
+    });
+
+    describe("Conditional fields", () => {
+        it("should attach a condition to a field", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .text({ name: "trigger" })
+                .text({
+                    name: "child",
+                    condition: { dependencyName: "trigger", type: "isSet" },
+                })
+                .build();
+
+            expect(form.fields[1]?.condition).toEqual({
+                dependencyName: "trigger",
+                type: "isSet",
+            });
+        });
+
+        it("should omit the condition property when not provided", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form").text({ name: "plain" }).build();
+
+            expect(form.fields[0]).not.toHaveProperty("condition");
+        });
+
+        it("should support conditions on non-basic fields", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .number({ name: "level" })
+                .multiselectQuery({
+                    name: "spells",
+                    query: "dv.pages()",
+                    condition: { dependencyName: "level", type: "aboveOrEqual", value: 1 },
+                })
+                .build();
+
+            expect(form.fields[1]?.condition).toEqual({
+                dependencyName: "level",
+                type: "aboveOrEqual",
+                value: 1,
+            });
+        });
     });
 });
