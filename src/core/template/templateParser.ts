@@ -238,7 +238,7 @@ function asFrontmatterString(data: Record<string, unknown>) {
         );
 }
 
-function executeTransformation(
+export function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
     return (value) => {
