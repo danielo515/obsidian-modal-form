@@ -149,6 +149,16 @@ age: 30`;
                     .trim(),
             ).toEqual(expectedOutput);
         });
+
+        it("should return an empty string when the picked keys are not present in the data", () => {
+            const result = FormResult.make(formData, "ok");
+            expect(result.asFrontmatterString({ pick: ["doesNotExist"] })).toEqual("");
+        });
+
+        it("should return an empty string when the form data is empty", () => {
+            const result = FormResult.make({}, "ok");
+            expect(result.asFrontmatterString()).toEqual("");
+        });
     });
     describe("get a single value", () => {
         it("should return the value of the specified key", () => {
