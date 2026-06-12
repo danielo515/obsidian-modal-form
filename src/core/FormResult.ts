@@ -1,9 +1,7 @@
-import { E, parse } from "@std";
 import { stringifyYaml } from "obsidian";
 import { ResultValue } from "./ResultValue";
 import { objectSelect } from "./objectSelect";
-import { executeTransformation } from "./template/templateParser";
-import { transformations, type Transformations } from "./template/templateSchema";
+import { applyTransformation } from "./template/templateParser";
 import type { ModalFormData, Val } from "./formResultTypes";
 
 type ResultStatus = "ok" | "cancelled";
@@ -89,12 +87,7 @@ export default class FormResult {
                 if (value === undefined) {
                     return match;
                 }
-                const transformation: Transformations | undefined = transformationName
-                    ? E.getOrElseW<unknown, Transformations | undefined>(() => undefined)(
-                          parse(transformations, transformationName),
-                      )
-                    : undefined;
-                return executeTransformation(transformation)(value);
+                return applyTransformation(transformationName, value);
             },
         );
     }

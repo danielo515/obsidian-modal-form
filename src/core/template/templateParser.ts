@@ -265,6 +265,24 @@ export function executeTransformation(
     };
 }
 
+/**
+ * Apply a transformation by name to a value. Unknown names (typos, or
+ * transformations that don't exist) fall back to rendering the value as
+ * a plain string, matching how the parser handles malformed `| foo`
+ * suffixes. This is the single entry-point callers outside this module
+ * should use — keeps the valibot schema and the executor switch in one
+ * place.
+ */
+export function applyTransformation(name: string | undefined, value: Val): string {
+    const transformation: Transformations | undefined = name
+        ? pipe(
+              parse(transformations, name),
+              E.fold(constUndefined, identity),
+          )
+        : undefined;
+    return executeTransformation(transformation)(value);
+}
+
 export function executeTemplate(parsedTemplate: ParsedTemplate, formData: ModalFormData) {
     const toFrontmatter = asFrontmatterString(formData); // Build it upfront rater than on every call
     return pipe(
