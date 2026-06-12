@@ -1,20 +1,10 @@
 import { stringifyYaml } from "obsidian";
 import { ResultValue } from "./ResultValue";
-import { FileProxy } from "./files/FileProxy";
 import { objectSelect } from "./objectSelect";
+import { applyTransformation } from "./template/templateParser";
+import type { ModalFormData, Val } from "./formResultTypes";
 
 type ResultStatus = "ok" | "cancelled";
-export type Val = string | boolean | number | FileProxy | string[];
-// We don't use the name "FormData" because that is already take by a builtin browser API
-export type ModalFormData = { [key: string]: Val };
-
-export function isPrimitive(value: unknown): value is string | boolean | number {
-    return typeof value === "string" || typeof value === "boolean" || typeof value === "number";
-}
-
-export function isPrimitiveArray(value: unknown): value is string[] {
-    return Array.isArray(value) && value.every(isPrimitive);
-}
 
 export default class FormResult {
     private constructor(
@@ -81,13 +71,25 @@ export default class FormResult {
     /**
      * Returns the data formatted as a string matching the provided
      * template.
+     *
+     * Variables use the `{{ key }}` syntax. Optional whitespace is allowed
+     * around the key, and a transformation can be applied with `|`, e.g.
+     * `{{ key | upper }}`. Supported transformations match the ones used by
+     * form templates: `upper`, `lower`, `trim`, `stringify`, `capitalize`.
+     * Unknown keys are left untouched (the literal `{{ key }}` stays in the
+     * output) so users can spot typos easily.
      */
     asString(template: string): string {
-        let result = template;
-        for (const [key, value] of Object.entries(this.data)) {
-            result = result.replace(new RegExp(`{{${key}}}`, "g"), value + "");
-        }
-        return result;
+        return template.replace(
+            /\{\{\s*(\w+)\s*(?:\|\s*(\w+)\s*)?\}\}/g,
+            (match, key: string, transformationName: string | undefined) => {
+                const value = this.data[key];
+                if (value === undefined) {
+                    return match;
+                }
+                return applyTransformation(transformationName, value);
+            },
+        );
     }
     /**
      * Gets a single value from the data.

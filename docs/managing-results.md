@@ -70,6 +70,27 @@ This method has the following aliases:
 -   `asDataview`
 -   `asDv`
 
+## `asString(template: string): string`
+
+Returns the form data formatted as a string matching the provided template.
+
+The template uses the same syntax as [form templates](templates.md): variables are wrapped in `{{ }}`, and whitespace around the variable name is optional (`{{name}}` and `{{ name }}` are equivalent). Variables may be followed by a [transformation](templates.md#supported-transformations) via the `|` operator — for example `{{ title | upper }}` or `{{ note | trim }}`. Unknown variables are left in place (the literal `{{ key }}` stays in the output) so typos are easy to spot.
+
+### Parameters
+
+-   `template`: A string template containing `{{ variable }}` placeholders, optionally with transformations like `{{ variable | upper }}`.
+
+### Returns
+
+-   `string`: The template with all known variables substituted.
+
+### Example
+
+```typescript
+const result = await form.openForm("my-form");
+tR += result.asString("Hello {{ name | capitalize }}! You picked {{ tag | lower }}.");
+```
+
 ## `get(key: string, mapFn?: (value: any) => any): any`
 
 Returns the value of the given key.

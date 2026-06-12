@@ -8,7 +8,7 @@ import { stringifyYaml } from "obsidian";
 import * as P from "parser-ts/Parser";
 import * as C from "parser-ts/char";
 import * as S from "parser-ts/string";
-import { ModalFormData, Val } from "../FormResult";
+import { ModalFormData, Val } from "../formResultTypes";
 import {
     transformations,
     type FrontmatterCommand,
@@ -238,7 +238,7 @@ function asFrontmatterString(data: Record<string, unknown>) {
         );
 }
 
-function executeTransformation(
+export function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
     return (value) => {
@@ -263,6 +263,24 @@ function executeTransformation(
                 return absurd(transformation);
         }
     };
+}
+
+/**
+ * Apply a transformation by name to a value. Unknown names (typos, or
+ * transformations that don't exist) fall back to rendering the value as
+ * a plain string, matching how the parser handles malformed `| foo`
+ * suffixes. This is the single entry-point callers outside this module
+ * should use — keeps the valibot schema and the executor switch in one
+ * place.
+ */
+export function applyTransformation(name: string | undefined, value: Val): string {
+    const transformation: Transformations | undefined = name
+        ? pipe(
+              parse(transformations, name),
+              E.fold(constUndefined, identity),
+          )
+        : undefined;
+    return executeTransformation(transformation)(value);
 }
 
 export function executeTemplate(parsedTemplate: ParsedTemplate, formData: ModalFormData) {

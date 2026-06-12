@@ -1,5 +1,6 @@
 jest.mock("obsidian");
-import FormResult, { ModalFormData } from "./FormResult";
+import FormResult from "./FormResult";
+import { ModalFormData } from "./formResultTypes";
 
 describe("FormResult", () => {
     const formData: ModalFormData = {
@@ -58,6 +59,53 @@ isEmployed:: true`;
             const template = "My name is {{name}}, and I am {{age}} years old.";
             const expectedOutput = "My name is John Doe, and I am 30 years old.";
             expect(result.asString(template)).toEqual(expectedOutput);
+        });
+
+        it("should support whitespace around the variable name", () => {
+            const result = FormResult.make(formData, "ok");
+            expect(result.asString("Hello {{ name }}!")).toEqual("Hello John Doe!");
+        });
+
+        it("should leave unknown variables in place so typos are visible", () => {
+            const result = FormResult.make(formData, "ok");
+            expect(result.asString("{{name}} - {{unknown}}")).toEqual("John Doe - {{unknown}}");
+        });
+
+        it("should apply the upper transformation", () => {
+            const result = FormResult.make(formData, "ok");
+            expect(result.asString("Hello {{ name | upper }}!")).toEqual("Hello JOHN DOE!");
+        });
+
+        it("should apply the lower transformation", () => {
+            const result = FormResult.make(formData, "ok");
+            expect(result.asString("Hello {{ name | lower }}!")).toEqual("Hello john doe!");
+        });
+
+        it("should apply the trim transformation", () => {
+            const result = FormResult.make({ note: "  hi  " }, "ok");
+            expect(result.asString("[{{ note | trim }}]")).toEqual("[hi]");
+        });
+
+        it("should apply the capitalize transformation", () => {
+            const result = FormResult.make({ word: "hello" }, "ok");
+            expect(result.asString("{{ word | capitalize }}")).toEqual("Hello");
+        });
+
+        it("should apply the stringify transformation", () => {
+            const result = FormResult.make(formData, "ok");
+            expect(result.asString("{{ hobbies | stringify }}")).toEqual(
+                '["reading","swimming"]',
+            );
+        });
+
+        it("should ignore an unknown transformation and render the value as a string", () => {
+            const result = FormResult.make(formData, "ok");
+            expect(result.asString("Hello {{ name | foobar }}!")).toEqual("Hello John Doe!");
+        });
+
+        it("should accept the variable syntax with no spaces around the pipe", () => {
+            const result = FormResult.make(formData, "ok");
+            expect(result.asString("{{name|upper}}")).toEqual("JOHN DOE");
         });
     });
     describe("asDataviewProperties pick/omit", () => {
