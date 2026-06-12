@@ -1,5 +1,6 @@
 jest.mock("obsidian");
-import FormResult, { ModalFormData } from "./FormResult";
+import FormResult from "./FormResult";
+import { ModalFormData } from "./formResultTypes";
 
 describe("FormResult", () => {
     const formData: ModalFormData = {

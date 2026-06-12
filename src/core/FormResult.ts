@@ -4,16 +4,9 @@ import { ResultValue } from "./ResultValue";
 import { objectSelect } from "./objectSelect";
 import { executeTransformation } from "./template/templateParser";
 import { transformations, type Transformations } from "./template/templateSchema";
-import {
-    isPrimitive,
-    isPrimitiveArray,
-    type ModalFormData,
-    type Val,
-} from "./formResultTypes";
+import type { ModalFormData, Val } from "./formResultTypes";
 
 type ResultStatus = "ok" | "cancelled";
-export { isPrimitive, isPrimitiveArray };
-export type { ModalFormData, Val };
 
 export default class FormResult {
     private constructor(
