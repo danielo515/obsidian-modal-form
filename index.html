@@ -1838,7 +1838,7 @@ This <code>FormResult</code> object returned by the <code>openForm</code> method
 <h4 id="getdata">getData()</h4>
 <p>This method returns a copy of the form data. It can be used when you need to manipulate the form data without affecting the original data.</p>
 <h4 id="asstringtemplate-string">asString(template: string)</h4>
-<p>This method returns the form data formatted as a string matching the provided template. The template is a string that can contain placeholders in the format <code>{{key}}</code>, which will be replaced with the corresponding value from the form data. Here is an example of how to use it in a templater template:</p>
+<p>This method returns the form data formatted as a string matching the provided template. The template is a string that can contain placeholders in the format <code>{{key}}</code>, which will be replaced with the corresponding value from the form data. Whitespace around the key is allowed (<code>{{ key }}</code> is equivalent to <code>{{key}}</code>), and you can apply the same <a href="templates/#supported-transformations">transformations</a> supported by form templates by appending <code>| transformation</code> — for example <code>{{ name | upper }}</code> or <code>{{ note | trim }}</code>. Unknown keys are left untouched (the literal <code>{{ key }}</code> stays in the output) so typos are easy to spot. Here is an example of how to use it in a templater template:</p>
 <pre><code>&lt;%*
 const modalForm = app.plugins.plugins.modalforms.api;
 const result = await modalForm.openForm('example-form');
