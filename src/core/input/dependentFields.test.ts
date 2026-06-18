@@ -53,6 +53,35 @@ describe("dependentFields", () => {
         expect(deps.valueMeetsCondition(condition, undefined)).toBe(false);
         expect(deps.valueMeetsCondition(condition, "")).toBe(false);
     });
+    it("should return false for isNotSet when the value is set", () => {
+        const condition: input.Condition = {
+            type: "isNotSet",
+            dependencyName: "test-field",
+        };
+        expect(deps.valueMeetsCondition(condition, "test")).toBe(false);
+        expect(deps.valueMeetsCondition(condition, 0)).toBe(false);
+        expect(deps.valueMeetsCondition(condition, true)).toBe(false);
+        expect(deps.valueMeetsCondition(condition, false)).toBe(false);
+    });
+    it("should return true for isNotSet when the value is empty/missing", () => {
+        const condition: input.Condition = {
+            type: "isNotSet",
+            dependencyName: "test-field",
+        };
+        expect(deps.valueMeetsCondition(condition, "")).toBe(true);
+        expect(deps.valueMeetsCondition(condition, null)).toBe(true);
+        expect(deps.valueMeetsCondition(condition, undefined)).toBe(true);
+    });
+    it("should accept isNotSet for text input via the schema", () => {
+        const field: FieldDefinition["input"] = { type: "text", hidden: false };
+        const types = input.availableConditionsForInput(field);
+        expect(types).toContain("isNotSet");
+        const parsed = v.safeParse(ConditionSchema, {
+            type: "isNotSet",
+            dependencyName: "test-field",
+        });
+        expect(parsed.success).toBe(true);
+    });
     it("should properly handle all string conditions that are true", () => {
         const conditions: [input.Condition, string][] = [
             [{ type: "startsWith", dependencyName: "test-field", value: "test" }, "test starts"],
