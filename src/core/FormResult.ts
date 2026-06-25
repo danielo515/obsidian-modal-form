@@ -75,7 +75,8 @@ export default class FormResult {
      * Variables use the `{{ key }}` syntax. Optional whitespace is allowed
      * around the key, and a transformation can be applied with `|`, e.g.
      * `{{ key | upper }}`. Supported transformations match the ones used by
-     * form templates: `upper`, `lower`, `trim`, `stringify`, `capitalize`.
+     * form templates: `upper`, `lower`, `trim`, `stringify`, `capitalize`,
+     * `slug`, `title`.
      * Unknown keys are left untouched (the literal `{{ key }}` stays in the
      * output) so users can spot typos easily.
      */

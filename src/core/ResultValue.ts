@@ -1,7 +1,7 @@
 import { E, O, ensureError, pipe } from "@std";
 import { notifyError } from "src/utils/Log";
 import { FileProxy } from "./files/FileProxy";
-import { toSlug } from "./template/templateParser";
+import { toSlug, toTitleCase } from "./template/templateParser";
 
 function _toBulletList(value: Record<string, unknown> | unknown[]) {
     if (Array.isArray(value)) {
@@ -228,6 +228,22 @@ export class ResultValue<T = unknown> {
             return new ResultValue(toSlug(this.value.name), this.name, this.notify);
         }
         return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? toSlug(it) : it)));
+    }
+
+    /**
+     * getter that returns the value as Title Case: every word's first
+     * character is uppercased, the rest of the characters are left
+     * untouched (so acronyms like "iOS" stay as written). Strings nested
+     * in arrays/objects are title-cased individually; non-string values
+     * are returned unchanged.
+     */
+    get title(): ResultValue<unknown> {
+        if (this.value instanceof FileProxy) {
+            return new ResultValue(toTitleCase(this.value.name), this.name, this.notify);
+        }
+        return this.map((v) =>
+            deepMap(v, (it) => (typeof it === "string" ? toTitleCase(it) : it)),
+        );
     }
 
     /**
