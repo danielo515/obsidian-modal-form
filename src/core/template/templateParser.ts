@@ -238,6 +238,19 @@ function asFrontmatterString(data: Record<string, unknown>) {
         );
 }
 
+// Converts a string into a URL/filename-friendly slug: lowercased, whitespace
+// and underscores turned into dashes, punctuation stripped, dashes collapsed,
+// and edge dashes trimmed. Unicode letters/numbers are preserved so slugs stay
+// meaningful for non-English users (e.g. "Café Noël" → "café-noël").
+export function toSlug(value: string): string {
+    return value
+        .toLocaleLowerCase()
+        .replace(/[\s_]+/g, "-")
+        .replace(/[^\p{L}\p{N}-]+/gu, "")
+        .replace(/-+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
 export function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
@@ -259,6 +272,8 @@ export function executeTransformation(
                 const first = str.charAt(0).toUpperCase();
                 return first + str.slice(1);
             }
+            case "slug":
+                return toSlug(String(value));
             default:
                 return absurd(transformation);
         }
