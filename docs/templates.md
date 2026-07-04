@@ -95,6 +95,18 @@ The following transformations can be applied to variables:
 
    - Input `john doe` produces `John doe`; input `jOHN doe` produces `JOHN doe`. To force a clean Title-style start (first letter uppercased, rest lowercased), use the `capitalized` getter on `ResultValue` together with `lower` — e.g. `result.getValue('name').lower.capitalized` — since templates accept only one transformation per variable.
 
+6. **`slug`**: Converts the variable's value to a URL/filename-friendly slug.
+   - Lowercases the value, turns whitespace and underscores into `-`, strips punctuation, collapses runs of dashes, and trims dashes from the edges.
+   - Unicode letters and numbers are preserved, so slugs stay meaningful for non-English users (e.g. `Café Noël` → `café-noël`).
+   - Useful when you want to derive a filename from a form title.
+   - Usage:
+
+     ```plaintext
+     {{ title | slug }}
+     ```
+
+   - Input `Hello, World!` produces `hello-world`; input `  My Note (2024)  ` produces `my-note-2024`.
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:

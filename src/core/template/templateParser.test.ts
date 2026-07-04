@@ -246,6 +246,52 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("[]"));
     });
 
+    it("Should execute a template with slug transformation", () => {
+        const template = "{{title|slug}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "Hello, World!" }),
+            ),
+        );
+        expect(result).toEqual(E.of("hello-world"));
+    });
+
+    it("slug collapses runs of dashes and trims edges", () => {
+        const template = "{{title|slug}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "  ---My Note (2024)  " }),
+            ),
+        );
+        expect(result).toEqual(E.of("my-note-2024"));
+    });
+
+    it("slug preserves unicode letters and numbers", () => {
+        const template = "{{title|slug}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "Café Noël 2024" }),
+            ),
+        );
+        expect(result).toEqual(E.of("café-noël-2024"));
+    });
+
+    it("slug handles an empty string without crashing", () => {
+        const template = "[{{title|slug}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { title: "" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);
