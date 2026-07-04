@@ -1,21 +1,44 @@
 import { A, pipe } from "@std";
 import { absurd } from "fp-ts/function";
 import { App } from "obsidian";
-import { getMultiselectNoteFolders, inputTag, multiselect } from "src/core/input/InputDefinitionSchema";
+import {
+    getMultiselectNoteFolders,
+    inputTag,
+    multiselect,
+} from "src/core/input/InputDefinitionSchema";
 import { executeSandboxedDvQuery, sandboxedDvQuery } from "src/suggesters/SafeDataviewQuery";
 import { StringSuggest } from "src/suggesters/StringSuggest";
 import { FileSuggest } from "src/suggesters/suggestFile";
 import { Writable, get } from "svelte/store";
+
+type FormData = Record<string, unknown>;
+
+type MultiSelectModelOptions = {
+    getFormData?: () => FormData;
+};
 
 export interface MultiSelectModel {
     createInput(element: HTMLInputElement): void;
     removeValue(value: string): void;
 }
 
+export function replaceRemainingOptions(
+    remainingOptions: Set<string>,
+    options: string[],
+    selectedValues: string[],
+): void {
+    const selected = new Set(selectedValues);
+    remainingOptions.clear();
+    options
+        .filter((option) => !selected.has(option))
+        .forEach((option) => remainingOptions.add(option));
+}
+
 export async function MultiSelectModel(
     fieldInput: multiselect,
     app: App,
     values: Writable<string[]>,
+    options: MultiSelectModelOptions = {},
 ): Promise<MultiSelectModel> {
     const source = fieldInput.source;
     const removeValue = (value: string) =>
@@ -26,13 +49,40 @@ export async function MultiSelectModel(
             ),
         );
     switch (source) {
-        case "dataview":
+        case "dataview": {
+            const remainingOptions = new Set<string>();
+            const query = sandboxedDvQuery(fieldInput.query);
+            const refreshOptions = async () => {
+                const results = await executeSandboxedDvQuery(
+                    query,
+                    app,
+                    options.getFormData?.() ?? {},
+                )();
+                replaceRemainingOptions(remainingOptions, results, get(values) ?? []);
+            };
+            await refreshOptions();
+            return {
+                createInput(element: HTMLInputElement) {
+                    new StringSuggest(
+                        element,
+                        remainingOptions,
+                        (selected) => {
+                            remainingOptions.delete(selected);
+                            values.update((x) => [...x, selected]);
+                        },
+                        app,
+                        fieldInput.allowUnknownValues,
+                        refreshOptions,
+                    );
+                },
+                removeValue(value: string) {
+                    removeValue(value);
+                    void refreshOptions();
+                },
+            };
+        }
         case "fixed": {
-            const remainingOptions = new Set(
-                source === "fixed"
-                    ? fieldInput.multi_select_options
-                    : await executeSandboxedDvQuery(sandboxedDvQuery(fieldInput.query), app)(),
-            );
+            const remainingOptions = new Set(fieldInput.multi_select_options);
             return {
                 createInput(element: HTMLInputElement) {
                     new StringSuggest(

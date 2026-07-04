@@ -9,12 +9,14 @@ export class StringSuggest extends AbstractInputSuggest<string> {
         private onSelectCb: (value: string) => void,
         app: App,
         private allowUnknownValues = false,
+        private refreshContent: () => void | Promise<void> = () => {},
     ) {
         super(app, inputEl);
         this.content = content;
     }
 
-    getSuggestions(inputStr: string): string[] {
+    async getSuggestions(inputStr: string): Promise<string[]> {
+        await this.refreshContent();
         const lowerCaseInputStr = inputStr.toLocaleLowerCase();
         const candidates =
             this.allowUnknownValues && inputStr !== ""
