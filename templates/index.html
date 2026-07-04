@@ -1456,6 +1456,20 @@ After the form template is processed, if you have the templater plugin installed
 <li>
 <p>Input <code>john doe</code> produces <code>John doe</code>; input <code>jOHN doe</code> produces <code>JOHN doe</code>. To force a clean Title-style start (first letter uppercased, rest lowercased), use the <code>capitalized</code> getter on <code>ResultValue</code> together with <code>lower</code> — e.g. <code>result.getValue('name').lower.capitalized</code> — since templates accept only one transformation per variable.</p>
 </li>
+<li>
+<p><strong><code>slug</code></strong>: Converts the variable's value to a URL/filename-friendly slug.</p>
+</li>
+<li>Lowercases the value, turns whitespace and underscores into <code>-</code>, strips punctuation, collapses runs of dashes, and trims dashes from the edges.</li>
+<li>Unicode letters and numbers are preserved, so slugs stay meaningful for non-English users (e.g. <code>Café Noël</code> → <code>café-noël</code>).</li>
+<li>Useful when you want to derive a filename from a form title.</li>
+<li>
+<p>Usage:</p>
+<p><code>plaintext
+ {{ title | slug }}</code></p>
+</li>
+<li>
+<p>Input <code>Hello, World!</code> produces <code>hello-world</code>; input <code>My Note (2024)</code> produces <code>my-note-2024</code>.</p>
+</li>
 </ol>
 <h3 id="example-templates">Example Templates</h3>
 <p>Here are some examples of how to use the new template syntax:</p>
