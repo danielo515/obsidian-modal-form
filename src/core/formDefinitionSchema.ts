@@ -1,4 +1,3 @@
-import { input } from "@core";
 import { parse, pipe } from "@std";
 import * as E from "fp-ts/Either";
 import {
@@ -10,15 +9,20 @@ import {
     merge,
     object,
     optional,
-    passthrough,
     string,
     unknown,
     type Output,
 } from "valibot";
 import { findFieldErrors, stringifyIssues } from "./findInputDefinitionSchema";
-import { FormDefinition } from "./formDefinition";
-import { InputTypeSchema, nonEmptyString } from "./input/InputDefinitionSchema";
+import { FieldListSchema } from "./fieldDefinitionSchema";
+import { nonEmptyString } from "./input/InputDefinitionSchema";
 import { ParsedTemplateSchema } from "./template/templateSchema";
+export {
+    FieldDefinitionSchema,
+    FieldListSchema,
+    FieldMinimalSchema,
+} from "./fieldDefinitionSchema";
+export type { FieldDefinition, FieldMinimal } from "./fieldDefinitionSchema";
 
 /**
  * Here are the core logic around the main domain of the plugin,
@@ -26,24 +30,6 @@ import { ParsedTemplateSchema } from "./template/templateSchema";
  * Here are the types, validators, rules etc.
  */
 
-export const FieldDefinitionSchema = object({
-    name: nonEmptyString("field name"),
-    label: optional(string()),
-    description: string(),
-    isRequired: optional(boolean()),
-    condition: optional(input.ConditionSchema),
-    input: InputTypeSchema,
-});
-/**
- * Only for error reporting purposes
- */
-export const FieldMinimalSchema = passthrough(
-    merge([FieldDefinitionSchema, object({ input: passthrough(object({ type: string() })) })]),
-);
-
-export type FieldMinimal = Output<typeof FieldMinimalSchema>;
-
-export const FieldListSchema = array(FieldDefinitionSchema);
 /**
  * This is the most basic representation of a form definition.
  * It is not useful for anything other than being the base for
@@ -66,7 +52,7 @@ const FormDefinitionV1Schema = merge([
         fields: FieldListSchema,
         template: optional(
             object({
-                createInsertCommand: optional(boolean(),() => false),
+                createInsertCommand: optional(boolean(), () => false),
                 createNoteCommand: optional(boolean(), () => false),
                 parsedTemplate: ParsedTemplateSchema,
             }),
@@ -76,6 +62,7 @@ const FormDefinitionV1Schema = merge([
 // This is the latest schema.
 // Make sure to update this when you add a new version.
 export const FormDefinitionLatestSchema = FormDefinitionV1Schema;
+export type FormDefinition = Output<typeof FormDefinitionLatestSchema>;
 type FormDefinitionV1 = Output<typeof FormDefinitionV1Schema>;
 type FormDefinitionBasic = Output<typeof FormDefinitionBasicSchema>;
 

@@ -2,7 +2,7 @@ import { Str } from "@std";
 import * as Eq from "fp-ts/Eq";
 import { absurd } from "fp-ts/function";
 import * as v from "valibot";
-import { FieldDefinition } from "../formDefinition";
+import type { Input } from "./InputDefinitionSchema";
 const isSet = v.object({ dependencyName: v.string(), type: v.literal("isSet") });
 const booleanValue = v.object({
     dependencyName: v.string(),
@@ -30,7 +30,7 @@ export const ConditionEq = Eq.struct({
     value: Str.Eq,
 });
 
-export function availableConditionsForInput(input: FieldDefinition["input"]): ConditionType[] {
+export function availableConditionsForInput(input: Input): ConditionType[] {
     switch (input.type) {
         case "text":
         case "textarea":

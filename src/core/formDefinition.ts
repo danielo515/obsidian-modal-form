@@ -1,14 +1,14 @@
 import { input } from "@core";
 import { A, O, pipe } from "@std";
 import { Simplify } from "type-fest";
-import { is, safeParse, type Output } from "valibot";
+import { is, safeParse } from "valibot";
 import {
-    FieldDefinitionSchema,
     FieldListSchema,
     FormDefinitionBasicSchema,
-    FormDefinitionLatestSchema,
     MigrationError,
+    type FormDefinition,
 } from "./formDefinitionSchema";
+import type { AllFieldTypes, AllSources } from "./input/inputDefinitionTypes";
 import {
     InputBasicSchema,
     InputDataviewSourceSchema,
@@ -27,6 +27,9 @@ import {
     multiselect,
     selectFromNotes,
 } from "./input/InputDefinitionSchema";
+
+export type { FieldDefinition, FormDefinition } from "./formDefinitionSchema";
+export type { AllFieldTypes, AllSources } from "./input/inputDefinitionTypes";
 
 export const InputTypeReadable: Record<AllFieldTypes, string> = {
     text: "Text",
@@ -69,13 +72,9 @@ export function isInputSelectFixed(input: unknown): input is inputSelectFixed {
     return is(InputSelectFixedSchema, input);
 }
 
-export type AllFieldTypes = inputType["type"];
-
-export type FieldDefinition = Output<typeof FieldDefinitionSchema>;
 /**
  * FormDefinition is an already valid form, ready to be used in the form modal.
  */
-export type FormDefinition = Output<typeof FormDefinitionLatestSchema>;
 export type FormWithTemplate = Simplify<
     FormDefinition & Required<Pick<FormDefinition, "template">>
 >;
@@ -83,15 +82,6 @@ export type FormWithTemplate = Simplify<
 export type FormOptions = {
     values?: Record<string, unknown>;
 };
-
-type KeyOfUnion<T> = T extends unknown ? keyof T : never;
-type PickUnion<T, K extends KeyOfUnion<T>> = T extends unknown
-    ? K & keyof T extends never
-        ? never
-        : Pick<T, K & keyof T>
-    : never;
-
-export type AllSources = PickUnion<inputType, "source">["source"];
 
 // When an input is in edit state, it is represented by this type.
 // It has all the possible values, and then you need to narrow it down
