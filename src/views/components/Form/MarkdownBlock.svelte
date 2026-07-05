@@ -26,10 +26,11 @@
     function generateContent(
         parent: HTMLElement,
         form: GetSubscription<Parameters<FormEngine["subscribe"]>[0]>,
-        execute = false,
     ) {
-        if (execute) {
-            parent.innerHTML = "";
+        let renderVersion = 0;
+
+        function renderMarkdown(form: GetSubscription<Parameters<FormEngine["subscribe"]>[0]>) {
+            const currentRender = ++renderVersion;
             pipe(
                 functionParsed,
                 TE.fromEither,
@@ -42,16 +43,26 @@
                 ),
                 TE.match(
                     (error) => {
+                        if (currentRender !== renderVersion) return;
+                        parent.replaceChildren();
                         console.error(error);
                         notifyError("Error in markdown block")(String(error));
                     },
-                    (newText) => MarkdownRenderer.render(app, newText, parent, "/", component),
+                    async (newText) => {
+                        const nextContent = document.createElement("div");
+                        await MarkdownRenderer.render(app, newText, nextContent, "/", component);
+                        if (currentRender !== renderVersion) return;
+                        parent.replaceChildren(...Array.from(nextContent.childNodes));
+                    },
                 ),
             )();
         }
+
+        renderMarkdown(form);
+
         return {
             update(newForm: GetSubscription<Parameters<FormEngine["subscribe"]>[0]>) {
-                generateContent(parent, newForm, true);
+                renderMarkdown(newForm);
             },
         };
     }
