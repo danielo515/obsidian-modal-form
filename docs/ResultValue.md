@@ -88,7 +88,7 @@ The above code will print the list field as a bullet list, but all the values wi
 The map method takes a function that takes the value and returns a new value.
 It can be used when none of the provided printing are enough for your use case, or when one of them is almost what you need but you need to transform the value a bit more.
 
-### `trimmed`,`lower`,`upper`,`capitalized`,`slug` shortcuts
+### `trimmed`,`lower`,`upper`,`capitalized`,`slug`,`title` shortcuts
 
 The ResultValue class provides some shortcuts to common transformations of the value.
 They are:
@@ -98,6 +98,7 @@ They are:
 - `upper`: Converts the value to uppercase.
 - `capitalized`: Uppercases the first character and leaves the rest untouched. Chain after `lower` (e.g. `result.getValue('name').lower.capitalized`) if you also want the remaining characters lowercased.
 - `slug`: Converts the value to a URL/filename-friendly slug. Lowercases the value, turns whitespace and underscores into `-`, strips punctuation, collapses runs of dashes, and trims edge dashes. Unicode letters/numbers are preserved so `Café Noël` becomes `café-noël`. Handy for turning a form's title into a filename: `result.getValue('title').slug`.
+- `title`: Uppercases the first character of every word and leaves the rest of each word untouched. Chain after `lower` (e.g. `result.getValue('name').lower.title`) if you also want the remaining characters lowercased.
 
 All of these shortcuts return a new ResultValue object, so you can chain them with other methods.
 

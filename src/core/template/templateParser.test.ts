@@ -292,6 +292,40 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("[]"));
     });
 
+    it("Should execute a template with title transformation", () => {
+        const template = "{{name|title}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { name: "hello world" }),
+            ),
+        );
+        expect(result).toEqual(E.of("Hello World"));
+    });
+
+    it("title should preserve casing of non-leading characters", () => {
+        const template = "{{name|title}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { name: "the iPhone of jOHN" }),
+            ),
+        );
+        expect(result).toEqual(E.of("The IPhone Of JOHN"));
+    });
+
+    it("title should handle an empty string without crashing", () => {
+        const template = "[{{name|title}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);

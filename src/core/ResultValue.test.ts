@@ -344,6 +344,32 @@ describe("ResultValue", () => {
             expect(resultValue.trimmed.slug.toString()).toEqual("hello-world");
         });
     });
+    describe("title", () => {
+        it("should uppercase the first character of every word", () => {
+            const resultValue = ResultValue.from("hello world", "Test");
+            expect(resultValue.title.toString()).toEqual("Hello World");
+        });
+        it("should leave the rest of every word's characters untouched", () => {
+            const resultValue = ResultValue.from("the iPhone of jOHN", "Test");
+            expect(resultValue.title.toString()).toEqual("The IPhone Of JOHN");
+        });
+        it("should title-case each string in an array individually", () => {
+            const resultValue = ResultValue.from(["hello world", "foo bar"], "Test");
+            expect(resultValue.title.toString()).toEqual("Hello World, Foo Bar");
+        });
+        it("should leave non-string values unchanged in mixed arrays", () => {
+            const resultValue = ResultValue.from(["foo bar", 42], "Test");
+            expect(resultValue.title.bullets).toEqual("- Foo Bar\n- 42");
+        });
+        it("should handle an empty string without crashing", () => {
+            const resultValue = ResultValue.from("", "Test");
+            expect(resultValue.title.toString()).toEqual("");
+        });
+        it("should be chainable", () => {
+            const resultValue = ResultValue.from(" hello world", "Test");
+            expect(resultValue.trimmed.title.toString()).toEqual("Hello World");
+        });
+    });
     describe("chaining shortcuts", () => {
         it("should be possible to chain upper, lower and trim", () => {
             // Arrange

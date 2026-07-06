@@ -91,6 +91,11 @@ isEmployed:: true`;
             expect(result.asString("{{ word | capitalize }}")).toEqual("Hello");
         });
 
+        it("should apply the title transformation", () => {
+            const result = FormResult.make({ phrase: "hello world" }, "ok");
+            expect(result.asString("{{ phrase | title }}")).toEqual("Hello World");
+        });
+
         it("should apply the stringify transformation", () => {
             const result = FormResult.make(formData, "ok");
             expect(result.asString("{{ hobbies | stringify }}")).toEqual(

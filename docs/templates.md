@@ -107,6 +107,15 @@ The following transformations can be applied to variables:
 
    - Input `Hello, World!` produces `hello-world`; input `  My Note (2024)  ` produces `my-note-2024`.
 
+7. **`title`**: Uppercases the first character of every word and leaves the rest of each word untouched.
+   - Usage:
+
+     ```plaintext
+     {{ name | title }}
+     ```
+
+   - Input `hello world` produces `Hello World`; input `the iPhone of jOHN` produces `The IPhone Of JOHN` (acronyms and inner casing are preserved). To force every word to a clean Title-style start, chain `lower` and `title` via `ResultValue` — e.g. `result.getValue('name').lower.title`.
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:

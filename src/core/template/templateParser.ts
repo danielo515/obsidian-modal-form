@@ -251,6 +251,13 @@ export function toSlug(value: string): string {
         .replace(/^-+|-+$/g, "");
 }
 
+// Uppercases the first character of every word, leaving the rest of the
+// characters untouched (so "iPhone" stays "iPhone"). Word boundaries are
+// runs of whitespace, matching how most "Title Case" helpers behave.
+export function toTitleCase(value: string): string {
+    return value.replace(/(^|\s)(\S)/g, (_, sep: string, ch: string) => sep + ch.toLocaleUpperCase());
+}
+
 export function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
@@ -274,6 +281,8 @@ export function executeTransformation(
             }
             case "slug":
                 return toSlug(String(value));
+            case "title":
+                return toTitleCase(String(value));
             default:
                 return absurd(transformation);
         }
