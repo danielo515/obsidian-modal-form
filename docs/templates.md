@@ -107,6 +107,17 @@ The following transformations can be applied to variables:
 
    - Input `Hello, World!` produces `hello-world`; input `  My Note (2024)  ` produces `my-note-2024`.
 
+7. **`snake`**: Converts the variable's value to `snake_case`.
+   - Same shape as `slug`, but whitespace and dashes become underscores, punctuation is stripped, runs of underscores collapse, and edge underscores are trimmed. Unicode letters and numbers are preserved (e.g. `Café Noël` → `café_noël`).
+   - Handy for deriving variable names, YAML keys, or database columns from free-form text.
+   - Usage:
+
+     ```plaintext
+     {{ title | snake }}
+     ```
+
+   - Input `Hello, World!` produces `hello_world`; input `  My Note (2024)  ` produces `my_note_2024`.
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:

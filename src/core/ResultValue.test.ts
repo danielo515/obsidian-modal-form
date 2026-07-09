@@ -344,6 +344,40 @@ describe("ResultValue", () => {
             expect(resultValue.trimmed.slug.toString()).toEqual("hello-world");
         });
     });
+    describe("snake", () => {
+        it("should convert a string to snake_case", () => {
+            const resultValue = ResultValue.from("Hello, World!", "Test");
+            expect(resultValue.snake.toString()).toEqual("hello_world");
+        });
+        it("should turn whitespace and dashes into underscores", () => {
+            const resultValue = ResultValue.from("  ---My Note (2024)  ", "Test");
+            expect(resultValue.snake.toString()).toEqual("my_note_2024");
+        });
+        it("should collapse runs of underscores and trim edges", () => {
+            const resultValue = ResultValue.from("__foo___bar__", "Test");
+            expect(resultValue.snake.toString()).toEqual("foo_bar");
+        });
+        it("should preserve unicode letters and numbers", () => {
+            const resultValue = ResultValue.from("Café Noël 2024", "Test");
+            expect(resultValue.snake.toString()).toEqual("café_noël_2024");
+        });
+        it("should convert each string in an array individually", () => {
+            const resultValue = ResultValue.from(["Foo Bar", "Hello World!"], "Test");
+            expect(resultValue.snake.toString()).toEqual("foo_bar, hello_world");
+        });
+        it("should leave non-string values unchanged in mixed arrays", () => {
+            const resultValue = ResultValue.from(["Foo Bar", 42], "Test");
+            expect(resultValue.snake.bullets).toEqual("- foo_bar\n- 42");
+        });
+        it("should handle an empty string without crashing", () => {
+            const resultValue = ResultValue.from("", "Test");
+            expect(resultValue.snake.toString()).toEqual("");
+        });
+        it("should be chainable", () => {
+            const resultValue = ResultValue.from("  Hello World  ", "Test");
+            expect(resultValue.trimmed.snake.toString()).toEqual("hello_world");
+        });
+    });
     describe("chaining shortcuts", () => {
         it("should be possible to chain upper, lower and trim", () => {
             // Arrange

@@ -1,7 +1,7 @@
 import { E, O, ensureError, pipe } from "@std";
 import { notifyError } from "src/utils/Log";
 import { FileProxy } from "./files/FileProxy";
-import { toSlug } from "./template/templateParser";
+import { toSlug, toSnake } from "./template/templateParser";
 
 function _toBulletList(value: Record<string, unknown> | unknown[]) {
     if (Array.isArray(value)) {
@@ -228,6 +228,21 @@ export class ResultValue<T = unknown> {
             return new ResultValue(toSlug(this.value.name), this.name, this.notify);
         }
         return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? toSlug(it) : it)));
+    }
+
+    /**
+     * getter that returns the value converted to snake_case. Same shape as
+     * `slug` but uses underscores instead of dashes so the result is safe to
+     * use as a variable name, YAML key, or database column. Strings nested in
+     * arrays/objects are converted individually; non-string values are
+     * returned unchanged. `FileProxy` values are converted from the file
+     * name.
+     */
+    get snake(): ResultValue<unknown> {
+        if (this.value instanceof FileProxy) {
+            return new ResultValue(toSnake(this.value.name), this.name, this.notify);
+        }
+        return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? toSnake(it) : it)));
     }
 
     /**

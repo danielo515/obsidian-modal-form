@@ -292,6 +292,64 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("[]"));
     });
 
+    it("Should execute a template with snake transformation", () => {
+        const template = "{{title|snake}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "Hello, World!" }),
+            ),
+        );
+        expect(result).toEqual(E.of("hello_world"));
+    });
+
+    it("snake turns whitespace and dashes into underscores", () => {
+        const template = "{{title|snake}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "  ---My Note (2024)  " }),
+            ),
+        );
+        expect(result).toEqual(E.of("my_note_2024"));
+    });
+
+    it("snake collapses runs of underscores and trims edges", () => {
+        const template = "{{title|snake}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "__foo___bar__" }),
+            ),
+        );
+        expect(result).toEqual(E.of("foo_bar"));
+    });
+
+    it("snake preserves unicode letters and numbers", () => {
+        const template = "{{title|snake}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "Café Noël 2024" }),
+            ),
+        );
+        expect(result).toEqual(E.of("café_noël_2024"));
+    });
+
+    it("snake handles an empty string without crashing", () => {
+        const template = "[{{title|snake}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { title: "" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);

@@ -251,6 +251,19 @@ export function toSlug(value: string): string {
         .replace(/^-+|-+$/g, "");
 }
 
+// Same shape as `toSlug` but produces snake_case: whitespace and dashes become
+// underscores, punctuation is stripped, runs of underscores collapse, and edge
+// underscores are trimmed. Useful for deriving variable names, YAML keys, or
+// database columns from free-form text (e.g. "Café Noël" → "café_noël").
+export function toSnake(value: string): string {
+    return value
+        .toLocaleLowerCase()
+        .replace(/[\s-]+/g, "_")
+        .replace(/[^\p{L}\p{N}_]+/gu, "")
+        .replace(/_+/g, "_")
+        .replace(/^_+|_+$/g, "");
+}
+
 export function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
@@ -274,6 +287,8 @@ export function executeTransformation(
             }
             case "slug":
                 return toSlug(String(value));
+            case "snake":
+                return toSnake(String(value));
             default:
                 return absurd(transformation);
         }
