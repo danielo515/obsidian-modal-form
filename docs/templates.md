@@ -107,6 +107,16 @@ The following transformations can be applied to variables:
 
    - Input `Hello, World!` produces `hello-world`; input `  My Note (2024)  ` produces `my-note-2024`.
 
+7. **`oneline`**: Collapses any run of whitespace (spaces, tabs, newlines) into a single space and trims the edges.
+   - Handy when a multi-line textarea has to fit on a single line — for example a `description` field embedded in YAML frontmatter, where an unquoted newline would break the block.
+   - Usage:
+
+     ```plaintext
+     description: {{ notes | oneline }}
+     ```
+
+   - Input `"line one\nline two\nline three"` produces `line one line two line three`; input `"  hello\t\tworld  \n\n  from   here  "` produces `hello world from here`.
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:

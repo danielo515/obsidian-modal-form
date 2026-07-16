@@ -344,6 +344,32 @@ describe("ResultValue", () => {
             expect(resultValue.trimmed.slug.toString()).toEqual("hello-world");
         });
     });
+    describe("oneline", () => {
+        it("should collapse newlines into single spaces", () => {
+            const resultValue = ResultValue.from("line one\nline two\nline three", "Test");
+            expect(resultValue.oneline.toString()).toEqual("line one line two line three");
+        });
+        it("should collapse tabs and multiple spaces", () => {
+            const resultValue = ResultValue.from("  hello\t\tworld   from   here  ", "Test");
+            expect(resultValue.oneline.toString()).toEqual("hello world from here");
+        });
+        it("should collapse each string in an array individually", () => {
+            const resultValue = ResultValue.from(["foo\nbar", "baz\tqux"], "Test");
+            expect(resultValue.oneline.toString()).toEqual("foo bar, baz qux");
+        });
+        it("should leave non-string values unchanged in mixed arrays", () => {
+            const resultValue = ResultValue.from(["foo\nbar", 42], "Test");
+            expect(resultValue.oneline.bullets).toEqual("- foo bar\n- 42");
+        });
+        it("should handle an empty string without crashing", () => {
+            const resultValue = ResultValue.from("", "Test");
+            expect(resultValue.oneline.toString()).toEqual("");
+        });
+        it("should be chainable", () => {
+            const resultValue = ResultValue.from("  hello\nworld  ", "Test");
+            expect(resultValue.oneline.upper.toString()).toEqual("HELLO WORLD");
+        });
+    });
     describe("chaining shortcuts", () => {
         it("should be possible to chain upper, lower and trim", () => {
             // Arrange

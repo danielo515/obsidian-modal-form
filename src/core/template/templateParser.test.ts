@@ -292,6 +292,42 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("[]"));
     });
 
+    it("Should execute a template with oneline transformation", () => {
+        const template = "{{notes|oneline}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { notes: "line one\nline two\nline three" }),
+            ),
+        );
+        expect(result).toEqual(E.of("line one line two line three"));
+    });
+
+    it("oneline collapses tabs, spaces and multiple newlines", () => {
+        const template = "{{notes|oneline}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, {
+                    notes: "  hello\t\tworld\n\n  from   here  ",
+                }),
+            ),
+        );
+        expect(result).toEqual(E.of("hello world from here"));
+    });
+
+    it("oneline handles an empty string without crashing", () => {
+        const template = "[{{notes|oneline}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { notes: "" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);
