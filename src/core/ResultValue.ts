@@ -1,7 +1,7 @@
 import { E, O, ensureError, pipe } from "@std";
 import { notifyError } from "src/utils/Log";
 import { FileProxy } from "./files/FileProxy";
-import { toSlug } from "./template/templateParser";
+import { toOneLine, toSlug } from "./template/templateParser";
 
 function _toBulletList(value: Record<string, unknown> | unknown[]) {
     if (Array.isArray(value)) {
@@ -228,6 +228,21 @@ export class ResultValue<T = unknown> {
             return new ResultValue(toSlug(this.value.name), this.name, this.notify);
         }
         return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? toSlug(it) : it)));
+    }
+
+    /**
+     * getter that collapses any run of whitespace (spaces, tabs, newlines) in
+     * each string into a single space and trims the edges. Handy when you want
+     * to drop a textarea value into a single-line YAML frontmatter entry, or
+     * anywhere else newlines would break the surrounding format. Strings
+     * nested in arrays/objects are collapsed individually; non-string values
+     * are returned unchanged.
+     */
+    get oneline(): ResultValue<unknown> {
+        if (this.value instanceof FileProxy) {
+            return new ResultValue(toOneLine(this.value.name), this.name, this.notify);
+        }
+        return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? toOneLine(it) : it)));
     }
 
     /**

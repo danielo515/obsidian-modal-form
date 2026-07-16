@@ -251,6 +251,13 @@ export function toSlug(value: string): string {
         .replace(/^-+|-+$/g, "");
 }
 
+// Collapses any run of whitespace (spaces, tabs, newlines) into a single space
+// and trims the edges. Useful for putting textarea content into single-line
+// YAML frontmatter or anywhere newlines would break the surrounding format.
+export function toOneLine(value: string): string {
+    return value.replace(/\s+/g, " ").trim();
+}
+
 export function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
@@ -274,6 +281,8 @@ export function executeTransformation(
             }
             case "slug":
                 return toSlug(String(value));
+            case "oneline":
+                return toOneLine(String(value));
             default:
                 return absurd(transformation);
         }
