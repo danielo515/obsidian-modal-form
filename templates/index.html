@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1470,6 +1470,19 @@ After the form template is processed, if you have the templater plugin installed
 <li>
 <p>Input <code>Hello, World!</code> produces <code>hello-world</code>; input <code>My Note (2024)</code> produces <code>my-note-2024</code>.</p>
 </li>
+<li>
+<p><strong><code>snake</code></strong>: Converts the variable's value to <code>snake_case</code>.</p>
+</li>
+<li>Same shape as <code>slug</code>, but whitespace and dashes become underscores, punctuation is stripped, runs of underscores collapse, and edge underscores are trimmed. Unicode letters and numbers are preserved (e.g. <code>Café Noël</code> → <code>café_noël</code>).</li>
+<li>Handy for deriving variable names, YAML keys, or database columns from free-form text.</li>
+<li>
+<p>Usage:</p>
+<p><code>plaintext
+ {{ title | snake }}</code></p>
+</li>
+<li>
+<p>Input <code>Hello, World!</code> produces <code>hello_world</code>; input <code>My Note (2024)</code> produces <code>my_note_2024</code>.</p>
+</li>
 </ol>
 <h3 id="example-templates">Example Templates</h3>
 <p>Here are some examples of how to use the new template syntax:</p>
@@ -1672,7 +1685,7 @@ Best regards,
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

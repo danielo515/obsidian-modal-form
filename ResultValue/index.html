@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -619,10 +619,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trimmedloweruppercapitalizedslug-shortcuts" class="md-nav__link">
+  <a href="#trimmedloweruppercapitalizedslugsnake-shortcuts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        trimmed,lower,upper,capitalized,slug shortcuts
+        trimmed,lower,upper,capitalized,slug,snake shortcuts
       
     </span>
   </a>
@@ -1127,10 +1127,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trimmedloweruppercapitalizedslug-shortcuts" class="md-nav__link">
+  <a href="#trimmedloweruppercapitalizedslugsnake-shortcuts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        trimmed,lower,upper,capitalized,slug shortcuts
+        trimmed,lower,upper,capitalized,slug,snake shortcuts
       
     </span>
   </a>
@@ -1236,7 +1236,7 @@ Or alias:
 <p>The above code will print the list field as a bullet list, but all the values will be uppercased.</p>
 <p>The map method takes a function that takes the value and returns a new value.
 It can be used when none of the provided printing are enough for your use case, or when one of them is almost what you need but you need to transform the value a bit more.</p>
-<h3 id="trimmedloweruppercapitalizedslug-shortcuts"><code>trimmed</code>,<code>lower</code>,<code>upper</code>,<code>capitalized</code>,<code>slug</code> shortcuts</h3>
+<h3 id="trimmedloweruppercapitalizedslugsnake-shortcuts"><code>trimmed</code>,<code>lower</code>,<code>upper</code>,<code>capitalized</code>,<code>slug</code>,<code>snake</code> shortcuts</h3>
 <p>The ResultValue class provides some shortcuts to common transformations of the value.
 They are:</p>
 <ul>
@@ -1245,6 +1245,7 @@ They are:</p>
 <li><code>upper</code>: Converts the value to uppercase.</li>
 <li><code>capitalized</code>: Uppercases the first character and leaves the rest untouched. Chain after <code>lower</code> (e.g. <code>result.getValue('name').lower.capitalized</code>) if you also want the remaining characters lowercased.</li>
 <li><code>slug</code>: Converts the value to a URL/filename-friendly slug. Lowercases the value, turns whitespace and underscores into <code>-</code>, strips punctuation, collapses runs of dashes, and trims edge dashes. Unicode letters/numbers are preserved so <code>Café Noël</code> becomes <code>café-noël</code>. Handy for turning a form's title into a filename: <code>result.getValue('title').slug</code>.</li>
+<li><code>snake</code>: Converts the value to <code>snake_case</code>. Same shape as <code>slug</code>, but whitespace and dashes become underscores, runs of underscores collapse, and edge underscores are trimmed. Unicode letters/numbers are preserved so <code>Café Noël</code> becomes <code>café_noël</code>. Handy for deriving variable names, YAML keys, or database columns: <code>result.getValue('title').snake</code>.</li>
 </ul>
 <p>All of these shortcuts return a new ResultValue object, so you can chain them with other methods.</p>
 <pre><code class="language-typescript">&lt;% result.getValue('listField').trimmed.upper.bullets %&gt;
@@ -1362,7 +1363,7 @@ Any other type of value will be rendered as an empty string.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
