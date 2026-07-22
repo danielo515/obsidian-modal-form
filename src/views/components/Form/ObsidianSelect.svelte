@@ -32,16 +32,21 @@
     }
 </script>
 
-<ObsidianInput {errors} label={field.label || field.name} description={field.description}>
+<ObsidianInput
+    {errors}
+    name={field.name}
+    label={field.label || field.name}
+    description={field.description}
+>
     {#if input.source === "fixed"}
-        <select bind:value={$value} class="dropdown">
+        <select name={field.name} bind:value={$value} class="dropdown">
             {#each input.options as option}
                 <option value={option.value}>{option.label}</option>
             {/each}
         </select>
     {:else}
         {@const options = getNoteOptions(input.folder)}
-        <select bind:value={$value} class="dropdown">
+        <select name={field.name} bind:value={$value} class="dropdown">
             {#each Object.entries(options) as [value, label]}
                 <option {value}>{label}</option>
             {/each}

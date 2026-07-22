@@ -5,7 +5,7 @@ import { getMultiselectNoteFolders, inputTag, multiselect } from "src/core/input
 import { executeSandboxedDvQuery, sandboxedDvQuery } from "src/suggesters/SafeDataviewQuery";
 import { StringSuggest } from "src/suggesters/StringSuggest";
 import { FileSuggest } from "src/suggesters/suggestFile";
-import { Writable } from "svelte/store";
+import { Writable, get } from "svelte/store";
 
 export interface MultiSelectModel {
     createInput(element: HTMLInputElement): void;
@@ -64,11 +64,14 @@ export async function MultiSelectModel(
                                 return file.basename;
                             },
                             selectSuggestion(file) {
-                                values.update((x) => [...x, file.basename]);
+                                values.update((x) =>
+                                    x.includes(file.basename) ? x : [...x, file.basename],
+                                );
                                 return "";
                             },
                         },
                         folders,
+                        () => get(values) ?? [],
                     );
                 },
                 removeValue,

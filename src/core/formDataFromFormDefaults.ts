@@ -4,7 +4,7 @@ import { log_error } from "../utils/Log";
 import { ModalFormError } from "../utils/ModalFormError";
 import { FormDefinition } from './formDefinition';
 import { A, pipe } from '@std';
-import { ModalFormData, isPrimitiveArray, isPrimitive, Val } from './FormResult';
+import { ModalFormData, isPrimitiveArray, isPrimitive, Val } from './formResultTypes';
 
 
 /**

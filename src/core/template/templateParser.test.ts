@@ -2,6 +2,7 @@ import { pipe, tap } from "@std";
 import * as E from "fp-ts/Either";
 import { stringifyYaml } from "obsidian";
 import * as S from "parser-ts/string";
+import { FileProxy } from "../files/FileProxy";
 import { anythingUntilOpenOrEOF, executeTemplate, parseTemplate } from "./templateParser";
 
 const inspect = (val: unknown) => {
@@ -211,6 +212,205 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("Hello, John! You are 18 years old."));
     });
 
+    it("Should execute a template with capitalize transformation", () => {
+        const template = "Hello, {{name|capitalize}}!";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { name: "john", age: 18 }),
+            ),
+            E.map(tap("executed")),
+        );
+        expect(result).toEqual(E.of("Hello, John!"));
+    });
+
+    it("capitalize should leave the rest of the string untouched", () => {
+        const template = "{{name|capitalize}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { name: "jOHN doe" }),
+            ),
+        );
+        expect(result).toEqual(E.of("JOHN doe"));
+    });
+
+    it("capitalize should handle an empty string without crashing", () => {
+        const template = "[{{name|capitalize}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
+    it("Should execute a template with slug transformation", () => {
+        const template = "{{title|slug}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "Hello, World!" }),
+            ),
+        );
+        expect(result).toEqual(E.of("hello-world"));
+    });
+
+    it("slug collapses runs of dashes and trims edges", () => {
+        const template = "{{title|slug}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "  ---My Note (2024)  " }),
+            ),
+        );
+        expect(result).toEqual(E.of("my-note-2024"));
+    });
+
+    it("slug preserves unicode letters and numbers", () => {
+        const template = "{{title|slug}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "Café Noël 2024" }),
+            ),
+        );
+        expect(result).toEqual(E.of("café-noël-2024"));
+    });
+
+    it("slug handles an empty string without crashing", () => {
+        const template = "[{{title|slug}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { title: "" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
+    it("slug applied to an array slugifies each element and joins with commas", () => {
+        // Regression: stringifying the array first would drop the commas as
+        // punctuation and merge distinct values into one token.
+        const template = "{{tags|slug}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { tags: ["Foo Bar", "Hello World!"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("foo-bar,hello-world"));
+    });
+
+    it("slug applied to a FileProxy uses the file name, not the full path", () => {
+        // Regression: `String(fileProxy)` returns the full path so a `/` between
+        // folder and file would be stripped, merging folder + name into one token.
+        const file = new FileProxy({
+            path: "attachments/My Photo.png",
+            name: "My Photo.png",
+            basename: "My Photo",
+            extension: "png",
+        });
+        const template = "{{image|slug}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { image: file })),
+        );
+        expect(result).toEqual(E.of("my-photopng"));
+    });
+
+    it("Should execute a template with snake transformation", () => {
+        const template = "{{title|snake}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "Hello, World!" }),
+            ),
+        );
+        expect(result).toEqual(E.of("hello_world"));
+    });
+
+    it("snake turns whitespace and dashes into underscores", () => {
+        const template = "{{title|snake}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "  ---My Note (2024)  " }),
+            ),
+        );
+        expect(result).toEqual(E.of("my_note_2024"));
+    });
+
+    it("snake collapses runs of underscores and trims edges", () => {
+        const template = "{{title|snake}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "__foo___bar__" }),
+            ),
+        );
+        expect(result).toEqual(E.of("foo_bar"));
+    });
+
+    it("snake preserves unicode letters and numbers", () => {
+        const template = "{{title|snake}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "Café Noël 2024" }),
+            ),
+        );
+        expect(result).toEqual(E.of("café_noël_2024"));
+    });
+
+    it("snake handles an empty string without crashing", () => {
+        const template = "[{{title|snake}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { title: "" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
+    it("snake applied to an array converts each element and joins with commas", () => {
+        const template = "{{tags|snake}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { tags: ["Foo Bar", "Hello World!"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("foo_bar,hello_world"));
+    });
+
+    it("snake applied to a FileProxy uses the file name, not the full path", () => {
+        const file = new FileProxy({
+            path: "attachments/My Photo.png",
+            name: "My Photo.png",
+            basename: "My Photo",
+            extension: "png",
+        });
+        const template = "{{image|snake}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { image: file })),
+        );
+        expect(result).toEqual(E.of("my_photopng"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);
@@ -257,5 +457,14 @@ describe("parseTemplate", () => {
             E.map(tap("executed")),
         );
         expect(result).toEqual(E.of(stringifyYaml({ name: "John" })));
+    });
+    it("Should produce an empty string when a frontmatter command picks fields missing from the data", () => {
+        const template = "{# frontmatter pick: doesNotExist #}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "John", age: 18 })),
+        );
+        expect(result).toEqual(E.of(""));
     });
 });

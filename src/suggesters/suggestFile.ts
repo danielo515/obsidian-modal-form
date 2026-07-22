@@ -21,6 +21,7 @@ export class FileSuggest extends AbstractInputSuggest<TFile> {
         public inputEl: HTMLInputElement,
         private strategy: FileStrategy,
         folder: string | string[],
+        private getExcludedBasenames: () => Iterable<string> = () => [],
     ) {
         super(app, inputEl);
         this.folders = Array.isArray(folder) ? folder : [folder];
@@ -34,8 +35,10 @@ export class FileSuggest extends AbstractInputSuggest<TFile> {
                 log_error(err);
             }
         });
+        const excluded = new Set(this.getExcludedBasenames());
         const enriched = pipe(
             files,
+            A.filter((file) => !excluded.has(file.basename)),
             A.map((file) => enrich_tfile(file, this.app)),
         );
 

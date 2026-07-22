@@ -17,9 +17,10 @@
 
 <ObsidianInputWrapper
     {errors}
+    name={field.name}
     label={field.label || field.name}
     description={field.description}
     className="modal-form-textarea"
 >
-    <textarea bind:value={$value} use:customizeTextArea />
+    <textarea name={field.name} bind:value={$value} use:customizeTextArea />
 </ObsidianInputWrapper>

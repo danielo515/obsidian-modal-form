@@ -44,6 +44,7 @@
 
 {#if E.isLeft($isVisible)}
     <ObsidianInputWrapper
+        name={definition.name}
         label={definition.label || definition.name}
         description={definition.description}
         errors={visibleError}
@@ -80,6 +81,7 @@
     {:else if definition.input.type === "document_block"}
         <!-- I need to put this separated to be able to target the correct slot, it does not work inside #if -->
         <ObsidianInputWrapper
+            name={definition.name}
             label={definition.label || definition.name}
             description={definition.description}
         >
@@ -88,6 +90,7 @@
     {:else if definition.input.type === "image"}
         <ObsidianInputWrapper
             {errors}
+            name={definition.name}
             label={definition.label || definition.name}
             description={definition.description}
             required={definition.isRequired}
@@ -100,6 +103,7 @@
     {:else if definition.input.type === "file"}
         <ObsidianInputWrapper
             {errors}
+            name={definition.name}
             label={definition.label || definition.name}
             description={definition.description}
             required={definition.isRequired}
@@ -112,6 +116,7 @@
     {:else}
         <ObsidianInputWrapper
             {errors}
+            name={definition.name}
             label={definition.label || definition.name}
             description={definition.description}
             required={definition.isRequired}
@@ -123,7 +128,7 @@
             {:else if definition.input.type === "tag"}
                 <InputTag input={definition.input} {value} {errors} {app} />
             {:else}
-                <InputField {value} inputType={definition.input.type} />
+                <InputField name={definition.name} {value} inputType={definition.input.type} />
             {/if}
         </ObsidianInputWrapper>
     {/if}

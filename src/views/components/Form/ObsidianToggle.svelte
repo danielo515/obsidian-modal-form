@@ -24,6 +24,7 @@
     use:useSetting={{
         name: field.label || field.name,
         description: field.description || "",
+        fieldName: field.name,
         customizer,
     }}
 >

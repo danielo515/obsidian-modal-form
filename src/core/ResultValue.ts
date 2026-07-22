@@ -1,6 +1,7 @@
 import { E, O, ensureError, pipe } from "@std";
 import { notifyError } from "src/utils/Log";
 import { FileProxy } from "./files/FileProxy";
+import { toSlug, toSnake } from "./template/templateParser";
 
 function _toBulletList(value: Record<string, unknown> | unknown[]) {
     if (Array.isArray(value)) {
@@ -199,6 +200,49 @@ export class ResultValue<T = unknown> {
             return new ResultValue(this.value.name.trim(), this.name, this.notify);
         }
         return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? it.trim() : it)));
+    }
+
+    /**
+     * getter that returns the value with the first character uppercased.
+     * Strings nested in arrays/objects are capitalized individually; non-string
+     * values are returned unchanged. Empty strings stay empty.
+     */
+    get capitalized(): ResultValue<unknown> {
+        const cap = (s: string) =>
+            s.length === 0 ? s : s.charAt(0).toLocaleUpperCase() + s.slice(1);
+        if (this.value instanceof FileProxy) {
+            return new ResultValue(cap(this.value.name), this.name, this.notify);
+        }
+        return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? cap(it) : it)));
+    }
+
+    /**
+     * getter that returns the value converted to a URL/filename-friendly slug.
+     * Strings nested in arrays/objects are slugified individually; non-string
+     * values are returned unchanged. `FileProxy` values are slugified from the
+     * file name so `result.getValue('image').slug` can drive filename
+     * generation.
+     */
+    get slug(): ResultValue<unknown> {
+        if (this.value instanceof FileProxy) {
+            return new ResultValue(toSlug(this.value.name), this.name, this.notify);
+        }
+        return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? toSlug(it) : it)));
+    }
+
+    /**
+     * getter that returns the value converted to snake_case. Same shape as
+     * `slug` but uses underscores instead of dashes so the result is safe to
+     * use as a variable name, YAML key, or database column. Strings nested in
+     * arrays/objects are converted individually; non-string values are
+     * returned unchanged. `FileProxy` values are converted from the file
+     * name.
+     */
+    get snake(): ResultValue<unknown> {
+        if (this.value instanceof FileProxy) {
+            return new ResultValue(toSnake(this.value.name), this.name, this.notify);
+        }
+        return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? toSnake(it) : it)));
     }
 
     /**

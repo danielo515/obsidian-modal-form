@@ -5,10 +5,11 @@
     export let description = "";
     export let required = false;
     export let className = "";
+    export let name = "";
 </script>
 
 <!-- Trying to emulate native Obsidian settings -->
-<div class="setting-item {className}">
+<div class="setting-item {className}" data-field-name={name || undefined}>
     <div class="setting-item-info">
         <div class="setting-item-name">
             {label}

@@ -8,7 +8,8 @@ import { stringifyYaml } from "obsidian";
 import * as P from "parser-ts/Parser";
 import * as C from "parser-ts/char";
 import * as S from "parser-ts/string";
-import { ModalFormData, Val } from "../FormResult";
+import { FileProxy } from "../files/FileProxy";
+import { ModalFormData, Val } from "../formResultTypes";
 import {
     transformations,
     type FrontmatterCommand,
@@ -232,11 +233,53 @@ function asFrontmatterString(data: Record<string, unknown>) {
                 return pick.includes(key) ? O.some(value) : O.none;
             }),
             R.filterMapWithIndex((key, value) => (!omit.includes(key) ? O.some(value) : O.none)),
-            stringifyYaml,
+            // stringifyYaml renders an empty object as the literal "{}",
+            // which is invalid when embedded inside a frontmatter block
+            (selected) => (Object.keys(selected).length === 0 ? "" : stringifyYaml(selected)),
         );
 }
 
-function executeTransformation(
+// Converts a string into a URL/filename-friendly slug: lowercased, whitespace
+// and underscores turned into dashes, punctuation stripped, dashes collapsed,
+// and edge dashes trimmed. Unicode letters/numbers are preserved so slugs stay
+// meaningful for non-English users (e.g. "Café Noël" → "café-noël").
+export function toSlug(value: string): string {
+    return value
+        .toLocaleLowerCase()
+        .replace(/[\s_]+/g, "-")
+        .replace(/[^\p{L}\p{N}-]+/gu, "")
+        .replace(/-+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
+// Same shape as `toSlug` but produces snake_case: whitespace and dashes become
+// underscores, punctuation is stripped, runs of underscores collapse, and edge
+// underscores are trimmed. Useful for deriving variable names, YAML keys, or
+// database columns from free-form text (e.g. "Café Noël" → "café_noël").
+export function toSnake(value: string): string {
+    return value
+        .toLocaleLowerCase()
+        .replace(/[\s-]+/g, "_")
+        .replace(/[^\p{L}\p{N}_]+/gu, "")
+        .replace(/_+/g, "_")
+        .replace(/^_+|_+$/g, "");
+}
+
+// `slug` and `snake` strip punctuation, so calling `String(value)` on an array
+// would consume the comma separator and silently merge distinct values into
+// one token, and calling it on a `FileProxy` would consume path slashes and
+// merge folder segments with the filename. Apply per-element/per-name instead
+// so array values stay comma-separated after transformation and file values
+// use the same name-only field as the matching `ResultValue` getters.
+function applyPerString(fn: (s: string) => string): (v: Val) => string {
+    return (v) => {
+        if (Array.isArray(v)) return v.map((item) => fn(String(item))).join(",");
+        if (v instanceof FileProxy) return fn(v.name);
+        return fn(String(v));
+    };
+}
+
+export function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
     return (value) => {
@@ -252,10 +295,37 @@ function executeTransformation(
                 return JSON.stringify(value);
             case "trim":
                 return String(value).trim();
+            case "capitalize": {
+                const str = String(value);
+                const first = str.charAt(0).toUpperCase();
+                return first + str.slice(1);
+            }
+            case "slug":
+                return applyPerString(toSlug)(value);
+            case "snake":
+                return applyPerString(toSnake)(value);
             default:
                 return absurd(transformation);
         }
     };
+}
+
+/**
+ * Apply a transformation by name to a value. Unknown names (typos, or
+ * transformations that don't exist) fall back to rendering the value as
+ * a plain string, matching how the parser handles malformed `| foo`
+ * suffixes. This is the single entry-point callers outside this module
+ * should use — keeps the valibot schema and the executor switch in one
+ * place.
+ */
+export function applyTransformation(name: string | undefined, value: Val): string {
+    const transformation: Transformations | undefined = name
+        ? pipe(
+              parse(transformations, name),
+              E.fold(constUndefined, identity),
+          )
+        : undefined;
+    return executeTransformation(transformation)(value);
 }
 
 export function executeTemplate(parsedTemplate: ParsedTemplate, formData: ModalFormData) {

@@ -4,21 +4,22 @@
     import { Writable } from "svelte/store";
     export let value: Writable<FieldValue>;
     export let inputType: "number" | "text" | "date" | "time" | "datetime" | "email" | "tel";
+    export let name = "";
 </script>
 
 {#if inputType === "number"}
     <!-- Step is required to allow decimals, see #430 & #186 -->
-    <input type="number" step="any" bind:value={$value} />
+    <input type="number" step="any" {name} bind:value={$value} />
 {:else if inputType === "text"}
-    <input type="text" bind:value={$value} />
+    <input type="text" {name} bind:value={$value} />
 {:else if inputType === "email"}
-    <input type="email" bind:value={$value} />
+    <input type="email" {name} bind:value={$value} />
 {:else if inputType === "tel"}
-    <input type="tel" bind:value={$value} />
+    <input type="tel" {name} bind:value={$value} />
 {:else if inputType === "date"}
-    <input type="date" bind:value={$value} />
+    <input type="date" {name} bind:value={$value} />
 {:else if inputType === "time"}
-    <input type="time" bind:value={$value} />
+    <input type="time" {name} bind:value={$value} />
 {:else if inputType === "datetime"}
-    <input type="datetime-local" bind:value={$value} />
+    <input type="datetime-local" {name} bind:value={$value} />
 {/if}
