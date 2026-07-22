@@ -8,6 +8,7 @@ import { stringifyYaml } from "obsidian";
 import * as P from "parser-ts/Parser";
 import * as C from "parser-ts/char";
 import * as S from "parser-ts/string";
+import { FileProxy } from "../files/FileProxy";
 import { ModalFormData, Val } from "../formResultTypes";
 import {
     transformations,
@@ -264,6 +265,20 @@ export function toSnake(value: string): string {
         .replace(/^_+|_+$/g, "");
 }
 
+// `slug` and `snake` strip punctuation, so calling `String(value)` on an array
+// would consume the comma separator and silently merge distinct values into
+// one token, and calling it on a `FileProxy` would consume path slashes and
+// merge folder segments with the filename. Apply per-element/per-name instead
+// so array values stay comma-separated after transformation and file values
+// use the same name-only field as the matching `ResultValue` getters.
+function applyPerString(fn: (s: string) => string): (v: Val) => string {
+    return (v) => {
+        if (Array.isArray(v)) return v.map((item) => fn(String(item))).join(",");
+        if (v instanceof FileProxy) return fn(v.name);
+        return fn(String(v));
+    };
+}
+
 export function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
@@ -286,9 +301,9 @@ export function executeTransformation(
                 return first + str.slice(1);
             }
             case "slug":
-                return toSlug(String(value));
+                return applyPerString(toSlug)(value);
             case "snake":
-                return toSnake(String(value));
+                return applyPerString(toSnake)(value);
             default:
                 return absurd(transformation);
         }
