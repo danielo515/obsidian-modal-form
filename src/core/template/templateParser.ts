@@ -279,14 +279,18 @@ function applyPerString(fn: (s: string) => string): (v: Val) => string {
     };
 }
 
-// Wraps a value in Obsidian-style wiki-link brackets. Files use the embed
-// form with their full path (matching the existing `ResultValue.link`
-// getter), and array values (multiselects) map each item so a list of
-// note names becomes a comma-joined series of `[[name]]` links.
+// Wraps a value in Obsidian-style wiki-link brackets. Mirrors the
+// `ResultValue.link` getter: strings become `[[value]]`, arrays
+// (multiselects) map each item into its own `[[…]]` and join with a
+// comma, and files use the embed form with the full path. Numeric and
+// boolean fields have no meaningful wiki-link representation, so they
+// render as an empty string (a stray `[[42]]` or `[[false]]` is almost
+// never what the user meant when they typed `| link`).
 export function toLink(v: Val): string {
+    if (typeof v === "string") return `[[${v}]]`;
     if (Array.isArray(v)) return v.map((item) => `[[${String(item)}]]`).join(", ");
     if (v instanceof FileProxy) return `![[${v.path}]]`;
-    return `[[${String(v)}]]`;
+    return "";
 }
 
 export function executeTransformation(

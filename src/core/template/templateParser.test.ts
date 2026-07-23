@@ -449,6 +449,26 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("![[attachments/My Photo.png]]"));
     });
 
+    it("link renders an empty string for numbers so `[[42]]` never appears", () => {
+        const template = "[{{age|link}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { age: 42 })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
+    it("link renders an empty string for booleans so `[[true]]` never appears", () => {
+        const template = "[{{active|link}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { active: true })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);
