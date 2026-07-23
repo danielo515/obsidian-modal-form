@@ -279,6 +279,16 @@ function applyPerString(fn: (s: string) => string): (v: Val) => string {
     };
 }
 
+// Wraps a value in Obsidian-style wiki-link brackets. Files use the embed
+// form with their full path (matching the existing `ResultValue.link`
+// getter), and array values (multiselects) map each item so a list of
+// note names becomes a comma-joined series of `[[name]]` links.
+export function toLink(v: Val): string {
+    if (Array.isArray(v)) return v.map((item) => `[[${String(item)}]]`).join(", ");
+    if (v instanceof FileProxy) return `![[${v.path}]]`;
+    return `[[${String(v)}]]`;
+}
+
 export function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
@@ -304,6 +314,8 @@ export function executeTransformation(
                 return applyPerString(toSlug)(value);
             case "snake":
                 return applyPerString(toSnake)(value);
+            case "link":
+                return toLink(value);
             default:
                 return absurd(transformation);
         }

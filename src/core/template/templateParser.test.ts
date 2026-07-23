@@ -411,6 +411,44 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("my_photopng"));
     });
 
+    it("Should execute a template with link transformation for a string", () => {
+        const template = "See {{person|link}} for details.";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { person: "Alice" })),
+        );
+        expect(result).toEqual(E.of("See [[Alice]] for details."));
+    });
+
+    it("link applied to an array wraps each item and joins with commas", () => {
+        const template = "{{people|link}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { people: ["Alice", "Bob"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("[[Alice]], [[Bob]]"));
+    });
+
+    it("link applied to a FileProxy renders as an embedded link using the full path", () => {
+        const file = new FileProxy({
+            path: "attachments/My Photo.png",
+            name: "My Photo.png",
+            basename: "My Photo",
+            extension: "png",
+        });
+        const template = "{{image|link}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { image: file })),
+        );
+        expect(result).toEqual(E.of("![[attachments/My Photo.png]]"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);

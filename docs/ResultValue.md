@@ -119,8 +119,9 @@ All of this shortcuts are able to handle single values and lists, so you can use
 ### `link` method
 
 The `link` method is a convenience method to render the value as a markdown link.
-If the value is a string, it will be rendered as a markdown link.
-If the value is a FileProxy (right now just used for images), it will be rendered as an embedded link.
+If the value is a string, it will be rendered as a wiki-link `[[value]]`.
+If the value is an array (e.g. a multiselect backed by notes), each item is rendered as its own wiki-link and joined with `, `, so `["Alice", "Bob"]` becomes `[[Alice]], [[Bob]]`.
+If the value is a FileProxy (right now just used for images), it will be rendered as an embedded link `![[full/path.ext]]`.
 Any other type of value will be rendered as an empty string.
 
 ```typescript
@@ -128,5 +129,7 @@ Any other type of value will be rendered as an empty string.
 ```
 
 You can also use the shorthand way of accessing values directly from the form result object, like `result.myField.link`.
+
+The same transformation is available inside templates as `{{ myField | link }}`.
 
 Take a look at the example vault to see how it is used.
