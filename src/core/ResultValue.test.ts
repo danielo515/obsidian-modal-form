@@ -378,6 +378,36 @@ describe("ResultValue", () => {
             expect(resultValue.trimmed.snake.toString()).toEqual("hello_world");
         });
     });
+    describe("unique", () => {
+        it("should remove duplicate items from an array preserving first-seen order", () => {
+            const resultValue = ResultValue.from(["foo", "bar", "foo", "baz", "bar"], "Test");
+            expect(resultValue.unique.toString()).toEqual("foo, bar, baz");
+        });
+        it("should render a deduped array as bullets", () => {
+            const resultValue = ResultValue.from(["foo", "bar", "foo"], "Test");
+            expect(resultValue.unique.bullets).toEqual("- foo\n- bar");
+        });
+        it("should leave a string value unchanged", () => {
+            const resultValue = ResultValue.from("hello", "Test");
+            expect(resultValue.unique.toString()).toEqual("hello");
+        });
+        it("should leave a number value unchanged", () => {
+            const resultValue = ResultValue.from(42, "Test");
+            expect(resultValue.unique.toString()).toEqual("42");
+        });
+        it("should return an empty string for an empty array", () => {
+            const resultValue = ResultValue.from([], "Test");
+            expect(resultValue.unique.toString()).toEqual("");
+        });
+        it("should preserve non-string primitives inside the array", () => {
+            const resultValue = ResultValue.from([1, 2, 1, 3, 2], "Test");
+            expect(resultValue.unique.toString()).toEqual("1, 2, 3");
+        });
+        it("should be chainable with other shortcuts", () => {
+            const resultValue = ResultValue.from(["Foo", "BAR", "foo", "bar"], "Test");
+            expect(resultValue.lower.unique.toString()).toEqual("foo, bar");
+        });
+    });
     describe("chaining shortcuts", () => {
         it("should be possible to chain upper, lower and trim", () => {
             // Arrange

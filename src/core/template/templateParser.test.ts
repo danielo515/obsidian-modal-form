@@ -411,6 +411,50 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("my_photopng"));
     });
 
+    it("unique removes duplicate items from an array preserving first-seen order", () => {
+        const template = "{{tags|unique}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { tags: ["foo", "bar", "foo", "baz", "bar"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("foo,bar,baz"));
+    });
+
+    it("unique leaves an array without duplicates unchanged", () => {
+        const template = "{{tags|unique}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { tags: ["foo", "bar", "baz"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("foo,bar,baz"));
+    });
+
+    it("unique on a non-array value returns the value as a string", () => {
+        const template = "{{name|unique}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "John" })),
+        );
+        expect(result).toEqual(E.of("John"));
+    });
+
+    it("unique on an empty array produces an empty string", () => {
+        const template = "[{{tags|unique}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { tags: [] })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);

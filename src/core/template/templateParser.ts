@@ -279,6 +279,13 @@ function applyPerString(fn: (s: string) => string): (v: Val) => string {
     };
 }
 
+// Removes duplicate items from an array, preserving the order of first
+// occurrence. Non-array values are returned as-is (a single value is
+// trivially unique) so the transformation is safe to use on any field.
+export function uniqueValues<T>(value: T[]): T[] {
+    return Array.from(new Set(value));
+}
+
 export function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
@@ -304,6 +311,8 @@ export function executeTransformation(
                 return applyPerString(toSlug)(value);
             case "snake":
                 return applyPerString(toSnake)(value);
+            case "unique":
+                return Array.isArray(value) ? uniqueValues(value).join(",") : String(value);
             default:
                 return absurd(transformation);
         }
