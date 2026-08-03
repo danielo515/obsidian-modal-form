@@ -96,7 +96,11 @@
             required={definition.isRequired}
         >
             {#if $value == null || $value instanceof FileProxy}
-                {@const imageModel = makeImageInputModel({ fileService, input: definition.input })}
+                {@const imageModel = makeImageInputModel({
+                    fileService,
+                    input: definition.input,
+                    getFormValues: () => formEngine.getValues(),
+                })}
                 <ImageInput id={definition.name} model={imageModel} bind:value={$value} />
             {/if}
         </ObsidianInputWrapper>

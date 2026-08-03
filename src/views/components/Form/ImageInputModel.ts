@@ -2,6 +2,7 @@ import { E, pipe, TE } from "@std";
 import type { Either } from "fp-ts/Either";
 import { FileProxy } from "src/core/files/FileProxy";
 import { FileService } from "src/core/files/FileService";
+import type { ModalFormData } from "src/core/formResultTypes";
 import { createFilename } from "src/core/input/imageFilenameTemplate";
 import { type imageInput } from "src/core/input/InputDefinitionSchema";
 import { logger } from "src/utils/Logger";
@@ -18,6 +19,11 @@ export interface ImageInputModel {
 interface ImageInputModelDeps {
     input: imageInput;
     fileService: FileService;
+    /**
+     * Reads the values the form holds at the moment the image is saved,
+     * so the filename template can reference other fields of the same form.
+     */
+    getFormValues?: () => ModalFormData;
     l?: typeof logger;
 }
 
@@ -55,6 +61,7 @@ function getImageExtension(dataUrl: string): Either<Error, string> {
 export function makeImageInputModel({
     fileService,
     input,
+    getFormValues = () => ({}),
     l = logger,
 }: ImageInputModelDeps): ImageInputModel {
     const error = writable<string | null>(null);
@@ -82,7 +89,7 @@ export function makeImageInputModel({
 
             // Save the file
             TE.chainW(({ extension, bytes }) => {
-                const filename = createFilename(input.filenameTemplate);
+                const filename = createFilename(input.filenameTemplate, getFormValues());
                 return pipe(
                     fileService.saveFile(`${filename}.${extension}`, input.saveLocation, bytes.buffer),
                     TE.map((file) => new FileProxy(file)),

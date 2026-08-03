@@ -29,6 +29,8 @@
     const date = "{{date}}";
     const time = "{{time}}";
     const datetime = "{{datetime}}";
+    const fieldName = "{{fieldName}}";
+    const fieldNameExample = "{{name}} - new member";
 </script>
 
 <div class="modal-form flex column gap1">
@@ -60,9 +62,18 @@
                 <li>
                     <code>{datetime}</code> - Current date and time (YYYY-MM-DD-HH-mm-ss)
                 </li>
+                <li>
+                    <code>{fieldName}</code> - The value of any other field of this form, using its
+                    name. Multi valued fields are joined with a dash, and fields left empty resolve
+                    to an empty text.
+                </li>
             </ul>
             Example:<code>screenshot-{datetime}.png</code> will create:
             <code>screenshot-2024-12-08-19-29-52.png</code>
+            <br />
+            Example: if this form has a <code>name</code> field,
+            <code>{fieldNameExample}</code> will create:
+            <code>Jane Doe - new member.png</code>
         </div>
     </FormRow>
 </div>

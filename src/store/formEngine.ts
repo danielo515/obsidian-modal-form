@@ -63,6 +63,12 @@ export interface FormEngine {
      */
     subscribe: Readable<FormStore<FieldValue>>["subscribe"];
     /**
+     * Returns the values the form holds right now, skipping the fields that have no value yet.
+     * Unlike the submit result, this is a snapshot of a possibly incomplete form,
+     * useful for fields that need to react to what the user typed on other fields.
+     */
+    getValues(): Record<string, FieldValue>;
+    /**
      * Readable store that represents the validity of the form.
      * If any of the fields in the form have errors, this will be false.
      */
@@ -245,6 +251,12 @@ export function makeFormEngine({
     return {
         subscribe: formStore.subscribe,
         errors,
+        getValues() {
+            return pipe(
+                get(formStore).fields,
+                R.filterMap((field) => field.value),
+            );
+        },
         isValid: derived(formStore, ({ fields }) =>
             pipe(
                 fields,
