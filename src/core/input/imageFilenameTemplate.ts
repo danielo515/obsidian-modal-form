@@ -32,8 +32,13 @@ const datePlaceholders = {
     datetime: formatDatetime,
 } satisfies Record<string, (now: Date) => string>;
 
+/** Own property check, so inherited names like `__proto__` or `toString` are not mistaken for keys */
+function hasOwn(object: object, name: string): boolean {
+    return Object.prototype.hasOwnProperty.call(object, name);
+}
+
 function isDatePlaceholder(name: string): name is keyof typeof datePlaceholders {
-    return name in datePlaceholders;
+    return hasOwn(datePlaceholders, name);
 }
 
 /**
@@ -64,6 +69,7 @@ export function processTemplate(
     return template.replace(PLACEHOLDER_RE, (_match, rawName: string) => {
         const name = rawName.trim();
         if (isDatePlaceholder(name)) return datePlaceholders[name](now);
+        if (!hasOwn(values, name)) return "";
         const value = values[name];
         return value === undefined ? "" : valueToString(value);
     });

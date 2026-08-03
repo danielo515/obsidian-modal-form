@@ -47,6 +47,13 @@ describe("processTemplate", () => {
         expect(processTemplate("a-{{missing}}-b", { name: "Jane" }, now)).toBe("a--b");
     });
 
+    it("resolves inherited object properties to an empty string", () => {
+        // `name in object` would report these as present and resolve them to
+        // members of Object.prototype, so they need an own property check
+        const template = "a-{{__proto__}}-{{toString}}-{{constructor}}-b";
+        expect(processTemplate(template, {}, now)).toBe("a----b");
+    });
+
     it("keeps the built-in placeholders when a field shares their name", () => {
         expect(processTemplate("{{date}}", { date: "not a date" }, now)).toBe("2024-12-08");
     });
