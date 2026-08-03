@@ -1770,10 +1770,43 @@ modalForm.openForm(form);
   .image({ 
     name: &quot;avatar&quot;, 
     label: &quot;Avatar&quot;,
-    filenameTemplate: &quot;avatar-${date}&quot;,
+    filenameTemplate: &quot;avatar-{{date}}&quot;,
     saveLocation: &quot;assets/images&quot; 
   })
 </code></pre>
+<p>The <code>filenameTemplate</code> accepts the following placeholders:</p>
+<table>
+<thead>
+<tr>
+<th>Placeholder</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{{date}}</code></td>
+<td>Current date, as <code>YYYY-MM-DD</code></td>
+</tr>
+<tr>
+<td><code>{{time}}</code></td>
+<td>Current time, as <code>HH-mm-ss</code></td>
+</tr>
+<tr>
+<td><code>{{datetime}}</code></td>
+<td>Current date and time, as <code>YYYY-MM-DD-HH-mm-ss</code></td>
+</tr>
+<tr>
+<td><code>{{anyFieldName}}</code></td>
+<td>The value of any other field of the same form</td>
+</tr>
+</tbody>
+</table>
+<p>Field placeholders are resolved when the image is picked, using whatever the form
+holds at that moment, so <code>{{name}} - new member</code> saves the image as
+<code>Jane Doe - new member.png</code> when the <code>name</code> field contains <code>Jane Doe</code>.
+Multi valued fields (multiselect, tags) are joined with a dash, file fields use their
+name without extension, and fields that are still empty resolve to an empty text.
+The date placeholders take precedence, so a field named <code>date</code> does not shadow <code>{{date}}</code>.</p>
 <h3 id="file">file</h3>
 <p>Adds a file upload field.</p>
 <pre><code class="language-typescript">builder(&quot;example-attachment-form&quot;)
