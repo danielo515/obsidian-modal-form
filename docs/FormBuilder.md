@@ -243,10 +243,26 @@ builder("example-avatar-form")
   .image({ 
     name: "avatar", 
     label: "Avatar",
-    filenameTemplate: "avatar-${date}",
+    filenameTemplate: "avatar-{{date}}",
     saveLocation: "assets/images" 
   })
 ```
+
+The `filenameTemplate` accepts the following placeholders:
+
+| Placeholder | Value |
+|-------------|-------|
+| `{{date}}` | Current date, as `YYYY-MM-DD` |
+| `{{time}}` | Current time, as `HH-mm-ss` |
+| `{{datetime}}` | Current date and time, as `YYYY-MM-DD-HH-mm-ss` |
+| `{{anyFieldName}}` | The value of any other field of the same form |
+
+Field placeholders are resolved when the image is picked, using whatever the form
+holds at that moment, so `{{name}} - new member` saves the image as
+`Jane Doe - new member.png` when the `name` field contains `Jane Doe`.
+Multi valued fields (multiselect, tags) are joined with a dash, file fields use their
+name without extension, and fields that are still empty resolve to an empty text.
+The date placeholders take precedence, so a field named `date` does not shadow `{{date}}`.
 
 ### file
 
