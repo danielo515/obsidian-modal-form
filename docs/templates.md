@@ -118,6 +118,18 @@ The following transformations can be applied to variables:
 
    - Input `Hello, World!` produces `hello_world`; input `  My Note (2024)  ` produces `my_note_2024`.
 
+8. **`blockquote`**: Renders the variable's value as a markdown blockquote by prefixing every line with `> `.
+   - Multi-line strings are quoted line-by-line so the whole block reads as a quote (a single `> ` on the first line would leave the rest unquoted).
+   - Array values (multiselect, tag) are quoted per-element and joined with newlines, so each option becomes its own quoted line.
+   - Empty values stay empty, so `[{{note | blockquote}}]` on an empty field renders as `[]` rather than a stray `[> ]`.
+   - Usage:
+
+     ```plaintext
+     {{ note | blockquote }}
+     ```
+
+   - Input `Hello world` produces `> Hello world`; input `line one\nline two` produces `> line one\n> line two`; input `["foo", "bar"]` produces `> foo\n> bar`.
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:
