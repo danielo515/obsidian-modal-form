@@ -20,7 +20,10 @@ import {
     MigrationError,
 } from "./core/formDefinitionSchema";
 import { TemplateService } from "./core/template/TemplateService";
-import { getTemplateService } from "./core/template/getTemplateService";
+import {
+    getTemplateService,
+    makeTemplateServiceResolver,
+} from "./core/template/getTemplateService";
 import { retryForm } from "./core/template/retryForm";
 import { executeTemplate } from "./core/template/templateParser";
 import { settingsStore } from "./store/SettngsStore";
@@ -63,7 +66,16 @@ export default class ModalFormPlugin extends Plugin {
     private unsubscribeSettingsStore: () => void = () => {};
     // This things will be setup in the onload function rather than constructor
     public api!: API;
-    private templateService!: TemplateService;
+    /**
+     * Resolves the template service on every access, so we pick up Templater
+     * even when it finishes loading after us. See `makeTemplateServiceResolver`.
+     */
+    private resolveTemplateService: () => TemplateService = () =>
+        getTemplateService(this.app, logger);
+
+    private get templateService(): TemplateService {
+        return this.resolveTemplateService();
+    }
 
     manageForms() {
         return this.activateView(MANAGE_FORMS_VIEW);
@@ -313,7 +325,7 @@ export default class ModalFormPlugin extends Plugin {
         });
         this.api = new API(this.app, this);
         this.attachShortcutToGlobalWindow();
-        this.templateService = getTemplateService(this.app, logger);
+        this.resolveTemplateService = makeTemplateServiceResolver(this.app, logger);
 
         // Register template commands at startup
         this.registerTemplateCommands();
