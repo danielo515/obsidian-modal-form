@@ -90,6 +90,51 @@ export function throttle(fn: (...args: unknown[]) => unknown, ms = 100) {
     };
 }
 
+export interface Debounced<T extends unknown[]> {
+    (...args: [...T]): void;
+    /** Runs the pending call right away, if there is one. */
+    flush(): void;
+    /** Forgets the pending call, if there is one. */
+    cancel(): void;
+}
+
+/**
+ * Delays the execution of `cb` until `ms` have passed without new calls.
+ * Unlike `throttle`, the trailing call is guaranteed to run, which makes it
+ * suitable for saving state the user is still editing.
+ * The returned function exposes `flush` and `cancel` so callers can decide
+ * what to do with the pending call when they are done with it.
+ */
+export function debounce<T extends unknown[]>(
+    cb: (...args: [...T]) => void,
+    ms = 100,
+): Debounced<T> {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let pending: [...T] | undefined;
+    function run() {
+        timer = undefined;
+        if (pending === undefined) return;
+        const args = pending;
+        pending = undefined;
+        cb(...args);
+    }
+    const debounced = (...args: [...T]) => {
+        pending = args;
+        if (timer !== undefined) clearTimeout(timer);
+        timer = setTimeout(run, ms);
+    };
+    debounced.flush = () => {
+        if (timer !== undefined) clearTimeout(timer);
+        run();
+    };
+    debounced.cancel = () => {
+        if (timer !== undefined) clearTimeout(timer);
+        timer = undefined;
+        pending = undefined;
+    };
+    return debounced;
+}
+
 export function tap(msg: string) {
     return <T>(x: T) => {
         console.log(msg, x);

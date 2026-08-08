@@ -26,6 +26,7 @@ const ModalFormSettingsSchema = object({
     editorPosition: optional(OpenPositionSchema, 'right'),
     attachShortcutToGlobalWindow: optional(boolean(), false),
     globalNamespace: optional(enumType(['MF', 'ModalForm']), 'MF'),
+    preserveFormDrafts: optional(boolean(), true),
     formDefinitions: array(unknown()),
 });
 
@@ -36,6 +37,7 @@ export function getDefaultSettings(): ModalFormSettings {
         editorPosition: 'right',
         attachShortcutToGlobalWindow: false,
         globalNamespace: 'MF',
+        preserveFormDrafts: true,
         formDefinitions: [],
     };
 }
@@ -63,4 +65,10 @@ export interface ModalFormSettings {
     attachShortcutToGlobalWindow: boolean;
     formDefinitions: (MigrationError | FormDefinition)[];
     globalNamespace: 'MF' | 'ModalForm';
+    /**
+     * When enabled, what the user types is kept in Obsidian's vault scoped
+     * local storage while the form is open, so it can be recovered if the form
+     * is closed by accident or something downstream fails.
+     */
+    preserveFormDrafts: boolean;
 }

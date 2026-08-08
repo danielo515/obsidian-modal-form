@@ -62,7 +62,9 @@ export class ManageFormsView extends ItemView {
                 },
                 previewForm: async (form: FormDefinition) => {
                     try {
-                        const result = await this.plugin.api.openForm(form);
+                        const result = await this.plugin.api.openForm(form, {
+                            preserveData: false,
+                        });
                         const result_str = JSON.stringify(result, null, 2);
                         log_notice("Form result", result_str);
                     } catch (error) {

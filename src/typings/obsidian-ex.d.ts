@@ -13,6 +13,12 @@ declare module "obsidian" {
 
     interface App {
         appId?: string;
+        /**
+         * Vault scoped local storage. Added in Obsidian 1.5, and our declared
+         * minimum app version is older, hence optional.
+         */
+        loadLocalStorage?(key: string): unknown;
+        saveLocalStorage?(key: string, data: unknown | null): void;
         plugins: {
             enabledPlugins: Set<string>;
             plugins: {

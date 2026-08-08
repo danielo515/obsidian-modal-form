@@ -51,5 +51,19 @@ export class ModalFormSettingTab extends PluginSettingTab {
                         await this.plugin.setAttachShortcutToGlobalWindow(value);
                     });
             });
+
+        new Setting(containerEl)
+            .setName("Preserve form data")
+            .setDesc(
+                "Keep what you type in a form while it is open, so it can be recovered if the " +
+                    "form is closed by accident or a template fails after submitting. " +
+                    "The data is stored locally, never in your vault, and is discarded after a week. " +
+                    "Disabling this deletes any data kept so far.",
+            )
+            .addToggle((component) => {
+                component.setValue(settings.preserveFormDrafts).onChange(async (value) => {
+                    await this.plugin.setPreserveFormDrafts(value);
+                });
+            });
     }
 }

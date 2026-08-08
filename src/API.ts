@@ -68,7 +68,7 @@ export class API {
      */
     openModalForm(formDefinition: FormDefinition, options?: FormOptions): Promise<FormResult> {
         return new Promise((resolve) => {
-            new FormModal(this.app, formDefinition, resolve, options).open();
+            new FormModal(this.app, formDefinition, resolve, options, this.plugin.drafts).open();
         });
     }
     exampleForm(options?: FormOptions): Promise<FormResult> {

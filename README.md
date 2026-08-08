@@ -21,6 +21,7 @@ This plugin for [Obsidian](https://obsidian.md) allows you to define forms that 
 - Create new notes directly from the form using templates
   - Template editor has a nice UI for creating templates
 - **Register commands for your forms:** Instantly trigger any form (with a template) from the command palette—no need for QuickAdd or external templates for simple use cases
+- **Never lose what you typed:** if a form is closed by accident or a template fails, you get a clear error and the form reopens with your data. See [Data recovery](docs/data-recovery.md)
 - Many input types
   - number
   - date
@@ -262,6 +263,18 @@ You can enhance your forms with templates, allowing you to generate dynamic note
 This makes it easy to trigger forms and use their templates anywhere with just a command—perfect for quick note creation or structured data capture.
 
 For details on template syntax and advanced features, see the [Templates documentation](docs/templates.md).
+
+### When something goes wrong
+
+Templates fail: a typo in a Templater command, a folder that does not exist, a
+value that is not what the template expected. When that happens after you filled
+a form, Modal Form shows you the actual error and offers to reopen the form with
+everything you had typed, so nothing has to be retyped. Data is also kept when a
+form is closed by accident, and can be brought back at any time with the
+`Modal Forms: Recover form data` command.
+
+See [Data recovery](docs/data-recovery.md) for the details, including how to opt
+out.
 
 ### Tips and tricks
 

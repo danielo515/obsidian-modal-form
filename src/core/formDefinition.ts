@@ -82,6 +82,13 @@ export type FormWithTemplate = Simplify<
 
 export type FormOptions = {
     values?: Record<string, unknown>;
+    /**
+     * Whether what the user types should be kept while the form is open, so it
+     * can be recovered if the form is closed by accident or something fails
+     * after submitting. Defaults to true, set it to false for throwaway opens
+     * such as previews.
+     */
+    preserveData?: boolean;
 };
 
 type KeyOfUnion<T> = T extends unknown ? keyof T : never;

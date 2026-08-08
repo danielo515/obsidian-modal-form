@@ -124,3 +124,15 @@ If your plugin does not need CSS, delete this file.
         flex-wrap: wrap;
     }
 }
+
+.modal-form-template-failure .modal-form-error-details {
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 12rem;
+    overflow-y: auto;
+    padding: 0.75rem;
+    border-radius: var(--radius-s);
+    background-color: var(--background-secondary);
+    color: var(--text-error);
+    font-size: var(--font-ui-small);
+}

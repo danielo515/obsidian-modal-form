@@ -70,7 +70,9 @@ export class EditFormView extends ItemView {
                     this.plugin.closeEditForm();
                 },
                 onPreview: async (formDefinition: FormDefinition) => {
-                    const result = await this.plugin.api.openForm(formDefinition);
+                    const result = await this.plugin.api.openForm(formDefinition, {
+                        preserveData: false,
+                    });
                     const result_str = JSON.stringify(result, null, 2);
                     log_notice("Form result", result_str);
                     console.log(result_str);

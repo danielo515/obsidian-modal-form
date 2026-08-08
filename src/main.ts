@@ -1,5 +1,12 @@
-import { A, E, O, pipe, TE } from "@std";
-import { MarkdownView, Platform, Plugin, WorkspaceLeaf } from "obsidian";
+import { A, E, O, pipe } from "@std";
+import {
+    Editor,
+    MarkdownFileInfo,
+    MarkdownView,
+    Platform,
+    Plugin,
+    WorkspaceLeaf,
+} from "obsidian";
 import { API } from "src/API";
 import { ModalFormSettingTab } from "src/ModalFormSettingTab";
 import { FormWithTemplate, type FormDefinition } from "src/core/formDefinition";
@@ -19,19 +26,30 @@ import {
     migrateToLatest,
     MigrationError,
 } from "./core/formDefinitionSchema";
+import {
+    DRAFTS_STORAGE_KEY,
+    makeFormDraftStore,
+    makeNoopDraftStore,
+    type FormDraft,
+    type FormDraftStore,
+} from "./core/formDrafts";
+import type { ModalFormData } from "./core/formResultTypes";
 import { TemplateService } from "./core/template/TemplateService";
 import { getTemplateService } from "./core/template/getTemplateService";
+import { describeTemplateError, renderTemplate } from "./core/template/renderTemplate";
 import { retryForm } from "./core/template/retryForm";
-import { executeTemplate } from "./core/template/templateParser";
 import { settingsStore } from "./store/SettngsStore";
+import { DraftPickerModal } from "./suggesters/DraftPickerModal";
 import { FormPickerModal } from "./suggesters/FormPickerModal";
 import { NewNoteModal } from "./suggesters/NewNoteModal";
-import { log_error, log_notice, notifyWarning } from "./utils/Log";
+import { appLocalStorage } from "./utils/appLocalStorage";
+import { log_error, log_notice, notifyError, notifyWarning } from "./utils/Log";
 import { logger } from "./utils/Logger";
 import { file_exists } from "./utils/files";
 import { FormImportModal } from "./views/FormImportView";
 import { TemplateBuilderModal } from "./views/TemplateBuilderModal";
 import { TEMPLATE_BUILDER_VIEW, TemplateBuilderView } from "./views/TemplateBuilderView";
+import { askTemplateFailure } from "./views/TemplateFailureModal";
 import { makeModel } from "./views/components/TemplateBuilder";
 
 type ViewType = typeof EDIT_FORM_VIEW | typeof MANAGE_FORMS_VIEW | typeof TEMPLATE_BUILDER_VIEW;
@@ -63,6 +81,11 @@ export default class ModalFormPlugin extends Plugin {
     private unsubscribeSettingsStore: () => void = () => {};
     // This things will be setup in the onload function rather than constructor
     public api!: API;
+    /**
+     * Keeps what the user typed while a form is open, so a crash, an accidental
+     * close or a failing template never takes the data with it.
+     */
+    public drafts: FormDraftStore = makeNoopDraftStore();
     private templateService!: TemplateService;
 
     manageForms() {
@@ -206,6 +229,14 @@ export default class ModalFormPlugin extends Plugin {
         }
     }
 
+    async setPreserveFormDrafts(value: boolean) {
+        this.settings!.preserveFormDrafts = value;
+        if (!value) {
+            this.drafts.clearAll();
+        }
+        await this.saveSettings();
+    }
+
     async setAttachShortcutToGlobalWindow(value: boolean) {
         this.settings!.attachShortcutToGlobalWindow = value;
         this.attachShortcutToGlobalWindow();
@@ -249,25 +280,8 @@ export default class ModalFormPlugin extends Plugin {
                     id: `insert-template-${form.name}`,
                     name: `Insert template: ${form.name}`,
                     editorCallback: (editor, ctx) => {
-                        this.api.openForm(form).then((result) => {
-                            editor.replaceSelection(
-                                executeTemplate(form.template.parsedTemplate, result.getData()),
-                            );
-                            if (ctx instanceof MarkdownView) {
-                                logger.debug("Saving file after inserting form template");
-                                ctx.save().then(() => {
-                                    const file = ctx.file?.path;
-                                    if (!file) {
-                                        return;
-                                    }
-                                    // This gives obsidian some time to process the frontmatter and other things before asking templater to do its job
-                                    setImmediate(this.templateService.replaceVariablesInFile(file));
-                                });
-                            } else {
-                                notifyWarning("Cannot save file, editor is not a markdown view");
-                            }
-                        });
-                    }
+                        this.runInsertTemplateFlow(form, editor, ctx);
+                    },
                 });
                 commandsRegistered++;
             }
@@ -282,14 +296,11 @@ export default class ModalFormPlugin extends Plugin {
                             this.app,
                             [form],
                             ({ form: selectedForm, folder, noteName }) => {
-                                this.api.openForm(selectedForm).then((formData) => {
-                                    const noteContent = executeTemplate(selectedForm.template.parsedTemplate, formData.getData());
-                                    this.createNoteFromTemplate(noteName, noteContent, folder)();
-                                });
+                                this.runCreateNoteFlow(selectedForm, noteName, folder);
                             },
                         );
                         picker.open();
-                    }
+                    },
                 });
                 commandsRegistered++;
             }
@@ -311,6 +322,11 @@ export default class ModalFormPlugin extends Plugin {
             this.registerTemplateCommands();
             this.saveSettings(s);
         });
+        this.drafts = makeFormDraftStore(
+            appLocalStorage(this.app, DRAFTS_STORAGE_KEY, logger),
+            { isEnabled: () => this.settings?.preserveFormDrafts ?? true },
+        );
+        this.drafts.prune();
         this.api = new API(this.app, this);
         this.attachShortcutToGlobalWindow();
         this.templateService = getTemplateService(this.app, logger);
@@ -360,24 +376,7 @@ export default class ModalFormPlugin extends Plugin {
                     return;
                 }
                 const replaceWithForm = (form: FormWithTemplate) => {
-                    this.api.openForm(form).then((result) => {
-                        editor.replaceSelection(
-                            executeTemplate(form.template.parsedTemplate, result.getData()),
-                        );
-                        if (ctx instanceof MarkdownView) {
-                            logger.debug("Saving file after inserting form template");
-                            ctx.save().then(() => {
-                                const file = ctx.file?.path;
-                                if (!file) {
-                                    return;
-                                }
-                                // This gives obsidian some time to process the frontmatter and other things before asking templater to do its job
-                                setImmediate(this.templateService.replaceVariablesInFile(file));
-                            });
-                        } else {
-                            notifyWarning("Cannot save file, editor is not a markdown view");
-                        }
-                    });
+                    this.runInsertTemplateFlow(form, editor, ctx);
                 };
                 if (formsWithTemplates.length === 1) {
                     const form = formsWithTemplates[0] as FormWithTemplate;
@@ -402,6 +401,14 @@ export default class ModalFormPlugin extends Plugin {
             id: "import-form",
             name: "Import form",
             callback: () => this.openImportFormModal,
+        });
+
+        this.addCommand({
+            id: "recover-form-data",
+            name: "Recover form data",
+            callback: () => {
+                this.recoverFormData();
+            },
         });
 
         // This adds a settings tab so the user can configure various aspects of the plugin
@@ -443,54 +450,171 @@ export default class ModalFormPlugin extends Plugin {
         );
     }
 
-    createNoteFromTemplate(
+    /**
+     * Opens the retry form so the user can fix a template that could not be
+     * processed. Returns the fixed template, or nothing if they gave up.
+     */
+    private async askForTemplateFix(
+        errorMessage: string,
+        templateContent: string,
+    ): Promise<string | undefined> {
+        const result = await this.api.openForm(retryForm, {
+            values: { title: errorMessage, template: templateContent },
+            // The retry form is a plumbing detail. Its content is a rendered
+            // template, not user input, so it would only be noise in the
+            // recovery list.
+            preserveData: false,
+        });
+        if (result.status === "cancelled") return undefined;
+        const template = result.get("template");
+        if (typeof template !== "string") {
+            notifyWarning("Failed while retrying")("Template is not a string");
+            return undefined;
+        }
+        return template;
+    }
+
+    /**
+     * Tells the user the data they entered is still around, and how to get it back.
+     */
+    private keepDataForLater(form: FormDefinition) {
+        this.drafts.markPending(form.name);
+        // Nothing was kept if the user turned drafts off, so promising a
+        // recovery would be a lie.
+        if (O.isNone(this.drafts.find(form.name))) return;
+        log_notice(
+            "💾 Your form data was kept",
+            `Reopen "${form.title}" to continue where you left off, ` +
+                'or use the "Recover form data" command.',
+        );
+    }
+
+    /**
+     * Fills a form, renders its template and creates a note out of it.
+     * Every step that can fail reports what went wrong and gives the user the
+     * chance to retry without typing everything again.
+     */
+    async runCreateNoteFlow(
+        form: FormWithTemplate,
         noteName: string,
-        noteContent: string,
         destinationFolder: string,
-    ): TE.TaskEither<Error, void> {
-        const loop = (noteContent: string): TE.TaskEither<Error, void> => {
-            // Use template service instead of directly creating the file
-            return pipe(
-                this.templateService.createNoteFromTemplate(
-                    noteContent,
-                    destinationFolder,
-                    noteName,
-                    false, // don't open the new note
-                ),
-                TE.orElse((error) => {
-                    logger.error(error);
-                    return pipe(
-                        TE.tryCatch(
-                            () =>
-                                this.api.openForm(retryForm, {
-                                    values: {
-                                        title: error.message,
-                                        template: noteContent,
-                                    },
-                                }),
-                            E.toError,
-                        ),
-                        TE.map((result) => result.get("template")),
-                        TE.chain((template) => {
-                            if (typeof template !== "string") {
-                                notifyWarning("Failed while retrying")("Template is not a string");
-                                return TE.left(new Error("Template is not a string"));
-                            }
-                            return loop(template);
-                        }),
-                    );
-                }),
-            );
-        };
-        return pipe(
-            loop(noteContent),
-            TE.tapIO(() => () => {
+    ): Promise<void> {
+        let values: ModalFormData | undefined;
+        // Set when the user chose to fix the rendered template by hand, in
+        // which case we retry with it instead of asking for the data again.
+        let fixedContent: string | undefined;
+        for (;;) {
+            let noteContent: string;
+            if (fixedContent !== undefined) {
+                noteContent = fixedContent;
+                fixedContent = undefined;
+            } else {
+                const result = await this.api.openForm(form, values ? { values } : undefined);
+                if (result.status === "cancelled") return;
+                values = result.getData();
+                const rendered = renderTemplate(form.template.parsedTemplate, values);
+                if (E.isLeft(rendered)) {
+                    logger.error(rendered.left);
+                    const choice = await askTemplateFailure(this.app, {
+                        title: `The template of "${form.title}" could not be rendered`,
+                        message: describeTemplateError(rendered.left),
+                    });
+                    if (choice === "retry-form") continue;
+                    this.keepDataForLater(form);
+                    return;
+                }
+                noteContent = rendered.right;
+            }
+            const outcome = await this.templateService.createNoteFromTemplate(
+                noteContent,
+                destinationFolder,
+                noteName,
+                false, // don't open the new note
+            )();
+            if (E.isRight(outcome)) {
+                this.drafts.clear(form.name);
                 log_notice(
                     "Note created successfully",
                     `Note "${noteName}" created in ${destinationFolder}`,
                 );
-            }),
-        );
+                return;
+            }
+            logger.error(outcome.left);
+            const choice = await askTemplateFailure(this.app, {
+                title: `The note "${noteName}" could not be created`,
+                message: describeTemplateError(outcome.left),
+                canEditTemplate: true,
+            });
+            if (choice === "discard") {
+                this.keepDataForLater(form);
+                return;
+            }
+            if (choice === "edit-template") {
+                const fixed = await this.askForTemplateFix(
+                    describeTemplateError(outcome.left),
+                    noteContent,
+                );
+                if (fixed === undefined) {
+                    this.keepDataForLater(form);
+                    return;
+                }
+                fixedContent = fixed;
+            }
+            // "retry-form" falls through, reopening the form with the same values
+        }
+    }
+
+    /**
+     * Fills a form and inserts its rendered template at the cursor.
+     * The text is already in the note by the time templater runs, so there is
+     * nothing to retry here, but a failure must still be reported clearly.
+     */
+    async runInsertTemplateFlow(
+        form: FormWithTemplate,
+        editor: Editor,
+        ctx: MarkdownView | MarkdownFileInfo,
+    ): Promise<void> {
+        const result = await this.api.openForm(form);
+        if (result.status === "cancelled") return;
+        const rendered = renderTemplate(form.template.parsedTemplate, result.getData());
+        if (E.isLeft(rendered)) {
+            logger.error(rendered.left);
+            notifyError("The form template could not be rendered")(
+                describeTemplateError(rendered.left),
+            );
+            this.keepDataForLater(form);
+            return;
+        }
+        editor.replaceSelection(rendered.right);
+        if (!(ctx instanceof MarkdownView)) {
+            notifyWarning("Cannot save file, editor is not a markdown view")(
+                "The template was inserted, but we could not ask templater to process it.",
+            );
+            return;
+        }
+        logger.debug("Saving file after inserting form template");
+        await ctx.save();
+        const file = ctx.file?.path;
+        if (!file) {
+            this.drafts.clear(form.name);
+            return;
+        }
+        // This gives obsidian some time to process the frontmatter and other
+        // things before asking templater to do its job
+        const outcome = await new Promise<E.Either<Error, void>>((resolve) => {
+            setImmediate(() => {
+                this.templateService.replaceVariablesInFile(file)().then(resolve);
+            });
+        });
+        if (E.isLeft(outcome)) {
+            logger.error(outcome.left);
+            notifyError("Templater could not process the inserted template")(
+                `${describeTemplateError(outcome.left)}. The text was inserted in the note, ` +
+                    "but the templater commands inside it were not executed.",
+            );
+            return;
+        }
+        this.drafts.clear(form.name);
     }
 
     /**
@@ -500,24 +624,43 @@ export default class ModalFormPlugin extends Plugin {
      */
     createNoteFromForm() {
         const formsWithTemplates = this.getFormsWithTemplates();
-        const onFormSelected = async (
-            form: FormWithTemplate,
-            noteName: string,
-            destinationFolder: string,
-        ) => {
-            const formData = await this.api.openForm(form);
-            const noteContent = executeTemplate(form.template.parsedTemplate, formData.getData());
-
-            await this.createNoteFromTemplate(noteName, noteContent, destinationFolder)();
-        };
 
         const picker = new NewNoteModal(
             this.app,
             formsWithTemplates,
             ({ form, folder, noteName }) => {
-                onFormSelected(form, noteName, folder);
+                this.runCreateNoteFlow(form, noteName, folder);
             },
         );
         picker.open();
+    }
+
+    /**
+     * Reopens a form with data we kept from a previous, unfinished attempt.
+     * If the form is gone, at least show the data so it can be copied out.
+     */
+    private recoverDraft(draft: FormDraft) {
+        const form = this.validFormDefinitions.find((f) => f.name === draft.formName);
+        if (!form) {
+            log_notice(
+                `The form "${draft.formTitle}" no longer exists`,
+                `This is the data we had kept for it:\n${JSON.stringify(draft.data, null, 2)}`,
+            );
+            return;
+        }
+        this.api.openForm(form, { values: draft.data });
+    }
+
+    private recoverFormData() {
+        const drafts = this.drafts.list();
+        if (drafts.length === 0) {
+            log_notice(
+                "Nothing to recover",
+                "We have no saved form data. Data is only kept when a form is closed " +
+                    "without submitting, or when something fails after submitting it.",
+            );
+            return;
+        }
+        new DraftPickerModal(this.app, drafts, (draft) => this.recoverDraft(draft)).open();
     }
 }

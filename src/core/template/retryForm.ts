@@ -1,7 +1,7 @@
 import { FormDefinition } from "../formDefinition";
 
 export const retryForm: FormDefinition = {
-    title: "Templater error",
+    title: "Fix the template",
     name: "retry-temlate",
     version: "1",
     fields: [
@@ -11,7 +11,7 @@ export const retryForm: FormDefinition = {
             description: "",
             input: {
                 type: "markdown_block",
-                body: "return `\n==Templater reported an error==\nWe are not sure about what it is, but is very likely a parse error.\nPlease try to fix the templater code below and submit it to retry\n`",
+                body: "return `\n==The template could not be processed==\n\n${form.title ?? ''}\n\nFix the template below and submit it to try again.\n`",
             },
             isRequired: false,
         },
