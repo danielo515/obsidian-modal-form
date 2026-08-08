@@ -24,6 +24,11 @@ the 25 most recent forms. You can also turn the whole thing off in
 **Settings → Modal Form → Preserve form data**, which deletes everything kept
 so far.
 
+Data is tracked per form *and* per set of fields. A form opened through
+[`limitedForm`](../README.md#call-the-form-from-javascript) with `pick` or
+`omit` is a different shape than the full form, so it gets its own saved data
+and can never truncate or delete what the full form had.
+
 ## When it comes back
 
 ### You closed the form by accident

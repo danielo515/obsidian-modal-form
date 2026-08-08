@@ -28,6 +28,7 @@ import {
 } from "./core/formDefinitionSchema";
 import {
     DRAFTS_STORAGE_KEY,
+    draftIdFor,
     makeFormDraftStore,
     makeNoopDraftStore,
     type FormDraft,
@@ -478,10 +479,10 @@ export default class ModalFormPlugin extends Plugin {
      * Tells the user the data they entered is still around, and how to get it back.
      */
     private keepDataForLater(form: FormDefinition) {
-        this.drafts.markPending(form.name);
+        this.drafts.markPending(draftIdFor(form));
         // Nothing was kept if the user turned drafts off, so promising a
         // recovery would be a lie.
-        if (O.isNone(this.drafts.find(form.name))) return;
+        if (O.isNone(this.drafts.find(draftIdFor(form)))) return;
         log_notice(
             "💾 Your form data was kept",
             `Reopen "${form.title}" to continue where you left off, ` +
@@ -532,7 +533,7 @@ export default class ModalFormPlugin extends Plugin {
                 false, // don't open the new note
             )();
             if (E.isRight(outcome)) {
-                this.drafts.clear(form.name);
+                this.drafts.clear(draftIdFor(form));
                 log_notice(
                     "Note created successfully",
                     `Note "${noteName}" created in ${destinationFolder}`,
@@ -596,7 +597,7 @@ export default class ModalFormPlugin extends Plugin {
         await ctx.save();
         const file = ctx.file?.path;
         if (!file) {
-            this.drafts.clear(form.name);
+            this.drafts.clear(draftIdFor(form));
             return;
         }
         // This gives obsidian some time to process the frontmatter and other
@@ -614,7 +615,7 @@ export default class ModalFormPlugin extends Plugin {
             );
             return;
         }
-        this.drafts.clear(form.name);
+        this.drafts.clear(draftIdFor(form));
     }
 
     /**

@@ -5,7 +5,13 @@ import FormModalComponent from "./FormModal.svelte";
 import FormResult from "./core/FormResult";
 import { formDataFromFormDefaults } from "./core/formDataFromFormDefaults";
 import type { FormDefinition, FormOptions } from "./core/formDefinition";
-import { makeNoopDraftStore, sanitizeDraftData, type FormDraftStore } from "./core/formDrafts";
+import {
+    draftIdFor,
+    makeNoopDraftStore,
+    sanitizeDraftData,
+    type DraftId,
+    type FormDraftStore,
+} from "./core/formDrafts";
 import type { ModalFormData } from "./core/formResultTypes";
 import { FormEngine, makeFormEngine } from "./store/formEngine";
 import { log_notice } from "./utils/Log";
@@ -37,6 +43,7 @@ export class FormModal extends Modal {
     formEngine: FormEngine;
     private hasBeenHandled = false;
     private drafts: FormDraftStore;
+    private draftId: DraftId;
     private persistDraft: Debounced<[]>;
 
     constructor(
@@ -50,9 +57,10 @@ export class FormModal extends Modal {
         // Throwaway opens such as previews must not leave anything behind, nor
         // pick up a draft that belongs to a real use of the same form.
         this.drafts = options?.preserveData === false ? makeNoopDraftStore() : drafts;
+        this.draftId = draftIdFor(modalDefinition);
         // Values passed by the caller always win over a recovered draft:
         // they are an explicit intent, the draft is a leftover.
-        const recovered = this.drafts.recover(modalDefinition.name);
+        const recovered = this.drafts.recover(this.draftId);
         const recoveredValues = pipe(
             recovered,
             O.map((draft) => draft.data),
@@ -72,7 +80,7 @@ export class FormModal extends Modal {
         }
         this.persistDraft = debounce(() => {
             this.drafts.save({
-                formName: this.modalDefinition.name,
+                ...this.draftId,
                 formTitle: this.modalDefinition.title,
                 status: "pending",
                 data: sanitizeDraftData(this.formEngine.getValues()),
@@ -86,7 +94,7 @@ export class FormModal extends Modal {
                 // may still fail, so we keep the draft around instead of
                 // deleting it. It just stops being restored automatically.
                 this.drafts.save({
-                    formName: this.modalDefinition.name,
+                    ...this.draftId,
                     formTitle: this.modalDefinition.title,
                     status: "submitted",
                     data: sanitizeDraftData(result),
@@ -98,7 +106,7 @@ export class FormModal extends Modal {
                 this.hasBeenHandled = true;
                 // Cancelling is an explicit "I don't want this", so the draft goes away
                 this.persistDraft.cancel();
-                this.drafts.clear(this.modalDefinition.name);
+                this.drafts.clear(this.draftId);
                 this.onSubmit(FormResult.make({}, "cancelled"));
                 super.close();
             },

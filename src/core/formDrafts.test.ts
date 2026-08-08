@@ -2,7 +2,9 @@ import { O } from "@std";
 import {
     DRAFT_MAX_AGE_MS,
     MAX_STORED_DRAFTS,
+    draftFieldsKey,
     draftHasContent,
+    draftIdFor,
     makeFormDraftStore,
     parseDrafts,
     pruneDrafts,
@@ -28,12 +30,18 @@ function makeMemoryStorage(initial: unknown = null): DraftStorage & { value: unk
 function draft(overrides: Partial<FormDraft> = {}): FormDraft {
     return {
         formName: "my-form",
+        fieldsKey: draftFieldsKey(["title"]),
         formTitle: "My form",
         savedAt: 1000,
         status: "pending",
         data: { title: "hello" },
         ...overrides,
     };
+}
+
+/** The draft identity of a form with a single "a" field, used by most tests */
+function id(formName: string, fields = ["a"]) {
+    return { formName, fieldsKey: draftFieldsKey(fields) };
 }
 
 describe("sanitizeDraftData", () => {
@@ -91,6 +99,7 @@ describe("parseDrafts", () => {
             drafts: [
                 {
                     formName: "a",
+                    fieldsKey: draftFieldsKey(["good"]),
                     formTitle: "A",
                     savedAt: 5,
                     status: "submitted",
@@ -101,6 +110,7 @@ describe("parseDrafts", () => {
         expect(parseDrafts(stored)).toEqual([
             {
                 formName: "a",
+                fieldsKey: draftFieldsKey(["good"]),
                 formTitle: "A",
                 savedAt: 5,
                 status: "submitted",
@@ -111,7 +121,14 @@ describe("parseDrafts", () => {
 
     it("falls back to sensible values for older or partial entries", () => {
         expect(parseDrafts({ drafts: [{ formName: "a", savedAt: 5 }] })).toEqual([
-            { formName: "a", formTitle: "a", savedAt: 5, status: "pending", data: {} },
+            {
+                formName: "a",
+                fieldsKey: "",
+                formTitle: "a",
+                savedAt: 5,
+                status: "pending",
+                data: {},
+            },
         ]);
     });
 });
@@ -145,19 +162,34 @@ describe("pruneDrafts", () => {
     });
 });
 
+describe("draftIdFor", () => {
+    it("gives the same identity regardless of the order of the fields", () => {
+        expect(draftIdFor({ name: "f", fields: [{ name: "b" }, { name: "a" }] })).toEqual(
+            draftIdFor({ name: "f", fields: [{ name: "a" }, { name: "b" }] }),
+        );
+    });
+
+    it("tells apart forms that share a name but not their fields", () => {
+        // This is what `limitedForm` produces: same name, fewer fields
+        expect(draftIdFor({ name: "f", fields: [{ name: "a" }, { name: "b" }] })).not.toEqual(
+            draftIdFor({ name: "f", fields: [{ name: "a" }] }),
+        );
+    });
+});
+
 describe("makeFormDraftStore", () => {
     it("stores and recovers a draft", () => {
         const storage = makeMemoryStorage();
         const store = makeFormDraftStore(storage, { now: () => 100 });
         store.save({
-            formName: "my-form",
+            ...id("my-form", ["title"]),
             formTitle: "My form",
             status: "pending",
             data: { title: "unfinished business" },
         });
-        expect(store.recover("my-form")).toEqual(
+        expect(store.recover(id("my-form", ["title"]))).toEqual(
             O.some({
-                formName: "my-form",
+                ...id("my-form", ["title"]),
                 formTitle: "My form",
                 savedAt: 100,
                 status: "pending",
@@ -169,8 +201,8 @@ describe("makeFormDraftStore", () => {
     it("does not store an empty draft, and clears a previous one", () => {
         const storage = makeMemoryStorage();
         const store = makeFormDraftStore(storage, { now: () => 100 });
-        store.save({ formName: "f", formTitle: "F", status: "pending", data: { a: "x" } });
-        store.save({ formName: "f", formTitle: "F", status: "pending", data: { a: "" } });
+        store.save({ ...id("f"), formTitle: "F", status: "pending", data: { a: "x" } });
+        store.save({ ...id("f"), formTitle: "F", status: "pending", data: { a: "" } });
         expect(store.list()).toEqual([]);
         expect(storage.value).toBeNull();
     });
@@ -179,42 +211,48 @@ describe("makeFormDraftStore", () => {
         const storage = makeMemoryStorage();
         let now = 1;
         const store = makeFormDraftStore(storage, { now: () => now });
-        store.save({ formName: "f", formTitle: "F", status: "pending", data: { a: "one" } });
+        store.save({ ...id("f"), formTitle: "F", status: "pending", data: { a: "one" } });
         now = 2;
-        store.save({ formName: "f", formTitle: "F", status: "pending", data: { a: "two" } });
+        store.save({ ...id("f"), formTitle: "F", status: "pending", data: { a: "two" } });
         expect(store.list()).toHaveLength(1);
-        expect(store.find("f")).toEqual(O.some(expect.objectContaining({ data: { a: "two" } })));
+        expect(store.find(id("f"))).toEqual(
+            O.some(expect.objectContaining({ data: { a: "two" } })),
+        );
     });
 
     it("does not recover a submitted draft automatically, but can still find it", () => {
         const store = makeFormDraftStore(makeMemoryStorage(), { now: () => 1 });
-        store.save({ formName: "f", formTitle: "F", status: "pending", data: { a: "x" } });
-        store.markSubmitted("f");
-        expect(store.recover("f")).toEqual(O.none);
-        expect(store.find("f")).toEqual(O.some(expect.objectContaining({ status: "submitted" })));
+        store.save({ ...id("f"), formTitle: "F", status: "pending", data: { a: "x" } });
+        store.markSubmitted(id("f"));
+        expect(store.recover(id("f"))).toEqual(O.none);
+        expect(store.find(id("f"))).toEqual(
+            O.some(expect.objectContaining({ status: "submitted" })),
+        );
     });
 
     it("recovers a submitted draft again once it is marked pending", () => {
         const store = makeFormDraftStore(makeMemoryStorage(), { now: () => 1 });
-        store.save({ formName: "f", formTitle: "F", status: "submitted", data: { a: "x" } });
-        expect(store.recover("f")).toEqual(O.none);
-        store.markPending("f");
-        expect(store.recover("f")).toEqual(O.some(expect.objectContaining({ data: { a: "x" } })));
+        store.save({ ...id("f"), formTitle: "F", status: "submitted", data: { a: "x" } });
+        expect(store.recover(id("f"))).toEqual(O.none);
+        store.markPending(id("f"));
+        expect(store.recover(id("f"))).toEqual(
+            O.some(expect.objectContaining({ data: { a: "x" } })),
+        );
     });
 
     it("clears a single form without touching the others", () => {
         const store = makeFormDraftStore(makeMemoryStorage(), { now: () => 1 });
-        store.save({ formName: "a", formTitle: "A", status: "pending", data: { x: "1" } });
-        store.save({ formName: "b", formTitle: "B", status: "pending", data: { x: "2" } });
-        store.clear("a");
+        store.save({ ...id("a"), formTitle: "A", status: "pending", data: { a: "1" } });
+        store.save({ ...id("b"), formTitle: "B", status: "pending", data: { a: "2" } });
+        store.clear(id("a"));
         expect(store.list().map((d) => d.formName)).toEqual(["b"]);
     });
 
     it("empties the storage when the last draft is gone", () => {
         const storage = makeMemoryStorage();
         const store = makeFormDraftStore(storage, { now: () => 1 });
-        store.save({ formName: "a", formTitle: "A", status: "pending", data: { x: "1" } });
-        store.clear("a");
+        store.save({ ...id("a"), formTitle: "A", status: "pending", data: { a: "1" } });
+        store.clear(id("a"));
         expect(storage.value).toBeNull();
     });
 
@@ -222,18 +260,18 @@ describe("makeFormDraftStore", () => {
         const storage = makeMemoryStorage();
         let enabled = true;
         const store = makeFormDraftStore(storage, { now: () => 1, isEnabled: () => enabled });
-        store.save({ formName: "a", formTitle: "A", status: "pending", data: { x: "1" } });
+        store.save({ ...id("a"), formTitle: "A", status: "pending", data: { a: "1" } });
         enabled = false;
-        store.save({ formName: "b", formTitle: "B", status: "pending", data: { x: "2" } });
+        store.save({ ...id("b"), formTitle: "B", status: "pending", data: { a: "2" } });
         expect(store.list().map((d) => d.formName)).toEqual(["a"]);
-        expect(store.recover("a")).toEqual(O.none);
-        expect(store.find("a")).toEqual(O.some(expect.objectContaining({ formName: "a" })));
+        expect(store.recover(id("a"))).toEqual(O.none);
+        expect(store.find(id("a"))).toEqual(O.some(expect.objectContaining({ formName: "a" })));
     });
 
     it("drops expired drafts when pruned", () => {
         const storage = makeMemoryStorage();
         const store = makeFormDraftStore(storage, { now: () => 1 });
-        store.save({ formName: "a", formTitle: "A", status: "pending", data: { x: "1" } });
+        store.save({ ...id("a"), formTitle: "A", status: "pending", data: { a: "1" } });
         const later = makeFormDraftStore(storage, { now: () => DRAFT_MAX_AGE_MS + 2 });
         later.prune();
         expect(storage.value).toBeNull();
@@ -243,7 +281,57 @@ describe("makeFormDraftStore", () => {
         const storage = makeMemoryStorage("💥");
         const store = makeFormDraftStore(storage, { now: () => 1 });
         expect(store.list()).toEqual([]);
-        store.save({ formName: "a", formTitle: "A", status: "pending", data: { x: "1" } });
-        expect(store.recover("a")).toEqual(O.some(expect.objectContaining({ formName: "a" })));
+        store.save({ ...id("a"), formTitle: "A", status: "pending", data: { a: "1" } });
+        expect(store.recover(id("a"))).toEqual(O.some(expect.objectContaining({ formName: "a" })));
+    });
+
+    describe("a limited form does not clobber the form it was derived from", () => {
+        const full = draftIdFor({
+            name: "book",
+            fields: [{ name: "title" }, { name: "author" }, { name: "notes" }],
+        });
+        const limited = draftIdFor({ name: "book", fields: [{ name: "title" }] });
+
+        function storeWithFullDraft() {
+            const store = makeFormDraftStore(makeMemoryStorage(), { now: () => 1 });
+            store.save({
+                ...full,
+                formTitle: "Book",
+                status: "pending",
+                data: { title: "Dune", author: "Herbert", notes: "sand" },
+            });
+            return store;
+        }
+
+        it("does not restore the full draft into the limited form", () => {
+            expect(storeWithFullDraft().recover(limited)).toEqual(O.none);
+        });
+
+        it("saving the limited form leaves the full draft untouched", () => {
+            const store = storeWithFullDraft();
+            store.save({
+                ...limited,
+                formTitle: "Book",
+                status: "pending",
+                data: { title: "Messiah" },
+            });
+            expect(store.recover(full)).toEqual(
+                O.some(
+                    expect.objectContaining({
+                        data: { title: "Dune", author: "Herbert", notes: "sand" },
+                    }),
+                ),
+            );
+        });
+
+        it("cancelling the limited form does not delete the full draft", () => {
+            const store = storeWithFullDraft();
+            store.clear(limited);
+            expect(store.recover(full)).toEqual(
+                O.some(
+                    expect.objectContaining({ data: expect.objectContaining({ notes: "sand" }) }),
+                ),
+            );
+        });
     });
 });

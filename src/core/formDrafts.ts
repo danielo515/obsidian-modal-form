@@ -34,6 +34,7 @@ export type DraftStatus = Output<typeof DraftStatusSchema>;
 
 const FormDraftSchema = object({
     formName: string(),
+    fieldsKey: optional(string(), ""),
     formTitle: optional(string(), ""),
     savedAt: number(),
     status: optional(DraftStatusSchema, "pending"),
@@ -47,8 +48,21 @@ const DraftsEnvelopeSchema = object({
     drafts: optional(array(FormDraftSchema), []),
 });
 
-export interface FormDraft {
+/**
+ * What identifies a draft.
+ *
+ * A form name alone is not enough: `limitedForm` hands out definitions that
+ * keep the name of the original form but only carry some of its fields. If
+ * both shared a draft, filling the limited variant would quietly truncate what
+ * was saved for the full one, and cancelling it would delete the lot.
+ */
+export interface DraftId {
     formName: string;
+    /** Identifies which fields the form that owns the draft actually has */
+    fieldsKey: string;
+}
+
+export interface FormDraft extends DraftId {
     formTitle: string;
     savedAt: number;
     status: DraftStatus;
@@ -56,6 +70,22 @@ export interface FormDraft {
 }
 
 export type NewFormDraft = Omit<FormDraft, "savedAt">;
+
+/** Stable regardless of the order the fields come in */
+export function draftFieldsKey(fieldNames: readonly string[]): string {
+    return JSON.stringify([...fieldNames].sort());
+}
+
+export function draftIdFor(form: { name: string; fields: readonly { name: string }[] }): DraftId {
+    return {
+        formName: form.name,
+        fieldsKey: draftFieldsKey(form.fields.map((field) => field.name)),
+    };
+}
+
+function isSameDraft(a: DraftId, b: DraftId): boolean {
+    return a.formName === b.formName && a.fieldsKey === b.fieldsKey;
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -98,6 +128,7 @@ export function parseDrafts(raw: unknown): FormDraft[] {
             drafts.map(
                 (draft): FormDraft => ({
                     formName: draft.formName,
+                    fieldsKey: draft.fieldsKey,
                     formTitle: draft.formTitle || draft.formName,
                     savedAt: draft.savedAt,
                     status: draft.status,
@@ -123,11 +154,11 @@ export function pruneDrafts(
 }
 
 export function upsertDraft(drafts: FormDraft[], draft: FormDraft): FormDraft[] {
-    return [draft, ...drafts.filter((d) => d.formName !== draft.formName)];
+    return [draft, ...drafts.filter((d) => !isSameDraft(d, draft))];
 }
 
-export function findDraft(drafts: FormDraft[], formName: string): O.Option<FormDraft> {
-    return O.fromNullable(drafts.find((draft) => draft.formName === formName));
+export function findDraft(drafts: FormDraft[], id: DraftId): O.Option<FormDraft> {
+    return O.fromNullable(drafts.find((draft) => isSameDraft(draft, id)));
 }
 
 /**
@@ -144,16 +175,16 @@ export interface FormDraftStore {
     /** Stores (or replaces) the draft of a form */
     save(draft: NewFormDraft): void;
     /** The draft of a form, only if it is worth restoring automatically */
-    recover(formName: string): O.Option<FormDraft>;
+    recover(id: DraftId): O.Option<FormDraft>;
     /** The draft of a form, whatever its status */
-    find(formName: string): O.Option<FormDraft>;
+    find(id: DraftId): O.Option<FormDraft>;
     /** All stored drafts, newest first */
     list(): FormDraft[];
     /** Flags the draft as submitted, so it is no longer restored automatically */
-    markSubmitted(formName: string): void;
+    markSubmitted(id: DraftId): void;
     /** Flags the draft as pending again, so the next open of the form restores it */
-    markPending(formName: string): void;
-    clear(formName: string): void;
+    markPending(id: DraftId): void;
+    clear(id: DraftId): void;
     clearAll(): void;
     /** Drops expired and excess drafts */
     prune(): void;
@@ -180,15 +211,15 @@ export function makeFormDraftStore(
         }
         storage.save({ version: 1, drafts: pruned });
     }
-    function setStatus(formName: string, status: DraftStatus): void {
+    function setStatus(id: DraftId, status: DraftStatus): void {
         const drafts = read();
-        if (!drafts.some((draft) => draft.formName === formName)) return;
-        write(drafts.map((draft) => (draft.formName === formName ? { ...draft, status } : draft)));
+        if (!drafts.some((draft) => isSameDraft(draft, id))) return;
+        write(drafts.map((draft) => (isSameDraft(draft, id) ? { ...draft, status } : draft)));
     }
-    function clear(formName: string): void {
+    function clear(id: DraftId): void {
         const drafts = read();
-        if (!drafts.some((draft) => draft.formName === formName)) return;
-        write(drafts.filter((draft) => draft.formName !== formName));
+        if (!drafts.some((draft) => isSameDraft(draft, id))) return;
+        write(drafts.filter((draft) => !isSameDraft(draft, id)));
     }
     return {
         save(draft) {
@@ -197,29 +228,29 @@ export function makeFormDraftStore(
             if (!draftHasContent(data)) {
                 // An empty draft is noise, and it would shadow a previous
                 // useful one for the same form.
-                clear(draft.formName);
+                clear(draft);
                 return;
             }
             write(upsertDraft(read(), { ...draft, data, savedAt: now() }));
         },
-        recover(formName) {
+        recover(id) {
             if (!isEnabled()) return O.none;
             return pipe(
-                findDraft(read(), formName),
+                findDraft(read(), id),
                 O.filter((draft) => draft.status === "pending" && draftHasContent(draft.data)),
             );
         },
-        find(formName) {
-            return findDraft(read(), formName);
+        find(id) {
+            return findDraft(read(), id);
         },
         list() {
             return pruneDrafts(read(), now());
         },
-        markSubmitted(formName) {
-            setStatus(formName, "submitted");
+        markSubmitted(id) {
+            setStatus(id, "submitted");
         },
-        markPending(formName) {
-            setStatus(formName, "pending");
+        markPending(id) {
+            setStatus(id, "pending");
         },
         clear,
         clearAll() {
