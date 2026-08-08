@@ -51,14 +51,21 @@ const DraftsEnvelopeSchema = object({
 /**
  * What identifies a draft.
  *
- * A form name alone is not enough: `limitedForm` hands out definitions that
- * keep the name of the original form but only carry some of its fields. If
- * both shared a draft, filling the limited variant would quietly truncate what
- * was saved for the full one, and cancelling it would delete the lot.
+ * A form name alone is not enough, for two reasons:
+ *
+ * - `limitedForm` hands out definitions that keep the name of the original
+ *   form but only carry some of its fields. If both shared a draft, filling
+ *   the limited variant would quietly truncate what was saved for the full
+ *   one, and cancelling it would delete the lot.
+ * - A field can keep its name and change its input type. Values saved under
+ *   the old type do not necessarily fit the new one, and restoring them would
+ *   put the form in a state the user never typed.
+ *
+ * So the identity covers the shape of the form, not just its name.
  */
 export interface DraftId {
     formName: string;
-    /** Identifies which fields the form that owns the draft actually has */
+    /** Identifies the fields the form that owns the draft has, and their types */
     fieldsKey: string;
 }
 
@@ -71,16 +78,15 @@ export interface FormDraft extends DraftId {
 
 export type NewFormDraft = Omit<FormDraft, "savedAt">;
 
+export type DraftFieldShape = { name: string; input?: { type?: string } };
+
 /** Stable regardless of the order the fields come in */
-export function draftFieldsKey(fieldNames: readonly string[]): string {
-    return JSON.stringify([...fieldNames].sort());
+export function draftFieldsKey(fields: readonly DraftFieldShape[]): string {
+    return JSON.stringify(fields.map((field) => `${field.name}:${field.input?.type ?? ""}`).sort());
 }
 
-export function draftIdFor(form: { name: string; fields: readonly { name: string }[] }): DraftId {
-    return {
-        formName: form.name,
-        fieldsKey: draftFieldsKey(form.fields.map((field) => field.name)),
-    };
+export function draftIdFor(form: { name: string; fields: readonly DraftFieldShape[] }): DraftId {
+    return { formName: form.name, fieldsKey: draftFieldsKey(form.fields) };
 }
 
 function isSameDraft(a: DraftId, b: DraftId): boolean {

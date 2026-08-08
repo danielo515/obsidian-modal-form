@@ -30,7 +30,7 @@ function makeMemoryStorage(initial: unknown = null): DraftStorage & { value: unk
 function draft(overrides: Partial<FormDraft> = {}): FormDraft {
     return {
         formName: "my-form",
-        fieldsKey: draftFieldsKey(["title"]),
+        fieldsKey: draftFieldsKey([{ name: "title" }]),
         formTitle: "My form",
         savedAt: 1000,
         status: "pending",
@@ -41,7 +41,7 @@ function draft(overrides: Partial<FormDraft> = {}): FormDraft {
 
 /** The draft identity of a form with a single "a" field, used by most tests */
 function id(formName: string, fields = ["a"]) {
-    return { formName, fieldsKey: draftFieldsKey(fields) };
+    return { formName, fieldsKey: draftFieldsKey(fields.map((name) => ({ name }))) };
 }
 
 describe("sanitizeDraftData", () => {
@@ -99,7 +99,7 @@ describe("parseDrafts", () => {
             drafts: [
                 {
                     formName: "a",
-                    fieldsKey: draftFieldsKey(["good"]),
+                    fieldsKey: draftFieldsKey([{ name: "good" }]),
                     formTitle: "A",
                     savedAt: 5,
                     status: "submitted",
@@ -110,7 +110,7 @@ describe("parseDrafts", () => {
         expect(parseDrafts(stored)).toEqual([
             {
                 formName: "a",
-                fieldsKey: draftFieldsKey(["good"]),
+                fieldsKey: draftFieldsKey([{ name: "good" }]),
                 formTitle: "A",
                 savedAt: 5,
                 status: "submitted",
@@ -173,6 +173,26 @@ describe("draftIdFor", () => {
         // This is what `limitedForm` produces: same name, fewer fields
         expect(draftIdFor({ name: "f", fields: [{ name: "a" }, { name: "b" }] })).not.toEqual(
             draftIdFor({ name: "f", fields: [{ name: "a" }] }),
+        );
+    });
+
+    it("tells apart a field that kept its name but changed its input type", () => {
+        // A value typed into a text field has no business landing in the
+        // number field that replaced it
+        expect(
+            draftIdFor({ name: "f", fields: [{ name: "a", input: { type: "text" } }] }),
+        ).not.toEqual(
+            draftIdFor({ name: "f", fields: [{ name: "a", input: { type: "number" } }] }),
+        );
+    });
+
+    it("is unchanged when the fields and their types are the same", () => {
+        const fields = [
+            { name: "a", input: { type: "text" } },
+            { name: "b", input: { type: "multiselect" } },
+        ];
+        expect(draftIdFor({ name: "f", fields })).toEqual(
+            draftIdFor({ name: "f", fields: [...fields].reverse() }),
         );
     });
 });

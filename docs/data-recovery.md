@@ -24,10 +24,17 @@ the 25 most recent forms. You can also turn the whole thing off in
 **Settings → Modal Form → Preserve form data**, which deletes everything kept
 so far.
 
-Data is tracked per form *and* per set of fields. A form opened through
-[`limitedForm`](../README.md#call-the-form-from-javascript) with `pick` or
-`omit` is a different shape than the full form, so it gets its own saved data
-and can never truncate or delete what the full form had.
+Data is tracked per form *and* per shape — the set of fields it has and their
+input types. Two consequences:
+
+- A form opened through
+  [`limitedForm`](../README.md#call-the-form-from-javascript) with `pick` or
+  `omit` is a different shape than the full form, so it gets its own saved data
+  and can never truncate or delete what the full form had.
+- Editing a form invalidates data saved for the old version of it, so a value
+  you typed into a text field is never poured into the number field that
+  replaced it. Nothing is deleted: that data is still there under
+  **Recover form data**, it just stops coming back on its own.
 
 ## When it comes back
 
