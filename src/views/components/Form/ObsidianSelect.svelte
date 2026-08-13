@@ -13,6 +13,7 @@
     export let value: Writable<FieldValue>;
     export let app: App;
     export let errors: Readable<string[]>;
+    export let required = false;
     function getNoteOptions(folder: string): Record<string, string> {
         const files = get_tfiles_from_folder(folder, app);
         return pipe(
@@ -34,6 +35,7 @@
 
 <ObsidianInput
     {errors}
+    {required}
     name={field.name}
     label={field.label || field.name}
     description={field.description}

@@ -53,15 +53,23 @@
     </ObsidianInputWrapper>
 {:else if $isVisible.right}
     {#if definition.input.type === "select"}
-        <ObsidianSelect input={definition.input} field={definition} {value} {errors} {app} />
+        <ObsidianSelect
+            input={definition.input}
+            field={definition}
+            {value}
+            {errors}
+            {app}
+            required={definition.isRequired}
+        />
     {:else if definition.input.type === "toggle"}
-        <ObsidianToggle field={definition} {value} />
+        <ObsidianToggle field={definition} {value} required={definition.isRequired} />
     {:else if definition.input.type === "folder"}
         <InputFolder
             field={definition}
             parentFolder={definition.input.parentFolder}
             {value}
             {app}
+            required={definition.isRequired}
         />
     {:else if definition.input.type === "dataview"}
         <InputDataview
@@ -71,11 +79,19 @@
             {errors}
             {app}
             form={formEngine}
+            required={definition.isRequired}
         />
     {:else if definition.input.type === "note"}
-        <InputNote field={definition} input={definition.input} {value} {errors} {app} />
+        <InputNote
+            field={definition}
+            input={definition.input}
+            {value}
+            {errors}
+            {app}
+            required={definition.isRequired}
+        />
     {:else if definition.input.type === "textarea"}
-        <InputTextArea field={definition} {value} {errors} />
+        <InputTextArea field={definition} {value} {errors} required={definition.isRequired} />
     {:else if definition.input.type === "markdown_block"}
         <MarkdownBlock field={definition.input} form={formEngine} {app} />
     {:else if definition.input.type === "document_block"}

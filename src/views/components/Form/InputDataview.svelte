@@ -16,6 +16,7 @@
     export let app: App;
     export let errors: Readable<string[]>;
     export let form: FormEngine;
+    export let required = false;
 
     let suggester: DataviewSuggest | null = null;
 
@@ -38,6 +39,7 @@
 
 <ObsidianInputWrapper
     {errors}
+    {required}
     name={field.name}
     label={field.label || field.name}
     description={field.description}
