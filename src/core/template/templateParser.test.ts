@@ -3,7 +3,12 @@ import * as E from "fp-ts/Either";
 import { stringifyYaml } from "obsidian";
 import * as S from "parser-ts/string";
 import { FileProxy } from "../files/FileProxy";
-import { anythingUntilOpenOrEOF, executeTemplate, parseTemplate } from "./templateParser";
+import {
+    anythingUntilOpenOrEOF,
+    executeTemplate,
+    parsedTemplateToString,
+    parseTemplate,
+} from "./templateParser";
 
 const inspect = (val: unknown) => {
     console.dir(val, { depth: 10 });
@@ -466,5 +471,50 @@ describe("parseTemplate", () => {
             E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "John", age: 18 })),
         );
         expect(result).toEqual(E.of(""));
+    });
+});
+
+// `parsedTemplateToString` is used by the form-editor UI to load an existing
+// template back into the textarea. If the round-trip produces something the
+// parser cannot re-read, editing a saved template silently corrupts it.
+describe("parsedTemplateToString round-trip", () => {
+    const roundTrip = (template: string): string => {
+        const parsed = parseTemplate(template);
+        if (E.isLeft(parsed)) throw new Error(parsed.left);
+        return parsedTemplateToString(parsed.right);
+    };
+
+    it("preserves plain text", () => {
+        const template = "Hello world";
+        expect(roundTrip(template)).toEqual(template);
+    });
+
+    it("preserves a variable", () => {
+        const template = "Hello {{name}}!";
+        expect(roundTrip(template)).toEqual(template);
+    });
+
+    it("preserves a variable with a transformation", () => {
+        const template = "Hello {{name|upper}}!";
+        expect(roundTrip(template)).toEqual(template);
+    });
+
+    it("preserves a bare frontmatter command", () => {
+        const template = "{# frontmatter #}";
+        expect(roundTrip(template)).toEqual(template);
+    });
+
+    it("preserves a frontmatter command with pick values", () => {
+        const template = "{# frontmatter pick: name, age #}";
+        expect(roundTrip(template)).toEqual(template);
+    });
+
+    it("produces a template the parser can re-read after a round-trip", () => {
+        const template =
+            "---\n{# frontmatter pick: title, tags #}\n---\n\n# {{title|capitalize}}\n";
+        const back = roundTrip(template);
+        // Re-parsing the serialised output must succeed; the previous
+        // implementation emitted `{{# ... #}}` which broke this.
+        expect(E.isRight(parseTemplate(back))).toBe(true);
     });
 });
