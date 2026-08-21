@@ -260,10 +260,9 @@ export class ResultValue<T = unknown> {
             return new ResultValue(toBlockquote(this.value.name), this.name, this.notify);
         }
         if (Array.isArray(this.value)) {
-            const quoted =
-                this.value.length === 0
-                    ? ""
-                    : this.value.map((item) => toBlockquote(String(item))).join("\n");
+            // An empty array falls through naturally: `[].map(...).join("\n")`
+            // is already `""`, no length guard needed.
+            const quoted = this.value.map((item) => toBlockquote(String(item))).join("\n");
             return new ResultValue(quoted, this.name, this.notify);
         }
         return new ResultValue(toBlockquote(this.toString()), this.name, this.notify);

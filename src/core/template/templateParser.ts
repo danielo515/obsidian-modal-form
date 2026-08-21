@@ -321,9 +321,10 @@ export function executeTransformation(
                 // Each item in an array should become its own quoted block so
                 // the joined comma-string that `String(value)` would produce
                 // doesn't collapse them into a single line. Join with `\n` so
-                // the multi-line structure of the quote survives.
+                // the multi-line structure of the quote survives. An empty
+                // array falls through naturally: `[].map(...).join("\n")` is
+                // already `""`.
                 if (Array.isArray(value)) {
-                    if (value.length === 0) return "";
                     return value.map((item) => toBlockquote(String(item))).join("\n");
                 }
                 if (value instanceof FileProxy) return toBlockquote(value.name);
