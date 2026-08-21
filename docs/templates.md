@@ -10,7 +10,7 @@ After the form template is processed, if you have the templater plugin installed
 A template consists of plain text mixed with variables and commands:
 
 - Variables: Wrapped in double curly braces `{{ }}`, they are replaced with form field values
-- Commands: Special instructions wrapped in `{{# #}}` that control template behavior
+- Commands: Special instructions wrapped in `{# #}` that control template behavior
 
 ### Variables
 

@@ -178,10 +178,16 @@ function tokenToString(token: Token): string {
             return token.value;
         case "variable":
             return `{{${token.value}${token.transformation ? `|${token.transformation}` : ""}}}`;
-        case "frontmatter-command":
-            return `{{# frontmatter pick: ${token.pick.join(", ")}, omit: ${token.omit.join(
-                ", ",
-            )} #}}`;
+        case "frontmatter-command": {
+            // Commands use single-brace delimiters `{# #}` — matching the parser above
+            // (`commandOpen` / `commandClose`) so the round-trip parses back cleanly.
+            // Only emit option labels when they have values: an empty `pick:` list
+            // isn't accepted by the parser, and `omit:` isn't a parseable option at all,
+            // so serialising it would produce a template the editor cannot re-parse.
+            const parts = ["frontmatter"];
+            if (token.pick.length > 0) parts.push(`pick: ${token.pick.join(", ")}`);
+            return `{# ${parts.join(" ")} #}`;
+        }
         default:
             return absurd(tag);
     }
