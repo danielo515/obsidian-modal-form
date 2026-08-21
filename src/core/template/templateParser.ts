@@ -285,6 +285,19 @@ function applyPerString(fn: (s: string) => string): (v: Val) => string {
     };
 }
 
+// Prefixes every line of `value` with "> ", producing a markdown blockquote.
+// Multi-line strings quote every line so the whole block reads as a quote
+// rather than only its first line. An empty string stays empty so a template
+// like `[{{x|blockquote}}]` on an empty value renders as `[]` instead of the
+// stray `[> ]` that a naive `"> " + value` would produce.
+export function toBlockquote(value: string): string {
+    if (value === "") return "";
+    return value
+        .split("\n")
+        .map((line) => `> ${line}`)
+        .join("\n");
+}
+
 export function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
@@ -310,6 +323,19 @@ export function executeTransformation(
                 return applyPerString(toSlug)(value);
             case "snake":
                 return applyPerString(toSnake)(value);
+            case "blockquote": {
+                // Each item in an array should become its own quoted block so
+                // the joined comma-string that `String(value)` would produce
+                // doesn't collapse them into a single line. Join with `\n` so
+                // the multi-line structure of the quote survives. An empty
+                // array falls through naturally: `[].map(...).join("\n")` is
+                // already `""`.
+                if (Array.isArray(value)) {
+                    return value.map((item) => toBlockquote(String(item))).join("\n");
+                }
+                if (value instanceof FileProxy) return toBlockquote(value.name);
+                return toBlockquote(String(value));
+            }
             default:
                 return absurd(transformation);
         }

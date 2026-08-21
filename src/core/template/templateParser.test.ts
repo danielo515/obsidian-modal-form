@@ -416,6 +416,88 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("my_photopng"));
     });
 
+    it("blockquote prefixes a single-line string with `> `", () => {
+        const template = "{{note|blockquote}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { note: "Hello world" })),
+        );
+        expect(result).toEqual(E.of("> Hello world"));
+    });
+
+    it("blockquote quotes every line of a multi-line string", () => {
+        // Regression: a naive `"> " + value` would only quote the first line
+        // and leave the rest unquoted, breaking the visual block.
+        const template = "{{note|blockquote}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { note: "line one\nline two\nline three" }),
+            ),
+        );
+        expect(result).toEqual(E.of("> line one\n> line two\n> line three"));
+    });
+
+    it("blockquote handles an empty string without emitting a stray `> `", () => {
+        const template = "[{{note|blockquote}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { note: "" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
+    it("blockquote applied to an array quotes each element on its own line", () => {
+        const template = "{{tags|blockquote}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { tags: ["foo", "bar", "baz"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("> foo\n> bar\n> baz"));
+    });
+
+    it("blockquote applied to an empty array produces an empty string", () => {
+        const template = "[{{tags|blockquote}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { tags: [] })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
+    it("blockquote applied to a FileProxy uses the file name, not the full path", () => {
+        const file = new FileProxy({
+            path: "attachments/My Photo.png",
+            name: "My Photo.png",
+            basename: "My Photo",
+            extension: "png",
+        });
+        const template = "{{image|blockquote}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { image: file })),
+        );
+        expect(result).toEqual(E.of("> My Photo.png"));
+    });
+
+    it("blockquote applied to a number stringifies and quotes it", () => {
+        const template = "{{age|blockquote}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { age: 42 })),
+        );
+        expect(result).toEqual(E.of("> 42"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);

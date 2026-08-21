@@ -1,7 +1,7 @@
 import { E, O, ensureError, pipe } from "@std";
 import { notifyError } from "src/utils/Log";
 import { FileProxy } from "./files/FileProxy";
-import { toSlug, toSnake } from "./template/templateParser";
+import { toBlockquote, toSlug, toSnake } from "./template/templateParser";
 
 function _toBulletList(value: Record<string, unknown> | unknown[]) {
     if (Array.isArray(value)) {
@@ -243,6 +243,29 @@ export class ResultValue<T = unknown> {
             return new ResultValue(toSnake(this.value.name), this.name, this.notify);
         }
         return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? toSnake(it) : it)));
+    }
+
+    /**
+     * getter that renders the value as a markdown blockquote by prefixing
+     * every line with `> `. Multi-line strings are quoted line-by-line so
+     * the whole block reads as a quote. Array items become their own quoted
+     * lines (a single item may still span multiple lines) so the visual
+     * structure of a multiselect answer survives. `FileProxy` values are
+     * quoted from the file name. Null/undefined and empty values are
+     * returned unchanged so they render as an empty string.
+     */
+    get blockquote(): ResultValue<unknown> {
+        if (this.value == null) return this;
+        if (this.value instanceof FileProxy) {
+            return new ResultValue(toBlockquote(this.value.name), this.name, this.notify);
+        }
+        if (Array.isArray(this.value)) {
+            // An empty array falls through naturally: `[].map(...).join("\n")`
+            // is already `""`, no length guard needed.
+            const quoted = this.value.map((item) => toBlockquote(String(item))).join("\n");
+            return new ResultValue(quoted, this.name, this.notify);
+        }
+        return new ResultValue(toBlockquote(this.toString()), this.name, this.notify);
     }
 
     /**
