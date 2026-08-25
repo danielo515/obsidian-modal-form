@@ -9,6 +9,7 @@
     export let value: Writable<FieldValue>;
     export let parentFolder: string | undefined;
     export let app: App;
+    export let required = false;
     let search_: SearchComponent | undefined;
     function customizer(setting: Setting) {
         setting.addSearch((component) => {
@@ -35,6 +36,7 @@
         name: field.label || field.name,
         description: field.description || "",
         fieldName: field.name,
+        required,
         customizer,
     }}
 >

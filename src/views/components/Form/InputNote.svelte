@@ -11,6 +11,7 @@
     export let value: Writable<FieldValue>;
     export let app: App;
     export let errors: Readable<string[]>;
+    export let required = false;
     function noteSuggest(el: HTMLInputElement) {
         new FileSuggest(
             app,
@@ -30,6 +31,7 @@
 
 <ObsidianInputWrapper
     {errors}
+    {required}
     name={field.name}
     label={field.label || field.name}
     description={field.description}

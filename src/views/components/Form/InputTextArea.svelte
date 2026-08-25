@@ -7,6 +7,7 @@
     export let field: FieldDefinition;
     export let value: Writable<FieldValue>;
     export let errors: Readable<string[]>;
+    export let required = false;
     function customizeTextArea(el: HTMLTextAreaElement) {
         if (Platform.isIosApp) el.style.width = "100%";
         else if (Platform.isDesktopApp) {
@@ -17,6 +18,7 @@
 
 <ObsidianInputWrapper
     {errors}
+    {required}
     name={field.name}
     label={field.label || field.name}
     description={field.description}

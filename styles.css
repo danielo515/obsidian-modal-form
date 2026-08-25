@@ -40,6 +40,10 @@ If your plugin does not need CSS, delete this file.
 .modal-form-hint {
     color: var(--text-muted);
 }
+.modal-form-required {
+    color: var(--color-red);
+    margin-left: 0.25em;
+}
 .modal-form {
     --shadow-bottom: 0 0.8rem 0.8rem -0.8rem;
 }

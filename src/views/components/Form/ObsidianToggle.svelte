@@ -6,6 +6,7 @@
     import { useSetting } from "./useObsidianSetting";
     export let field: FieldDefinition;
     export let value: Writable<FieldValue>;
+    export let required = false;
     let toggle_: ToggleComponent | undefined;
     function customizer(setting: Setting) {
         setting.addToggle((toggle) => {
@@ -25,6 +26,7 @@
         name: field.label || field.name,
         description: field.description || "",
         fieldName: field.name,
+        required,
         customizer,
     }}
 >
