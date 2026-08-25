@@ -55,9 +55,35 @@ export const SelectFromNotesSchema = object({
 });
 export const InputTagSchema = object({
     type: literal("tag"),
-    exclude: optional(string()), // This should be a regex string
+    include: optional(string()), // Regex string. When set, only tags matching it are suggested.
+    exclude: optional(string()), // Regex string. When set, tags matching it are filtered out.
     hidden: optional(boolean(), false),
 });
+
+/**
+ * Filters a list of tag names according to the `include`/`exclude` regex
+ * patterns declared on a tag input. Invalid regex patterns are ignored (the
+ * full list is returned) so a typo in the form definition doesn't blow up the
+ * form at render time.
+ */
+export function filterTags(tags: string[], input: { include?: string; exclude?: string }): string[] {
+    const includeRe = safeRegex(input.include);
+    const excludeRe = safeRegex(input.exclude);
+    return tags.filter((tag) => {
+        if (includeRe && !includeRe.test(tag)) return false;
+        if (excludeRe && excludeRe.test(tag)) return false;
+        return true;
+    });
+}
+
+function safeRegex(pattern: string | undefined): RegExp | undefined {
+    if (!pattern) return undefined;
+    try {
+        return new RegExp(pattern);
+    } catch {
+        return undefined;
+    }
+}
 export const InputSliderSchema = object({
     type: literal("slider"),
     min: number(),
