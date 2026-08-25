@@ -118,6 +118,17 @@ The following transformations can be applied to variables:
 
    - Input `Hello, World!` produces `hello_world`; input `  My Note (2024)  ` produces `my_note_2024`.
 
+8. **`unique`**: Removes duplicate items from an array value, preserving the order of first occurrence.
+   - Non-array values are returned unchanged (a single value is trivially unique), so the transformation is safe to use on any field.
+   - Useful for cleaning up multiselect or tag fields where the same option might have been picked more than once.
+   - Usage:
+
+     ```plaintext
+     {{ tags | unique }}
+     ```
+
+   - Input `["foo", "bar", "foo", "baz"]` produces `foo,bar,baz`.
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:

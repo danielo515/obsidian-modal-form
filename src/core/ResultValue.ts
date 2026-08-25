@@ -1,7 +1,7 @@
 import { E, O, ensureError, pipe } from "@std";
 import { notifyError } from "src/utils/Log";
 import { FileProxy } from "./files/FileProxy";
-import { toSlug, toSnake } from "./template/templateParser";
+import { toSlug, toSnake, uniqueValues } from "./template/templateParser";
 
 function _toBulletList(value: Record<string, unknown> | unknown[]) {
     if (Array.isArray(value)) {
@@ -243,6 +243,18 @@ export class ResultValue<T = unknown> {
             return new ResultValue(toSnake(this.value.name), this.name, this.notify);
         }
         return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? toSnake(it) : it)));
+    }
+
+    /**
+     * getter that removes duplicate items from an array value, preserving
+     * the order of first occurrence. Non-array values (strings, numbers,
+     * booleans, `FileProxy`, records) are returned unchanged since a single
+     * value is trivially unique. Useful for cleaning up multiselect fields
+     * where the same option might appear more than once.
+     */
+    get unique(): ResultValue<unknown> {
+        if (!Array.isArray(this.value)) return this;
+        return new ResultValue(uniqueValues(this.value), this.name, this.notify);
     }
 
     /**
