@@ -67,10 +67,16 @@ describe("isInputSlider", () => {
         expect(isInputSlider({ type: "slider", min: 0, max: 10 })).toBe(true);
     });
 
+    it("should accept an optional numeric step", () => {
+        expect(isInputSlider({ type: "slider", min: 0, max: 10, step: 0.5 })).toBe(true);
+        expect(isInputSlider({ type: "slider", min: 0, max: 100, step: 5 })).toBe(true);
+    });
+
     it("should return false for invalid inputSlider objects", () => {
         expect(isInputSlider({ type: "slider" })).toBe(false);
         expect(isInputSlider({ type: "slider", min: "0", max: 10 })).toBe(false);
         expect(isInputSlider({ type: "select", min: 0, max: 10 })).toBe(false);
+        expect(isInputSlider({ type: "slider", min: 0, max: 10, step: "0.5" })).toBe(false);
     });
 });
 
