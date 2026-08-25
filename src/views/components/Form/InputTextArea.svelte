@@ -7,6 +7,7 @@
     export let field: FieldDefinition;
     export let value: Writable<FieldValue>;
     export let errors: Readable<string[]>;
+    export let placeholder = "";
     function customizeTextArea(el: HTMLTextAreaElement) {
         if (Platform.isIosApp) el.style.width = "100%";
         else if (Platform.isDesktopApp) {
@@ -22,5 +23,5 @@
     description={field.description}
     className="modal-form-textarea"
 >
-    <textarea name={field.name} bind:value={$value} use:customizeTextArea />
+    <textarea name={field.name} {placeholder} bind:value={$value} use:customizeTextArea />
 </ObsidianInputWrapper>
