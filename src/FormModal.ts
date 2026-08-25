@@ -7,6 +7,7 @@ import type { ModalFormData } from "./core/formResultTypes";
 import { formDataFromFormDefaults } from "./core/formDataFromFormDefaults";
 import type { FormDefinition, FormOptions } from "./core/formDefinition";
 import { FormEngine, makeFormEngine } from "./store/formEngine";
+import { focusFirstInput } from "./utils/focusFirstInput";
 import { log_notice } from "./utils/Log";
 
 export type SubmitFn = (formResult: FormResult) => void;
@@ -21,7 +22,8 @@ export class FormModal extends Modal {
     subscriptions: (() => void)[] = [];
     formEngine: FormEngine;
     private hasBeenHandled = false;
-    
+    private autoFocus: boolean;
+
     constructor(
         app: App,
         private modalDefinition: FormDefinition,
@@ -29,6 +31,7 @@ export class FormModal extends Modal {
         options?: FormOptions,
     ) {
         super(app);
+        this.autoFocus = options?.autoFocus ?? true;
         this.initialFormValues = formDataFromFormDefaults(
             modalDefinition.fields,
             options?.values ?? {},
@@ -102,6 +105,12 @@ export class FormModal extends Modal {
 
         contentEl.addEventListener("keydown", submitEnterCallback);
         contentEl.addEventListener("keydown", cancelEscapeCallback);
+
+        if (this.autoFocus) {
+            // Wait one frame so async field components (e.g. multiselect, note,
+            // dataview) have a chance to mount before we look for the first input.
+            requestAnimationFrame(() => focusFirstInput(contentEl));
+        }
     }
 
     onClose() {

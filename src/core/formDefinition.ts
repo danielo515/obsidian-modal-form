@@ -82,6 +82,14 @@ export type FormWithTemplate = Simplify<
 
 export type FormOptions = {
     values?: Record<string, unknown>;
+    /**
+     * When true (the default), the first text-like input is focused as soon as
+     * the modal opens. Set to false to suppress auto-focus — useful when the
+     * form starts with a long markdown_block / document_block intro the user
+     * should read first, or when opening the form on mobile where focusing an
+     * input pops up the keyboard immediately.
+     */
+    autoFocus?: boolean;
 };
 
 type KeyOfUnion<T> = T extends unknown ? keyof T : never;
