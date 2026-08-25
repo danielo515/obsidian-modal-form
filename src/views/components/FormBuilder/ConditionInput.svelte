@@ -36,10 +36,15 @@
         }
     }
     $: {
-        if ($conditionType === "isSet") {
-            // This is the only case where we can submit a condition without a value
-            if ($dependencyName !== condition.dependencyName && $dependencyName !== undefined)
-                onChange({ type: "isSet", dependencyName: $dependencyName });
+        if ($conditionType === "isSet" || $conditionType === "isNotSet") {
+            // These are the only cases where we can submit a condition without a value
+            if (
+                $dependencyName !== undefined &&
+                (condition.type !== $conditionType ||
+                    $dependencyName !== condition.dependencyName)
+            ) {
+                onChange({ type: $conditionType, dependencyName: $dependencyName });
+            }
         }
     }
 </script>

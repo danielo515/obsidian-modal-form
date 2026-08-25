@@ -14,6 +14,11 @@ export function buildCondition(
                 dependencyName,
                 type: "isSet",
             };
+        case "isNotSet":
+            return {
+                dependencyName,
+                type: "isNotSet",
+            };
         case "boolean":
             return {
                 dependencyName,
@@ -51,6 +56,7 @@ export function getInitialInputValues(condition: input.Condition): {
 } {
     switch (condition.type) {
         case "isSet":
+        case "isNotSet":
             return { booleanValue: false, textValue: "", numberValue: 0 };
         case "boolean":
             return { booleanValue: condition.value, textValue: "", numberValue: 0 };
@@ -126,6 +132,7 @@ export function makeModel(
         > => {
             switch ($condition.type) {
                 case "isSet":
+                case "isNotSet":
                     return O.none;
                 case "boolean":
                     return O.of({
@@ -185,7 +192,8 @@ export function makeModel(
             set: (type: input.ConditionType) => {
                 logger.log("setting condition type", type);
                 conditionStore.update((c) => {
-                    if (c.type === "isSet") return buildCondition(type, c.dependencyName, false);
+                    if (c.type === "isSet" || c.type === "isNotSet")
+                        return buildCondition(type, c.dependencyName, false);
                     return buildCondition(type, c.dependencyName, c.value);
                 });
             },

@@ -4,6 +4,7 @@ import { absurd } from "fp-ts/function";
 import * as v from "valibot";
 import { FieldDefinition } from "../formDefinition";
 const isSet = v.object({ dependencyName: v.string(), type: v.literal("isSet") });
+const isNotSet = v.object({ dependencyName: v.string(), type: v.literal("isNotSet") });
 const booleanValue = v.object({
     dependencyName: v.string(),
     type: v.literal("boolean"),
@@ -19,7 +20,7 @@ const above = v.object({
     type: v.enumType(["above", "aboveOrEqual", "below", "belowOrEqual", "exactly"]),
     value: v.number(),
 });
-export const ConditionSchema = v.union([isSet, booleanValue, startsWith, above]);
+export const ConditionSchema = v.union([isSet, isNotSet, booleanValue, startsWith, above]);
 
 export type Condition = v.Output<typeof ConditionSchema>;
 export type ConditionType = Condition["type"];
@@ -38,16 +39,24 @@ export function availableConditionsForInput(input: FieldDefinition["input"]): Co
         case "folder":
         case "note":
         case "tel":
-            return ["isSet", "startsWith", "endsWith", "isExactly", "contains"];
+            return ["isSet", "isNotSet", "startsWith", "endsWith", "isExactly", "contains"];
         case "slider":
         case "number":
-            return ["isSet", "above", "aboveOrEqual", "below", "belowOrEqual", "exactly"];
+            return [
+                "isSet",
+                "isNotSet",
+                "above",
+                "aboveOrEqual",
+                "below",
+                "belowOrEqual",
+                "exactly",
+            ];
         case "toggle":
             return ["boolean"];
         case "date":
         case "time":
         case "datetime":
-            return ["isSet"];
+            return ["isSet", "isNotSet"];
         // Select values are always set, so that's why we don't have an "isSet" condition
         case "select":
             return ["startsWith", "endsWith", "isExactly", "contains"];
@@ -59,13 +68,13 @@ export function availableConditionsForInput(input: FieldDefinition["input"]): Co
             return [];
         case "image":
         case "file":
-            return ["isSet"];
+            return ["isSet", "isNotSet"];
         default:
             return absurd(input);
     }
 }
 
-function processIsSet(_condition: Extract<Condition, { type: "isSet" }>, value: unknown) {
+function isValueSet(value: unknown): boolean {
     if (value === null || value === undefined) {
         return false;
     }
@@ -125,7 +134,9 @@ function processNumberCondition(
 export function valueMeetsCondition(condition: Condition, value: unknown): boolean {
     switch (condition.type) {
         case "isSet":
-            return processIsSet(condition, value);
+            return isValueSet(value);
+        case "isNotSet":
+            return !isValueSet(value);
         case "startsWith":
         case "contains":
         case "endsWith":
