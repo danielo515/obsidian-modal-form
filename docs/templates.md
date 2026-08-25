@@ -118,6 +118,18 @@ The following transformations can be applied to variables:
 
    - Input `Hello, World!` produces `hello_world`; input `  My Note (2024)  ` produces `my_note_2024`.
 
+8. **`link`**: Wraps the variable's value in Obsidian wiki-link brackets.
+   - A plain string becomes `[[value]]`.
+   - An array (for example a multiselect backed by notes) becomes each item wrapped in its own `[[…]]` and joined with `, ` — useful for inline lists of related notes.
+   - A file value (from an `image` or `file` field) becomes an embedded link `![[full/path.ext]]` so the file renders inline in the resulting note.
+   - Usage:
+
+     ```plaintext
+     {{ person | link }}
+     ```
+
+   - Input `Alice` produces `[[Alice]]`; input `["Alice", "Bob"]` produces `[[Alice]], [[Bob]]`.
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:

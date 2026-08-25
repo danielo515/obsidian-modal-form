@@ -378,6 +378,24 @@ describe("ResultValue", () => {
             expect(resultValue.trimmed.snake.toString()).toEqual("hello_world");
         });
     });
+    describe("link", () => {
+        it("should render a string as a wiki-link", () => {
+            const resultValue = ResultValue.from("Alice", "Test");
+            expect(resultValue.link).toEqual("[[Alice]]");
+        });
+        it("should render each item of an array as its own wiki-link joined with commas", () => {
+            const resultValue = ResultValue.from(["Alice", "Bob"], "Test");
+            expect(resultValue.link).toEqual("[[Alice]], [[Bob]]");
+        });
+        it("should return an empty string for an empty array", () => {
+            const resultValue = ResultValue.from([] as string[], "Test");
+            expect(resultValue.link).toEqual("");
+        });
+        it("should return an empty string for null/undefined values", () => {
+            expect(ResultValue.from(null, "Test").link).toEqual("");
+            expect(ResultValue.from(undefined, "Test").link).toEqual("");
+        });
+    });
     describe("chaining shortcuts", () => {
         it("should be possible to chain upper, lower and trim", () => {
             // Arrange
