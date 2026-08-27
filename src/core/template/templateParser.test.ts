@@ -162,6 +162,35 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("Hello, john! You are 18 years old."));
     });
 
+    // `uppercase` and `lowercase` are documented aliases for `upper` and `lower`
+    // that read more naturally in prose templates. Both must parse to the same
+    // canonical transformation so the executor treats them identically.
+    it("should accept `uppercase` as an alias for `upper`", () => {
+        const template = "{{name|uppercase}}";
+        const result = parseTemplate(template);
+        expect(result).toEqual(
+            E.of([{ _tag: "variable", value: "name", transformation: "upper" }]),
+        );
+    });
+
+    it("should accept `lowercase` as an alias for `lower`", () => {
+        const template = "{{name|lowercase}}";
+        const result = parseTemplate(template);
+        expect(result).toEqual(
+            E.of([{ _tag: "variable", value: "name", transformation: "lower" }]),
+        );
+    });
+
+    it("Should execute a template with the `lowercase` alias", () => {
+        const template = "Hello, {{name|lowercase}}!";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { name: "John", age: 18 })),
+        );
+        expect(result).toEqual(E.of("Hello, john!"));
+    });
+
     it("Should execute a template with trim transformations", () => {
         const template = "Hello, {{name|trim}}!";
         const parsed = parseTemplate(template);
