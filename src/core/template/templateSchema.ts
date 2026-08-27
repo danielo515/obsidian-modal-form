@@ -16,10 +16,11 @@ const TemplateTextSchema = object({
 });
 
 const upper = transform(enumType(["upper", "uppercase"]), (_) => "upper" as const);
+const lower = transform(enumType(["lower", "lowercase"]), (_) => "lower" as const);
 
 export const transformations = union([
     upper,
-    literal("lower"),
+    lower,
     literal("trim"),
     literal("stringify"),
     literal("capitalize"),
