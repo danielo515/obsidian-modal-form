@@ -416,6 +416,119 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("my_photopng"));
     });
 
+    it("Should execute a template with pascal transformation", () => {
+        const template = "{{title|pascal}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "hello world" }),
+            ),
+        );
+        expect(result).toEqual(E.of("HelloWorld"));
+    });
+
+    it("pascal treats dashes, underscores and punctuation as word boundaries", () => {
+        const template = "{{title|pascal}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "hello_world-my.note" }),
+            ),
+        );
+        expect(result).toEqual(E.of("HelloWorldMyNote"));
+    });
+
+    it("pascal collapses runs of separators and trims edges", () => {
+        const template = "{{title|pascal}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "  ---My Note (2024)  " }),
+            ),
+        );
+        expect(result).toEqual(E.of("MyNote2024"));
+    });
+
+    it("pascal preserves unicode letters and numbers", () => {
+        const template = "{{title|pascal}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "café noël 2024" }),
+            ),
+        );
+        expect(result).toEqual(E.of("CaféNoël2024"));
+    });
+
+    it("pascal upper-cases supplementary-plane letters that begin a chunk", () => {
+        // Regression: `charAt(0)` returns the leading UTF-16 code unit, so
+        // a Deseret small letter (U+10428) would slip through un-cased and
+        // its surrogate pair would be split by the slice.
+        const template = "{{title|pascal}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "\u{10428}oo bar" }),
+            ),
+        );
+        expect(result).toEqual(E.of("\u{10400}ooBar"));
+    });
+
+    it("pascal leaves the rest of each chunk intact so camelCase becomes PascalCase", () => {
+        const template = "{{title|pascal}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "helloWorld" }),
+            ),
+        );
+        expect(result).toEqual(E.of("HelloWorld"));
+    });
+
+    it("pascal handles an empty string without crashing", () => {
+        const template = "[{{title|pascal}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { title: "" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
+    it("pascal applied to an array converts each element and joins with commas", () => {
+        const template = "{{tags|pascal}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { tags: ["foo bar", "hello world!"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("FooBar,HelloWorld"));
+    });
+
+    it("pascal applied to a FileProxy uses the file name, not the full path", () => {
+        const file = new FileProxy({
+            path: "attachments/My Photo.png",
+            name: "My Photo.png",
+            basename: "My Photo",
+            extension: "png",
+        });
+        const template = "{{image|pascal}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { image: file })),
+        );
+        expect(result).toEqual(E.of("MyPhotoPng"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);
