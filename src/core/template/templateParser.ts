@@ -271,6 +271,24 @@ export function toSnake(value: string): string {
         .replace(/^_+|_+$/g, "");
 }
 
+// Converts a string into PascalCase: any run of non-letter/number characters
+// (whitespace, dashes, underscores, punctuation) is treated as a word boundary,
+// each remaining chunk's first character is upper-cased locale-aware while the
+// rest of the chunk is preserved as-is, and the chunks are concatenated. This
+// makes it a natural fit for deriving type or class names from free-form text
+// (e.g. "Café Noël 2024" → "CaféNoël2024", "hello_world" → "HelloWorld"), and
+// leaves already-camelCased identifiers like "helloWorld" → "HelloWorld"
+// intact save for the leading capital. Unicode letters and numbers are
+// preserved so the transformation stays useful for non-English users.
+export function toPascal(value: string): string {
+    return value
+        .replace(/[^\p{L}\p{N}]+/gu, " ")
+        .split(/\s+/)
+        .filter((chunk) => chunk.length > 0)
+        .map((chunk) => chunk.charAt(0).toLocaleUpperCase() + chunk.slice(1))
+        .join("");
+}
+
 // `slug` and `snake` strip punctuation, so calling `String(value)` on an array
 // would consume the comma separator and silently merge distinct values into
 // one token, and calling it on a `FileProxy` would consume path slashes and
@@ -310,6 +328,8 @@ export function executeTransformation(
                 return applyPerString(toSlug)(value);
             case "snake":
                 return applyPerString(toSnake)(value);
+            case "pascal":
+                return applyPerString(toPascal)(value);
             default:
                 return absurd(transformation);
         }

@@ -118,6 +118,18 @@ The following transformations can be applied to variables:
 
    - Input `Hello, World!` produces `hello_world`; input `  My Note (2024)  ` produces `my_note_2024`.
 
+8. **`pascal`**: Converts the variable's value to `PascalCase`.
+   - Any run of non-letter/number characters (whitespace, dashes, underscores, punctuation) becomes a word boundary. The first character of each chunk is upper-cased and the rest of the chunk is preserved as-is, so an already-camelCased identifier like `helloWorld` becomes `HelloWorld` and edge separators are dropped.
+   - Unicode letters and numbers are preserved (e.g. `Café Noël 2024` → `CaféNoël2024`).
+   - Useful for deriving type names, class names, or wiki article titles from free-form text.
+   - Usage:
+
+     ```plaintext
+     {{ title | pascal }}
+     ```
+
+   - Input `hello world` produces `HelloWorld`; input `hello_world-my.note` produces `HelloWorldMyNote`; input `  ---My Note (2024)  ` produces `MyNote2024`.
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:

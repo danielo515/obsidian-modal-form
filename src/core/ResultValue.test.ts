@@ -378,6 +378,44 @@ describe("ResultValue", () => {
             expect(resultValue.trimmed.snake.toString()).toEqual("hello_world");
         });
     });
+    describe("pascal", () => {
+        it("should convert a string to PascalCase", () => {
+            const resultValue = ResultValue.from("hello world", "Test");
+            expect(resultValue.pascal.toString()).toEqual("HelloWorld");
+        });
+        it("should treat dashes, underscores and punctuation as word boundaries", () => {
+            const resultValue = ResultValue.from("hello_world-my.note", "Test");
+            expect(resultValue.pascal.toString()).toEqual("HelloWorldMyNote");
+        });
+        it("should collapse runs of separators and trim edges", () => {
+            const resultValue = ResultValue.from("  ---My Note (2024)  ", "Test");
+            expect(resultValue.pascal.toString()).toEqual("MyNote2024");
+        });
+        it("should preserve unicode letters and numbers", () => {
+            const resultValue = ResultValue.from("café noël 2024", "Test");
+            expect(resultValue.pascal.toString()).toEqual("CaféNoël2024");
+        });
+        it("should turn camelCase into PascalCase without lowering the rest", () => {
+            const resultValue = ResultValue.from("helloWorld", "Test");
+            expect(resultValue.pascal.toString()).toEqual("HelloWorld");
+        });
+        it("should convert each string in an array individually", () => {
+            const resultValue = ResultValue.from(["foo bar", "hello world!"], "Test");
+            expect(resultValue.pascal.toString()).toEqual("FooBar, HelloWorld");
+        });
+        it("should leave non-string values unchanged in mixed arrays", () => {
+            const resultValue = ResultValue.from(["foo bar", 42], "Test");
+            expect(resultValue.pascal.bullets).toEqual("- FooBar\n- 42");
+        });
+        it("should handle an empty string without crashing", () => {
+            const resultValue = ResultValue.from("", "Test");
+            expect(resultValue.pascal.toString()).toEqual("");
+        });
+        it("should be chainable", () => {
+            const resultValue = ResultValue.from("  hello world  ", "Test");
+            expect(resultValue.trimmed.pascal.toString()).toEqual("HelloWorld");
+        });
+    });
     describe("chaining shortcuts", () => {
         it("should be possible to chain upper, lower and trim", () => {
             // Arrange
