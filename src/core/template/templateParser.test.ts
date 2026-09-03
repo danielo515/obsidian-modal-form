@@ -464,6 +464,21 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("CaféNoël2024"));
     });
 
+    it("pascal upper-cases supplementary-plane letters that begin a chunk", () => {
+        // Regression: `charAt(0)` returns the leading UTF-16 code unit, so
+        // a Deseret small letter (U+10428) would slip through un-cased and
+        // its surrogate pair would be split by the slice.
+        const template = "{{title|pascal}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "\u{10428}oo bar" }),
+            ),
+        );
+        expect(result).toEqual(E.of("\u{10400}ooBar"));
+    });
+
     it("pascal leaves the rest of each chunk intact so camelCase becomes PascalCase", () => {
         const template = "{{title|pascal}}";
         const parsed = parseTemplate(template);

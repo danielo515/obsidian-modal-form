@@ -395,6 +395,12 @@ describe("ResultValue", () => {
             const resultValue = ResultValue.from("café noël 2024", "Test");
             expect(resultValue.pascal.toString()).toEqual("CaféNoël2024");
         });
+        it("should upper-case supplementary-plane letters that begin a chunk", () => {
+            // Regression: `charAt(0)` returns the leading UTF-16 code unit,
+            // so a Deseret small letter (U+10428) would slip through un-cased.
+            const resultValue = ResultValue.from("\u{10428}oo bar", "Test");
+            expect(resultValue.pascal.toString()).toEqual("\u{10400}ooBar");
+        });
         it("should turn camelCase into PascalCase without lowering the rest", () => {
             const resultValue = ResultValue.from("helloWorld", "Test");
             expect(resultValue.pascal.toString()).toEqual("HelloWorld");

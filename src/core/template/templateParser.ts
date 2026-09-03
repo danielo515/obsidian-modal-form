@@ -285,7 +285,11 @@ export function toPascal(value: string): string {
         .replace(/[^\p{L}\p{N}]+/gu, " ")
         .split(/\s+/)
         .filter((chunk) => chunk.length > 0)
-        .map((chunk) => chunk.charAt(0).toLocaleUpperCase() + chunk.slice(1))
+        // `charAt(0)` returns the leading UTF-16 code unit, which splits a
+        // surrogate pair for supplementary-plane letters (e.g. Deseret
+        // U+10428 `𐐨`), leaving the letter un-cased and mangling the slice.
+        // `replace(/^./u, ...)` matches the first full code point instead.
+        .map((chunk) => chunk.replace(/^./u, (first) => first.toLocaleUpperCase()))
         .join("");
 }
 
