@@ -118,6 +118,18 @@ The following transformations can be applied to variables:
 
    - Input `Hello, World!` produces `hello_world`; input `  My Note (2024)  ` produces `my_note_2024`.
 
+8. **`sort`**: Sorts an array of values alphabetically and joins them with commas.
+   - Ordering uses locale collation (via `localeCompare`), so accented characters stay next to their base letters — e.g. `école` sorts between `apple` and `zebra`, not after both.
+   - Scalar values (strings, numbers, files) are returned unchanged: sorting the characters of a single value is rarely what you want, so the transformation is a no-op there.
+   - Useful for producing deterministic frontmatter from `multiselect` or `tag` fields where the field order is not stable.
+   - Usage:
+
+     ```plaintext
+     {{ tags | sort }}
+     ```
+
+   - Input `["cherry", "apple", "banana"]` produces `apple,banana,cherry`.
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:

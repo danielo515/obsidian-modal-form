@@ -416,6 +416,94 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("my_photopng"));
     });
 
+    it("sort orders an array alphabetically and joins with commas", () => {
+        const template = "{{tags|sort}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { tags: ["cherry", "apple", "banana"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("apple,banana,cherry"));
+    });
+
+    it("sort does not mutate the original array", () => {
+        // Regression: an in-place `.sort()` would reorder the caller's array,
+        // silently corrupting any later use of the same form data.
+        const tags = ["cherry", "apple", "banana"];
+        const template = "{{tags|sort}}";
+        const parsed = parseTemplate(template);
+        pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { tags })),
+        );
+        expect(tags).toEqual(["cherry", "apple", "banana"]);
+    });
+
+    it("sort respects locale collation for accented characters", () => {
+        // A plain codepoint sort would push accented letters below plain
+        // ASCII; `localeCompare` keeps them next to their base letters, which
+        // is what users of non-English locales expect.
+        const template = "{{tags|sort}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { tags: ["zebra", "école", "apple"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("apple,école,zebra"));
+    });
+
+    it("sort applied to a scalar string leaves it unchanged", () => {
+        // Sorting the characters of a scalar string is rarely useful and
+        // would surprise users, so the transformation is a no-op here.
+        const template = "{{title|sort}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { title: "banana" })),
+        );
+        expect(result).toEqual(E.of("banana"));
+    });
+
+    it("sort applied to a number renders it as a string", () => {
+        const template = "{{age|sort}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { age: 42 })),
+        );
+        expect(result).toEqual(E.of("42"));
+    });
+
+    it("sort handles an empty array without crashing", () => {
+        const template = "[{{tags|sort}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { tags: [] })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
+    it("sort applied to a FileProxy uses the file name unchanged", () => {
+        const file = new FileProxy({
+            path: "attachments/My Photo.png",
+            name: "My Photo.png",
+            basename: "My Photo",
+            extension: "png",
+        });
+        const template = "{{image|sort}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { image: file })),
+        );
+        expect(result).toEqual(E.of("My Photo.png"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);
@@ -496,6 +584,11 @@ describe("parsedTemplateToString round-trip", () => {
 
     it("preserves a variable with a transformation", () => {
         const template = "Hello {{name|upper}}!";
+        expect(roundTrip(template)).toEqual(template);
+    });
+
+    it("preserves a variable with the sort transformation", () => {
+        const template = "{{tags|sort}}";
         expect(roundTrip(template)).toEqual(template);
     });
 
