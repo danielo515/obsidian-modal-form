@@ -88,7 +88,7 @@ The above code will print the list field as a bullet list, but all the values wi
 The map method takes a function that takes the value and returns a new value.
 It can be used when none of the provided printing are enough for your use case, or when one of them is almost what you need but you need to transform the value a bit more.
 
-### `trimmed`,`lower`,`upper`,`capitalized`,`slug`,`snake` shortcuts
+### `trimmed`,`lower`,`upper`,`capitalized`,`slug`,`snake`,`sorted` shortcuts
 
 The ResultValue class provides some shortcuts to common transformations of the value.
 They are:
@@ -99,6 +99,7 @@ They are:
 - `capitalized`: Uppercases the first character and leaves the rest untouched. Chain after `lower` (e.g. `result.getValue('name').lower.capitalized`) if you also want the remaining characters lowercased.
 - `slug`: Converts the value to a URL/filename-friendly slug. Lowercases the value, turns whitespace and underscores into `-`, strips punctuation, collapses runs of dashes, and trims edge dashes. Unicode letters/numbers are preserved so `Café Noël` becomes `café-noël`. Handy for turning a form's title into a filename: `result.getValue('title').slug`.
 - `snake`: Converts the value to `snake_case`. Same shape as `slug`, but whitespace and dashes become underscores, runs of underscores collapse, and edge underscores are trimmed. Unicode letters/numbers are preserved so `Café Noël` becomes `café_noël`. Handy for deriving variable names, YAML keys, or database columns: `result.getValue('title').snake`.
+- `sorted`: Sorts array elements alphabetically using locale collation (`localeCompare`) so accented characters stay next to their base letters. Unlike `slug` / `snake`, `sorted` keeps the value as an array so it composes with the other renderers — `result.getValue('tags').sorted.bullets`, `result.getValue('tags').sorted.toDv()`, `result.getValue('tags').sorted.upper.bullets`. Scalar values (strings, numbers, files) are returned unchanged. The array is copied before sorting, so the underlying form data is never mutated.
 
 All of these shortcuts return a new ResultValue object, so you can chain them with other methods.
 

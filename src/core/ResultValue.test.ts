@@ -378,6 +378,50 @@ describe("ResultValue", () => {
             expect(resultValue.trimmed.snake.toString()).toEqual("hello_world");
         });
     });
+    describe("sorted", () => {
+        it("should sort an array of strings alphabetically", () => {
+            const resultValue = ResultValue.from(["cherry", "apple", "banana"], "Test");
+            expect(resultValue.sorted.toString()).toEqual("apple, banana, cherry");
+        });
+        it("should not mutate the original array", () => {
+            // Regression: an in-place `.sort()` would reorder the caller's
+            // array, silently corrupting any later use of the same form data.
+            const original = ["cherry", "apple", "banana"];
+            const resultValue = ResultValue.from(original, "Test");
+            resultValue.sorted;
+            expect(original).toEqual(["cherry", "apple", "banana"]);
+        });
+        it("should respect locale collation for accented characters", () => {
+            const resultValue = ResultValue.from(["zebra", "école", "apple"], "Test");
+            expect(resultValue.sorted.toString()).toEqual("apple, école, zebra");
+        });
+        it("should keep the array shape so bullets composes with it", () => {
+            // The point of `sorted` (vs. the template pipe form that eagerly
+            // joins with commas) is that the underlying value stays an array
+            // so downstream renderers still see individual elements.
+            const resultValue = ResultValue.from(["cherry", "apple", "banana"], "Test");
+            expect(resultValue.sorted.bullets).toEqual("- apple\n- banana\n- cherry");
+        });
+        it("should chain with case transformations", () => {
+            const resultValue = ResultValue.from(["Cherry", "apple", "Banana"], "Test");
+            expect(resultValue.lower.sorted.toString()).toEqual("apple, banana, cherry");
+        });
+        it("should handle an empty array without crashing", () => {
+            const resultValue = ResultValue.from([], "Test");
+            expect(resultValue.sorted.toString()).toEqual("");
+        });
+        it("should leave a scalar string unchanged", () => {
+            // Sorting the characters of a single value is rarely useful and
+            // would surprise callers, so the getter is a no-op here.
+            const resultValue = ResultValue.from("banana", "Test");
+            expect(resultValue.sorted.toString()).toEqual("banana");
+        });
+        it("should leave a number unchanged", () => {
+            const resultValue = ResultValue.from(42, "Test");
+            expect(resultValue.sorted.toString()).toEqual("42");
+        });
+    });
+
     describe("chaining shortcuts", () => {
         it("should be possible to chain upper, lower and trim", () => {
             // Arrange
