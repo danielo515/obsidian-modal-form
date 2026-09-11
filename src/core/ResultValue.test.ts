@@ -406,6 +406,16 @@ describe("ResultValue", () => {
             const resultValue = ResultValue.from(["Cherry", "apple", "Banana"], "Test");
             expect(resultValue.lower.sorted.toString()).toEqual("apple, banana, cherry");
         });
+        it("should render as a JSON array via map(JSON.stringify)", () => {
+            // `JSON.stringify(resultValue.sorted)` would serialise the wrapper
+            // (`{"value":[...],"name":"..."}`) because `ResultValue` has no
+            // `toJSON`; the composable path is to call `JSON.stringify`
+            // inside `.map` so the raw array is what gets serialised.
+            const resultValue = ResultValue.from(["cherry", "apple", "banana"], "Test");
+            expect(resultValue.sorted.map((v) => JSON.stringify(v)).toString()).toEqual(
+                '["apple","banana","cherry"]',
+            );
+        });
         it("should handle an empty array without crashing", () => {
             const resultValue = ResultValue.from([], "Test");
             expect(resultValue.sorted.toString()).toEqual("");
