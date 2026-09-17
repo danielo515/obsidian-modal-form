@@ -7,6 +7,14 @@ type FieldArgs = { name: string; label?: string; description?: string; required?
 // consumers who assume `body` is plain text (see issue #496). Accept `content`
 // as a plain-string shorthand: we wrap it in a `return` so a form built with
 // `content: "Hello"` renders "Hello" instead of nothing.
+//
+// The union keeps the previous compile-time guarantee that a block has a
+// renderable source: exactly one of `body` or `content` must be supplied,
+// though both may be present so `body` can retain precedence.
+type BlockSource =
+    | { body: string; content?: string }
+    | { body?: string; content: string };
+
 function resolveBlockBody(body: string | undefined, content: string | undefined): string {
     if (body !== undefined) return body;
     if (content !== undefined) return `return ${JSON.stringify(content)};`;
@@ -164,7 +172,7 @@ export class FormBuilder implements FieldBuilderMethods {
         required,
         body,
         content,
-    }: FieldArgs & { body?: string; content?: string }) =>
+    }: FieldArgs & BlockSource) =>
         this.addField(
             { name, label, description, required },
             { type: "document_block", body: resolveBlockBody(body, content) },
@@ -177,7 +185,7 @@ export class FormBuilder implements FieldBuilderMethods {
         required,
         body,
         content,
-    }: FieldArgs & { body?: string; content?: string }) =>
+    }: FieldArgs & BlockSource) =>
         this.addField(
             { name, label, description, required },
             { type: "markdown_block", body: resolveBlockBody(body, content) },

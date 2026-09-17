@@ -311,5 +311,13 @@ describe("FormBuilder", () => {
 
             expect((form.fields[0]?.input as { body: string }).body).toBe(body);
         });
+
+        it("should require at least one of body or content at the type level", () => {
+            const { builder } = createTestBuilder();
+            // @ts-expect-error — must supply body or content
+            builder("example-form").markdown_block({ name: "empty" }).build();
+            // @ts-expect-error — must supply body or content
+            builder("example-form").document_block({ name: "empty" }).build();
+        });
     });
 });
