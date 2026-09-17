@@ -255,4 +255,69 @@ describe("FormBuilder", () => {
             expect(formWithShorthand).toEqual(formWithLong);
         });
     });
+
+    describe("Block Fields", () => {
+        it("should keep body verbatim for markdown_block", () => {
+            const { builder } = createTestBuilder();
+            const body = 'return `Hello ${form.name}`;';
+            const form = builder("example-form")
+                .markdown_block({ name: "greeting", body })
+                .build();
+
+            expect(form.fields[0]?.input).toEqual({ type: "markdown_block", body });
+        });
+
+        it("should wrap markdown_block content as a return statement", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .markdown_block({ name: "greeting", content: "# Hello" })
+                .build();
+
+            expect(form.fields[0]?.input).toEqual({
+                type: "markdown_block",
+                body: 'return "# Hello";',
+            });
+        });
+
+        it("should wrap document_block content as a return statement", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .document_block({ name: "intro", content: "Static intro" })
+                .build();
+
+            expect(form.fields[0]?.input).toEqual({
+                type: "document_block",
+                body: 'return "Static intro";',
+            });
+        });
+
+        it("should escape special characters when wrapping content", () => {
+            const { builder } = createTestBuilder();
+            const form = builder("example-form")
+                .markdown_block({ name: "block", content: 'Line with "quotes" and\nnewline' })
+                .build();
+
+            const wrapped = (form.fields[0]?.input as { body: string }).body;
+            const runBody = new Function(wrapped) as () => string;
+            expect(runBody()).toBe('Line with "quotes" and\nnewline');
+        });
+
+        it("should prefer body over content when both are provided", () => {
+            const { builder } = createTestBuilder();
+            const body = 'return "from body";';
+            const form = builder("example-form")
+                .markdown_block({ name: "block", body, content: "from content" })
+                .build();
+
+            expect((form.fields[0]?.input as { body: string }).body).toBe(body);
+        });
+
+        it("should require at least one of body or content at the type level", () => {
+            const { builder } = createTestBuilder();
+            // @ts-expect-error — must supply body or content
+            builder("example-form").markdown_block({ name: "empty" }).build();
+            // @ts-expect-error — must supply body or content
+            builder("example-form").document_block({ name: "empty" }).build();
+        });
+    });
 });
