@@ -212,25 +212,49 @@ builder("example-tags-form")
 
 Adds a document block field.
 
+The `body` option is the source of a JavaScript function that must `return` the
+string to render, and receives the current `form` values, the `dv` (Dataview)
+API, and the target `el` as arguments. If you only need static content, pass
+`content` instead — it is wrapped as `return <content>` for you.
+
 ```typescript
+// Static content
 builder("example-document-form")
   .document_block({ 
-    name: "content", 
-    label: "Content",
-    body: "Initial content" 
+    name: "intro", 
+    label: "Intro",
+    content: "Fill in your details below." 
+  })
+
+// Dynamic content driven by other fields
+builder("example-document-form")
+  .document_block({ 
+    name: "summary", 
+    label: "Summary",
+    body: 'return `Hello ${form.name ?? "friend"}!`;' 
   })
 ```
 
 ### markdown_block
 
-Adds a markdown block field.
+Adds a markdown block field. Same `body` / `content` contract as
+`document_block`, but the returned string is rendered as Markdown.
 
 ```typescript
+// Static markdown
 builder("example-markdown-form")
   .markdown_block({ 
     name: "notes", 
     label: "Notes",
-    body: "# Notes" 
+    content: "# Notes\n\nWrite something below." 
+  })
+
+// Dynamic markdown driven by other fields
+builder("example-markdown-form")
+  .markdown_block({ 
+    name: "preview", 
+    label: "Preview",
+    body: 'return `# ${form.title ?? "Untitled"}`;' 
   })
 ```
 
