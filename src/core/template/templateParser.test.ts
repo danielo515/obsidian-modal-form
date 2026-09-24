@@ -416,6 +416,122 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("my_photopng"));
     });
 
+    it("Should execute a template with code transformation", () => {
+        const template = "The command is {{cmd|code}}.";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { cmd: "npm test" })),
+        );
+        expect(result).toEqual(E.of("The command is `npm test`."));
+    });
+
+    it("code handles an empty string without producing stray backticks", () => {
+        // Regression guard: a naive "`" + value + "`" would render "[``]" for
+        // an empty value, which reads as an unopened code span in Obsidian.
+        const template = "[{{cmd|code}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { cmd: "" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
+    it("code applied to a number wraps its string form in backticks", () => {
+        const template = "{{count|code}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { count: 42 })),
+        );
+        expect(result).toEqual(E.of("`42`"));
+    });
+
+    it("code applied to an array wraps each element and joins with commas", () => {
+        // Regression: `String(array)` joins with `,` (no space) so wrapping
+        // that once would produce a single `` `a,b` `` blob instead of two
+        // distinct inline code spans.
+        const template = "{{tags|code}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { tags: ["foo", "bar"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("`foo`, `bar`"));
+    });
+
+    it("code applied to an array skips empty entries so no stray separator remains", () => {
+        // Regression: a blank entry renders as "" and, joined naively, would
+        // leave a `` `foo`, , `bar` `` gap in the middle of the list.
+        const template = "{{tags|code}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { tags: ["foo", "", "bar"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("`foo`, `bar`"));
+    });
+
+    it("code widens the delimiter when the value contains backticks", () => {
+        // Regression: a single-backtick delimiter would be closed by the
+        // backtick inside the value, leaking the tail into surrounding text.
+        // CommonMark widens the delimiter to one longer than the longest run
+        // inside the content instead.
+        const template = "{{cmd|code}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { cmd: "foo`bar" })),
+        );
+        expect(result).toEqual(E.of("``foo`bar``"));
+    });
+
+    it("code widens past the longest run when the value has adjacent backticks", () => {
+        // Two consecutive backticks inside the value need a triple-backtick
+        // delimiter, not a double one.
+        const template = "{{cmd|code}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { cmd: "foo``bar" })),
+        );
+        expect(result).toEqual(E.of("```foo``bar```"));
+    });
+
+    it("code pads with a space when the value starts or ends with a backtick", () => {
+        // CommonMark: when the value begins or ends with a backtick, a single
+        // leading/trailing space keeps the delimiter and content distinct.
+        // The renderer strips that space from the rendered output.
+        const template = "{{cmd|code}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { cmd: "`x`" })),
+        );
+        expect(result).toEqual(E.of("`` `x` ``"));
+    });
+
+    it("code applied to a FileProxy uses the file name, not the full path", () => {
+        const file = new FileProxy({
+            path: "attachments/My Photo.png",
+            name: "My Photo.png",
+            basename: "My Photo",
+            extension: "png",
+        });
+        const template = "{{image|code}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { image: file })),
+        );
+        expect(result).toEqual(E.of("`My Photo.png`"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);
