@@ -118,9 +118,16 @@ The following transformations can be applied to variables:
 
    - Input `Hello, World!` produces `hello_world`; input `  My Note (2024)  ` produces `my_note_2024`.
 
-8. **`code`**: Wraps the variable's value in single backticks so it renders as inline code.
-   - Empty values stay empty so `[{{ cmd | code }}]` on an empty `cmd` renders as `[]` rather than a stray, unopened code span.
-   - Arrays wrap each element individually and join with `, ` — a list like `["foo", "bar"]` becomes `` `foo`, `bar` `` — so distinct values stay distinct instead of collapsing into a single `` `foo,bar` `` blob.
+8. **`code`**: Wraps the variable's value in backticks so it renders as inline code.
+   - Empty values stay empty so `[{{ cmd | code }}]` on an empty `cmd` renders
+     as `[]` rather than a stray, unopened code span.
+   - Values that themselves contain backticks widen the delimiter (and pad with
+     a space when the value starts or ends with a backtick) following the
+     CommonMark rule, so a value like `` echo `date` `` stays a single span.
+   - Arrays wrap each element individually and join with `, ` — a list like
+     `["foo", "bar"]` becomes `` `foo`, `bar` `` — so distinct values stay
+     distinct instead of collapsing into a single `` `foo,bar` `` blob. Empty
+     entries are skipped so no stray separator is left in the middle.
    - File-valued fields (e.g. from an `image` input) wrap the file name only.
    - Usage:
 
