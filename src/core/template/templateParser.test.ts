@@ -416,6 +416,69 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("my_photopng"));
     });
 
+    it("Should execute a template with code transformation", () => {
+        const template = "The command is {{cmd|code}}.";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { cmd: "npm test" })),
+        );
+        expect(result).toEqual(E.of("The command is `npm test`."));
+    });
+
+    it("code handles an empty string without producing stray backticks", () => {
+        // Regression guard: a naive "`" + value + "`" would render "[``]" for
+        // an empty value, which reads as an unopened code span in Obsidian.
+        const template = "[{{cmd|code}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { cmd: "" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
+    it("code applied to a number wraps its string form in backticks", () => {
+        const template = "{{count|code}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { count: 42 })),
+        );
+        expect(result).toEqual(E.of("`42`"));
+    });
+
+    it("code applied to an array wraps each element and joins with commas", () => {
+        // Regression: `String(array)` joins with `,` (no space) so wrapping
+        // that once would produce a single `` `a,b` `` blob instead of two
+        // distinct inline code spans.
+        const template = "{{tags|code}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { tags: ["foo", "bar"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("`foo`, `bar`"));
+    });
+
+    it("code applied to a FileProxy uses the file name, not the full path", () => {
+        const file = new FileProxy({
+            path: "attachments/My Photo.png",
+            name: "My Photo.png",
+            basename: "My Photo",
+            extension: "png",
+        });
+        const template = "{{image|code}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { image: file })),
+        );
+        expect(result).toEqual(E.of("`My Photo.png`"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);

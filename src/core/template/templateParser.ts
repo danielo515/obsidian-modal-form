@@ -285,6 +285,14 @@ function applyPerString(fn: (s: string) => string): (v: Val) => string {
     };
 }
 
+// Wraps `value` in single backticks for inline markdown code. An empty string
+// stays empty so a template like `[{{x|code}}]` on an empty value renders as
+// `[]` instead of a stray `` `` `` that looks like an unopened code span.
+export function toCode(value: string): string {
+    if (value === "") return "";
+    return `\`${value}\``;
+}
+
 export function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
@@ -310,6 +318,18 @@ export function executeTransformation(
                 return applyPerString(toSlug)(value);
             case "snake":
                 return applyPerString(toSnake)(value);
+            case "code": {
+                // Each item in an array becomes its own inline code span so the
+                // joined comma-string that `String(value)` would produce does
+                // not collapse them into a single backtick-wrapped blob. Join
+                // with `, ` for readability. An empty array falls through
+                // naturally: `[].map(...).join(", ")` is already `""`.
+                if (Array.isArray(value)) {
+                    return value.map((item) => toCode(String(item))).join(", ");
+                }
+                if (value instanceof FileProxy) return toCode(value.name);
+                return toCode(String(value));
+            }
             default:
                 return absurd(transformation);
         }

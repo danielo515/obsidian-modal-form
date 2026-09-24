@@ -118,6 +118,18 @@ The following transformations can be applied to variables:
 
    - Input `Hello, World!` produces `hello_world`; input `  My Note (2024)  ` produces `my_note_2024`.
 
+8. **`code`**: Wraps the variable's value in single backticks so it renders as inline code.
+   - Empty values stay empty so `[{{ cmd | code }}]` on an empty `cmd` renders as `[]` rather than a stray, unopened code span.
+   - Arrays wrap each element individually and join with `, ` — a list like `["foo", "bar"]` becomes `` `foo`, `bar` `` — so distinct values stay distinct instead of collapsing into a single `` `foo,bar` `` blob.
+   - File-valued fields (e.g. from an `image` input) wrap the file name only.
+   - Usage:
+
+     ```plaintext
+     Run {{ cmd | code }} to continue.
+     ```
+
+   - Input `npm test` produces `` `npm test` ``.
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:
