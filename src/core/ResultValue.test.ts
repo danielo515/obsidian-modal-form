@@ -378,6 +378,51 @@ describe("ResultValue", () => {
             expect(resultValue.trimmed.snake.toString()).toEqual("hello_world");
         });
     });
+    describe("or", () => {
+        it("should use the fallback when the value is undefined", () => {
+            const resultValue = ResultValue.from(undefined, "Test");
+            expect(resultValue.or("Anon").toString()).toEqual("Anon");
+        });
+        it("should use the fallback when the value is null", () => {
+            const resultValue = ResultValue.from(null, "Test");
+            expect(resultValue.or("Anon").toString()).toEqual("Anon");
+        });
+        it("should use the fallback when the value is an empty string", () => {
+            const resultValue = ResultValue.from("", "Test");
+            expect(resultValue.or("Anon").toString()).toEqual("Anon");
+        });
+        it("should use the fallback when the value is an empty array", () => {
+            const resultValue = ResultValue.from([], "Test");
+            expect(resultValue.or(["a", "b"]).toString()).toEqual("a, b");
+        });
+        it("should keep the original value when it is a non-empty string", () => {
+            const resultValue = ResultValue.from("hello", "Test");
+            expect(resultValue.or("fallback").toString()).toEqual("hello");
+        });
+        it("should keep the number 0 as a valid value", () => {
+            const resultValue = ResultValue.from(0, "Test");
+            expect(resultValue.or(42).toString()).toEqual("0");
+        });
+        it("should keep the boolean false as a valid value", () => {
+            const resultValue = ResultValue.from(false, "Test");
+            expect(resultValue.or(true).toString()).toEqual("false");
+        });
+        it("should keep a non-empty array as-is", () => {
+            const resultValue = ResultValue.from(["foo"], "Test");
+            expect(resultValue.or(["bar"]).toString()).toEqual("foo");
+        });
+        it("should be chainable with other shortcuts", () => {
+            const resultValue = ResultValue.from("", "Test");
+            expect(resultValue.or("hello").upper.toString()).toEqual("HELLO");
+        });
+        it("should allow the fallback to be any value type", () => {
+            const resultValue = ResultValue.from<string | number>(
+                undefined as unknown as string,
+                "Test",
+            );
+            expect(resultValue.or(7).toString()).toEqual("7");
+        });
+    });
     describe("chaining shortcuts", () => {
         it("should be possible to chain upper, lower and trim", () => {
             // Arrange
