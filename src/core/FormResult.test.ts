@@ -252,5 +252,15 @@ age: 30`;
             // @ts-ignore
             expect(result.foo.upper.lower.toString()).toEqual("");
         });
+        it("should let .or(fallback) supply a default for missing fields", () => {
+            const result = FormResult.make(formData, "ok");
+            // @ts-ignore
+            expect(result.nickname.or("Anon").toString()).toEqual("Anon");
+        });
+        it("should let .or(fallback) pass through non-empty values", () => {
+            const result = FormResult.make(formData, "ok");
+            // @ts-ignore
+            expect(result.name.or("Anon").toString()).toEqual("John Doe");
+        });
     });
 });
