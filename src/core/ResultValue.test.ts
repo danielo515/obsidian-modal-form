@@ -416,7 +416,10 @@ describe("ResultValue", () => {
             expect(resultValue.or("hello").upper.toString()).toEqual("HELLO");
         });
         it("should allow the fallback to be any value type", () => {
-            const resultValue = ResultValue.from<string | number>(undefined as unknown as string, "Test");
+            const resultValue = ResultValue.from<string | number>(
+                undefined as unknown as string,
+                "Test",
+            );
             expect(resultValue.or(7).toString()).toEqual("7");
         });
     });
