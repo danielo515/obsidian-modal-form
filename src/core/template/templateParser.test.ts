@@ -252,6 +252,82 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("[]"));
     });
 
+    it("Should execute a template with title transformation", () => {
+        const template = "{{title|title}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "hello world" }),
+            ),
+        );
+        expect(result).toEqual(E.of("Hello World"));
+    });
+
+    it("title leaves the rest of each word untouched", () => {
+        // Mirrors `capitalize`: it does not re-lowercase trailing characters.
+        // Chain `lower` on `ResultValue` first when a clean Title Case is wanted.
+        const template = "{{title|title}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "jOHN dOE" }),
+            ),
+        );
+        expect(result).toEqual(E.of("JOHN DOE"));
+    });
+
+    it("title preserves unicode letters", () => {
+        const template = "{{title|title}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "café noël" }),
+            ),
+        );
+        expect(result).toEqual(E.of("Café Noël"));
+    });
+
+    it("title handles an empty string without crashing", () => {
+        const template = "[{{title|title}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { title: "" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
+    it("title applied to an array converts each element and joins with commas", () => {
+        const template = "{{tags|title}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { tags: ["foo bar", "hello world"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("Foo Bar,Hello World"));
+    });
+
+    it("title applied to a FileProxy uses the file name, not the full path", () => {
+        const file = new FileProxy({
+            path: "attachments/my photo.png",
+            name: "my photo.png",
+            basename: "my photo",
+            extension: "png",
+        });
+        const template = "{{image|title}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { image: file })),
+        );
+        expect(result).toEqual(E.of("My Photo.png"));
+    });
+
     it("Should execute a template with slug transformation", () => {
         const template = "{{title|slug}}";
         const parsed = parseTemplate(template);

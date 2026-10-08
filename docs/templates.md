@@ -95,7 +95,16 @@ The following transformations can be applied to variables:
 
    - Input `john doe` produces `John doe`; input `jOHN doe` produces `JOHN doe`. To force a clean Title-style start (first letter uppercased, rest lowercased), use the `capitalized` getter on `ResultValue` together with `lower` — e.g. `result.getValue('name').lower.capitalized` — since templates accept only one transformation per variable.
 
-6. **`slug`**: Converts the variable's value to a URL/filename-friendly slug.
+6. **`title`**: Uppercases the first character of every whitespace-separated word and leaves the remaining characters untouched.
+   - Usage:
+
+     ```plaintext
+     {{ name | title }}
+     ```
+
+   - Input `hello world` produces `Hello World`; input `jOHN dOE` produces `JOHN DOE`. Unicode letters are preserved (e.g. `café noël` becomes `Café Noël`). To force a clean Title Case over mixed input (first letter of each word uppercased, rest lowercased), use the `title` getter on `ResultValue` together with `lower` — e.g. `result.getValue('name').lower.title` — since templates accept only one transformation per variable.
+
+7. **`slug`**: Converts the variable's value to a URL/filename-friendly slug.
    - Lowercases the value, turns whitespace and underscores into `-`, strips punctuation, collapses runs of dashes, and trims dashes from the edges.
    - Unicode letters and numbers are preserved, so slugs stay meaningful for non-English users (e.g. `Café Noël` → `café-noël`).
    - Useful when you want to derive a filename from a form title.
@@ -107,7 +116,7 @@ The following transformations can be applied to variables:
 
    - Input `Hello, World!` produces `hello-world`; input `  My Note (2024)  ` produces `my-note-2024`.
 
-7. **`snake`**: Converts the variable's value to `snake_case`.
+8. **`snake`**: Converts the variable's value to `snake_case`.
    - Same shape as `slug`, but whitespace and dashes become underscores, punctuation is stripped, runs of underscores collapse, and edge underscores are trimmed. Unicode letters and numbers are preserved (e.g. `Café Noël` → `café_noël`).
    - Handy for deriving variable names, YAML keys, or database columns from free-form text.
    - Usage:

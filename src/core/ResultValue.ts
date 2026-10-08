@@ -1,7 +1,7 @@
 import { E, O, ensureError, pipe } from "@std";
 import { notifyError } from "src/utils/Log";
 import { FileProxy } from "./files/FileProxy";
-import { toSlug, toSnake } from "./template/templateParser";
+import { toSlug, toSnake, toTitle } from "./template/templateParser";
 
 function _toBulletList(value: Record<string, unknown> | unknown[]) {
     if (Array.isArray(value)) {
@@ -214,6 +214,23 @@ export class ResultValue<T = unknown> {
             return new ResultValue(cap(this.value.name), this.name, this.notify);
         }
         return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? cap(it) : it)));
+    }
+
+    /**
+     * getter that returns the value with the first character of every word
+     * uppercased. Behaves like `capitalized` applied per whitespace-separated
+     * word, so `"hello world"` becomes `"Hello world"` via `capitalized` but
+     * `"Hello World"` via `title`. Chain after `lower` (e.g.
+     * `result.getValue('name').lower.title`) if you also want the remaining
+     * characters lowercased. Strings nested in arrays/objects are converted
+     * individually; non-string values are returned unchanged. `FileProxy`
+     * values are converted from the file name.
+     */
+    get title(): ResultValue<unknown> {
+        if (this.value instanceof FileProxy) {
+            return new ResultValue(toTitle(this.value.name), this.name, this.notify);
+        }
+        return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? toTitle(it) : it)));
     }
 
     /**
