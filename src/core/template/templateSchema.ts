@@ -23,6 +23,7 @@ export const transformations = union([
     literal("trim"),
     literal("stringify"),
     literal("capitalize"),
+    literal("title"),
     literal("slug"),
     literal("snake"),
 ]);
