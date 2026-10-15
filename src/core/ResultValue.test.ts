@@ -411,6 +411,19 @@ describe("ResultValue", () => {
             const resultValue = ResultValue.from("!!!", "Test");
             expect(resultValue.hashtag.toString()).toEqual("");
         });
+        it("should drop a numeric-only value — Obsidian tags require at least one letter", () => {
+            // Regression: `#2024` is emitted but Obsidian renders it as plain text, not a tag.
+            const resultValue = ResultValue.from("2024", "Test");
+            expect(resultValue.hashtag.toString()).toEqual("");
+        });
+        it("should drop a value that becomes numeric-only after cleaning", () => {
+            const resultValue = ResultValue.from("2024!", "Test");
+            expect(resultValue.hashtag.toString()).toEqual("");
+        });
+        it("should keep mixed alphanumeric values", () => {
+            const resultValue = ResultValue.from("work2024", "Test");
+            expect(resultValue.hashtag.toString()).toEqual("#work2024");
+        });
         it("should handle an empty string without crashing", () => {
             const resultValue = ResultValue.from("", "Test");
             expect(resultValue.hashtag.toString()).toEqual("");

@@ -482,6 +482,40 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("[]"));
     });
 
+    it("hashtag drops a numeric-only input because Obsidian requires at least one letter", () => {
+        // Regression: without this guard `#2024` is emitted but Obsidian
+        // renders it as plain text, not a tag.
+        const template = "[{{year|hashtag}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { year: "2024" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
+    it("hashtag drops an input that becomes numeric-only after cleaning", () => {
+        const template = "[{{year|hashtag}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { year: "2024!" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
+    it("hashtag keeps mixed alphanumeric values", () => {
+        const template = "{{project|hashtag}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { project: "work2024" }),
+            ),
+        );
+        expect(result).toEqual(E.of("#work2024"));
+    });
+
     it("hashtag applied to an array hashes each element and joins with spaces", () => {
         // Space-separated so the output is a valid run of inline Obsidian tags.
         const template = "{{tags|hashtag}}";
