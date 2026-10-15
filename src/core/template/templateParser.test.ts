@@ -416,6 +416,101 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("my_photopng"));
     });
 
+    it("Should execute a template with hashtag transformation", () => {
+        const template = "{{project|hashtag}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { project: "work" })),
+        );
+        expect(result).toEqual(E.of("#work"));
+    });
+
+    it("hashtag turns whitespace into dashes so multi-word values stay one tag", () => {
+        const template = "{{project|hashtag}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { project: "my cool project" }),
+            ),
+        );
+        expect(result).toEqual(E.of("#my-cool-project"));
+    });
+
+    it("hashtag preserves `/` so nested tags round-trip", () => {
+        const template = "{{project|hashtag}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { project: "project/sub" }),
+            ),
+        );
+        expect(result).toEqual(E.of("#project/sub"));
+    });
+
+    it("hashtag strips a leading `#` so pre-hashed input stays single-hashed", () => {
+        const template = "{{project|hashtag}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { project: "#work" })),
+        );
+        expect(result).toEqual(E.of("#work"));
+    });
+
+    it("hashtag preserves unicode letters and numbers", () => {
+        const template = "{{project|hashtag}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { project: "Café Noël 2024" }),
+            ),
+        );
+        expect(result).toEqual(E.of("#Café-Noël-2024"));
+    });
+
+    it("hashtag produces an empty string when the input has no valid characters", () => {
+        const template = "[{{project|hashtag}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { project: "!!!" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
+    it("hashtag applied to an array hashes each element and joins with spaces", () => {
+        // Space-separated so the output is a valid run of inline Obsidian tags.
+        const template = "{{tags|hashtag}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { tags: ["work", "personal note"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("#work #personal-note"));
+    });
+
+    it("hashtag applied to a FileProxy uses the file name, not the full path", () => {
+        const file = new FileProxy({
+            path: "attachments/My Photo.png",
+            name: "My Photo.png",
+            basename: "My Photo",
+            extension: "png",
+        });
+        const template = "{{image|hashtag}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { image: file })),
+        );
+        expect(result).toEqual(E.of("#My-Photopng"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);

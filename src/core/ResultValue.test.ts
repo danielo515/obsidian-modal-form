@@ -378,6 +378,48 @@ describe("ResultValue", () => {
             expect(resultValue.trimmed.snake.toString()).toEqual("hello_world");
         });
     });
+    describe("hashtag", () => {
+        it("should prefix a single-word string with `#`", () => {
+            const resultValue = ResultValue.from("work", "Test");
+            expect(resultValue.hashtag.toString()).toEqual("#work");
+        });
+        it("should turn whitespace into dashes so a multi-word value stays one tag", () => {
+            const resultValue = ResultValue.from("my cool project", "Test");
+            expect(resultValue.hashtag.toString()).toEqual("#my-cool-project");
+        });
+        it("should preserve `/` so nested tags round-trip", () => {
+            const resultValue = ResultValue.from("project/sub", "Test");
+            expect(resultValue.hashtag.toString()).toEqual("#project/sub");
+        });
+        it("should strip a leading `#` to avoid double hashing", () => {
+            const resultValue = ResultValue.from("#work", "Test");
+            expect(resultValue.hashtag.toString()).toEqual("#work");
+        });
+        it("should preserve unicode letters and numbers", () => {
+            const resultValue = ResultValue.from("Café Noël 2024", "Test");
+            expect(resultValue.hashtag.toString()).toEqual("#Café-Noël-2024");
+        });
+        it("should hash each string in an array individually", () => {
+            const resultValue = ResultValue.from(["work", "personal note"], "Test");
+            expect(resultValue.hashtag.toString()).toEqual("#work, #personal-note");
+        });
+        it("should leave non-string values unchanged in mixed arrays", () => {
+            const resultValue = ResultValue.from(["work", 42], "Test");
+            expect(resultValue.hashtag.bullets).toEqual("- #work\n- 42");
+        });
+        it("should produce an empty string when the input has no valid characters", () => {
+            const resultValue = ResultValue.from("!!!", "Test");
+            expect(resultValue.hashtag.toString()).toEqual("");
+        });
+        it("should handle an empty string without crashing", () => {
+            const resultValue = ResultValue.from("", "Test");
+            expect(resultValue.hashtag.toString()).toEqual("");
+        });
+        it("should be chainable", () => {
+            const resultValue = ResultValue.from("  Hello World  ", "Test");
+            expect(resultValue.trimmed.hashtag.toString()).toEqual("#Hello-World");
+        });
+    });
     describe("chaining shortcuts", () => {
         it("should be possible to chain upper, lower and trim", () => {
             // Arrange
