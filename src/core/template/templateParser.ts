@@ -271,15 +271,39 @@ export function toSnake(value: string): string {
         .replace(/^_+|_+$/g, "");
 }
 
-// `slug` and `snake` strip punctuation, so calling `String(value)` on an array
-// would consume the comma separator and silently merge distinct values into
-// one token, and calling it on a `FileProxy` would consume path slashes and
-// merge folder segments with the filename. Apply per-element/per-name instead
-// so array values stay comma-separated after transformation and file values
-// use the same name-only field as the matching `ResultValue` getters.
-function applyPerString(fn: (s: string) => string): (v: Val) => string {
+// Converts a string into an Obsidian-style hashtag. Obsidian tags allow
+// letters, numbers, `-`, `_` and `/` (for nested tags like `#project/sub`);
+// spaces aren't valid, so whitespace runs become `-`. Any existing leading `#`
+// is dropped first so pre-tagged input stays single-hashed. Unicode letters
+// and numbers are preserved. Obsidian also requires tags to contain at least
+// one non-numeric character — a pure digit string like `2024` is rendered as
+// plain text, not a tag — so an input that normalises to only digits returns
+// "" rather than a bare "#2024". A separator like `_` or `-` counts as
+// non-numeric, so `2024_01` and `2024-01` keep their `#`.
+export function toHashtag(value: string): string {
+    const normalised = value
+        .replace(/^#+/, "")
+        .replace(/\s+/g, "-")
+        .replace(/[^\p{L}\p{N}\-_/]+/gu, "")
+        .replace(/-+/g, "-")
+        .replace(/^[-/]+|[-/]+$/g, "");
+    if (normalised.length === 0 || /^\p{N}+$/u.test(normalised)) {
+        return "";
+    }
+    return `#${normalised}`;
+}
+
+// `slug`, `snake` and `hashtag` strip punctuation, so calling `String(value)`
+// on an array would consume the comma separator and silently merge distinct
+// values into one token, and calling it on a `FileProxy` would consume path
+// slashes and merge folder segments with the filename. Apply per-element/
+// per-name instead so array values stay separated after transformation and
+// file values use the same name-only field as the matching `ResultValue`
+// getters. The default `,` separator preserves the shape slug/snake already
+// produce; pass a space for formats like inline Obsidian hashtags.
+function applyPerString(fn: (s: string) => string, separator = ","): (v: Val) => string {
     return (v) => {
-        if (Array.isArray(v)) return v.map((item) => fn(String(item))).join(",");
+        if (Array.isArray(v)) return v.map((item) => fn(String(item))).join(separator);
         if (v instanceof FileProxy) return fn(v.name);
         return fn(String(v));
     };
@@ -310,6 +334,8 @@ export function executeTransformation(
                 return applyPerString(toSlug)(value);
             case "snake":
                 return applyPerString(toSnake)(value);
+            case "hashtag":
+                return applyPerString(toHashtag, " ")(value);
             default:
                 return absurd(transformation);
         }

@@ -1,7 +1,7 @@
 import { E, O, ensureError, pipe } from "@std";
 import { notifyError } from "src/utils/Log";
 import { FileProxy } from "./files/FileProxy";
-import { toSlug, toSnake } from "./template/templateParser";
+import { toHashtag, toSlug, toSnake } from "./template/templateParser";
 
 function _toBulletList(value: Record<string, unknown> | unknown[]) {
     if (Array.isArray(value)) {
@@ -243,6 +243,23 @@ export class ResultValue<T = unknown> {
             return new ResultValue(toSnake(this.value.name), this.name, this.notify);
         }
         return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? toSnake(it) : it)));
+    }
+
+    /**
+     * getter that renders the value as an Obsidian hashtag. Whitespace runs
+     * become `-` so multi-word values stay a single tag, characters that
+     * aren't allowed in Obsidian tags are stripped, and the result is
+     * prefixed with `#` (an already-hashed input stays single-hashed). Edge
+     * `-`/`/` are trimmed and nested-tag slashes are preserved so values
+     * like `project/sub` round-trip. Strings nested in arrays/objects are
+     * converted individually; non-string values are returned unchanged.
+     * `FileProxy` values use the file name.
+     */
+    get hashtag(): ResultValue<unknown> {
+        if (this.value instanceof FileProxy) {
+            return new ResultValue(toHashtag(this.value.name), this.name, this.notify);
+        }
+        return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? toHashtag(it) : it)));
     }
 
     /**

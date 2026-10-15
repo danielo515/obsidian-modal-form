@@ -118,6 +118,21 @@ The following transformations can be applied to variables:
 
    - Input `Hello, World!` produces `hello_world`; input `  My Note (2024)  ` produces `my_note_2024`.
 
+8. **`hashtag`**: Renders the variable's value as an Obsidian hashtag.
+   - Whitespace runs become `-` so multi-word values stay a single tag, characters that aren't valid in Obsidian tags (letters, numbers, `-`, `_`, `/`) are stripped, and the result is prefixed with `#`.
+   - A leading `#` on the input is dropped first so pre-tagged values stay single-hashed (`#work` stays `#work`, not `##work`).
+   - Nested-tag slashes are preserved so `project/sub` becomes `#project/sub`.
+   - Array values are converted per-element and joined with spaces so the output is a valid run of inline Obsidian tags (`["work", "personal note"]` → `#work #personal-note`).
+   - Unicode letters and numbers are preserved; case is kept intact (Obsidian tags are case-insensitive).
+   - Usage:
+
+     ```plaintext
+     {{ project | hashtag }}
+     ```
+
+   - Obsidian requires tags to contain at least one non-numeric character, so a pure-digit input like `2024` also produces an empty string (Obsidian would otherwise render `#2024` as plain text, not a tag). A separator counts — `2024_01` and `2024-01` keep their `#` — but bare digits need another non-digit character (`y2024`, `work2024`) to stay a tag.
+   - Input `my cool project` produces `#my-cool-project`; input `!!!` (no tag-safe characters) produces an empty string.
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:
