@@ -516,6 +516,32 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("#work2024"));
     });
 
+    it("hashtag keeps a digits-with-separator value because the separator satisfies Obsidian's rule", () => {
+        // Regression: a too-strict "must contain a letter" guard would drop
+        // this even though `2024_01` is a valid Obsidian tag.
+        const template = "{{period|hashtag}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { period: "2024_01" }),
+            ),
+        );
+        expect(result).toEqual(E.of("#2024_01"));
+    });
+
+    it("hashtag keeps a dash-separated digits value", () => {
+        const template = "{{period|hashtag}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { period: "2024-01" }),
+            ),
+        );
+        expect(result).toEqual(E.of("#2024-01"));
+    });
+
     it("hashtag applied to an array hashes each element and joins with spaces", () => {
         // Space-separated so the output is a valid run of inline Obsidian tags.
         const template = "{{tags|hashtag}}";

@@ -277,8 +277,9 @@ export function toSnake(value: string): string {
 // is dropped first so pre-tagged input stays single-hashed. Unicode letters
 // and numbers are preserved. Obsidian also requires tags to contain at least
 // one non-numeric character — a pure digit string like `2024` is rendered as
-// plain text, not a tag — so inputs that normalise to digits only, or produce
-// an empty normalised value, return "" rather than a bare or unusable "#...".
+// plain text, not a tag — so an input that normalises to only digits returns
+// "" rather than a bare "#2024". A separator like `_` or `-` counts as
+// non-numeric, so `2024_01` and `2024-01` keep their `#`.
 export function toHashtag(value: string): string {
     const normalised = value
         .replace(/^#+/, "")
@@ -286,7 +287,7 @@ export function toHashtag(value: string): string {
         .replace(/[^\p{L}\p{N}\-_/]+/gu, "")
         .replace(/-+/g, "-")
         .replace(/^[-/]+|[-/]+$/g, "");
-    if (normalised.length === 0 || !/\p{L}/u.test(normalised)) {
+    if (normalised.length === 0 || /^\p{N}+$/u.test(normalised)) {
         return "";
     }
     return `#${normalised}`;

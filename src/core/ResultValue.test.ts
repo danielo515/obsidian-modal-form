@@ -424,6 +424,14 @@ describe("ResultValue", () => {
             const resultValue = ResultValue.from("work2024", "Test");
             expect(resultValue.hashtag.toString()).toEqual("#work2024");
         });
+        it("should keep a digits-with-underscore value — the separator satisfies Obsidian's rule", () => {
+            const resultValue = ResultValue.from("2024_01", "Test");
+            expect(resultValue.hashtag.toString()).toEqual("#2024_01");
+        });
+        it("should keep a digits-with-dash value", () => {
+            const resultValue = ResultValue.from("2024-01", "Test");
+            expect(resultValue.hashtag.toString()).toEqual("#2024-01");
+        });
         it("should handle an empty string without crashing", () => {
             const resultValue = ResultValue.from("", "Test");
             expect(resultValue.hashtag.toString()).toEqual("");

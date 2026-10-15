@@ -130,7 +130,7 @@ The following transformations can be applied to variables:
      {{ project | hashtag }}
      ```
 
-   - Obsidian requires tags to contain at least one non-numeric character, so a pure-digit input like `2024` also produces an empty string (Obsidian would otherwise render `#2024` as plain text, not a tag). Mix in any letter — `#work2024`, `#y2024` — to keep the tag.
+   - Obsidian requires tags to contain at least one non-numeric character, so a pure-digit input like `2024` also produces an empty string (Obsidian would otherwise render `#2024` as plain text, not a tag). A separator counts — `2024_01` and `2024-01` keep their `#` — but bare digits need another non-digit character (`y2024`, `work2024`) to stay a tag.
    - Input `my cool project` produces `#my-cool-project`; input `!!!` (no tag-safe characters) produces an empty string.
 
 ### Example Templates
