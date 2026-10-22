@@ -1,3 +1,4 @@
+import { FileProxy } from "./files/FileProxy";
 import { ResultValue } from "./ResultValue";
 jest.mock('src/utils/Log')
 
@@ -376,6 +377,77 @@ describe("ResultValue", () => {
         it("should be chainable", () => {
             const resultValue = ResultValue.from("  Hello World  ", "Test");
             expect(resultValue.trimmed.snake.toString()).toEqual("hello_world");
+        });
+    });
+    describe("reversed", () => {
+        it("should reverse a string by code point", () => {
+            const resultValue = ResultValue.from("hello", "Test");
+            expect(resultValue.reversed.toString()).toEqual("olleh");
+        });
+        it("should keep surrogate-pair characters intact", () => {
+            const resultValue = ResultValue.from("ab🙂cd", "Test");
+            expect(resultValue.reversed.toString()).toEqual("dc🙂ba");
+        });
+        it("should reverse the element order of an array", () => {
+            const resultValue = ResultValue.from(["apple", "banana", "cherry"], "Test");
+            expect(resultValue.reversed.toString()).toEqual("cherry, banana, apple");
+        });
+        it("should not mutate the caller's array", () => {
+            // Regression: ResultValue shares the backing data with other render
+            // paths, so a transformation must copy before reversing.
+            const data = ["one", "two", "three"];
+            const resultValue = ResultValue.from(data, "Test");
+            resultValue.reversed.toString();
+            expect(data).toEqual(["one", "two", "three"]);
+        });
+        it("should render reversed arrays as bullets", () => {
+            const resultValue = ResultValue.from(["apple", "banana"], "Test");
+            expect(resultValue.reversed.bullets).toEqual("- banana\n- apple");
+        });
+        it("should handle an empty string without crashing", () => {
+            const resultValue = ResultValue.from("", "Test");
+            expect(resultValue.reversed.toString()).toEqual("");
+        });
+        it("should reverse nested arrays by element order, not by char", () => {
+            // Regression: wrapping an array in a record should not change what
+            // reversal means — the nested array still flips its element order
+            // instead of reversing the characters of each string.
+            const resultValue = ResultValue.from(["apple", "banana"], "Test");
+            const nested = resultValue.map((tags) => ({ tags }));
+            expect(nested.reversed.toString()).toEqual(
+                JSON.stringify({ tags: ["banana", "apple"] }),
+            );
+        });
+        it("should reverse a FileProxy from its file name", () => {
+            const file = new FileProxy({
+                path: "attachments/photo.png",
+                name: "photo.png",
+                basename: "photo",
+                extension: "png",
+            });
+            const resultValue = ResultValue.from(file, "Test");
+            expect(resultValue.reversed.toString()).toEqual("gnp.otohp");
+        });
+        it("should reverse a nested FileProxy from its file name", () => {
+            // Regression: without a FileProxy branch inside the recursion the
+            // record walker would reach into the proxy's private `file` field
+            // and reverse the strings of the backing TFile, exposing internal
+            // shape instead of producing the reversed file name.
+            const file = new FileProxy({
+                path: "attachments/photo.png",
+                name: "photo.png",
+                basename: "photo",
+                extension: "png",
+            });
+            const resultValue = ResultValue.from(file, "Test");
+            const nested = resultValue.map((image) => ({ image }));
+            expect(nested.reversed.toString()).toEqual(
+                JSON.stringify({ image: "gnp.otohp" }),
+            );
+        });
+        it("should be chainable", () => {
+            const resultValue = ResultValue.from("  Hello  ", "Test");
+            expect(resultValue.trimmed.reversed.toString()).toEqual("olleH");
         });
     });
     describe("chaining shortcuts", () => {

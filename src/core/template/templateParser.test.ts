@@ -416,6 +416,83 @@ describe("parseTemplate", () => {
         expect(result).toEqual(E.of("my_photopng"));
     });
 
+    it("should execute a template with reverse transformation on a string", () => {
+        const template = "{{title|reverse}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "hello" }),
+            ),
+        );
+        expect(result).toEqual(E.of("olleh"));
+    });
+
+    it("reverse applied to an array reverses the element order", () => {
+        const template = "{{tags|reverse}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { tags: ["apple", "banana", "cherry"] }),
+            ),
+        );
+        expect(result).toEqual(E.of("cherry,banana,apple"));
+    });
+
+    it("reverse does not mutate the caller's array", () => {
+        // Regression: the same form data is consumed by multiple render paths,
+        // so a transformation must never mutate it in place.
+        const tags = ["one", "two", "three"];
+        const template = "{{tags|reverse}}";
+        const parsed = parseTemplate(template);
+        pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { tags })),
+        );
+        expect(tags).toEqual(["one", "two", "three"]);
+    });
+
+    it("reverse handles an empty string without crashing", () => {
+        const template = "[{{title|reverse}}]";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { title: "" })),
+        );
+        expect(result).toEqual(E.of("[]"));
+    });
+
+    it("reverse preserves surrogate-pair characters", () => {
+        // "ab🙂cd" split by raw UTF-16 code units would tear the emoji in half.
+        // Array.from iterates by code point, so the emoji stays intact.
+        const template = "{{title|reverse}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) =>
+                executeTemplate(parsedTemplate, { title: "ab🙂cd" }),
+            ),
+        );
+        expect(result).toEqual(E.of("dc🙂ba"));
+    });
+
+    it("reverse applied to a FileProxy uses the file name, not the full path", () => {
+        const file = new FileProxy({
+            path: "attachments/photo.png",
+            name: "photo.png",
+            basename: "photo",
+            extension: "png",
+        });
+        const template = "{{image|reverse}}";
+        const parsed = parseTemplate(template);
+        const result = pipe(
+            parsed,
+            E.map((parsedTemplate) => executeTemplate(parsedTemplate, { image: file })),
+        );
+        expect(result).toEqual(E.of("gnp.otohp"));
+    });
+
     it("should parse a frontmatter command", () => {
         const template = "{#frontmatter#}";
         const result = parseTemplate(template);
@@ -496,6 +573,11 @@ describe("parsedTemplateToString round-trip", () => {
 
     it("preserves a variable with a transformation", () => {
         const template = "Hello {{name|upper}}!";
+        expect(roundTrip(template)).toEqual(template);
+    });
+
+    it("preserves the reverse transformation", () => {
+        const template = "{{title|reverse}}";
         expect(roundTrip(template)).toEqual(template);
     });
 
