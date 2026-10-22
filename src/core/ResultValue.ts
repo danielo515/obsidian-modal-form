@@ -1,7 +1,7 @@
 import { E, O, ensureError, pipe } from "@std";
 import { notifyError } from "src/utils/Log";
 import { FileProxy } from "./files/FileProxy";
-import { toSlug, toSnake } from "./template/templateParser";
+import { reverseString, toSlug, toSnake } from "./template/templateParser";
 
 function _toBulletList(value: Record<string, unknown> | unknown[]) {
     if (Array.isArray(value)) {
@@ -29,6 +29,36 @@ function deepMap(value: unknown, fn: (value: unknown) => unknown, iterations = 0
         );
     }
     return fn(value);
+}
+
+// Reverse any shape consistently: arrays flip their element order (not the
+// characters of each element), strings flip by code point, records recurse so
+// a nested array still gets flipped by element order rather than having each
+// of its strings reversed in place. `FileProxy` is handled explicitly before
+// the record branch so a wrapped file (e.g. `{ image: fp }`) still produces
+// the reversed file name — otherwise `isRecord` would walk its private `file`
+// field and expose internal shape. Everything else passes through unchanged,
+// matching how the other string shortcuts (`upper`, `snake`, …) treat
+// non-strings in mixed collections.
+function deepReverse(value: unknown, iterations = 0): unknown {
+    if (iterations > 10) {
+        return value;
+    }
+    if (Array.isArray(value)) {
+        return value.slice().reverse();
+    }
+    if (value instanceof FileProxy) {
+        return reverseString(value.name);
+    }
+    if (isRecord(value)) {
+        return Object.fromEntries(
+            Object.entries(value).map(([key, v]) => [key, deepReverse(v, iterations + 1)]),
+        );
+    }
+    if (typeof value === "string") {
+        return reverseString(value);
+    }
+    return value;
 }
 
 type Reporter = (title: string) => (message: string) => void;
@@ -243,6 +273,18 @@ export class ResultValue<T = unknown> {
             return new ResultValue(toSnake(this.value.name), this.name, this.notify);
         }
         return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? toSnake(it) : it)));
+    }
+
+    /**
+     * getter that returns the value with its order reversed. Arrays are
+     * reversed by element (a copy — the caller's data is never mutated).
+     * Strings are reversed by code point, so surrogate-pair characters stay
+     * intact. `FileProxy` values are reversed from the file name at any
+     * depth. Records recurse so a nested array is still flipped by element
+     * order rather than having its strings reversed in place.
+     */
+    get reversed(): ResultValue<unknown> {
+        return this.map((v) => deepReverse(v));
     }
 
     /**
