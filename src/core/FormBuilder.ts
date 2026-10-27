@@ -1,6 +1,14 @@
 import { AllFieldTypes, FieldDefinition, FormDefinition, validateFields } from "./formDefinition";
 
-type FieldArgs = { name: string; label?: string; description?: string; required?: boolean };
+type FieldArgs = {
+    name: string;
+    label?: string;
+    description?: string;
+    required?: boolean;
+};
+
+/** Args for the free-text entry fields that render a native placeholder hint. */
+type TextEntryFieldArgs = FieldArgs & { hidden?: boolean; placeholder?: string };
 
 type FieldBuilderMethods = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,13 +45,19 @@ export class FormBuilder implements FieldBuilderMethods {
         );
     };
 
-    addTextField = ({ name, label, description, required, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description, required }, { type: "text", hidden: Boolean(hidden) });
+    addTextField = ({ name, label, description, required, hidden, placeholder }: TextEntryFieldArgs) =>
+        this.addField(
+            { name, label, description, required },
+            { type: "text", hidden: Boolean(hidden), ...(placeholder ? { placeholder } : {}) },
+        );
 
     text = this.addTextField;
 
-    addNumberField = ({ name, label, description, required, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description, required }, { type: "number", hidden: Boolean(hidden) });
+    addNumberField = ({ name, label, description, required, hidden, placeholder }: TextEntryFieldArgs) =>
+        this.addField(
+            { name, label, description, required },
+            { type: "number", hidden: Boolean(hidden), ...(placeholder ? { placeholder } : {}) },
+        );
 
     addDateField = ({ name, label, description, required, hidden }: FieldArgs & { hidden?: boolean }) =>
         this.addField({ name, label, description, required }, { type: "date", hidden: Boolean(hidden) });
@@ -54,17 +68,26 @@ export class FormBuilder implements FieldBuilderMethods {
     addDateTimeField = ({ name, label, description, required, hidden }: FieldArgs & { hidden?: boolean }) =>
         this.addField({ name, label, description, required }, { type: "datetime", hidden: Boolean(hidden) });
 
-    addTextareaField = ({ name, label, description, required, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description, required }, { type: "textarea", hidden: Boolean(hidden) });
+    addTextareaField = ({ name, label, description, required, hidden, placeholder }: TextEntryFieldArgs) =>
+        this.addField(
+            { name, label, description, required },
+            { type: "textarea", hidden: Boolean(hidden), ...(placeholder ? { placeholder } : {}) },
+        );
 
     addToggleField = ({ name, label, description, required, hidden }: FieldArgs & { hidden?: boolean }) =>
         this.addField({ name, label, description, required }, { type: "toggle", hidden: Boolean(hidden) });
 
-    addEmailField = ({ name, label, description, required, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description, required }, { type: "email", hidden: Boolean(hidden) });
+    addEmailField = ({ name, label, description, required, hidden, placeholder }: TextEntryFieldArgs) =>
+        this.addField(
+            { name, label, description, required },
+            { type: "email", hidden: Boolean(hidden), ...(placeholder ? { placeholder } : {}) },
+        );
 
-    addTelField = ({ name, label, description, required, hidden }: FieldArgs & { hidden?: boolean }) =>
-        this.addField({ name, label, description, required }, { type: "tel", hidden: Boolean(hidden) });
+    addTelField = ({ name, label, description, required, hidden, placeholder }: TextEntryFieldArgs) =>
+        this.addField(
+            { name, label, description, required },
+            { type: "tel", hidden: Boolean(hidden), ...(placeholder ? { placeholder } : {}) },
+        );
 
     addNoteField = ({ name, label, description, required, folder }: FieldArgs & { folder: string }) =>
         this.addField({ name, label, description, required }, { type: "note", folder });

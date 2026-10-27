@@ -103,6 +103,7 @@ export type EditableInput = {
     folders?: string[];
     min?: number;
     max?: number;
+    placeholder?: string;
     options?: { value: string; label: string }[];
     multi_select_options?: string[];
     query?: string;
@@ -118,6 +119,24 @@ export type EditableField = {
     options?: { value: string; label: string }[];
     condition?: input.Condition;
 };
+
+/**
+ * Whether a field of the given input type renders a placeholder hint.
+ * Only free-text entry inputs surface a placeholder; native date/time
+ * pickers, toggles and selects ignore it, so we don't offer it for them.
+ */
+export function inputUsesPlaceholder(type: AllFieldTypes): boolean {
+    switch (type) {
+        case "text":
+        case "textarea":
+        case "number":
+        case "email":
+        case "tel":
+            return true;
+        default:
+            return false;
+    }
+}
 
 export type EditableFormDefinition = FormDefinition & {
     title: string;
