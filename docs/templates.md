@@ -58,18 +58,20 @@ This is a {{variableName}}. And this is also a valid {{ variableName }}
 
 The following transformations can be applied to variables:
 
-1. **`upper`**: Converts the variable's value to uppercase.
+1. **`upper`** (alias: **`uppercase`**): Converts the variable's value to uppercase.
    - Usage:
 
      ```plaintext
      {{ name | upper }}
+     {{ name | uppercase }}
      ```
 
-2. **`lower`**: Converts the variable's value to lowercase.
+2. **`lower`** (alias: **`lowercase`**): Converts the variable's value to lowercase.
    - Usage:
 
      ```plaintext
      {{ name | lower }}
+     {{ name | lowercase }}
      ```
 
 3. **`trim`**: Removes whitespace from both ends of the variable's value.
