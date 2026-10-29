@@ -271,6 +271,26 @@ export function toSnake(value: string): string {
         .replace(/^_+|_+$/g, "");
 }
 
+// Reverses a string by code point, so surrogate-pair characters (emoji, many
+// CJK supplementary characters) stay intact instead of being torn in half as
+// `.split("").reverse().join("")` would do.
+export function reverseString(value: string): string {
+    return Array.from(value).reverse().join("");
+}
+
+// Returns the value with its order reversed:
+//   - arrays are copied (we never mutate the caller's data, same as `sort`)
+//     and the elements come back joined with commas, matching the per-element
+//     transformations' comma convention.
+//   - `FileProxy` values operate on the file name so templates can reverse a
+//     filename without consuming path slashes.
+//   - everything else is coerced to a string and reversed by code point.
+function reverseValue(value: Val): string {
+    if (Array.isArray(value)) return value.slice().reverse().join(",");
+    if (value instanceof FileProxy) return reverseString(value.name);
+    return reverseString(String(value));
+}
+
 // `slug` and `snake` strip punctuation, so calling `String(value)` on an array
 // would consume the comma separator and silently merge distinct values into
 // one token, and calling it on a `FileProxy` would consume path slashes and
@@ -310,6 +330,8 @@ export function executeTransformation(
                 return applyPerString(toSlug)(value);
             case "snake":
                 return applyPerString(toSnake)(value);
+            case "reverse":
+                return reverseValue(value);
             default:
                 return absurd(transformation);
         }

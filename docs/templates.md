@@ -118,6 +118,18 @@ The following transformations can be applied to variables:
 
    - Input `Hello, World!` produces `hello_world`; input `  My Note (2024)  ` produces `my_note_2024`.
 
+8. **`reverse`**: Reverses the order of the variable's value.
+   - **Arrays** are reversed element-wise (a copy — the form's underlying data is not mutated) and joined with commas, matching the per-element transformations' convention.
+   - **Strings** are reversed by code point, so surrogate-pair characters (emoji, many CJK supplementary characters) stay intact.
+   - **`FileProxy`** values are reversed from the file name, not the full path.
+   - Usage:
+
+     ```plaintext
+     {{ tags | reverse }}
+     ```
+
+   - Input `["apple", "banana", "cherry"]` produces `cherry,banana,apple`; input `"hello"` produces `"olleh"`.
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:
