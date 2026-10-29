@@ -10,6 +10,25 @@ type FieldArgs = {
 /** Args for the free-text entry fields that render a native placeholder hint. */
 type TextEntryFieldArgs = FieldArgs & { hidden?: boolean; placeholder?: string };
 
+// `document_block` and `markdown_block` store their `body` as the source of a
+// JavaScript function that must `return` a string — an easy footgun for
+// consumers who assume `body` is plain text (see issue #496). Accept `content`
+// as a plain-string shorthand: we wrap it in a `return` so a form built with
+// `content: "Hello"` renders "Hello" instead of nothing.
+//
+// The union keeps the previous compile-time guarantee that a block has a
+// renderable source: exactly one of `body` or `content` must be supplied,
+// though both may be present so `body` can retain precedence.
+type BlockSource =
+    | { body: string; content?: string }
+    | { body?: string; content: string };
+
+function resolveBlockBody(body: string | undefined, content: string | undefined): string {
+    if (body !== undefined) return body;
+    if (content !== undefined) return `return ${JSON.stringify(content)};`;
+    return "";
+}
+
 type FieldBuilderMethods = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [K in AllFieldTypes]: (...args: any[]) => any;
@@ -169,11 +188,31 @@ export class FormBuilder implements FieldBuilderMethods {
             },
         );
 
-    addDocumentBlockField = ({ name, label, description, required, body }: FieldArgs & { body: string }) =>
-        this.addField({ name, label, description, required }, { type: "document_block", body });
+    addDocumentBlockField = ({
+        name,
+        label,
+        description,
+        required,
+        body,
+        content,
+    }: FieldArgs & BlockSource) =>
+        this.addField(
+            { name, label, description, required },
+            { type: "document_block", body: resolveBlockBody(body, content) },
+        );
 
-    addMarkdownBlockField = ({ name, label, description, required, body }: FieldArgs & { body: string }) =>
-        this.addField({ name, label, description, required }, { type: "markdown_block", body });
+    addMarkdownBlockField = ({
+        name,
+        label,
+        description,
+        required,
+        body,
+        content,
+    }: FieldArgs & BlockSource) =>
+        this.addField(
+            { name, label, description, required },
+            { type: "markdown_block", body: resolveBlockBody(body, content) },
+        );
 
     addImageField = ({
         name,
