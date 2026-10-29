@@ -323,6 +323,7 @@
                             {:else if field.input.type === "slider"}
                                 {@const min_id = `min_${index}`}
                                 {@const max_id = `max_${index}`}
+                                {@const step_id = `step_${index}`}
                                 <div class="flex column gap1">
                                     <label for={min_id}>Min</label>
                                     <input
@@ -339,6 +340,17 @@
                                         bind:value={field.input.max}
                                         placeholder="10"
                                         id={max_id}
+                                    />
+                                </div>
+                                <div class="flex column gap1">
+                                    <label for={step_id}>Step</label>
+                                    <input
+                                        type="number"
+                                        bind:value={field.input.step}
+                                        placeholder="1"
+                                        step="any"
+                                        min="0"
+                                        id={step_id}
                                     />
                                 </div>
                             {:else if field.input.type === "note"}

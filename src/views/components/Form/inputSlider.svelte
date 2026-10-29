@@ -11,7 +11,14 @@
     <span>
         {$value === undefined ? input.min : $value}
     </span>
-    <input type="range" bind:value={$value} class="slider" min={input.min} max={input.max} />
+    <input
+        type="range"
+        bind:value={$value}
+        class="slider"
+        min={input.min}
+        max={input.max}
+        step={input.step ?? 1}
+    />
 </div>
 
 <style>
