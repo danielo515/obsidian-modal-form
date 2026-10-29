@@ -1,7 +1,7 @@
 import { E, O, ensureError, pipe } from "@std";
 import { notifyError } from "src/utils/Log";
 import { FileProxy } from "./files/FileProxy";
-import { toSlug, toSnake } from "./template/templateParser";
+import { toPascal, toSlug, toSnake } from "./template/templateParser";
 
 function _toBulletList(value: Record<string, unknown> | unknown[]) {
     if (Array.isArray(value)) {
@@ -243,6 +243,23 @@ export class ResultValue<T = unknown> {
             return new ResultValue(toSnake(this.value.name), this.name, this.notify);
         }
         return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? toSnake(it) : it)));
+    }
+
+    /**
+     * getter that returns the value converted to PascalCase. Word boundaries
+     * are any run of non-letter/number characters (whitespace, dashes,
+     * underscores, punctuation); each remaining chunk gets its first
+     * character upper-cased and the rest is preserved. Strings nested in
+     * arrays/objects are converted individually; non-string values are
+     * returned unchanged. `FileProxy` values are converted from the file
+     * name so `result.getValue('image').pascal` can drive filename
+     * generation.
+     */
+    get pascal(): ResultValue<unknown> {
+        if (this.value instanceof FileProxy) {
+            return new ResultValue(toPascal(this.value.name), this.name, this.notify);
+        }
+        return this.map((v) => deepMap(v, (it) => (typeof it === "string" ? toPascal(it) : it)));
     }
 
     /**
