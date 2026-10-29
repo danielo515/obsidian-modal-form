@@ -107,6 +107,15 @@ isEmployed:: true`;
             const result = FormResult.make(formData, "ok");
             expect(result.asString("{{name|upper}}")).toEqual("JOHN DOE");
         });
+
+        it("should apply the code transformation", () => {
+            // `asString` runs a separate replacement path from `executeTemplate`,
+            // so the parser-level tests do not exercise it. Guard the public
+            // path directly so a future change to it cannot silently break
+            // documented behavior.
+            const result = FormResult.make({ cmd: "npm test" }, "ok");
+            expect(result.asString("Run {{ cmd | code }}.")).toEqual("Run `npm test`.");
+        });
     });
     describe("asDataviewProperties pick/omit", () => {
         it("should return the data as a string of dataview properties with only the specified keys using options.pick", () => {

@@ -285,6 +285,28 @@ function applyPerString(fn: (s: string) => string): (v: Val) => string {
     };
 }
 
+// Wraps `value` in backticks for inline markdown code. An empty string stays
+// empty so a template like `[{{x|code}}]` on an empty value renders as `[]`
+// instead of a stray `` `` `` that looks like an unopened code span.
+//
+// If the value itself contains backticks, a single-backtick delimiter would
+// prematurely close the span and leak the tail of the value into surrounding
+// text. Follow the CommonMark rule instead: pick a delimiter one longer than
+// the longest run of backticks in the value, and add a padding space when
+// the value starts or ends with a backtick so the delimiter and content stay
+// visually distinct. Trailing spaces inside the span are stripped by the
+// renderer, so the padding does not leak into the rendered output.
+export function toCode(value: string): string {
+    if (value === "") return "";
+    const longestRun = (value.match(/`+/g) ?? []).reduce(
+        (max, run) => Math.max(max, run.length),
+        0,
+    );
+    const delimiter = "`".repeat(longestRun + 1);
+    const padding = value.startsWith("`") || value.endsWith("`") ? " " : "";
+    return `${delimiter}${padding}${value}${padding}${delimiter}`;
+}
+
 export function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
@@ -310,6 +332,24 @@ export function executeTransformation(
                 return applyPerString(toSlug)(value);
             case "snake":
                 return applyPerString(toSnake)(value);
+            case "code": {
+                // Each item in an array becomes its own inline code span so the
+                // joined comma-string that `String(value)` would produce does
+                // not collapse them into a single backtick-wrapped blob. Drop
+                // entries that render as empty (`toCode("")` is `""`) before
+                // joining so a list like `["foo", "", "bar"]` yields
+                // `` `foo`, `bar` `` rather than a stray `` `foo`, , `bar` ``
+                // with a double separator. An empty array falls through
+                // naturally: `[].filter(...).join(", ")` is already `""`.
+                if (Array.isArray(value)) {
+                    return value
+                        .map((item) => toCode(String(item)))
+                        .filter((s) => s !== "")
+                        .join(", ");
+                }
+                if (value instanceof FileProxy) return toCode(value.name);
+                return toCode(String(value));
+            }
             default:
                 return absurd(transformation);
         }
