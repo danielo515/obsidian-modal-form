@@ -118,6 +118,19 @@ The following transformations can be applied to variables:
 
    - Input `Hello, World!` produces `hello_world`; input `  My Note (2024)  ` produces `my_note_2024`.
 
+8. **`sort`**: Sorts an array of values alphabetically and joins them with commas.
+   - Ordering uses locale collation (via `localeCompare`), so accented characters stay next to their base letters — e.g. `école` sorts between `apple` and `zebra`, not after both.
+   - Scalar values (strings, numbers, files) are returned unchanged: sorting the characters of a single value is rarely what you want, so the transformation is a no-op there.
+   - Useful for producing deterministic frontmatter from `multiselect` or `tag` fields where the field order is not stable.
+   - Template pipes only accept a single transformation and must return a string, so the array is eagerly joined with commas — the same shape as `slug`/`snake`. If you want to sort *and* render as a bullet list, as JSON, or through another transform, use the [`ResultValue.sorted` API](ResultValue.md) instead: `result.getValue('tags').sorted.bullets`, `result.getValue('tags').sorted.toDv()`, or `result.getValue('tags').sorted.map((v) => JSON.stringify(v))` to render as a JSON array (the array is passed to your callback; you stringify it, and the returned string flows through the wrapper's default `toString`).
+   - Usage:
+
+     ```plaintext
+     {{ tags | sort }}
+     ```
+
+   - Input `["cherry", "apple", "banana"]` produces `apple,banana,cherry`.
+
 ### Example Templates
 
 Here are some examples of how to use the new template syntax:

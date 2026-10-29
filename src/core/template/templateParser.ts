@@ -285,6 +285,23 @@ function applyPerString(fn: (s: string) => string): (v: Val) => string {
     };
 }
 
+// Sorts an array of values alphabetically using `localeCompare` so ordering
+// respects locale-specific collation (e.g. accents, case). For non-array
+// values there is nothing meaningful to sort — returning the string form
+// unchanged matches how `String(value)` would render it in a template with
+// no transformation, and avoids surprising results like "sorting" the
+// characters of a scalar string.
+function sortValue(value: Val): string {
+    if (Array.isArray(value)) {
+        return [...value]
+            .map((item) => String(item))
+            .sort((a, b) => a.localeCompare(b))
+            .join(",");
+    }
+    if (value instanceof FileProxy) return value.name;
+    return String(value);
+}
+
 export function executeTransformation(
     transformation: Transformations | undefined,
 ): (value: Val) => string {
@@ -310,6 +327,8 @@ export function executeTransformation(
                 return applyPerString(toSlug)(value);
             case "snake":
                 return applyPerString(toSnake)(value);
+            case "sort":
+                return sortValue(value);
             default:
                 return absurd(transformation);
         }

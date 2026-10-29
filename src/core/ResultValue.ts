@@ -246,6 +246,28 @@ export class ResultValue<T = unknown> {
     }
 
     /**
+     * getter that returns the value with array elements sorted alphabetically.
+     * Ordering uses `localeCompare` so accented characters stay next to their
+     * base letters. The array is copied before sorting, so a `ResultValue`
+     * is never a shared reference into the caller's form data.
+     *
+     * Unlike `slug` / `snake` this returns a new `ResultValue` whose value is
+     * still an array, so the shape composes with `bullets`, `toDv()`, `map`,
+     * and every other transform. Scalar values (strings, numbers, booleans,
+     * `FileProxy`) have no meaningful ordering to apply and are returned
+     * unchanged — sorting the characters of a single value would surprise
+     * callers.
+     */
+    get sorted(): ResultValue<unknown> {
+        return this.map((v) => {
+            if (Array.isArray(v)) {
+                return [...v].sort((a, b) => String(a).localeCompare(String(b)));
+            }
+            return v;
+        });
+    }
+
+    /**
      * renders the value as a markdown link.
      * If the value is a string, it will be rendered as a markdown link.
      * If the value is a FileProxy (right now just used for images), it will be rendered as an embedded link.
