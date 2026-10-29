@@ -247,7 +247,9 @@ export class ResultValue<T = unknown> {
 
     /**
      * renders the value as a markdown link.
-     * If the value is a string, it will be rendered as a markdown link.
+     * If the value is a string, it will be rendered as a wiki-link.
+     * If the value is an array, each item is rendered as its own wiki-link
+     * and joined with `, ` — handy for multiselect fields backed by notes.
      * If the value is a FileProxy (right now just used for images), it will be rendered as an embedded link.
      * Any other type of value will be rendered as an empty string.
      */
@@ -255,6 +257,8 @@ export class ResultValue<T = unknown> {
         switch (true) {
             case typeof this.value === "string":
                 return `[[${this.value}]]`;
+            case Array.isArray(this.value):
+                return this.value.map((v) => `[[${String(v)}]]`).join(", ");
             case this.value instanceof FileProxy:
                 return `![[${this.value.path}]]`;
             default:
