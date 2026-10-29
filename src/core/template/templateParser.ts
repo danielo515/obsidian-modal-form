@@ -258,6 +258,17 @@ export function toSlug(value: string): string {
         .replace(/^-+|-+$/g, "");
 }
 
+// Uppercases the first character of every whitespace-separated word and leaves
+// the remaining characters untouched. Matches the behaviour of `capitalize`
+// but applied per word rather than only to the first word, so "hello world"
+// becomes "Hello World". Chain `lower` first on `ResultValue` to force a clean
+// Title Case over mixed input (e.g. "jOHN dOE" → "John Doe").
+export function toTitle(value: string): string {
+    return value.replace(/(^|\s)(\S)/gu, (_, pre: string, char: string) =>
+        pre + char.toLocaleUpperCase(),
+    );
+}
+
 // Same shape as `toSlug` but produces snake_case: whitespace and dashes become
 // underscores, punctuation is stripped, runs of underscores collapse, and edge
 // underscores are trimmed. Useful for deriving variable names, YAML keys, or
@@ -306,6 +317,8 @@ export function executeTransformation(
                 const first = str.charAt(0).toUpperCase();
                 return first + str.slice(1);
             }
+            case "title":
+                return applyPerString(toTitle)(value);
             case "slug":
                 return applyPerString(toSlug)(value);
             case "snake":

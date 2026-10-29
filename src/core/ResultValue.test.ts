@@ -310,6 +310,36 @@ describe("ResultValue", () => {
             expect(resultValue.trimmed.capitalized.toString()).toEqual("Hello");
         });
     });
+    describe("title", () => {
+        it("should uppercase the first character of each word", () => {
+            const resultValue = ResultValue.from("hello world", "Test");
+            expect(resultValue.title.toString()).toEqual("Hello World");
+        });
+        it("should leave the rest of each word untouched", () => {
+            const resultValue = ResultValue.from("jOHN dOE", "Test");
+            expect(resultValue.title.toString()).toEqual("JOHN DOE");
+        });
+        it("should preserve unicode letters", () => {
+            const resultValue = ResultValue.from("café noël", "Test");
+            expect(resultValue.title.toString()).toEqual("Café Noël");
+        });
+        it("should title-case each string in an array individually", () => {
+            const resultValue = ResultValue.from(["foo bar", "hello world"], "Test");
+            expect(resultValue.title.toString()).toEqual("Foo Bar, Hello World");
+        });
+        it("should leave non-string values unchanged in mixed arrays", () => {
+            const resultValue = ResultValue.from(["foo bar", 42], "Test");
+            expect(resultValue.title.bullets).toEqual("- Foo Bar\n- 42");
+        });
+        it("should handle an empty string without crashing", () => {
+            const resultValue = ResultValue.from("", "Test");
+            expect(resultValue.title.toString()).toEqual("");
+        });
+        it("should be chainable after lower for clean Title Case", () => {
+            const resultValue = ResultValue.from("jOHN dOE", "Test");
+            expect(resultValue.lower.title.toString()).toEqual("John Doe");
+        });
+    });
     describe("slug", () => {
         it("should slugify a string", () => {
             const resultValue = ResultValue.from("Hello, World!", "Test");
