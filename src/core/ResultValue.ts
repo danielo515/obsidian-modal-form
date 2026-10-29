@@ -246,6 +246,26 @@ export class ResultValue<T = unknown> {
     }
 
     /**
+     * Returns a new ResultValue containing `fallback` when the current value
+     * is empty — `undefined`, `null`, an empty string, or an empty array.
+     * Numbers (including `0`) and booleans (including `false`) are kept as-is,
+     * matching how the form engine treats "required" field values. Useful for
+     * optional fields where you want a sensible default in templates:
+     * `result.getValue('name').or('Anonymous')`.
+     */
+    or<U>(fallback: U): ResultValue<T | U> {
+        const value = this.value;
+        const isEmpty =
+            value == null ||
+            (typeof value === "string" && value.length === 0) ||
+            (Array.isArray(value) && value.length === 0);
+        if (isEmpty) {
+            return ResultValue.from(fallback, this.name, this.notify);
+        }
+        return this as ResultValue<T | U>;
+    }
+
+    /**
      * renders the value as a markdown link.
      * If the value is a string, it will be rendered as a markdown link.
      * If the value is a FileProxy (right now just used for images), it will be rendered as an embedded link.

@@ -116,6 +116,28 @@ The most common use is probably just to use one of them, like `trimmed` or `uppe
 
 All of this shortcuts are able to handle single values and lists, so you can use them with any value.
 
+### `or(fallback)` method
+
+The `or` method lets you supply a fallback value when a form field has been left empty.
+It returns a new `ResultValue` containing the fallback when the current value is `undefined`, `null`, an empty string, or an empty array.
+Numbers (including `0`) and booleans (including `false`) are kept as-is so a toggle left off or a numeric field set to zero does not get overwritten.
+
+```typescript
+<% result.getValue('nickname').or('Anonymous') %>
+```
+
+If the user left `nickname` empty, the above code prints `Anonymous`.
+If they typed `Jane`, it prints `Jane`.
+
+Because `or` returns a `ResultValue`, you can keep chaining the other shortcuts:
+
+```typescript
+<% result.getValue('nickname').or('anonymous').upper %>
+```
+
+This prints the current nickname uppercased, or `ANONYMOUS` when the field is empty.
+The shorthand proxied access works too — `result.nickname.or('Anon')` is equivalent to `result.getValue('nickname').or('Anon')`.
+
 ### `link` method
 
 The `link` method is a convenience method to render the value as a markdown link.
