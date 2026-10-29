@@ -25,6 +25,7 @@ export const transformations = union([
     literal("capitalize"),
     literal("slug"),
     literal("snake"),
+    literal("blockquote"),
 ]);
 
 export type Transformations = Output<typeof transformations>;

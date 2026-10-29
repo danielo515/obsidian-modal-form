@@ -378,6 +378,46 @@ describe("ResultValue", () => {
             expect(resultValue.trimmed.snake.toString()).toEqual("hello_world");
         });
     });
+    describe("blockquote", () => {
+        it("should quote a single-line string", () => {
+            const resultValue = ResultValue.from("Hello world", "Test");
+            expect(resultValue.blockquote.toString()).toEqual("> Hello world");
+        });
+        it("should quote every line of a multi-line string", () => {
+            const resultValue = ResultValue.from("line one\nline two\nline three", "Test");
+            expect(resultValue.blockquote.toString()).toEqual(
+                "> line one\n> line two\n> line three",
+            );
+        });
+        it("should quote each element of an array on its own line", () => {
+            const resultValue = ResultValue.from(["foo", "bar", "baz"], "Test");
+            expect(resultValue.blockquote.toString()).toEqual("> foo\n> bar\n> baz");
+        });
+        it("should return an empty string for an empty array", () => {
+            const resultValue = ResultValue.from([], "Test");
+            expect(resultValue.blockquote.toString()).toEqual("");
+        });
+        it("should return an empty string for an empty string value", () => {
+            const resultValue = ResultValue.from("", "Test");
+            expect(resultValue.blockquote.toString()).toEqual("");
+        });
+        it("should stringify and quote a number", () => {
+            const resultValue = ResultValue.from(42, "Test");
+            expect(resultValue.blockquote.toString()).toEqual("> 42");
+        });
+        it("should stringify and quote a boolean", () => {
+            const resultValue = ResultValue.from(true, "Test");
+            expect(resultValue.blockquote.toString()).toEqual("> true");
+        });
+        it("should be chainable with other shortcuts", () => {
+            const resultValue = ResultValue.from("  Hello World  ", "Test");
+            expect(resultValue.trimmed.blockquote.toString()).toEqual("> Hello World");
+        });
+        it("should be chainable with upper", () => {
+            const resultValue = ResultValue.from(["foo", "bar"], "Test");
+            expect(resultValue.upper.blockquote.toString()).toEqual("> FOO\n> BAR");
+        });
+    });
     describe("chaining shortcuts", () => {
         it("should be possible to chain upper, lower and trim", () => {
             // Arrange
